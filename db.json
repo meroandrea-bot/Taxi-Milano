@@ -1,0 +1,542 @@
+[
+  {
+    "id": 1,
+    "type": "Piazza",
+    "name": "Duomo",
+    "confluences": [
+      "Galleria Vittorio Emanuele II",
+      "Via Silvio Pellico",
+      "Via Mengoni",
+      "Via dei Mercanti",
+      "Via Orefici",
+      "Via Torino",
+      "Via Mazzini",
+      "Via Guglielmo Marconi",
+      "Piazzetta Reale",
+      "Via Arcivescovado",
+      "Corso Vittorio Emanuele II",
+      "Via Santa Radegonda",
+      "Via San Raffaele",
+      "Via Ugo Foscolo"
+    ]
+  },
+  {
+    "id": 2,
+    "type": "Piazza",
+    "name": "Cordusio",
+    "confluences": [
+      "Via Mercanti",
+      "Via Broletto",
+      "Via San Protaso",
+      "Via Orefici",
+      "Via San Giovanni sul Muro",
+      "Via Dante",
+      "Via Meravigli"
+    ]
+  },
+  {
+    "id": 3,
+    "type": "Piazzale",
+    "name": "Loreto",
+    "confluences": [
+      "Corso Buenos Aires",
+      "Viale Abruzzi",
+      "Viale Monza",
+      "Via Andrea Doria",
+      "Viale Brianza",
+      "Via Leoncavallo",
+      "Via Padova"
+    ]
+  },
+  {
+    "id": 4,
+    "type": "Piazza",
+    "name": "San Babila",
+    "confluences": [
+      "Corso Vittorio Emanuele II",
+      "Corso Venezia",
+      "Corso Monforte",
+      "Via Durini",
+      "Galleria Passarella",
+      "Via Borgogna",
+      "Corso Europa"
+    ]
+  },
+  {
+    "id": 5,
+    "type": "Piazza",
+    "name": "Cinque Giornate",
+    "confluences": [
+      "Corso di Porta Vittoria",
+      "Viale Regina Margherita",
+      "Viale Umbria",
+      "Corso XXII Marzo",
+      "Via Bronzetti",
+      "Viale Piceno"
+    ]
+  },
+  {
+    "id": 6,
+    "type": "Piazzale",
+    "name": "Luigi Cadorna",
+    "confluences": [
+      "Via Giosuè Carducci",
+      "Foro Buonaparte",
+      "Via Boccaccio",
+      "Via San Giovanni sul Muro",
+      "Via de Togni",
+      "Via Monti"
+    ]
+  },
+  {
+    "id": 7,
+    "type": "Piazza",
+    "name": "della Repubblica",
+    "confluences": [
+      "Viale Tunisia",
+      "Via Vittor Pisani",
+      "Corso di Porta Nuova",
+      "Via Turati",
+      "Viale Monte Santo",
+      "Via Repubblica"
+    ]
+  },
+  {
+    "id": 8,
+    "type": "Piazzale",
+    "name": "di Porta Lodovica",
+    "confluences": [
+      "Corso Italia",
+      "Viale Beatrice d'Este",
+      "Viale Bligny",
+      "Viale Col di Lana",
+      "Viale Tibaldi"
+    ]
+  },
+  {
+    "id": 9,
+    "type": "Piazzale",
+    "name": "di Porta Romana",
+    "confluences": [
+      "Corso di Porta Romana",
+      "Viale Sabotino",
+      "Viale Filippetti",
+      "Viale Monte Nero",
+      "Via Friuli",
+      "Corso Lodi"
+    ]
+  },
+  {
+    "id": 10,
+    "type": "Piazza",
+    "name": "XXIV Maggio",
+    "confluences": [
+      "Corso di Porta Ticinese",
+      "Corso San Gottardo",
+      "Viale Col di Lana",
+      "Viale Gian Galeazzo",
+      "Via Gorizia",
+      "Alzaia Naviglio Pavese",
+      "Ripa di Porta Ticinese"
+    ]
+  },
+  {
+    "id": 11,
+    "type": "Piazza",
+    "name": "Gae Aulenti",
+    "confluences": [
+      "Corso Como",
+      "Via Melchiorre Gioia",
+      "Piazza Alvar Aalto",
+      "Via Capellini",
+      "Viale Pasubio"
+    ]
+  },
+  {
+    "id": 12,
+    "type": "Piazza",
+    "name": "della Scala",
+    "confluences": [
+      "Via Manzoni",
+      "Via Santa Margherita",
+      "Via Case Rotte",
+      "Via Marino",
+      "Via Filodrammatici"
+    ]
+  },
+  {
+    "id": 13,
+    "type": "Piazza",
+    "name": "Sant'Ambrogio",
+    "confluences": [
+      "Via San Vittore",
+      "Via Lanzone",
+      "Via Giosuè Carducci",
+      "Via Luini",
+      "Via Sant'Agnese",
+      "Via Nirone"
+    ]
+  },
+  {
+    "id": 14,
+    "type": "Piazza",
+    "name": "degli Affari",
+    "confluences": [
+      "Via Meravigli",
+      "Via San Maurilio",
+      "Via Santa Maria Fulcorina",
+      "Via Bossi",
+      "Via San Protaso"
+    ]
+  },
+  {
+    "id": 15,
+    "type": "Piazza",
+    "name": "Missori",
+    "confluences": [
+      "Via Larga",
+      "Corso Italia",
+      "Via Giuseppe Mazzini",
+      "Via Pantano",
+      "Via Albricci",
+      "Via Mazzini"
+    ]
+  },
+  {
+    "id": 16,
+    "type": "Piazza",
+    "name": "Cairoli",
+    "confluences": [
+      "Foro Buonaparte",
+      "Via Dante",
+      "Via Ricasoli",
+      "Via Cusani",
+      "Via Beltrami"
+    ]
+  },
+  {
+    "id": 17,
+    "type": "Piazza",
+    "name": "Tricolore",
+    "confluences": [
+      "Corso Monforte",
+      "Viale Piave",
+      "Corso Plebisciti",
+      "Via Nino Bixio",
+      "Viale Diana"
+    ]
+  },
+  {
+    "id": 18,
+    "type": "Piazzale",
+    "name": "Dateo",
+    "confluences": [
+      "Viale Piceno",
+      "Viale Gran Sasso",
+      "Corso Plebisciti",
+      "Viale Umbria",
+      "Viale dei Mille",
+      "Viale Argonne"
+    ]
+  },
+  {
+    "id": 19,
+    "type": "Piazzale",
+    "name": "Maciachini",
+    "confluences": [
+      "Viale Stelvio",
+      "Via Imbonati",
+      "Viale Marche",
+      "Via Carlo Farini",
+      "Via Valtellina"
+    ]
+  },
+  {
+    "id": 20,
+    "type": "Largo",
+    "name": "La Foppa",
+    "confluences": [
+      "Corso Garibaldi",
+      "Via Moscova",
+      "Via della Chiusa",
+      "Via Pontaccio"
+    ]
+  },
+  {
+    "id": 21,
+    "type": "Piazza",
+    "name": "Aspromonte",
+    "confluences": [
+      "Via Pecchio",
+      "Via Leoncavallo",
+      "Via Bassini",
+      "Via Botticelli",
+      "Via Ponzio"
+    ]
+  },
+  {
+    "id": 22,
+    "type": "Piazza",
+    "name": "Wagner",
+    "confluences": [
+      "Via Marghera",
+      "Via Washington",
+      "Via Buonarroti",
+      "Via Sanzio",
+      "Via Cherubini"
+    ]
+  },
+  {
+    "id": 23,
+    "type": "Piazzale",
+    "name": "Lotto",
+    "confluences": [
+      "Viale Monte Ceneri",
+      "Viale Certosa",
+      "Via Caprilli",
+      "Via Monte Rosa",
+      "Via Parmenide",
+      "Piazzale Stuparich"
+    ]
+  },
+  {
+    "id": 25,
+    "type": "Piazzale",
+    "name": "Udine",
+    "confluences": [
+      "Via Feltre",
+      "Via Udine",
+      "Via Pordenone",
+      "Via Carnia",
+      "Via Ronchi"
+    ]
+  },
+  {
+    "id": 26,
+    "type": "Piazzale",
+    "name": "Corvetto",
+    "confluences": [
+      "Corso Lodi",
+      "Via Emilia",
+      "Viale Lucania",
+      "Via Marco d'Agrate",
+      "Via Polesine"
+    ]
+  },
+  {
+    "id": 27,
+    "type": "Piazzale",
+    "name": "Abbiategrasso",
+    "confluences": [
+      "Via Montegani",
+      "Via Savio",
+      "Via Santa Teresa",
+      "Via Avancini",
+      "Via de Missaglia",
+      "Via Palanti",
+      "Via Medeghino"
+    ]
+  },
+  {
+    "id": 28,
+    "type": "Piazzale",
+    "name": "Selinunte",
+    "confluences": [
+      "Via Morgantini",
+      "Via Rembrandt",
+      "Via Paravia",
+      "Via Segesta"
+    ]
+  },
+  {
+    "id": 29,
+    "type": "Piazza",
+    "name": "Gramsci",
+    "confluences": [
+      "Via Paolo Sarpi",
+      "Via Procaccini",
+      "Via Nicotera",
+      "Via Albert Aalto"
+    ]
+  },
+  {
+    "id": 30,
+    "type": "Largo",
+    "name": "Richini",
+    "confluences": [
+      "Via Francesco Sforza",
+      "Via Pantano",
+      "Via San Barnaba",
+      "Via Albricci"
+    ]
+  },
+  {
+    "id": 31,
+    "type": "Piazzale",
+    "name": "Baracca",
+    "confluences": [
+      "Corso Vercelli",
+      "Corso Magenta",
+      "Via Coni Zugna",
+      "Via San Michele del Carso",
+      "Via Ariosto"
+    ]
+  },
+  {
+    "id": 32,
+    "type": "Piazza",
+    "name": "Piemonte",
+    "confluences": [
+      "Corso Vercelli",
+      "Via Washington",
+      "Via San Michele del Carso",
+      "Via Cherubini",
+      "Via Cimarosa"
+    ]
+  },
+  {
+    "id": 33,
+    "type": "Piazza",
+    "name": "Armando Diaz",
+    "confluences": [
+      "Via Baracchini",
+      "Via Albricci",
+      "Via Gonzaga",
+      "Piazza Duomo"
+    ]
+  },
+  {
+    "id": 34,
+    "type": "Piazza",
+    "name": "Santo Stefano",
+    "confluences": [
+      "Via Festa del Perdono",
+      "Via Larga",
+      "Corso di Porta Vittoria",
+      "Via San Zeno"
+    ]
+  },
+  {
+    "id": 35,
+    "type": "Piazza",
+    "name": "Sant'Eustorgio",
+    "confluences": [
+      "Corso di Porta Ticinese",
+      "Via Santa Croce",
+      "Via Vetere",
+      "Piazza Vetra"
+    ]
+  },
+  {
+    "id": 36,
+    "type": "Piazza",
+    "name": "Vetra",
+    "confluences": [
+      "Corso di Porta Ticinese",
+      "Via De Amicis",
+      "Via Santa Croce",
+      "Via Wittgens"
+    ]
+  },
+  {
+    "id": 37,
+    "type": "Piazza",
+    "name": "Borromeo",
+    "confluences": [
+      "Via Borromei",
+      "Via San Maurilio",
+      "Via Santa Maria Fulcorina"
+    ]
+  },
+  {
+    "id": 38,
+    "type": "Piazza",
+    "name": "San Fedele",
+    "confluences": [
+      "Via Manzoni",
+      "Via Case Rotte",
+      "Via San Fedele",
+      "Piazza Belgioioso"
+    ]
+  },
+  {
+    "id": 39,
+    "type": "Piazza",
+    "name": "Meda",
+    "confluences": [
+      "Corso Matteotti",
+      "Via San Paolo",
+      "Via del Lauro",
+      "Via Agnello"
+    ]
+  },
+  {
+    "id": 40,
+    "type": "Piazzale",
+    "name": "Accursio",
+    "confluences": [
+      "Viale Espinasse",
+      "Viale Certosa",
+      "Via Gallarate",
+      "Via Achille Papa",
+      "Via Traiano",
+      "Via Tavazzano",
+      "Via Gessendi",
+      "Via Nansen",
+      "Via Sonnino"
+    ]
+  },
+  {
+    "id": 41,
+    "type": "Piazzale",
+    "name": "Negrelli",
+    "confluences": [
+      "Via Lodovico il Moro",
+      "Via Giambellino",
+      "Via Segantini"
+    ]
+  },
+  {
+    "id": 42,
+    "type": "Piazzale",
+    "name": "Aquileia",
+    "confluences": [
+      "Viale Coni Zugna",
+      "Viale di Porta Vercellina",
+      "Via San Michele del Carso",
+      "Via Foppa"
+    ]
+  },
+  {
+    "id": 43,
+    "type": "Piazzale",
+    "name": "Bolivar",
+    "confluences": [
+      "Via Washington",
+      "Via Foppa",
+      "Viale San Gimignano"
+    ]
+  },
+  {
+    "id": 44,
+    "type": "Piazzale",
+    "name": "Gorini",
+    "confluences": [
+      "Via Asmara",
+      "Via Bassini",
+      "Viale Argonne",
+      "Via Ponzio"
+    ]
+  },
+  {
+    "id": 45,
+    "type": "Piazzale",
+    "name": "Susa",
+    "confluences": [
+      "Viale Argonne",
+      "Viale Campania",
+      "Viale Gran Sasso",
+      "Via Pacini"
+    ]
+  }
+]
