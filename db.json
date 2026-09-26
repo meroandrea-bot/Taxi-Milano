@@ -564,6 +564,20 @@
         "Via Perussia",
         "Via Valla"
       ]
+    },
+    {
+      "id": 1790462746247,
+      "type": "Piazza",
+      "name": "Giovine Italia",
+      "confluences": [
+        "Via Sebeto",
+        "Via Mascheroni",
+        "Via Boccaccio",
+        "Via Aurelio Saffi",
+        "Via fratelli Ruffini",
+        "Via Boccaccio",
+        "Via Aurelio Saffi"
+      ]
     }
   ],
   "customDescriptions": {
