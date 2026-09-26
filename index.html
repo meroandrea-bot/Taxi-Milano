@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Esame Ruolo Conducenti Milano - Toponomastica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Stili per la disposizione orbitale bilanciata dei riquadri attorno alla piazza */
+        .orbit-container {
+            position: relative;
+            width: 540px;
+            height: 540px;
+            margin: 0 auto;
+        }
+        .orbit-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+        .orbit-slot {
+            position: absolute;
+            width: 140px;
+            min-height: 38px;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            word-break: break-word;
+            cursor: pointer;
+        }
+        /* Ottimizzazioni per app mobile */
+        body {
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        input, select, textarea {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+        .street-card {
+            cursor: pointer;
+        }
+        .street-card.selected-for-tap {
+            border-color: #f59e0b !important;
+            background-color: #fffbeb !important;
+            box-shadow: 0 0 0 2px #f59e0b;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- SCHERMATA DI ACCESSO -->
+    <div id="login-screen" class="fixed inset-0 bg-slate-900 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8">
+            <div class="text-center mb-6">
+                <i class="fa-solid fa-taxi text-4xl text-amber-500 mb-2"></i>
+                <h1 class="text-2xl font-bold text-slate-900">Ruolo Conducenti Milano</h1>
+                <p class="text-sm text-slate-500">Simulatore e Database Toponomastico</p>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Password</label>
+                    <input type="password" id="login-pwd" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="Inserisci la password...">
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="handleLogin(false)" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-lg transition shadow-lg">Accedi</button>
+                    <button onclick="handleLogin(true)" class="px-4 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 rounded-lg transition text-sm"><i class="fa-solid fa-user-shield mr-1"></i> Admin</button>
+                </div>
+                <div id="login-error" class="text-red-500 text-xs text-center hidden">Password errata. Riprova.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- APP PRINCIPALE -->
+    <div id="app-container" class="hidden flex flex-col min-h-screen">
+        <header class="bg-slate-900 text-white shadow-md sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-taxi text-amber-400 text-2xl"></i>
+                    <div>
+                        <span class="font-bold text-lg block">Milano Taxi Trainer</span>
+                        <span class="text-xs text-amber-400 font-semibold" id="header-total-badge">Database Cloud</span>
+                    </div>
+                </div>
+                <nav class="flex space-x-2 mt-2 sm:mt-0">
+                    <button onclick="switchTab('enciclopedia')" id="btn-enciclopedia" class="px-3 py-2 rounded-lg bg-amber-500 font-semibold text-xs sm:text-sm transition">Enciclopedia (<span id="total-count">0</span>)</button>
+                    <button onclick="switchTab('esercizio')" id="btn-esercizio" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 font-semibold text-xs sm:text-sm transition">Esercizi</button>
+                    <button onclick="switchTab('admin')" id="btn-admin" class="hidden px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700 font-semibold text-xs sm:text-sm transition"><i class="fa-solid fa-lock-open mr-1"></i> Admin</button>
+                    <button onclick="logoutApp()" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white" title="Esci"><i class="fa-solid fa-right-from-bracket"></i></button>
+                </nav>
+            </div>
+        </header>
+
+        <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6">
+            
+            <!-- SCHEDA ENCICLOPEDIA -->
+            <section id="tab-enciclopedia" class="space-y-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+                        <h2 class="text-xl font-bold flex items-center"><i class="fa-solid fa-book text-amber-500 mr-2"></i> Indice Toponomastico Ufficiale</h2>
+                        <div class="flex gap-2 flex-wrap">
+                            <button onclick="toggleAlphabeticalSort()" id="sort-alpha-btn" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-bold border border-slate-300 transition flex items-center">
+                                <i class="fa-solid fa-arrow-down-a-z mr-1 text-amber-600"></i> Ordina A-Z
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <input type="text" id="search-piazza" onkeyup="renderEncyclopedia()" placeholder="Cerca piazza, piazzale, largo o via confluente..." class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:outline-none mb-4">
+                    
+                    <div id="street-destination-info" class="hidden mb-4 p-4 bg-amber-50 border border-amber-300 rounded-lg text-amber-900 flex justify-between items-center shadow-sm">
+                        <div>
+                            <span class="font-bold block text-xs uppercase text-amber-700"><i class="fa-solid fa-diamond-turn-right mr-1"></i> Dettaglio Collegamento:</span>
+                            <span id="street-dest-text" class="text-sm font-semibold"></span>
+                        </div>
+                        <button onclick="closeStreetInfo()" class="text-amber-700 hover:text-amber-900 font-bold px-2 py-1 text-lg">&times;</button>
+                    </div>
+
+                    <div id="encyclopedia-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[65vh] overflow-y-auto p-1"></div>
+                </div>
+            </section>
+
+            <!-- SCHEDA ESERCIZI (SIMULATORE 2D ANTICORARIO) -->
+            <section id="tab-esercizio" class="hidden space-y-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
+                        <h2 class="text-xl font-bold flex items-center"><i class="fa-solid fa-route text-amber-500 mr-2"></i> Esercizi Confluenze Esame</h2>
+                        
+                        <!-- Barra di ricerca rapida & Menu a tendina -->
+                        <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                            <div class="relative w-72">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                                    <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                                </span>
+                                <input type="text" id="exercise-search-input" oninput="filterExerciseDropdown()" placeholder="Cerca piazza per esercitarti..." class="w-full pl-9 pr-3 py-2 border rounded-lg text-sm bg-slate-50 font-medium focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                                <div id="exercise-suggestions" class="absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-xl max-h-56 overflow-y-auto z-30 hidden"></div>
+                            </div>
+                            <select id="exercise-select" onchange="loadExercise()" class="px-3 py-2 border rounded-lg text-sm bg-slate-50 font-semibold text-slate-700 max-w-xs"></select>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4 text-xs text-amber-800">
+                        <i class="fa-solid fa-circle-info mr-1"></i> <strong>Da PC:</strong> Trascina le vie. <strong>Da Telefono:</strong> Tocca una via dall'elenco e poi tocca il riquadro vuoto attorno alla piazza per posizionarla! (Disposizione in senso antiorario dall'alto).
+                    </div>
+
+                    <!-- Layout 2D Piazza / Elenco -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+                        <!-- Mappa 2D della Piazza con riquadri disposti ad orbita bilanciata -->
+                        <div class="lg:col-span-8 bg-slate-900 rounded-2xl p-4 relative flex flex-col items-center justify-center min-h-[580px] shadow-inner border border-slate-700 overflow-x-auto overflow-y-auto">
+                            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#f59e0b_1.5px,transparent_1.5px)] [background-size:20px_20px]"></div>
+
+                            <!-- Contenitore Orbitale -->
+                            <div class="orbit-container my-auto">
+                                <!-- Piazza centrale -->
+                                <div class="orbit-center w-28 h-28 rounded-full bg-slate-800 border-4 border-amber-500 shadow-2xl flex flex-col items-center justify-center text-center p-2 z-10">
+                                    <div id="ex-square-type" class="text-[8px] uppercase tracking-widest text-amber-400 font-bold">Piazza</div>
+                                    <div id="ex-square-title" class="text-sm font-black text-white leading-tight mt-0.5">-</div>
+                                </div>
+
+                                <!-- Riquadri di accoglienza dinamici posizionati attorno -->
+                                <div id="map-slots-container"></div>
+                            </div>
+
+                            <div class="absolute bottom-3 text-[11px] text-slate-400 font-semibold tracking-wide">
+                                <i class="fa-solid fa-arrows-spin mr-1 text-amber-400"></i> Disposizione reale attorno alla piazza (Senso Antiorario)
+                            </div>
+                        </div>
+
+                        <!-- Elenco esterno delle vie -->
+                        <div class="lg:col-span-4 flex flex-col bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <div class="text-xs font-bold uppercase text-slate-500 tracking-wider mb-2 flex items-center justify-between">
+                                <span><i class="fa-solid fa-list text-amber-500 mr-1"></i> Elenco Vie Disponibili</span>
+                                <span id="pool-count" class="text-[10px] bg-slate-200 px-2 py-0.5 rounded text-slate-600 font-semibold">0</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 mb-3">Trascina o tocca le vie da qui verso i riquadri intorno alla mappa.</p>
+                            <!-- Contenitore pool sorgente -->
+                            <div id="source-pool" class="space-y-2 min-h-[350px] max-h-[480px] overflow-y-auto p-1 bg-white border border-slate-200 rounded-lg"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="verifyExercise()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg transition shadow flex items-center justify-center"><i class="fa-solid fa-check mr-2"></i> Verifica</button>
+                        <button onclick="showExerciseSolution()" class="px-6 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3 rounded-lg transition flex items-center justify-center"><i class="fa-solid fa-eye mr-2"></i> Soluzione</button>
+                    </div>
+                    <div id="exercise-feedback" class="mt-4 text-center font-bold text-base"></div>
+                </div>
+            </section>
+
+            <!-- SCHEDA ADMIN -->
+            <section id="tab-admin" class="hidden space-y-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+                        <h2 class="text-xl font-bold text-red-600 flex items-center"><i class="fa-solid fa-user-shield mr-2"></i> Gestione e Modifica Database</h2>
+                        <button onclick="exportJSON()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-sm font-bold transition flex items-center shadow" title="Esporta Backup JSON">
+                            <i class="fa-solid fa-download mr-1.5"></i> Esporta DB JSON
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                        <!-- Aggiungi Piazza -->
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <h3 class="font-bold text-md mb-3"><i class="fa-solid fa-square-plus mr-1 text-red-600"></i> Aggiungi Piazza/Largo</h3>
+                            <div class="space-y-3">
+                                <select id="new-piazza-type" class="w-full px-3 py-2 border rounded-lg text-sm bg-white font-semibold">
+                                    <option value="Piazza">Piazza</option>
+                                    <option value="Piazzale">Piazzale</option>
+                                    <option value="Largo">Largo</option>
+                                </select>
+                                <input type="text" id="new-piazza-name" placeholder="Nome esatto" class="w-full px-3 py-2 border rounded-lg text-sm">
+                                <textarea id="new-piazza-confluences" placeholder="Confluenze separate da virgola (in senso antiorario)" class="w-full px-3 py-2 border rounded-lg text-sm h-24"></textarea>
+                                <button onclick="addNewPiazza()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-lg text-sm transition">Salva Nuovo</button>
+                            </div>
+                        </div>
+
+                        <!-- Modifica / Rimuovi & Rotazione Inizio -->
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-4">
+                            <div>
+                                <h3 class="font-bold text-md mb-3"><i class="fa-solid fa-pen-to-square mr-1 text-red-600"></i> Modifica / Rimuovi</h3>
+                                <div class="space-y-3">
+                                    <select id="admin-piazza-select" onchange="loadAdminPiazzaData()" class="w-full px-3 py-2 border rounded-lg text-sm bg-white"></select>
+                                    <select id="edit-piazza-type" class="w-full px-3 py-2 border rounded-lg text-sm bg-white font-semibold">
+                                        <option value="Piazza">Piazza</option>
+                                        <option value="Piazzale">Piazzale</option>
+                                        <option value="Largo">Largo</option>
+                                    </select>
+                                    <input type="text" id="edit-piazza-name" placeholder="Nome" class="w-full px-3 py-2 border rounded-lg text-sm">
+                                    <textarea id="edit-piazza-confluences" placeholder="Confluenze separate da virgola" class="w-full px-3 py-2 border rounded-lg text-sm h-16"></textarea>
+                                    <div class="flex gap-2">
+                                        <button onclick="updatePiazza()" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded-lg text-sm transition">Aggiorna</button>
+                                        <button onclick="deletePiazza()" class="px-3 bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-lg text-sm transition"><i class="fa-solid fa-trash"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sposta Via di Partenza (Inizio Antiorario) -->
+                            <div class="border-t border-slate-200 pt-3">
+                                <h3 class="font-bold text-sm mb-2 text-slate-800"><i class="fa-solid fa-compass mr-1 text-amber-600"></i> Imposta Via di Partenza (In alto)</h3>
+                                <p class="text-[11px] text-slate-500 mb-2">Seleziona quale via deve essere quella fissa di riferimento (ore 12:00) e adatta l'ordine antiorario.</p>
+                                <div class="space-y-2">
+                                    <select id="admin-rotation-street" class="w-full px-3 py-2 border rounded-lg text-xs bg-white font-semibold"></select>
+                                    <button onclick="applyStreetRotation()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-lg text-xs transition">Imposta come Prima Via (In alto)</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Destinazione Confluenze, Password & Altri Strumenti Admin -->
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-4">
+                            <div>
+                                <h3 class="font-bold text-md mb-2"><i class="fa-solid fa-comment-dots mr-1 text-red-600"></i> Destinazione Confluenze</h3>
+                                <div class="space-y-2">
+                                    <div>
+                                        <label class="block text-[10px] uppercase font-bold text-slate-600 mb-0.5">Seleziona Piazza</label>
+                                        <select id="admin-custom-piazza" onchange="populateAdminStreets()" class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white"></select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] uppercase font-bold text-slate-600 mb-0.5">Seleziona Confluenza</label>
+                                        <select id="admin-custom-street" onchange="loadCustomStreetText()" class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white"></select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] uppercase font-bold text-slate-600 mb-0.5">Testo Personalizzato Info</label>
+                                        <textarea id="admin-custom-text" placeholder="Es. La via X confluisce a nord..." class="w-full px-3 py-1.5 border rounded-lg text-xs h-16 bg-white"></textarea>
+                                    </div>
+                                    <button onclick="saveCustomStreetDescription()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded-lg text-xs transition">Salva Testo Info</button>
+                                </div>
+                            </div>
+
+                            <!-- Gestione Password -->
+                            <div class="border-t border-slate-200 pt-3">
+                                <h3 class="font-bold text-sm mb-2"><i class="fa-solid fa-key mr-1 text-red-600"></i> Modifica Password</h3>
+                                <div class="space-y-2">
+                                    <div>
+                                        <label class="block text-[10px] uppercase font-bold text-slate-600 mb-0.5">Nuova Password Utente</label>
+                                        <input type="text" id="admin-new-user-pwd" placeholder="Nuova password utente..." class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] uppercase font-bold text-slate-600 mb-0.5">Nuova Password Admin</label>
+                                        <input type="text" id="admin-new-admin-pwd" placeholder="Nuova password admin..." class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white">
+                                    </div>
+                                    <button onclick="updatePasswords()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-1.5 rounded-lg text-xs transition">Aggiorna Password</button>
+                                </div>
+                            </div>
+
+                            <div class="border-t border-slate-200 pt-3">
+                                <h3 class="font-bold text-sm mb-2"><i class="fa-solid fa-rotate-right mr-1 text-red-600"></i> Sincronizzazione Cloud</h3>
+                                <p class="text-[11px] text-slate-500 mb-2">Ricarica i dati aggiornati direttamente dal file <code>db.json</code> online.</p>
+                                <button onclick="loadCloudDatabase()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded-lg text-xs transition shadow">Forza Aggiornamento da Cloud</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        let userPwd = localStorage.getItem("milan_user_pwd") || "milano2026";
+        let adminPwd = localStorage.getItem("milan_admin_pwd") || "admin_taxi_2026";
+        let customDescriptions = JSON.parse(localStorage.getItem("milan_custom_descriptions")) || {};
+        let isAdmin = false;
+        let isAlphaSorted = false;
+        let selectedStreetForTap = null;
+
+        const defaultPiazze = [
+            { id: 1, type: "Piazza", name: "Duomo", confluences: ["Via Orefici", "Via Mazzini", "Corso Vittorio Emanuele II", "Via Torino", "Via Santa Radegonda", "Via Ugo Foscolo", "Piazza Armando Diaz"] },
+            { id: 2, type: "Piazza", name: "Cordusio", confluences: ["Via Mercanti", "Via Broletto", "Via San Protaso", "Via Orefici", "Via San Giovanni sul Muro", "Via Dante", "Via Meravigli"] },
+            { id: 3, type: "Piazzale", name: "Loreto", confluences: ["Corso Buenos Aires", "Viale Abruzzi", "Viale Monza", "Via Andrea Doria", "Viale Brianza", "Via Leoncavallo", "Via Padova"] },
+            { id: 4, type: "Piazza", name: "San Babila", confluences: ["Corso Vittorio Emanuele II", "Corso Venezia", "Corso Monforte", "Via Durini", "Galleria Passarella", "Via Borgogna", "Corso Europa"] },
+            { id: 5, type: "Piazza", name: "Cinque Giornate", confluences: ["Corso di Porta Vittoria", "Viale Regina Margherita", "Viale Umbria", "Corso XXII Marzo", "Via Bronzetti", "Viale Piceno"] },
+            { id: 6, type: "Piazzale", name: "Luigi Cadorna", confluences: ["Via Giosuè Carducci", "Foro Buonaparte", "Via Boccaccio", "Via San Giovanni sul Muro", "Via de Togni", "Via Monti"] },
+            { id: 7, type: "Piazza", name: "della Repubblica", confluences: ["Viale Tunisia", "Via Vittor Pisani", "Corso di Porta Nuova", "Via Turati", "Viale Monte Santo"] },
+            { id: 8, type: "Piazzale", name: "di Porta Lodovica", confluences: ["Corso Italia", "Viale Beatrice d'Este", "Viale Bligny", "Viale Col di Lana", "Viale Tibaldi"] },
+            { id: 9, type: "Piazzale", name: "di Porta Romana", confluences: ["Corso di Porta Romana", "Viale Sabotino", "Viale Filippetti", "Viale Monte Nero", "Via Friuli", "Corso Lodi"] },
+            { id: 10, type: "Piazza", name: "XXIV Maggio", confluences: ["Corso di Porta Ticinese", "Corso San Gottardo", "Viale Col di Lana", "Viale Gian Galeazzo", "Via Gorizia", "Alzaia Naviglio Pavese", "Ripa di Porta Ticinese"] }
+        ];
+
+        let piazzeData = JSON.parse(localStorage.getItem("milan_piazze_data_full")) || defaultPiazze;
+        let poolSortable = null;
+        let slotSortables = [];
+
+        // All'avvio, prova a scaricare automaticamente il db.json aggiornato da GitHub
+        async function loadCloudDatabase() {
+            try {
+                const response = await fetch('db.json?' + new Date().getTime()); // Evita la cache del browser
+                if (response.ok) {
+                    const data = await response.json();
+                    if (Array.isArray(data)) {
+                        piazzeData = data;
+                    } else if (data && typeof data === 'object' && Array.isArray(data.piazze)) {
+                        piazzeData = data.piazze;
+                        if (data.customDescriptions) {
+                            customDescriptions = data.customDescriptions;
+                        }
+                    }
+                    saveData();
+                    console.log("Database cloud caricato con successo!");
+                }
+            } catch (err) {
+                console.log("Uso database in memoria locale (file db.json non trovato online).");
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem("milan_piazze_data_full", JSON.stringify(piazzeData));
+            localStorage.setItem("milan_custom_descriptions", JSON.stringify(customDescriptions));
+            localStorage.setItem("milan_user_pwd", userPwd);
+            localStorage.setItem("milan_admin_pwd", adminPwd);
+        }
+
+        function handleLogin(forceAdmin) {
+            const pwd = document.getElementById("login-pwd").value;
+            const err = document.getElementById("login-error");
+            if (forceAdmin) {
+                if (pwd === adminPwd) {
+                    isAdmin = true;
+                    document.getElementById("btn-admin").classList.remove("hidden");
+                    initApp();
+                } else {
+                    err.textContent = "Password Admin errata.";
+                    err.classList.remove("hidden");
+                }
+            } else {
+                if (pwd === userPwd || pwd === adminPwd) {
+                    if (pwd === adminPwd) {
+                        isAdmin = true;
+                        document.getElementById("btn-admin").classList.remove("hidden");
+                    }
+                    initApp();
+                } else {
+                    err.textContent = "Password errata.";
+                    err.classList.remove("hidden");
+                }
+            }
+        }
+
+        function logoutApp() {
+            isAdmin = false;
+            document.getElementById("app-container").classList.add("hidden");
+            document.getElementById("login-screen").classList.remove("hidden");
+            document.getElementById("login-pwd").value = "";
+            document.getElementById("login-error").classList.add("hidden");
+            document.getElementById("btn-admin").classList.add("hidden");
+        }
+
+        function initApp() {
+            document.getElementById("login-screen").classList.add("hidden");
+            document.getElementById("app-container").classList.remove("hidden");
+            document.getElementById("total-count").textContent = piazzeData.length;
+            document.getElementById("header-total-badge").textContent = `Elementi attivi: ${piazzeData.length}`;
+            renderEncyclopedia();
+            populateExerciseSelect();
+            populateAdminSelect();
+        }
+
+        function switchTab(tab) {
+            ['enciclopedia', 'esercizio', 'admin'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add("hidden");
+                document.getElementById(`btn-${t}`).classList.remove("bg-amber-500", "bg-red-600");
+                document.getElementById(`btn-${t}`).classList.add("bg-slate-800");
+            });
+            document.getElementById(`tab-${tab}`).classList.remove("hidden");
+            const activeBtn = document.getElementById(`btn-${tab}`);
+            activeBtn.classList.remove("bg-slate-800");
+            if(tab === 'admin') activeBtn.classList.add("bg-red-600");
+            else activeBtn.classList.add("bg-amber-500");
+
+            if(tab === 'esercizio') {
+                loadExercise();
+                document.addEventListener("click", handleOutsideClick);
+            } else {
+                document.removeEventListener("click", handleOutsideClick);
+            }
+            if(tab === 'admin') {
+                populateAdminSelect();
+                document.getElementById("admin-new-user-pwd").value = userPwd;
+                document.getElementById("admin-new-admin-pwd").value = adminPwd;
+            }
+        }
+
+        function handleOutsideClick(e) {
+            const container = document.getElementById("exercise-search-input");
+            const suggestions = document.getElementById("exercise-suggestions");
+            if (container && suggestions && !container.contains(e.target) && !suggestions.contains(e.target)) {
+                suggestions.classList.add("hidden");
+            }
+        }
+
+        function toggleAlphabeticalSort() {
+            isAlphaSorted = !isAlphaSorted;
+            const btn = document.getElementById("sort-alpha-btn");
+            if (isAlphaSorted) {
+                btn.className = "px-3 py-2 bg-amber-500 text-white rounded-lg text-sm font-bold transition flex items-center shadow";
+                btn.innerHTML = `<i class="fa-solid fa-arrow-up-a-z mr-1"></i> Ordinato A-Z`;
+            } else {
+                btn.className = "px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-bold border border-slate-300 transition flex items-center";
+                btn.innerHTML = `<i class="fa-solid fa-arrow-down-a-z mr-1 text-amber-600"></i> Ordina A-Z`;
+            }
+            renderEncyclopedia();
+        }
+
+        function renderEncyclopedia() {
+            const query = document.getElementById("search-piazza").value.toLowerCase();
+            const listContainer = document.getElementById("encyclopedia-list");
+            listContainer.innerHTML = "";
+
+            let filtered = piazzeData.filter(p => {
+                const matchName = `${p.type} ${p.name}`.toLowerCase().includes(query);
+                const matchConfluence = p.confluences.some(c => c.toLowerCase().includes(query));
+                return matchName || matchConfluence;
+            });
+            
+            if (isAlphaSorted) {
+                filtered.sort((a, b) => a.name.localeCompare(b.name));
+            }
+
+            if(filtered.length === 0) {
+                listContainer.innerHTML = `<p class="text-slate-400 col-span-full text-center py-6">Nessun risultato trovato.</p>`;
+                return;
+            }
+
+            filtered.forEach(p => {
+                let confluencesHtml = p.confluences.map(c => `
+                    <li onclick="showStreetDetails('${c}', '${p.type} ${p.name}')" class="py-1.5 px-2.5 bg-slate-50 hover:bg-amber-100 rounded border border-slate-200/80 flex justify-between items-center text-sm cursor-pointer transition group">
+                        <span class="text-slate-700 font-medium group-hover:text-amber-900"><i class="fa-solid fa-arrow-right text-amber-500 mr-2 text-xs"></i> ${c}</span>
+                        <span class="text-xs text-amber-600 font-bold underline whitespace-nowrap ml-2">Info</span>
+                    </li>
+                `).join('');
+
+                let badgeColor = 'bg-amber-100 text-amber-800';
+                if(p.type === 'Piazzale') badgeColor = 'bg-purple-100 text-purple-800';
+                if(p.type === 'Largo') badgeColor = 'bg-blue-100 text-blue-800';
+
+                const card = document.createElement("div");
+                card.className = "bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded ${badgeColor}">${p.type}</span>
+                            <span class="text-xs text-slate-400 font-medium">${p.confluences.length} confluenze</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-900 mb-3">${p.name}</h3>
+                        <ul class="space-y-1.5 max-h-40 overflow-y-auto pr-1">${confluencesHtml}</ul>
+                    </div>
+                `;
+                listContainer.appendChild(card);
+            });
+        }
+
+        function showStreetDetails(streetName, piazzaFullName) {
+            const infoBox = document.getElementById("street-destination-info");
+            const destText = document.getElementById("street-dest-text");
+            const key = `${piazzaFullName}_${streetName}`;
+            
+            if (customDescriptions[key]) {
+                destText.textContent = customDescriptions[key];
+            } else {
+                destText.textContent = `La via "${streetName}" confluisce direttamente su ${piazzaFullName}.`;
+            }
+            
+            infoBox.classList.remove("hidden");
+            infoBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function closeStreetInfo() {
+            document.getElementById("street-destination-info").classList.add("hidden");
+        }
+
+        function populateExerciseSelect() {
+            const select = document.getElementById("exercise-select");
+            select.innerHTML = "";
+            let sortedPiazze = [...piazzeData].sort((a, b) => a.name.localeCompare(b.name));
+            sortedPiazze.forEach((p) => {
+                const originalIndex = piazzeData.findIndex(item => item.id === p.id);
+                const opt = document.createElement("option");
+                opt.value = originalIndex;
+                opt.textContent = `${p.type} ${p.name} (${p.confluences.length} vie)`;
+                select.appendChild(opt);
+            });
+        }
+
+        function filterExerciseDropdown() {
+            const query = document.getElementById("exercise-search-input").value.toLowerCase().trim();
+            const suggestionsBox = document.getElementById("exercise-suggestions");
+            suggestionsBox.innerHTML = "";
+
+            if (!query) {
+                suggestionsBox.classList.add("hidden");
+                return;
+            }
+
+            let matches = [];
+            piazzeData.forEach((p, index) => {
+                const fullName = `${p.type} ${p.name}`.toLowerCase();
+                if (fullName.includes(query)) {
+                    matches.push({ index, text: `${p.type} ${p.name}`, count: p.confluences.length });
+                }
+            });
+
+            if (matches.length === 0) {
+                suggestionsBox.classList.add("hidden");
+                return;
+            }
+
+            matches.forEach(m => {
+                const div = document.createElement("div");
+                div.className = "px-3 py-2 hover:bg-amber-50 cursor-pointer text-xs font-semibold text-slate-700 border-b border-slate-100 flex justify-between items-center";
+                div.innerHTML = `<span>${m.text}</span> <span class="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">${m.count} vie</span>`;
+                div.onmousedown = function() {
+                    document.getElementById("exercise-select").value = m.index;
+                    document.getElementById("exercise-search-input").value = m.text;
+                    suggestionsBox.classList.add("hidden");
+                    loadExercise();
+                };
+                suggestionsBox.appendChild(div);
+            });
+
+            suggestionsBox.classList.remove("hidden");
+        }
+
+        let currentCorrectOrder = [];
+
+        function loadExercise() {
+            selectedStreetForTap = null;
+            const index = document.getElementById("exercise-select").value;
+            const piazza = piazzeData[index];
+            if (!piazza || piazza.confluences.length === 0) return;
+
+            const searchInput = document.getElementById("exercise-search-input");
+            if (searchInput && document.activeElement !== searchInput) {
+                searchInput.value = `${piazza.type} ${piazza.name}`;
+            }
+            const suggestionsBox = document.getElementById("exercise-suggestions");
+            if (suggestionsBox) suggestionsBox.classList.add("hidden");
+
+            document.getElementById("ex-square-type").textContent = piazza.type;
+            document.getElementById("ex-square-title").textContent = piazza.name;
+            currentCorrectOrder = [...piazza.confluences];
+
+            const totalNodes = currentCorrectOrder.length;
+            const remaining = currentCorrectOrder.slice(1);
+            shuffleArray(remaining);
+
+            const sourcePool = document.getElementById("source-pool");
+            sourcePool.innerHTML = "";
+            document.getElementById("exercise-feedback").innerHTML = "";
+
+            remaining.forEach((street) => {
+                sourcePool.appendChild(createStreetCard(street));
+            });
+
+            const mapSlotsContainer = document.getElementById("map-slots-container");
+            mapSlotsContainer.innerHTML = "";
+
+            const baseRadius = 180;
+            const radius = Math.max(baseRadius, 135 + (totalNodes * 12)); 
+            const containerSize = (radius * 2) + 140;
+            
+            const orbitContainer = document.querySelector(".orbit-container");
+            orbitContainer.style.width = `${containerSize}px`;
+            orbitContainer.style.height = `${containerSize}px`;
+
+            const centerX = containerSize / 2;
+            const centerY = containerSize / 2;
+
+            for (let i = 0; i < totalNodes; i++) {
+                const angle = - (i * 2 * Math.PI) / totalNodes - Math.PI / 2;
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+
+                const slot = document.createElement("div");
+                slot.className = "orbit-slot p-1.5 bg-slate-800/95 border border-slate-600 rounded-lg flex flex-col justify-center text-[10px] font-semibold text-white shadow-xl";
+                slot.style.left = `${x}px`;
+                slot.style.top = `${y}px`;
+                slot.setAttribute("data-index", i);
+
+                slot.onclick = function() {
+                    handleSlotTap(slot);
+                };
+
+                if (i === 0) {
+                    slot.classList.add("border-amber-500", "bg-amber-950/90");
+                    slot.innerHTML = `
+                        <span class="text-[8px] uppercase font-bold text-amber-400 block leading-none mb-0.5">Rif. (#1)</span>
+                        <span class="text-[10px] font-bold text-white block leading-tight break-words">${currentCorrectOrder[0]}</span>
+                    `;
+                } else {
+                    slot.classList.add("slot-item");
+                    slot.innerHTML = `
+                        <div class="slot-placeholder flex items-center justify-between pointer-events-none mb-0.5">
+                            <span class="text-slate-400 italic text-[9px]"><i class="fa-solid fa-arrow-down text-[8px] mr-0.5"></i> Via #${i + 1}</span>
+                            <span class="text-[8px] bg-slate-900 text-amber-400 px-1 py-0.2 rounded border border-amber-500/30 ml-1">#${i + 1}</span>
+                        </div>
+                    `;
+                }
+                mapSlotsContainer.appendChild(slot);
+            }
+
+            updatePoolCount();
+            initDragAndDrop();
+        }
+
+        function createStreetCard(streetName) {
+            const item = document.createElement("div");
+            item.className = "street-card p-2 bg-white border border-slate-200 rounded-lg shadow-sm flex items-center justify-between hover:border-amber-500 transition text-[10px] font-medium text-slate-700 w-full";
+            item.setAttribute("data-name", streetName);
+            item.innerHTML = `
+                <span class="flex items-center mr-1 overflow-hidden pointer-events-none"><i class="fa-solid fa-grip-vertical text-slate-400 mr-1.5 text-[9px] flex-shrink-0"></i> <span class="break-words">${streetName}</span></span>
+                <span class="text-[8px] bg-amber-50 text-amber-700 px-1 py-0.2 rounded font-semibold border border-amber-200 whitespace-nowrap flex-shrink-0 pointer-events-none">Via</span>
+            `;
+
+            item.onclick = function(e) {
+                e.stopPropagation();
+                selectStreetForTap(item);
+            };
+
+            return item;
+        }
+
+        function selectStreetForTap(cardElement) {
+            document.querySelectorAll(".street-card").forEach(c => c.classList.remove("selected-for-tap"));
+            if (selectedStreetForTap === cardElement) {
+                selectedStreetForTap = null;
+            } else {
+                selectedStreetForTap = cardElement;
+                cardElement.classList.add("selected-for-tap");
+            }
+        }
+
+        function handleSlotTap(slotElement) {
+            if (slotElement.getAttribute("data-index") === "0") return;
+
+            if (selectedStreetForTap) {
+                const existingCard = slotElement.querySelector(".street-card");
+                const sourcePool = document.getElementById("source-pool");
+                if (existingCard) {
+                    sourcePool.appendChild(existingCard);
+                }
+
+                slotElement.appendChild(selectedStreetForTap);
+                selectedStreetForTap.className = "street-card p-1.5 bg-slate-800 border border-amber-500/80 rounded shadow-sm flex items-center justify-between text-white font-semibold text-[10px] w-full";
+                
+                const placeholder = slotElement.querySelector('.slot-placeholder');
+                if (placeholder) placeholder.style.display = 'none';
+
+                selectedStreetForTap.classList.remove("selected-for-tap");
+                selectedStreetForTap = null;
+                updatePoolCount();
+            } else {
+                const existingCard = slotElement.querySelector(".street-card");
+                if (existingCard) {
+                    const sourcePool = document.getElementById("source-pool");
+                    sourcePool.appendChild(existingCard);
+                    existingCard.className = "street-card p-2 bg-white border border-slate-200 rounded-lg shadow-sm flex items-center justify-between hover:border-amber-500 transition text-[10px] font-medium text-slate-700 w-full";
+                    
+                    const placeholder = slotElement.querySelector('.slot-placeholder');
+                    if (placeholder) placeholder.style.display = 'flex';
+                    updatePoolCount();
+                }
+            }
+        }
+
+        function initDragAndDrop() {
+            if (poolSortable) poolSortable.destroy();
+            slotSortables.forEach(s => s.destroy());
+            slotSortables = [];
+
+            const sourcePool = document.getElementById("source-pool");
+            poolSortable = Sortable.create(sourcePool, {
+                group: 'shared-streets',
+                animation: 150,
+                forceFallback: true,
+                fallbackClass: 'sortable-fallback',
+                onAdd: updatePoolCount,
+                onRemove: updatePoolCount
+            });
+
+            const slots = document.querySelectorAll(".slot-item");
+            slots.forEach(slot => {
+                const s = Sortable.create(slot, {
+                    group: 'shared-streets',
+                    animation: 150,
+                    forceFallback: true,
+                    fallbackClass: 'sortable-fallback',
+                    put: function (to) {
+                        return to.el.querySelectorAll('.street-card').length === 0;
+                    },
+                    onAdd: function (evt) {
+                        const card = evt.item;
+                        card.className = "street-card p-1.5 bg-slate-800 border border-amber-500/80 rounded shadow-sm flex items-center justify-between text-white font-semibold text-[10px] w-full";
+                        
+                        const placeholder = slot.querySelector('.slot-placeholder');
+                        if (placeholder) placeholder.style.display = 'none';
+                        updatePoolCount();
+                    },
+                    onRemove: function (evt) {
+                        const slotEl = evt.from;
+                        if (slotEl.querySelectorAll('.street-card').length === 0) {
+                            const placeholder = slotEl.querySelector('.slot-placeholder');
+                            if (placeholder) placeholder.style.display = 'flex';
+                        }
+                        updatePoolCount();
+                    }
+                });
+                slotSortables.push(s);
+            });
+        }
+
+        function updatePoolCount() {
+            const count = document.getElementById("source-pool").children.length;
+            document.getElementById("pool-count").textContent = count;
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function verifyExercise() {
+            const slots = document.querySelectorAll(".orbit-slot");
+            let allFilled = true;
+            let allCorrect = true;
+
+            slots.forEach((slot, idx) => {
+                if (idx === 0) return;
+
+                const card = slot.querySelector(".street-card");
+                if (!card) {
+                    allFilled = false;
+                    slot.classList.add("border-red-500");
+                } else {
+                    slot.classList.remove("border-red-500");
+                    const streetName = card.getAttribute("data-name");
+
+                    if (streetName === currentCorrectOrder[idx]) {
+                        card.className = "street-card p-1.5 bg-emerald-950/90 border border-emerald-500 rounded shadow-sm flex items-center justify-between text-emerald-200 font-semibold text-[10px] w-full";
+                    } else {
+                        card.className = "street-card p-1.5 bg-red-950/90 border border-red-500 rounded shadow-sm flex items-center justify-between text-red-200 font-semibold text-[10px] w-full";
+                        allCorrect = false;
+                    }
+                }
+            });
+
+            const feedback = document.getElementById("exercise-feedback");
+            if (!allFilled) {
+                feedback.innerHTML = `<span class="text-amber-600 bg-amber-50 border border-amber-200 px-4 py-2 rounded-lg inline-block text-xs sm:text-sm"><i class="fa-solid fa-triangle-exclamation mr-2"></i> Riempi tutti i riquadri attorno alla piazza prima di verificare.</span>`;
+                return;
+            }
+
+            if (allCorrect) {
+                feedback.innerHTML = `<span class="text-emerald-600 bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-lg inline-block text-xs sm:text-sm"><i class="fa-solid fa-circle-check mr-2"></i> Sequenza corretta!</span>`;
+            } else {
+                feedback.innerHTML = `<span class="text-red-600 bg-red-50 border border-red-200 px-4 py-2 rounded-lg inline-block text-xs sm:text-sm"><i class="fa-solid fa-circle-xmark mr-2"></i> Alcune posizioni attorno alla piazza sono errate (in rosso).</span>`;
+            }
+        }
+
+        function showExerciseSolution() {
+            const slots = document.querySelectorAll(".orbit-slot");
+            slots.forEach((slot, idx) => {
+                if (idx === 0) return;
+                slot.innerHTML = "";
+                const correctStreet = currentCorrectOrder[idx];
+                const card = document.createElement("div");
+                card.className = "street-card p-1.5 bg-emerald-950/95 border border-emerald-500 rounded shadow flex items-center justify-between text-emerald-200 font-semibold text-[10px] w-full";
+                card.setAttribute("data-name", correctStreet);
+                card.innerHTML = `<span class="mr-1 break-words"><i class="fa-solid fa-check text-emerald-400 mr-1 text-[9px]"></i> ${correctStreet}</span><span class="text-[8px] bg-emerald-900 px-1 py-0.2 rounded whitespace-nowrap flex-shrink-0">#${idx + 1}</span>`;
+                slot.appendChild(card);
+            });
+            document.getElementById("source-pool").innerHTML = "";
+            updatePoolCount();
+            document.getElementById("exercise-feedback").innerHTML = `<span class="text-amber-700 bg-amber-50 border border-amber-200 px-4 py-2 rounded-lg inline-block text-xs sm:text-sm">Soluzione mostrata.</span>`;
+        }
+
+        function populateAdminSelect() {
+            let sortedPiazze = [...piazzeData].sort((a, b) => a.name.localeCompare(b.name));
+
+            const select = document.getElementById("admin-piazza-select");
+            select.innerHTML = "";
+            sortedPiazze.forEach((p) => {
+                const originalIndex = piazzeData.findIndex(item => item.id === p.id);
+                const opt = document.createElement("option");
+                opt.value = originalIndex;
+                opt.textContent = `${p.type} ${p.name}`;
+                select.appendChild(opt);
+            });
+            loadAdminPiazzaData();
+
+            const customPiazzaSelect = document.getElementById("admin-custom-piazza");
+            customPiazzaSelect.innerHTML = "";
+            sortedPiazze.forEach((p) => {
+                const originalIndex = piazzeData.findIndex(item => item.id === p.id);
+                const opt = document.createElement("option");
+                opt.value = originalIndex;
+                opt.textContent = `${p.type} ${p.name}`;
+                customPiazzaSelect.appendChild(opt);
+            });
+            populateAdminStreets();
+        }
+
+        function populateAdminStreets() {
+            const piazzaIndex = document.getElementById("admin-custom-piazza").value;
+            const piazza = piazzeData[piazzaIndex];
+            const streetSelect = document.getElementById("admin-custom-street");
+            streetSelect.innerHTML = "";
+            if(piazza && piazza.confluences) {
+                piazza.confluences.forEach(c => {
+                    const opt = document.createElement("option");
+                    opt.value = c;
+                    opt.textContent = c;
+                    streetSelect.appendChild(opt);
+                });
+            }
+            loadCustomStreetText();
+        }
+
+        function loadCustomStreetText() {
+            const piazzaIndex = document.getElementById("admin-custom-piazza").value;
+            const piazza = piazzeData[piazzaIndex];
+            const street = document.getElementById("admin-custom-street").value;
+            const textArea = document.getElementById("admin-custom-text");
+            if(piazza && street) {
+                const fullName = `${piazza.type} ${piazza.name}`;
+                const key = `${fullName}_${street}`;
+                textArea.value = customDescriptions[key] || `La via "${street}" confluisce direttamente su ${fullName}.`;
+            } else {
+                textArea.value = "";
+            }
+        }
+
+        function saveCustomStreetDescription() {
+            const piazzaIndex = document.getElementById("admin-custom-piazza").value;
+            const piazza = piazzeData[piazzaIndex];
+            const street = document.getElementById("admin-custom-street").value;
+            const textAreaVal = document.getElementById("admin-custom-text").value.trim();
+            if(piazza && street) {
+                const fullName = `${piazza.type} ${piazza.name}`;
+                const key = `${fullName}_${street}`;
+                if(textAreaVal) {
+                    customDescriptions[key] = textAreaVal;
+                } else {
+                    delete customDescriptions[key];
+                }
+                saveData();
+                alert("Testo info confluenza aggiornato con successo!");
+            }
+        }
+
+        function updatePasswords() {
+            const newUserPwd = document.getElementById("admin-new-user-pwd").value.trim();
+            const newAdminPwd = document.getElementById("admin-new-admin-pwd").value.trim();
+            if (!newUserPwd || !newAdminPwd) {
+                alert("Le password non possono essere vuote!");
+                return;
+            }
+            userPwd = newUserPwd;
+            adminPwd = newAdminPwd;
+            saveData();
+            alert("Password aggiornate con successo!");
+        }
+
+        function loadAdminPiazzaData() {
+            const index = document.getElementById("admin-piazza-select").value;
+            const piazza = piazzeData[index];
+            if(piazza) {
+                document.getElementById("edit-piazza-type").value = piazza.type;
+                document.getElementById("edit-piazza-name").value = piazza.name;
+                document.getElementById("edit-piazza-confluences").value = piazza.confluences.join(", ");
+                
+                const rotSelect = document.getElementById("admin-rotation-street");
+                rotSelect.innerHTML = "";
+                piazza.confluences.forEach(c => {
+                    const opt = document.createElement("option");
+                    opt.value = c;
+                    opt.textContent = c;
+                    rotSelect.appendChild(opt);
+                });
+            }
+        }
+
+        function applyStreetRotation() {
+            const index = document.getElementById("admin-piazza-select").value;
+            const targetStreet = document.getElementById("admin-rotation-street").value;
+            const piazza = piazzeData[index];
+            if (!piazza) return;
+
+            const streetIndex = piazza.confluences.indexOf(targetStreet);
+            if (streetIndex === -1) return;
+
+            const rotated = [...piazza.confluences.slice(streetIndex), ...piazza.confluences.slice(0, streetIndex)];
+            piazza.confluences = rotated;
+
+            saveData();
+            loadAdminPiazzaData();
+            alert(`Fatto! "${targetStreet}" è ora impostata come prima via di riferimento (in alto).`);
+        }
+
+        function addNewPiazza() {
+            const type = document.getElementById("new-piazza-type").value;
+            const name = document.getElementById("new-piazza-name").value.trim();
+            const confluencesStr = document.getElementById("new-piazza-confluences").value.trim();
+            if(!name || !confluencesStr) { alert("Compila tutti i campi!"); return; }
+            const confluences = confluencesStr.split(",").map(s => s.trim()).filter(s => s.length > 0);
+            piazzeData.push({ id: Date.now(), type, name, confluences });
+            saveData();
+            document.getElementById("new-piazza-name").value = "";
+            document.getElementById("new-piazza-confluences").value = "";
+            initApp();
+            alert("Aggiunto!");
+        }
+
+        function updatePiazza() {
+            const index = document.getElementById("admin-piazza-select").value;
+            const type = document.getElementById("edit-piazza-type").value;
+            const name = document.getElementById("edit-piazza-name").value.trim();
+            const confluencesStr = document.getElementById("edit-piazza-confluences").value.trim();
+            if(!name || !confluencesStr) { alert("Compila tutti i campi!"); return; }
+            const confluences = confluencesStr.split(",").map(s => s.trim()).filter(s => s.length > 0);
+            piazzeData[index] = { ...piazzeData[index], type, name, confluences };
+            saveData();
+            initApp();
+            alert("Aggiornato!");
+        }
+
+        function deletePiazza() {
+            const selectIndex = document.getElementById("admin-piazza-select").value;
+            if(confirm("Eliminare?")) {
+                piazzeData.splice(selectIndex, 1);
+                saveData();
+                initApp();
+                alert("Eliminato.");
+            }
+        }
+
+        function exportJSON() {
+            const exportData = {
+                piazze: piazzeData,
+                customDescriptions: customDescriptions
+            };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", "db.json");
+            dlAnchorElem.click();
+        }
+
+        // Avvio automatico: carica prima dal cloud (db.json) e poi avvia l'app
+        window.onload = async function() {
+            await loadCloudDatabase();
+        };
+    </script>
+</body>
+</html>
