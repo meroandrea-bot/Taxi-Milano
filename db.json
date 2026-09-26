@@ -26,13 +26,14 @@
       "type": "Piazza",
       "name": "Cordusio",
       "confluences": [
-        "Via Mercanti",
-        "Via Broletto",
-        "Via San Protaso",
-        "Via Orefici",
-        "Via San Giovanni sul Muro",
         "Via Dante",
-        "Via Meravigli"
+        "Via Meravigli",
+        "Via Dante",
+        "Via Cordusio",
+        "Via Orefici",
+        "Via Mercanti",
+        "Via Tommaso Grossi",
+        "Via Broletto"
       ]
     },
     {
@@ -68,12 +69,12 @@
       "type": "Piazza",
       "name": "Cinque Giornate",
       "confluences": [
-        "Corso di Porta Vittoria",
+        "Viale Bianca Maria",
+        "Corso Di porta Vittoria",
         "Viale Regina Margherita",
-        "Viale Umbria",
+        "Viale Monte Nero",
         "Corso XXII Marzo",
-        "Via Bronzetti",
-        "Viale Piceno"
+        "Viale Premuda"
       ]
     },
     {
@@ -94,12 +95,19 @@
       "type": "Piazza",
       "name": "della Repubblica",
       "confluences": [
-        "Viale Tunisia",
         "Via Vittor Pisani",
-        "Corso di Porta Nuova",
-        "Via Turati",
+        "Via Ferdinando di Savoia",
+        "Via Cartesio",
+        "Via Marco Polo",
         "Viale Monte Santo",
-        "Via Repubblica"
+        "Via Parini",
+        "Via Turati",
+        "Via Tarchetti",
+        "Via città di fiume",
+        "Viale Vittorio Veneto",
+        "Via Panfilo Castaldi",
+        "Via Finocchiaro Aprile",
+        "Viale Tunisia"
       ]
     },
     {
@@ -181,13 +189,12 @@
     {
       "id": 14,
       "type": "Piazza",
-      "name": "degli Affari",
+      "name": "Affari",
       "confluences": [
-        "Via Meravigli",
-        "Via San Maurilio",
+        "Via Gaetano Negri",
+        "Via San Vittore al Teatro",
         "Via Santa Maria Fulcorina",
-        "Via Bossi",
-        "Via San Protaso"
+        "Via della Posta"
       ]
     },
     {
@@ -205,14 +212,18 @@
     },
     {
       "id": 16,
-      "type": "Piazza",
+      "type": "Largo",
       "name": "Cairoli",
       "confluences": [
-        "Foro Buonaparte",
+        "Foro Buonaparte Pari",
+        "Via Beltrami",
+        "Foro Bonaparte Dispari",
+        "Largo Maria Callas",
+        "Via San Giovanni sul Muro",
+        "Via Camperio",
         "Via Dante",
-        "Via Ricasoli",
-        "Via Cusani",
-        "Via Beltrami"
+        "Via Pozzone",
+        "Via Cusani"
       ]
     },
     {
@@ -232,12 +243,12 @@
       "type": "Piazzale",
       "name": "Dateo",
       "confluences": [
+        "Viale de Mille",
+        "Via Uberti",
+        "Corso Indipendenza",
+        "Via Poma",
         "Viale Piceno",
-        "Viale Gran Sasso",
-        "Corso Plebisciti",
-        "Viale Umbria",
-        "Viale dei Mille",
-        "Viale Argonne"
+        "Corso Plebisciti"
       ]
     },
     {
@@ -268,11 +279,14 @@
       "type": "Piazza",
       "name": "Aspromonte",
       "confluences": [
+        "Via Sacchini",
+        "Via Giovanni Ricordi",
         "Via Pecchio",
-        "Via Leoncavallo",
-        "Via Bassini",
-        "Via Botticelli",
-        "Via Ponzio"
+        "Via Garofalo",
+        "Via Filippino Lippi",
+        "Via Francesco Lomonaco",
+        "Via Vallazze",
+        "Via Giovanni Lulli"
       ]
     },
     {
@@ -305,11 +319,11 @@
       "type": "Piazzale",
       "name": "Udine",
       "confluences": [
-        "Via Feltre",
-        "Via Udine",
-        "Via Pordenone",
         "Via Carnia",
-        "Via Ronchi"
+        "Via Tolmezzo",
+        "Via Pordenone",
+        "Via Ronchi",
+        "Via Feltre"
       ]
     },
     {
@@ -317,11 +331,12 @@
       "type": "Piazzale",
       "name": "Corvetto",
       "confluences": [
-        "Corso Lodi",
-        "Via Emilia",
         "Viale Lucania",
-        "Via Marco d'Agrate",
-        "Via Polesine"
+        "Corso Lodi",
+        "Via Polesine",
+        "Via Martini",
+        "Via Marocchetti",
+        "Via Martinengo"
       ]
     },
     {
@@ -376,11 +391,12 @@
       "type": "Piazzale",
       "name": "Baracca",
       "confluences": [
+        "Via Ariosto",
         "Corso Vercelli",
+        "Via san Michele del Carso",
+        "Viale/Corso di porta Vercellina",
         "Corso Magenta",
-        "Via Coni Zugna",
-        "Via San Michele del Carso",
-        "Via Ariosto"
+        "Via Toti"
       ]
     },
     {
@@ -400,10 +416,11 @@
       "type": "Piazza",
       "name": "Armando Diaz",
       "confluences": [
-        "Via Baracchini",
-        "Via Albricci",
+        "Via Marconi",
+        "Via Giardino",
         "Via Gonzaga",
-        "Piazza Duomo"
+        "Via Baracchini",
+        "Via Rastrelli"
       ]
     },
     {
@@ -445,8 +462,9 @@
       "name": "Borromeo",
       "confluences": [
         "Via Borromei",
-        "Via San Maurilio",
-        "Via Santa Maria Fulcorina"
+        "Via Sant'Orsola",
+        "Via S. Maurillo",
+        "Via Santa Maria Pordenone"
       ]
     },
     {
@@ -502,10 +520,14 @@
       "type": "Piazzale",
       "name": "Aquileia",
       "confluences": [
-        "Viale Coni Zugna",
-        "Viale di Porta Vercellina",
         "Via San Michele del Carso",
-        "Via Foppa"
+        "Via Glovio",
+        "Via Lipari",
+        "Via Altino",
+        "Via Caravaggio",
+        "Viale Coni Zugna",
+        "Viale Papiniano",
+        "Viale/Corso di porta Vercellina"
       ]
     },
     {
@@ -513,9 +535,12 @@
       "type": "Piazzale",
       "name": "Bolivar",
       "confluences": [
-        "Via Washington",
+        "Viale Misurata",
+        "Via Lorenteggio (SS494 ex Vigevanese)",
+        "Viale Misurata",
+        "Via Sirte",
         "Via Foppa",
-        "Viale San Gimignano"
+        "Via Gessi"
       ]
     },
     {
@@ -577,6 +602,19 @@
         "Via fratelli Ruffini",
         "Via Boccaccio",
         "Via Aurelio Saffi"
+      ]
+    },
+    {
+      "id": 1790463522663,
+      "type": "Piazza",
+      "name": "Amendola",
+      "confluences": [
+        "Viale Berengario",
+        "Via Monte Bianco",
+        "Via Monte Rosa",
+        "Via Domenichino",
+        "Via Monte Rosa",
+        "Viale Ezio"
       ]
     }
   ],
