@@ -82,7 +82,7 @@
     <div id="app-container" class="hidden flex flex-col min-h-screen">
         <header class="bg-slate-900 text-white shadow-md sticky top-0 z-40">
             <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
-                <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="goHome()">
                     <i class="fa-solid fa-taxi text-amber-400 text-2xl"></i>
                     <div>
                         <span class="font-bold text-lg block">Milano Taxi Trainer</span>
@@ -90,7 +90,8 @@
                     </div>
                 </div>
                 <nav class="flex space-x-2 mt-2 sm:mt-0">
-                    <button onclick="switchTab('enciclopedia')" id="btn-enciclopedia" class="px-3 py-2 rounded-lg bg-amber-500 font-semibold text-xs sm:text-sm transition">Enciclopedia (<span id="total-count">0</span>)</button>
+                    <button onclick="switchTab('home')" id="btn-home" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 font-semibold text-xs sm:text-sm transition"><i class="fa-solid fa-house"></i> Home</button>
+                    <button onclick="switchTab('enciclopedia')" id="btn-enciclopedia" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 font-semibold text-xs sm:text-sm transition">Enciclopedia (<span id="total-count">0</span>)</button>
                     <button onclick="switchTab('esercizio')" id="btn-esercizio" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 font-semibold text-xs sm:text-sm transition">Esercizi</button>
                     <button onclick="switchTab('admin')" id="btn-admin" class="hidden px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700 font-semibold text-xs sm:text-sm transition"><i class="fa-solid fa-lock-open mr-1"></i> Admin</button>
                     <button onclick="logoutApp()" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white" title="Esci"><i class="fa-solid fa-right-from-bracket"></i></button>
@@ -98,10 +99,41 @@
             </div>
         </header>
 
-        <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6">
+        <!-- BANNER INFORMATIVO -->
+        <div class="bg-amber-100 border-b border-amber-300 text-amber-900 px-4 py-2.5 text-xs sm:text-sm font-medium text-center shadow-inner flex items-center justify-center gap-2">
+            <i class="fa-solid fa-circle-exclamation text-amber-600 text-base flex-shrink-0"></i>
+            <span>Le vie della destinazione di confluenze è ancora in fase di lavorazione, verificare che la destinazione sia corretta sulle mappe tradizionali</span>
+        </div>
+
+        <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-center">
             
+            <!-- SCHEDA HOME PAGE -->
+            <section id="tab-home" class="space-y-6 max-w-2xl mx-auto w-full text-center py-8">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                    <div class="space-y-2">
+                        <i class="fa-solid fa-route text-5xl text-amber-500 mb-2"></i>
+                        <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Benvenuto nel Simulatore</h2>
+                        <p class="text-sm text-slate-500">Seleziona una delle opzioni sottostanti per iniziare a consultare il database o metterti alla prova con gli esercizi.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                        <button onclick="switchTab('enciclopedia')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
+                            <i class="fa-solid fa-book text-3xl text-amber-500 mb-3 group-hover:scale-110 transition"></i>
+                            <span class="font-bold text-lg text-slate-800">Enciclopedia</span>
+                            <span class="text-xs text-slate-500 mt-1">Consulta l'indice toponomastico ufficiale e le confluenze</span>
+                        </button>
+                        
+                        <button onclick="switchTab('esercizio')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
+                            <i class="fa-solid fa-map-location-dot text-3xl text-amber-500 mb-3 group-hover:scale-110 transition"></i>
+                            <span class="font-bold text-lg text-slate-800">Esercizi</span>
+                            <span class="text-xs text-slate-500 mt-1">Mettiti alla prova con le piazze e le posizioni antiorarie</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
             <!-- SCHEDA ENCICLOPEDIA -->
-            <section id="tab-enciclopedia" class="space-y-6">
+            <section id="tab-enciclopedia" class="hidden space-y-6">
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
                         <h2 class="text-xl font-bold flex items-center"><i class="fa-solid fa-book text-amber-500 mr-2"></i> Indice Toponomastico Ufficiale</h2>
@@ -396,19 +428,29 @@
             renderEncyclopedia();
             populateExerciseSelect();
             populateAdminSelect();
+            switchTab('home');
+        }
+
+        function goHome() {
+            switchTab('home');
         }
 
         function switchTab(tab) {
-            ['enciclopedia', 'esercizio', 'admin'].forEach(t => {
+            ['home', 'enciclopedia', 'esercizio', 'admin'].forEach(t => {
                 document.getElementById(`tab-${t}`).classList.add("hidden");
-                document.getElementById(`btn-${t}`).classList.remove("bg-amber-500", "bg-red-600");
-                document.getElementById(`btn-${t}`).classList.add("bg-slate-800");
+                const btn = document.getElementById(`btn-${t}`);
+                if (btn) {
+                    btn.classList.remove("bg-amber-500", "bg-red-600");
+                    btn.classList.add("bg-slate-800");
+                }
             });
             document.getElementById(`tab-${tab}`).classList.remove("hidden");
             const activeBtn = document.getElementById(`btn-${tab}`);
-            activeBtn.classList.remove("bg-slate-800");
-            if(tab === 'admin') activeBtn.classList.add("bg-red-600");
-            else activeBtn.classList.add("bg-amber-500");
+            if (activeBtn) {
+                activeBtn.classList.remove("bg-slate-800");
+                if(tab === 'admin') activeBtn.classList.add("bg-red-600");
+                else activeBtn.classList.add("bg-amber-500");
+            }
 
             if(tab === 'esercizio') {
                 loadExercise();
