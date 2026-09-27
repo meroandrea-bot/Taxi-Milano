@@ -226,12 +226,17 @@
                     
                     <input type="text" id="search-piazza" onkeyup="renderEncyclopedia()" placeholder="Cerca piazza, piazzale, largo o via..." class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none mb-3">
                     
-                    <div id="street-destination-info" class="hidden mb-3 p-3 bg-amber-50 border border-amber-300 rounded-lg text-amber-900 flex justify-between items-center shadow-sm">
+                    <div id="street-destination-info" class="hidden mb-3 p-3 bg-amber-50 border border-amber-300 rounded-lg text-amber-900 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 shadow-sm">
                         <div>
                             <span class="font-bold block text-[10px] uppercase text-amber-700"><i class="fa-solid fa-diamond-turn-right mr-1"></i> Dettaglio Collegamento:</span>
                             <span id="street-dest-text" class="text-xs sm:text-sm font-semibold"></span>
                         </div>
-                        <button onclick="closeStreetInfo()" class="text-amber-700 font-bold px-2 py-1 text-base">&times;</button>
+                        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                            <a id="street-map-link" href="#" target="_blank" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow">
+                                <i class="fa-solid fa-map-location-dot"></i> Visualizza Online
+                            </a>
+                            <button onclick="closeStreetInfo()" class="text-amber-700 font-bold px-2 py-1 text-base">&times;</button>
+                        </div>
                     </div>
 
                     <div id="encyclopedia-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[62vh] overflow-y-auto p-1"></div>
@@ -868,10 +873,15 @@
         function showStreetDetails(streetName, piazzaFullName) {
             const infoBox = document.getElementById("street-destination-info");
             const destText = document.getElementById("street-dest-text");
+            const mapLink = document.getElementById("street-map-link");
             const key = `${piazzaFullName}_${streetName}`;
             
             if (customDescriptions[key]) destText.textContent = customDescriptions[key];
             else destText.textContent = `La via "${streetName}" confluisce direttamente su ${piazzaFullName}.`;
+            
+            // Sviluppo punto due: Visualizzatore online (Google Maps / OpenStreetMap)
+            const query = encodeURIComponent(`Milano, ${streetName} (vicino a ${piazzaFullName})`);
+            mapLink.href = `https://www.google.com/maps/search/?api=1&query=${query}`;
             
             infoBox.classList.remove("hidden");
             infoBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
