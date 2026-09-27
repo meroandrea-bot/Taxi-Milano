@@ -333,10 +333,17 @@
             <section id="tab-admin" class="hidden space-y-4">
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
-                        <h2 class="text-lg sm:text-xl font-bold text-red-600 flex items-center"><i class="fa-solid fa-user-shield mr-2"></i> Gestione Database</h2>
-                        <button onclick="exportJSON()" class="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold transition flex items-center shadow">
-                            <i class="fa-solid fa-download mr-1"></i> Esporta DB
-                        </button>
+                        <h2 class="text-lg sm:text-xl font-bold text-red-600 flex items-center"><i class="fa-solid fa-user-shield mr-2"></i> Gestione Database (Riservata Admin)</h2>
+                        <div class="flex items-center gap-2">
+                            <!-- Pulsante Condivisione Link App (Riservato Admin) -->
+                            <button onclick="shareAppUrl()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition flex items-center shadow">
+                                <i class="fa-solid fa-share-nodes mr-1"></i> Condividi Link App
+                            </button>
+                            <!-- Pulsante Esportazione DB -->
+                            <button onclick="exportJSON()" class="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold transition flex items-center shadow">
+                                <i class="fa-solid fa-download mr-1"></i> Esporta DB
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -722,6 +729,20 @@
             renderEncyclopedia();
         }
 
+        // --- FUNZIONE CONDIVISIONE LINK APP (RISERVATA ADMIN) ---
+        function shareAppUrl() {
+            const appUrl = window.location.href;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(appUrl).then(() => {
+                    alert("Link dell'applicazione copiato negli appunti con successo!\nPotrai inviarlo solo tu.");
+                }).catch(() => {
+                    prompt("Copia questo link:", appUrl);
+                });
+            } else {
+                prompt("Copia questo link:", appUrl);
+            }
+        }
+
         // --- GESTIONE REGOLAMENTI WORD (.docx) ---
         async function uploadRegolamentoWord() {
             const titleInput = document.getElementById("admin-regolamento-title");
@@ -749,7 +770,10 @@
                     fileInput.value = "";
                     renderRegolamenti();
                     populateAdminSelect();
-                    alert("Regolamento Word caricato con successo!");
+                    // Rimane sulla sezione admin aggiornando le viste necessarie in background
+                    document.getElementById("total-count").textContent = piazzeData.length;
+                    document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
+                    alert("Regolamento Word caricato con successo! (Sei rimasto nella sezione Admin)");
                 } catch (e) {
                     alert("Errore durante la lettura del file Word.");
                 }
@@ -817,7 +841,7 @@
                 saveData();
                 renderRegolamenti();
                 populateAdminSelect();
-                alert("Regolamento eliminato.");
+                alert("Regolamento eliminato. (Sei rimasto nella sezione Admin)");
             }
         }
 
@@ -842,7 +866,9 @@
                     fileInput.value = "";
                     renderPercorsi();
                     populateAdminSelect();
-                    alert("Percorso taxi caricato con successo!");
+                    document.getElementById("total-count").textContent = piazzeData.length;
+                    document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
+                    alert("Percorso taxi caricato con successo! (Sei rimasto nella sezione Admin)");
                 } catch (e) {
                     alert("Errore durante la lettura del file Word.");
                 }
@@ -901,7 +927,7 @@
                 saveData();
                 renderPercorsi();
                 populateAdminSelect();
-                alert("Percorso eliminato.");
+                alert("Percorso eliminato. (Sei rimasto nella sezione Admin)");
             }
         }
 
@@ -950,7 +976,7 @@
                 else delete stataliDescriptions[val];
                 saveData();
                 renderStatali();
-                alert("Descrizione aggiornata!");
+                alert("Descrizione aggiornata! (Sei rimasto nella sezione Admin)");
             }
         }
 
@@ -964,7 +990,7 @@
             input.value = "";
             renderStatali();
             populateAdminSelect();
-            alert("Statale aggiunta!");
+            alert("Statale aggiunta! (Sei rimasto nella sezione Admin)");
         }
 
         function deleteStatale() {
@@ -977,7 +1003,7 @@
                 saveData();
                 renderStatali();
                 populateAdminSelect();
-                alert("Eliminata.");
+                alert("Eliminata. (Sei rimasto nella sezione Admin)");
             }
         }
 
@@ -1424,7 +1450,7 @@
                 if(textAreaVal) customDescriptions[key] = textAreaVal;
                 else delete customDescriptions[key];
                 saveData();
-                alert("Aggiornato!");
+                alert("Aggiornato! (Sei rimasto nella sezione Admin)");
             }
         }
 
@@ -1435,7 +1461,7 @@
             userPwd = newUserPwd;
             adminPwd = newAdminPwd;
             saveData();
-            alert("Password aggiornate!");
+            alert("Password aggiornate! (Sei rimasto nella sezione Admin)");
         }
 
         function loadAdminPiazzaData() {
@@ -1469,7 +1495,7 @@
             piazza.confluences = [...piazza.confluences.slice(streetIndex), ...piazza.confluences.slice(0, streetIndex)];
             saveData();
             loadAdminPiazzaData();
-            alert(`"${targetStreet}" impostata come prima via (in alto).`);
+            alert(`"${targetStreet}" impostata come prima via (in alto). (Sei rimasto nella sezione Admin)`);
         }
 
         function addNewPiazza() {
@@ -1482,8 +1508,15 @@
             saveData();
             document.getElementById("new-piazza-name").value = "";
             document.getElementById("new-piazza-confluences").value = "";
-            initApp();
-            alert("Aggiunto!");
+            
+            // Rimane sulla sezione admin aggiornando i dati e i menu a tendina senza cambiare tab
+            renderEncyclopedia();
+            renderStatali();
+            populateExerciseSelect();
+            populateAdminSelect();
+            document.getElementById("total-count").textContent = piazzeData.length;
+            document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
+            alert("Aggiunto! (Sei rimasto nella sezione Admin)");
         }
 
         function updatePiazza() {
@@ -1495,8 +1528,15 @@
             const confluences = confluencesStr.split(",").map(s => s.trim()).filter(s => s.length > 0);
             piazzeData[index] = { ...piazzeData[index], type, name, confluences };
             saveData();
-            initApp();
-            alert("Aggiornato!");
+            
+            // Rimane sulla sezione admin aggiornando i dati in background
+            renderEncyclopedia();
+            renderStatali();
+            populateExerciseSelect();
+            populateAdminSelect();
+            document.getElementById("total-count").textContent = piazzeData.length;
+            document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
+            alert("Aggiornato! (Sei rimasto nella sezione Admin)");
         }
 
         function deletePiazza() {
@@ -1504,8 +1544,15 @@
             if(confirm("Eliminare?")) {
                 piazzeData.splice(selectIndex, 1);
                 saveData();
-                initApp();
-                alert("Eliminato.");
+                
+                // Rimane sulla sezione admin aggiornando i dati in background
+                renderEncyclopedia();
+                renderStatali();
+                populateExerciseSelect();
+                populateAdminSelect();
+                document.getElementById("total-count").textContent = piazzeData.length;
+                document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
+                alert("Eliminato. (Sei rimasto nella sezione Admin)");
             }
         }
 

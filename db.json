@@ -116,10 +116,12 @@
       "name": "di Porta Lodovica",
       "confluences": [
         "Corso Italia",
-        "Viale Beatrice d'Este",
-        "Viale Bligny",
-        "Viale Col di Lana",
-        "Viale Tibaldi"
+        "Via Gian Galeazzo",
+        "Via Col di lana",
+        "Via Bainsizza",
+        "Via Teulie",
+        "Viale Bligni",
+        "Viale Beatrice d'Este"
       ]
     },
     {
@@ -166,11 +168,13 @@
       "type": "Piazza",
       "name": "della Scala",
       "confluences": [
-        "Via Manzoni",
-        "Via Santa Margherita",
-        "Via Case Rotte",
+        "Via Alessandro Manzoni",
+        "Via Giuseppe Verdi",
+        "Largo Ghiringhelli",
+        "Via Filodrammatici",
+        "Via Santa margherita",
         "Via Marino",
-        "Via Filodrammatici"
+        "Via Case rotte"
       ]
     },
     {
