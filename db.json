@@ -1,24 +1,498 @@
 {
   "piazze": [
     {
-      "id": 1,
-      "type": "Piazza",
-      "name": "Duomo",
+      "id": 27,
+      "type": "Piazzale",
+      "name": "Abbiategrasso",
       "confluences": [
-        "Galleria Vittorio Emanuele II",
-        "Via Silvio Pellico",
-        "Via Mengoni",
-        "Via dei Mercanti",
-        "Via Orefici",
-        "Via Torino",
+        "Via Montegani",
+        "Via Savio",
+        "Via Santa Teresa",
+        "Via Avancini",
+        "Via de Missaglia",
+        "Via Palanti",
+        "Via Medeghino"
+      ]
+    },
+    {
+      "id": 40,
+      "type": "Piazzale",
+      "name": "Accursio",
+      "confluences": [
+        "Viale Espinasse",
+        "Viale Certosa",
+        "Via Gallarate",
+        "Via Achille Papa",
+        "Via Traiano",
+        "Via Tavazzano",
+        "Via Gessendi",
+        "Via Nansen",
+        "Via Sonnino"
+      ]
+    },
+    {
+      "id": 1790461480406,
+      "type": "Piazza",
+      "name": "Adrigrat",
+      "confluences": [
+        "Via dell'Ongaro",
+        "Via Sismondi",
+        "Via Battistotti sassi",
+        "Via Sismonti",
+        "Via Frapolli"
+      ]
+    },
+    {
+      "id": 14,
+      "type": "Piazza",
+      "name": "Affari",
+      "confluences": [
+        "Via Gaetano Negri",
+        "Via San Vittore al Teatro",
+        "Via Santa Maria Fulcorina",
+        "Via della Posta"
+      ]
+    },
+    {
+      "id": 1790461574008,
+      "type": "Piazza",
+      "name": "Agrippa",
+      "confluences": [
+        "Via Volvinio",
+        "Via Neera",
+        "Via Medeghino",
+        "Via Bellarmino",
+        "Via Perussia",
+        "Via Valla"
+      ]
+    },
+    {
+      "id": 1790463522663,
+      "type": "Piazza",
+      "name": "Amendola",
+      "confluences": [
+        "Viale Berengario",
+        "Via Monte Bianco",
+        "Via Monte Rosa",
+        "Via Domenichino",
+        "Via Monte Rosa",
+        "Viale Ezio"
+      ]
+    },
+    {
+      "id": 42,
+      "type": "Piazzale",
+      "name": "Aquileia",
+      "confluences": [
+        "Via San Michele del Carso",
+        "Via Glovio",
+        "Via Lipari",
+        "Via Altino",
+        "Via Caravaggio",
+        "Viale Coni Zugna",
+        "Viale Papiniano",
+        "Viale/Corso di porta Vercellina"
+      ]
+    },
+    {
+      "id": 1790527179454,
+      "type": "Piazzale",
+      "name": "Arduino",
+      "confluences": [
+        "Via Eginardo",
+        "Via Albani",
+        "Via Desiderio da Settignano",
+        "Via Novegro",
+        "Via Berengario"
+      ]
+    },
+    {
+      "id": 1790527319400,
+      "type": "Piazza",
+      "name": "Argentina",
+      "confluences": [
+        "Corso Buenos Aires",
+        "Via Palestrina",
+        "Via Mercadante",
+        "Corso Buenos Aires",
+        "Via Monteverdi",
+        "Via Paganini",
+        "Via Stradivari",
+        "Via Pecchio"
+      ]
+    },
+    {
+      "id": 33,
+      "type": "Piazza",
+      "name": "Armando Diaz",
+      "confluences": [
+        "Via Marconi",
+        "Via Giardino",
+        "Via Gonzaga",
+        "Via Baracchini",
+        "Via Rastrelli"
+      ]
+    },
+    {
+      "id": 1790527441691,
+      "type": "Piazza",
+      "name": "Ascoli",
+      "confluences": [
+        "Viale Abruzzi",
+        "Via Stoppani",
+        "Via degli Scipioni",
+        "Viale dei Mille",
+        "Via Tiepolo",
+        "Via Juvarra",
+        "Via Pascoli"
+      ]
+    },
+    {
+      "id": 21,
+      "type": "Piazza",
+      "name": "Aspromonte",
+      "confluences": [
+        "Via Sacchini",
+        "Via Giovanni Ricordi",
+        "Via Pecchio",
+        "Via Garofalo",
+        "Via Filippino Lippi",
+        "Via Francesco Lomonaco",
+        "Via Vallazze",
+        "Via Giovanni Lulli"
+      ]
+    },
+    {
+      "id": 1790527621404,
+      "type": "Largo",
+      "name": "Augusto",
+      "confluences": [
+        "Corso di porta Vittoria",
+        "Via Francesco Sforza",
+        "Via Battisti",
+        "Via Visconti di Modrone",
+        "Via Marziale",
+        "Via Cerva",
+        "Via Durini",
+        "Via Cavallotti",
+        "Via Verziere",
+        "Corso di Porta Vittoria",
+        "Via della Signora",
+        "Via Francesco Sforza"
+      ]
+    },
+    {
+      "id": 1790527765964,
+      "type": "Piazzale",
+      "name": "Bacone",
+      "confluences": [
+        "Via Monteverdi",
+        "Via Spontini",
+        "Via Ponchielli",
+        "Via Oznam",
+        "Via Morgagni",
+        "Via Eustachi",
+        "Via Farnetti",
+        "Via Paracelso",
+        "Via Matteucci"
+      ]
+    },
+    {
+      "id": 1790527828103,
+      "type": "Piazzale",
+      "name": "Baiamonti",
+      "confluences": [
+        "Via Ceresio",
+        "Via Paolo Sarpi",
+        "Via Montello",
+        "Bastioni di Porta Volta",
+        "Via Volta",
+        "Via Crispi",
+        "Viale Pasubio",
+        "Via Farini"
+      ]
+    },
+    {
+      "id": 1790527906524,
+      "type": "Piazzale",
+      "name": "Bande Nere",
+      "confluences": [
+        "Viale Pisa",
+        "Via Orsini",
+        "Viale Legioni Romane",
+        "Via San Giminiano",
+        "Via Bartolomeo d'Alviano",
+        "Via Caterina da Forlì",
+        "Via Anguissola"
+      ]
+    },
+    {
+      "id": 31,
+      "type": "Piazzale",
+      "name": "Baracca",
+      "confluences": [
+        "Via Ariosto",
+        "Corso Vercelli",
+        "Via san Michele del Carso",
+        "Viale/Corso di porta Vercellina",
+        "Corso Magenta",
+        "Via Toti"
+      ]
+    },
+    {
+      "id": 1790528085335,
+      "type": "Piazza",
+      "name": "Bausan",
+      "confluences": [
+        "Via Brofferio",
+        "Via Via Mercantini",
+        "Via Massara de Capitani",
+        "Via Imbriani",
+        "Via Baldinucci"
+      ]
+    },
+    {
+      "id": 1790528116819,
+      "type": "Piazza",
+      "name": "Belfanti",
+      "confluences": [
+        "Via Segantini",
+        "Viale Liguria",
+        "Via Spezia",
+        "Viale Liguria"
+      ]
+    },
+    {
+      "id": 1790528246917,
+      "type": "Piazzale",
+      "name": "Biancamano",
+      "confluences": [
+        "Bastioni di Porta Volta",
+        "Via Montello",
+        "Via Bramante",
+        "Via Maggi",
+        "Piazza Lega Lombarda",
+        "Via della Moscova"
+      ]
+    },
+    {
+      "id": 43,
+      "type": "Piazzale",
+      "name": "Bolivar",
+      "confluences": [
+        "Viale Misurata",
+        "Via Lorenteggio (SS494 ex Vigevanese)",
+        "Viale Misurata",
+        "Via Sirte",
+        "Via Foppa",
+        "Via Gessi"
+      ]
+    },
+    {
+      "id": 1790528327018,
+      "type": "Piazzale",
+      "name": "Bologna",
+      "confluences": [
+        "Viale Puglie",
+        "Viale Bacchiglione",
+        "Viale Lucania",
+        "Via Sulmona"
+      ]
+    },
+    {
+      "id": 1790528414798,
+      "type": "Piazza",
+      "name": "Bonomelli",
+      "confluences": [
+        "Via Benaco",
+        "Viale Ortels",
+        "Via Romilli",
+        "Via Mincio",
+        "Viale Brenta"
+      ]
+    },
+    {
+      "id": 1790528510002,
+      "type": "Largo",
+      "name": "Borges",
+      "confluences": [
         "Via Mazzini",
-        "Via Guglielmo Marconi",
-        "Piazzetta Reale",
-        "Via Arcivescovado",
-        "Corso Vittorio Emanuele II",
-        "Via Santa Radegonda",
-        "Via San Raffaele",
-        "Via Ugo Foscolo"
+        "Via Speronari",
+        "Via Falcone",
+        "Via Mazzini",
+        "Via Giardino",
+        "Via Mazzini"
+      ]
+    },
+    {
+      "id": 37,
+      "type": "Piazza",
+      "name": "Borromeo",
+      "confluences": [
+        "Via Borromei",
+        "Via Sant'Orsola",
+        "Via S. Maurillo",
+        "Via Santa Maria Pordenone"
+      ]
+    },
+    {
+      "id": 1790528591523,
+      "type": "Piazza",
+      "name": "Bottini",
+      "confluences": [
+        "Via Merzario",
+        "Via Salieri",
+        "Via Pacini",
+        "Via Peroni",
+        "Via Viotti"
+      ]
+    },
+    {
+      "id": 1790528721479,
+      "type": "Piazzale",
+      "name": "Brescia",
+      "confluences": [
+        "Viale Murillo",
+        "Via Dolci",
+        "Via Varazze",
+        "Via Osoppo",
+        "Viale Ranzoni",
+        "Via Faruffini",
+        "Via di Credi",
+        "Via Magnasco"
+      ]
+    },
+    {
+      "id": 1790528808462,
+      "type": "Piazza",
+      "name": "Buozzi",
+      "confluences": [
+        "Via Lazzaro papi",
+        "Corso Lodi",
+        "Via Piacenza",
+        "Via Adige",
+        "Via Mantova",
+        "Corso Lodi"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "Piazzale",
+      "name": "Cadorna",
+      "confluences": [
+        "Via Minghetti",
+        "Via Paleocapa",
+        "Via Boccaccio",
+        "Via Carducci",
+        "Via San Nicolao",
+        "Foro Bonaparte Dispari"
+      ]
+    },
+    {
+      "id": 16,
+      "type": "Largo",
+      "name": "Cairoli",
+      "confluences": [
+        "Foro Buonaparte Pari",
+        "Via Beltrami",
+        "Foro Bonaparte Dispari",
+        "Largo Maria Callas",
+        "Via San Giovanni sul Muro",
+        "Via Camperio",
+        "Via Dante",
+        "Via Pozzone",
+        "Via Cusani"
+      ]
+    },
+    {
+      "id": 1790528933266,
+      "type": "Piazza",
+      "name": "Caneva",
+      "confluences": [
+        "Via Principe Eugenio",
+        "Via Tolentino",
+        "Via Cenisio",
+        "Via Ezio Biondi",
+        "Via Salvioni",
+        "Via Bullona",
+        "Via Fuche",
+        "Via Cenisio"
+      ]
+    },
+    {
+      "id": 1790529050286,
+      "type": "Piazzale",
+      "name": "Cantore",
+      "confluences": [
+        "Corso Genova",
+        "Via Daniele Crespi",
+        "Viale Papiniano",
+        "Via Carchidio",
+        "Corso Cristoforo Colombo",
+        "Via Codara",
+        "Via Gabriele d'Annunzio",
+        "Via Simonetta"
+      ]
+    },
+    {
+      "id": 1790529128168,
+      "type": "Piazza",
+      "name": "Cappelli",
+      "confluences": [
+        "Viale Umbria",
+        "Via Anfossi",
+        "Via Friuli",
+        "Viale Umbria",
+        "Via Arconati",
+        "Via Monte Ortigara"
+      ]
+    },
+    {
+      "id": 1790529290778,
+      "type": "Piazza",
+      "name": "Carbonari",
+      "confluences": [
+        "Via Vassallo",
+        "Via Bizzoni",
+        "Viale Marche",
+        "Via Boschetti",
+        "Via Oldofreti",
+        "Via Restelli",
+        "Via Timavo",
+        "Via Salò",
+        "Via Maggiolina",
+        "Viale Lucania",
+        "Via Stresa",
+        "Via Stefini"
+      ]
+    },
+    {
+      "id": 1790529433196,
+      "type": "Piazza",
+      "name": "Castello",
+      "confluences": [
+        "Viale Gadio",
+        "Via Jacini",
+        "Via Minghetti",
+        "Via Ricasoli",
+        "Via Beltrami",
+        "Via Sella",
+        "Via Lanza",
+        "Via Beretta",
+        "Viale Gadio"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "Piazza",
+      "name": "Cinque Giornate",
+      "confluences": [
+        "Viale Bianca Maria",
+        "Corso Di porta Vittoria",
+        "Viale Regina Margherita",
+        "Viale Monte Nero",
+        "Corso XXII Marzo",
+        "Viale Premuda"
       ]
     },
     {
@@ -37,57 +511,29 @@
       ]
     },
     {
-      "id": 3,
+      "id": 26,
       "type": "Piazzale",
-      "name": "Loreto",
+      "name": "Corvetto",
       "confluences": [
-        "Corso Buenos Aires",
-        "Viale Abruzzi",
-        "Viale Monza",
-        "Via Andrea Doria",
-        "Viale Brianza",
-        "Via Leoncavallo",
-        "Via Padova"
+        "Viale Lucania",
+        "Corso Lodi",
+        "Via Polesine",
+        "Via Martini",
+        "Via Marocchetti",
+        "Via Martinengo"
       ]
     },
     {
-      "id": 4,
-      "type": "Piazza",
-      "name": "San Babila",
-      "confluences": [
-        "Corso Vittorio Emanuele II",
-        "Corso Venezia",
-        "Corso Monforte",
-        "Via Durini",
-        "Galleria Passarella",
-        "Via Borgogna",
-        "Corso Europa"
-      ]
-    },
-    {
-      "id": 5,
-      "type": "Piazza",
-      "name": "Cinque Giornate",
-      "confluences": [
-        "Viale Bianca Maria",
-        "Corso Di porta Vittoria",
-        "Viale Regina Margherita",
-        "Viale Monte Nero",
-        "Corso XXII Marzo",
-        "Viale Premuda"
-      ]
-    },
-    {
-      "id": 6,
+      "id": 18,
       "type": "Piazzale",
-      "name": "Luigi Cadorna",
+      "name": "Dateo",
       "confluences": [
-        "Via Giosuè Carducci",
-        "Foro Buonaparte",
-        "Via Boccaccio",
-        "Via San Giovanni sul Muro",
-        "Via de Togni",
-        "Via Monti"
+        "Viale de Mille",
+        "Via Uberti",
+        "Corso Indipendenza",
+        "Via Poma",
+        "Viale Piceno",
+        "Corso Plebisciti"
       ]
     },
     {
@@ -111,59 +557,6 @@
       ]
     },
     {
-      "id": 8,
-      "type": "Piazzale",
-      "name": "di Porta Lodovica",
-      "confluences": [
-        "Corso Italia",
-        "Via Gian Galeazzo",
-        "Via Col di lana",
-        "Via Bainsizza",
-        "Via Teulie",
-        "Viale Bligni",
-        "Viale Beatrice d'Este"
-      ]
-    },
-    {
-      "id": 9,
-      "type": "Piazzale",
-      "name": "di Porta Romana",
-      "confluences": [
-        "Corso di Porta Romana",
-        "Viale Sabotino",
-        "Viale Filippetti",
-        "Viale Monte Nero",
-        "Via Friuli",
-        "Corso Lodi"
-      ]
-    },
-    {
-      "id": 10,
-      "type": "Piazza",
-      "name": "XXIV Maggio",
-      "confluences": [
-        "Corso di Porta Ticinese",
-        "Corso San Gottardo",
-        "Viale Col di Lana",
-        "Viale Gian Galeazzo",
-        "Via Gorizia",
-        "Alzaia Naviglio Pavese",
-        "Ripa di Porta Ticinese"
-      ]
-    },
-    {
-      "id": 11,
-      "type": "Piazza",
-      "name": "Gae Aulenti",
-      "confluences": [
-        "Corso Como",
-        "Via Melchiorre Gioia",
-        "Piazza Alvar Aalto",
-        "Via Capellini",
-        "Viale Pasubio"
-      ]
-    },
-    {
       "id": 12,
       "type": "Piazza",
       "name": "della Scala",
@@ -178,420 +571,50 @@
       ]
     },
     {
-      "id": 13,
-      "type": "Piazza",
-      "name": "Sant'Ambrogio",
+      "id": 9,
+      "type": "Piazzale",
+      "name": "di Porta Genova",
       "confluences": [
-        "Via San Vittore",
-        "Via Lanzone",
-        "Via Giosuè Carducci",
-        "Via Luini",
-        "Via Sant'Agnese",
-        "Via Nirone"
+        "Corso Cristoforo Colombo",
+        "Via Ventimiglia",
+        "Via Valenza",
+        "Via Casale",
+        "Via Vigevano"
       ]
     },
     {
-      "id": 14,
-      "type": "Piazza",
-      "name": "Affari",
+      "id": 8,
+      "type": "Piazzale",
+      "name": "di Porta Lodovica",
       "confluences": [
-        "Via Gaetano Negri",
-        "Via San Vittore al Teatro",
-        "Via Santa Maria Fulcorina",
-        "Via della Posta"
-      ]
-    },
-    {
-      "id": 15,
-      "type": "Piazza",
-      "name": "Missori",
-      "confluences": [
-        "Via Larga",
         "Corso Italia",
-        "Via Giuseppe Mazzini",
-        "Via Pantano",
-        "Via Albricci",
-        "Via Mazzini"
+        "Via Gian Galeazzo",
+        "Via Col di lana",
+        "Via Bainsizza",
+        "Via Teulie",
+        "Viale Bligni",
+        "Viale Beatrice d'Este"
       ]
     },
     {
-      "id": 16,
-      "type": "Largo",
-      "name": "Cairoli",
-      "confluences": [
-        "Foro Buonaparte Pari",
-        "Via Beltrami",
-        "Foro Bonaparte Dispari",
-        "Largo Maria Callas",
-        "Via San Giovanni sul Muro",
-        "Via Camperio",
-        "Via Dante",
-        "Via Pozzone",
-        "Via Cusani"
-      ]
-    },
-    {
-      "id": 17,
+      "id": 1,
       "type": "Piazza",
-      "name": "Tricolore",
+      "name": "Duomo",
       "confluences": [
-        "Corso Monforte",
-        "Viale Piave",
-        "Corso Plebisciti",
-        "Via Nino Bixio",
-        "Viale Diana"
-      ]
-    },
-    {
-      "id": 18,
-      "type": "Piazzale",
-      "name": "Dateo",
-      "confluences": [
-        "Viale de Mille",
-        "Via Uberti",
-        "Corso Indipendenza",
-        "Via Poma",
-        "Viale Piceno",
-        "Corso Plebisciti"
-      ]
-    },
-    {
-      "id": 19,
-      "type": "Piazzale",
-      "name": "Maciachini",
-      "confluences": [
-        "Viale Stelvio",
-        "Via Imbonati",
-        "Viale Marche",
-        "Via Carlo Farini",
-        "Via Valtellina"
-      ]
-    },
-    {
-      "id": 20,
-      "type": "Largo",
-      "name": "La Foppa",
-      "confluences": [
-        "Corso Garibaldi",
-        "Via Moscova",
-        "Via della Chiusa",
-        "Via Pontaccio"
-      ]
-    },
-    {
-      "id": 21,
-      "type": "Piazza",
-      "name": "Aspromonte",
-      "confluences": [
-        "Via Sacchini",
-        "Via Giovanni Ricordi",
-        "Via Pecchio",
-        "Via Garofalo",
-        "Via Filippino Lippi",
-        "Via Francesco Lomonaco",
-        "Via Vallazze",
-        "Via Giovanni Lulli"
-      ]
-    },
-    {
-      "id": 22,
-      "type": "Piazza",
-      "name": "Wagner",
-      "confluences": [
-        "Via Marghera",
-        "Via Washington",
-        "Via Buonarroti",
-        "Via Sanzio",
-        "Via Cherubini"
-      ]
-    },
-    {
-      "id": 23,
-      "type": "Piazzale",
-      "name": "Lotto",
-      "confluences": [
-        "Viale Monte Ceneri",
-        "Viale Certosa",
-        "Via Caprilli",
-        "Via Monte Rosa",
-        "Via Parmenide",
-        "Piazzale Stuparich"
-      ]
-    },
-    {
-      "id": 25,
-      "type": "Piazzale",
-      "name": "Udine",
-      "confluences": [
-        "Via Carnia",
-        "Via Tolmezzo",
-        "Via Pordenone",
-        "Via Ronchi",
-        "Via Feltre"
-      ]
-    },
-    {
-      "id": 26,
-      "type": "Piazzale",
-      "name": "Corvetto",
-      "confluences": [
-        "Viale Lucania",
-        "Corso Lodi",
-        "Via Polesine",
-        "Via Martini",
-        "Via Marocchetti",
-        "Via Martinengo"
-      ]
-    },
-    {
-      "id": 27,
-      "type": "Piazzale",
-      "name": "Abbiategrasso",
-      "confluences": [
-        "Via Montegani",
-        "Via Savio",
-        "Via Santa Teresa",
-        "Via Avancini",
-        "Via de Missaglia",
-        "Via Palanti",
-        "Via Medeghino"
-      ]
-    },
-    {
-      "id": 28,
-      "type": "Piazzale",
-      "name": "Selinunte",
-      "confluences": [
-        "Via Morgantini",
-        "Via Rembrandt",
-        "Via Paravia",
-        "Via Segesta"
-      ]
-    },
-    {
-      "id": 29,
-      "type": "Piazza",
-      "name": "Gramsci",
-      "confluences": [
-        "Via Paolo Sarpi",
-        "Via Procaccini",
-        "Via Nicotera",
-        "Via Albert Aalto"
-      ]
-    },
-    {
-      "id": 30,
-      "type": "Largo",
-      "name": "Richini",
-      "confluences": [
-        "Via Francesco Sforza",
-        "Via Pantano",
-        "Via San Barnaba",
-        "Via Albricci"
-      ]
-    },
-    {
-      "id": 31,
-      "type": "Piazzale",
-      "name": "Baracca",
-      "confluences": [
-        "Via Ariosto",
-        "Corso Vercelli",
-        "Via san Michele del Carso",
-        "Viale/Corso di porta Vercellina",
-        "Corso Magenta",
-        "Via Toti"
-      ]
-    },
-    {
-      "id": 32,
-      "type": "Piazza",
-      "name": "Piemonte",
-      "confluences": [
-        "Corso Vercelli",
-        "Via Washington",
-        "Via San Michele del Carso",
-        "Via Cherubini",
-        "Via Cimarosa"
-      ]
-    },
-    {
-      "id": 33,
-      "type": "Piazza",
-      "name": "Armando Diaz",
-      "confluences": [
-        "Via Marconi",
-        "Via Giardino",
-        "Via Gonzaga",
-        "Via Baracchini",
-        "Via Rastrelli"
-      ]
-    },
-    {
-      "id": 34,
-      "type": "Piazza",
-      "name": "Santo Stefano",
-      "confluences": [
-        "Via Festa del Perdono",
-        "Via Larga",
-        "Corso di Porta Vittoria",
-        "Via San Zeno"
-      ]
-    },
-    {
-      "id": 35,
-      "type": "Piazza",
-      "name": "Sant'Eustorgio",
-      "confluences": [
-        "Corso di Porta Ticinese",
-        "Via Santa Croce",
-        "Via Vetere",
-        "Piazza Vetra"
-      ]
-    },
-    {
-      "id": 36,
-      "type": "Piazza",
-      "name": "Vetra",
-      "confluences": [
-        "Corso di Porta Ticinese",
-        "Via De Amicis",
-        "Via Santa Croce",
-        "Via Wittgens"
-      ]
-    },
-    {
-      "id": 37,
-      "type": "Piazza",
-      "name": "Borromeo",
-      "confluences": [
-        "Via Borromei",
-        "Via Sant'Orsola",
-        "Via S. Maurillo",
-        "Via Santa Maria Pordenone"
-      ]
-    },
-    {
-      "id": 38,
-      "type": "Piazza",
-      "name": "San Fedele",
-      "confluences": [
-        "Via Manzoni",
-        "Via Case Rotte",
-        "Via San Fedele",
-        "Piazza Belgioioso"
-      ]
-    },
-    {
-      "id": 39,
-      "type": "Piazza",
-      "name": "Meda",
-      "confluences": [
-        "Corso Matteotti",
-        "Via San Paolo",
-        "Via del Lauro",
-        "Via Agnello"
-      ]
-    },
-    {
-      "id": 40,
-      "type": "Piazzale",
-      "name": "Accursio",
-      "confluences": [
-        "Viale Espinasse",
-        "Viale Certosa",
-        "Via Gallarate",
-        "Via Achille Papa",
-        "Via Traiano",
-        "Via Tavazzano",
-        "Via Gessendi",
-        "Via Nansen",
-        "Via Sonnino"
-      ]
-    },
-    {
-      "id": 41,
-      "type": "Piazzale",
-      "name": "Negrelli",
-      "confluences": [
-        "Via Lodovico il Moro",
-        "Via Giambellino",
-        "Via Segantini"
-      ]
-    },
-    {
-      "id": 42,
-      "type": "Piazzale",
-      "name": "Aquileia",
-      "confluences": [
-        "Via San Michele del Carso",
-        "Via Glovio",
-        "Via Lipari",
-        "Via Altino",
-        "Via Caravaggio",
-        "Viale Coni Zugna",
-        "Viale Papiniano",
-        "Viale/Corso di porta Vercellina"
-      ]
-    },
-    {
-      "id": 43,
-      "type": "Piazzale",
-      "name": "Bolivar",
-      "confluences": [
-        "Viale Misurata",
-        "Via Lorenteggio (SS494 ex Vigevanese)",
-        "Viale Misurata",
-        "Via Sirte",
-        "Via Foppa",
-        "Via Gessi"
-      ]
-    },
-    {
-      "id": 44,
-      "type": "Piazzale",
-      "name": "Gorini",
-      "confluences": [
-        "Via Asmara",
-        "Via Bassini",
-        "Viale Argonne",
-        "Via Ponzio"
-      ]
-    },
-    {
-      "id": 45,
-      "type": "Piazzale",
-      "name": "Susa",
-      "confluences": [
-        "Viale Argonne",
-        "Viale Campania",
-        "Viale Gran Sasso",
-        "Via Pacini"
-      ]
-    },
-    {
-      "id": 1790461480406,
-      "type": "Piazza",
-      "name": "Adrigrat",
-      "confluences": [
-        "Via dell'Ongaro",
-        "Via Sismondi",
-        "Via Battistotti sassi",
-        "Via Sismonti",
-        "Via Frapolli"
-      ]
-    },
-    {
-      "id": 1790461574008,
-      "type": "Piazza",
-      "name": "Agrippa",
-      "confluences": [
-        "Via Volvinio",
-        "Via Neera",
-        "Via Medeghino",
-        "Via Bellarmino",
-        "Via Perussia",
-        "Via Valla"
+        "Galleria Vittorio Emanuele II",
+        "Via Silvio Pellico",
+        "Via Mengoni",
+        "Via dei Mercanti",
+        "Via Orefici",
+        "Via Torino",
+        "Via Mazzini",
+        "Via Guglielmo Marconi",
+        "Piazzetta Reale",
+        "Via Arcivescovado",
+        "Corso Vittorio Emanuele II",
+        "Via Santa Radegonda",
+        "Via San Raffaele",
+        "Via Ugo Foscolo"
       ]
     },
     {
@@ -609,16 +632,279 @@
       ]
     },
     {
-      "id": 1790463522663,
-      "type": "Piazza",
-      "name": "Amendola",
+      "id": 44,
+      "type": "Piazzale",
+      "name": "Gorini",
       "confluences": [
-        "Viale Berengario",
+        "Via Ponzio",
+        "Via Mangiagalli",
+        "Via Botticelli",
+        "Via Moretto da Brescia",
+        "Via Aselli",
+        "Via Inama",
+        "Via Strambio",
+        "Via Venezian"
+      ]
+    },
+    {
+      "id": 29,
+      "type": "Piazza",
+      "name": "Gramsci",
+      "confluences": [
+        "Via Procaccini",
+        "Via Piero della Francesca",
+        "Via Procaccini",
+        "Via Sabatelli",
+        "Via Canonica"
+      ]
+    },
+    {
+      "id": 20,
+      "type": "Largo",
+      "name": "La Foppa",
+      "confluences": [
+        "Via Varese",
+        "Via Volta",
+        "Via della Moscova",
+        "Corso Garibaldi",
+        "Via Statuto",
+        "Via della Moscova",
+        "Corso Garibaldi"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "Piazzale",
+      "name": "Loreto",
+      "confluences": [
+        "Viale Monza",
+        "Viale Brianza",
+        "Via Andrea d'Oria",
+        "Corso Buenos Aires",
+        "Viale Abruzzi",
+        "Via Porpora",
+        "Via Andrea Costa",
+        "Via Padova"
+      ]
+    },
+    {
+      "id": 23,
+      "type": "Piazzale",
+      "name": "Lotto",
+      "confluences": [
+        "Viale Elia",
+        "Via Diomede",
+        "Via Caprilli",
+        "Via Gavirate",
+        "Viale Migliara",
+        "Via Monte Rosa",
         "Via Monte Bianco",
-        "Via Monte Rosa",
-        "Via Domenichino",
-        "Via Monte Rosa",
-        "Viale Ezio"
+        "Via Vigliani",
+        "Via Veniero"
+      ]
+    },
+    {
+      "id": 19,
+      "type": "Piazzale",
+      "name": "Maciachini",
+      "confluences": [
+        "Via Benigno Crespi",
+        "Via Imbonati",
+        "Viale Jenner",
+        "Via Valtellina",
+        "Via Menabrea",
+        "Via Farini",
+        "Viale Marche",
+        "Via Valassina"
+      ]
+    },
+    {
+      "id": 39,
+      "type": "Piazza",
+      "name": "Meda",
+      "confluences": [
+        "Via Pietro Verri",
+        "Piazza Belgioioso",
+        "Via Catena",
+        "Via Hoepli",
+        "Via San Paolo",
+        "Corso Matteotti"
+      ]
+    },
+    {
+      "id": 15,
+      "type": "Piazza",
+      "name": "Missori",
+      "confluences": [
+        "Via Mazzini",
+        "Via dell'Unione",
+        "Via Zebedia",
+        "Corso Italia",
+        "Corso di Porta Romana",
+        "Via Albricci",
+        "Via Gonzaga"
+      ]
+    },
+    {
+      "id": 32,
+      "type": "Piazza",
+      "name": "Piemonte",
+      "confluences": [
+        "Via Buonarroti",
+        "Via Cuneo",
+        "Via Rota",
+        "Via Asti",
+        "Via Seprio",
+        "Via Sardegna",
+        "Via Washington",
+        "Via Elba",
+        "Via Monferrato",
+        "Corso Vercelli"
+      ]
+    },
+    {
+      "id": 30,
+      "type": "Largo",
+      "name": "Richini",
+      "confluences": [
+        "Via Sant'Antonio",
+        "Via Chiaravalle",
+        "Via Pantano",
+        "Via Osti",
+        "Vicolo Santa Caterina",
+        "Via Festa del Perdono"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "Piazza",
+      "name": "San Babila",
+      "confluences": [
+        "Corso Venezia",
+        "Via Bagutta",
+        "Corso Matteotti",
+        "Corso Vittorio Emanuele II",
+        "Largo Toscanini",
+        "Corso Europa",
+        "Via Durini",
+        "Via Borgogna",
+        "Corso Monforte"
+      ]
+    },
+    {
+      "id": 13,
+      "type": "Piazza",
+      "name": "Sant'Ambrogio",
+      "confluences": [
+        "Via Terraggio",
+        "Via San Vittore",
+        "Via Necchi",
+        "Via Santa Valeria",
+        "Via Sant'agnese"
+      ]
+    },
+    {
+      "id": 35,
+      "type": "Piazza",
+      "name": "Sant'Eustorgio",
+      "confluences": [
+        "Corso di Porta Ticinese",
+        "Via Santa Croce"
+      ]
+    },
+    {
+      "id": 34,
+      "type": "Piazza",
+      "name": "Santo Stefano",
+      "confluences": [
+        "Via Brolo",
+        "Via Larga",
+        "Via Festa del Perdono",
+        "Via Laghetto",
+        "Via San Bernardino"
+      ]
+    },
+    {
+      "id": 28,
+      "type": "Piazzale",
+      "name": "Selinunte",
+      "confluences": [
+        "Via Mar Jonio",
+        "Via Zamagna",
+        "Via Morgantini",
+        "Viale Aretusa",
+        "Via Gigante",
+        "Via Maratta"
+      ]
+    },
+    {
+      "id": 45,
+      "type": "Piazzale",
+      "name": "Susa",
+      "confluences": [
+        "Viale Romagna",
+        "Via Sidoli",
+        "Via Gozzi",
+        "Corso Plebisciti",
+        "Via Turroni",
+        "Viale Campania",
+        "Via del'Ongaro",
+        "Viale Argonne",
+        "Via Giovanni da Milano"
+      ]
+    },
+    {
+      "id": 17,
+      "type": "Piazza",
+      "name": "Tricolore",
+      "confluences": [
+        "Viale Piave",
+        "Viale Majno",
+        "Corso Monforte",
+        "Viale Bianca Maria",
+        "Viale Premuda",
+        "Corso Concordia"
+      ]
+    },
+    {
+      "id": 25,
+      "type": "Piazzale",
+      "name": "Udine",
+      "confluences": [
+        "Via Carnia",
+        "Via Tolmezzo",
+        "Via Pordenone",
+        "Via Ronchi",
+        "Via Feltre"
+      ]
+    },
+    {
+      "id": 22,
+      "type": "Piazza",
+      "name": "Wagner",
+      "confluences": [
+        "Via Buonarroti",
+        "Via San Siro",
+        "Via Marghera",
+        "Via Buonarroti",
+        "Via Belfiore",
+        "Via Piero Capponi"
+      ]
+    },
+    {
+      "id": 10,
+      "type": "Piazza",
+      "name": "XXIV Maggio",
+      "confluences": [
+        "Corso di Porta Ticinese",
+        "Viale Gabriele d'Annunzio",
+        "Viale Gorizia",
+        "Via Scoglio di quarto",
+        "Via Manusardi",
+        "Via Trincea delle Frasche",
+        "Via Col di Lana",
+        "Via Gian Galeazzo",
+        "Via Sambuco"
       ]
     }
   ],
@@ -640,9 +926,164 @@
       "style": "not-italic font-semibold tracking-normal"
     },
     {
-      "id": 1790471637637,
-      "title": "Duomo - Largo della Robbia",
+      "id": 1790530088268.8274,
+      "title": "CADORNA - PIAZZA AXUM (SAN SIRO)",
+      "content": "CADORNA, PIAZZA AXUM (STADIO SAN SIRO)\n\nCADORNA, VIA BOCCACCIO, PIAZZA VIRGILIO, VIA BOCCACCIO, PIAZZA GIOVINE ITALIA, VIA BOCCACCIO ,  PIAZZA DELLA CONCILIAZIONE ,  VIA ALBERTO DA GIUSSANO ,  VIA GUIDO D’AREZZO ,  VIA DEL BURCHIELLO ,  VIA GIOTTO ,  PIAZZA BUONARROTI ,  VIA MONTE ROSA ,  PIAZZA AMENDOLA ,  VIA MONTE ROSA ,  SX. IN VIA TEMPESTA, PIAZZALE ZAVATTARI, VIA MONREALE, PIAZZALE SEGESTA, VIA STRATICO, PIAZZA ESQUILINO, VIA DEI ROSPIGLIOSI, PIAZZA AXUM \n\n"
+    },
+    {
+      "id": 1790530091125.2087,
+      "title": "CADORNA - PIAZZA DELLO SPORT (SAN SIRO)",
+      "content": "CADORNA – PIAZZALE DELLO SPORT\n\nCADORNA – VIA BOCCACCIO – PIAZZA VIRGILIO – VIA BOCCACCIO – PIAZZA GIOVINE ITALIA – VIA BOCCACCIO – PIAZZA DELLA CONCILIAZIONE – VIA ALBERTO DA GIUSSANO – VIA GUIDO D’AREZZO – VIA DEL BURCHIELLO – VIA GIOTTO – PIAZZA BUONARROTI – VIA MONTE ROSA – PIAZZA AMENDOLA – VIA MONTE ROSA – PIAZZALE LOTTO – VIA CAPRILLI – PIAZZALE DELLO SPORT (SAN SIRO)\n\n"
+    },
+    {
+      "id": 1790530088733.6226,
+      "title": "CORDUSIO - P.ZA PIEMONTE",
+      "content": "CORDUSIO – P. ZA PIEMONTE\n\n\n\nPIAZZA CORDUSIO – VIA DANTE – VIA MERAVIGLI (DOVE SI TROVA LA CAMERA DI COMMERCIO) – P.ZA SAN PIETRO E LINO – VIA MERAVIGLI – C.SO MAGENTA – LARGO ENZO TORTORA – C.SO MAGENTA – LARGO D’ANCONA – P.ZA SANTA MARIA DELLE GRAZIE – C.SO MAGENTA – P. LE BARACCA – C.SO VERCELLI – L.GO SETTIMIO SEVERO – CORSO VERCELLI – P.ZA PIEMONTE\n\n"
+    },
+    {
+      "id": 1790530091482.992,
+      "title": "DUOMO - LARGO DELLA ROBBIA",
       "content": "DUOMO – LARGO DELLA ROBBIA\n\nP.ZA DUOMO – VIA MENGONI – LARGO ABBADO – VIA SAN PROTASO – LARGO BELOTTI – VIA PORRONE – VIA SAN PROSPERO – VIA MERAVIGLI – PIAZZA SANTI PIETRO E LINO – VIA MERAVIGLI – CORSO MAGENTA – LARGO ENZO TORTORA – CORSO MAGENTA – LARGO D’ANCONA – VIA VINCENZO MONTI – PIAZZA VIRGILIO – VIA BOCCACCIO – PIAZZA GIOVINE ITALIA – SUBITO A DESTRA IN VIA MASCHERONI – PIAZZA TOMMASEO – VIA GABRIELE ROSSETTI – LARGO CAMUS – VIA GABRIELE ROSSETTI – SX IN VIA CASSIODORO – LARGO DELLA ROBBIA\n\n\n\n"
+    },
+    {
+      "id": 1790530091593.2256,
+      "title": "DUOMO - NIGUARDA",
+      "content": "DUOMO-OSPEDALE NIGUARDA\n\nDUOMO – VIA MENGONI – LARGO ABBADO – VIA SAN PROTASO – LARGO BELOTTI – VIA PORRONE – DX IN VIA BROLETTO – VIA PONTE VETERO CON PIAZZA DEL CARMINE – VIA MERCATO – CORSO GARIBALDI – SX IN VIA ANFITEATRO – VIA GIULIANOVA – DX IN VIA LEGNANO – PIAZZA LEGA LOMBARDA CON PIAZZALE BIANCAMANO – VIA MONTELLO – P.LE BAIAMONTI – VIA FARINI – CAVALCAVIA DELLA SORGENTE – VIA FARINI – PIAZZA PASOLINI – VIA FARINI – PIAZZALE MACIACCHINI – VIA VALASSINA – PIAZZA NIZZA – VIA BENEFFATTORI DELL’OSPEDALE – PIAZZA DELL’OSPEDALE MAGGIORE CA GRANDA.\n\n"
+    },
+    {
+      "id": 1790530091806.0974,
+      "title": "DUOMO - PIAZZA UDINE",
+      "content": "PERCORSO DUOMO - PIAZZA UDINE\n\nPIAZZA DUOMO, VIA MENGONI, LARGO ABBADO VIA SANTA MARGHERITA PIAZZA DELLA SCALA. CON LARGO GHIRINGHELLI QUI TROVIAMO COME MONUMENTI PIAZZA DELLA SCALA. E PALAZZO MARINO INVECE, IN LARGO GHIRINGHELLI. TROVIAMO IL MONUMENTO DEDICATO A GIULIO RICORDI SVOLTIAMO A DESTRA INVIA CASE ROTTE. ARRIVIAMO IN LARGO MATTIOLI PRENDIAMO VIA CATENA ED ARRIVIAMO IN PIAZZA MEDA. PRENDIAMO CORSO MATTEOTTI ED ARRIVIAMO IN PIAZZA SAN BABILA DA QUI PRENDIAMO CORSO VENEZIA DOVE TROVIAMO GLI UFFICI DELL’ACI DELL’EPAM E DELL’UNIONE DEL COMMERCIO E DEL TURISMO PROSEGUENDO SU CORSO VENEZIA ARRIVIAMO IN PIAZZALE OBERDAN. DA QUI PRENDIAMO CORSO BUENOS AIRES CON PIAZZA LIMA E PIAZZA ARGENTINA. ANCORA CORSO BUENOS AIRES ED ARRIVIAMO IN PIAZZALE LORETO. DA QUI PRENDIAMO VIA ANDREA COSTA CHE CI PORTA IN PIAZZA DURANTE LE QUALI CONFLUENZE SONO VIA ANDREA COSTA, VIALE LOMBARDIA VIA CATALANI VIA CASORETTO VIA PREDABISSI VIA STAZIO VIA MARCO D’ALVIANO. DA QUI PRENDIAMO VIA CASORETTO. CHE CI PORTA IN PIAZZA SAN MATERNO - ANCORA VIA CASORETTO LARGO GEMITO. PRENDIAMO IL SOTTOPASSO DELLA FERROVIA VIA PORDENONE ED ARRIVIAMO IN PIAZZA UDINE LE QUALI CONVERGENZE SONO VIA PORDENONE VIA RONCHI, VIA FELTRE VIA CARNIA VIA TOLMEZZO\n\n\n\nPERCORSO ALTERNATIVO DA PIAZZALE LORETO\n\nVIA PORPORA – PIAZZA GOBETTI – VIA PORPORA – SOTTOPASSO DELLA FERROVIA – PIAZZA MONTE TITANO – VIA RONCHI – PIAZZA UDINE\n\n"
+    },
+    {
+      "id": 1790530089690.087,
+      "title": "DUOMO - STAZIONE PORTA GENOVA",
+      "content": "DUOMO – STAZIONE PORTA GENOVA\n\nVIA MENGONI – LARGO ABBADO – SX. IN VIA SAN PROTASO – LARGO BELOTTI – VIA PORRONE – VIA SAN PROSPERO – VIA MERAVIGLI – SX. IN VIA SANTA MARIA SEGRETA – SX. IN VIA CORDUSIO – PIAZZA CORDUSIO – VIA OREFICI – VIA TORINO – PIAZZA SANTA MARIA BELTRADE – VIA TORINO –PIAZZA SAN GIORGIO - VIA TORINO - LARGO CARROBBIO – VIA CESARE CORRENTI – PIAZZA DELLA RESISTENZA PARTIGIANA – CORSO GENOVA – PIAZZALE CANTORE – CORSO CRISTOFORO COLOMBO – PIAZZA DELLA STAZIONE DI PORTA GENOVA.\n\n"
+    },
+    {
+      "id": 1790530091701.0679,
+      "title": "DUOMO – OSPEDALE SACCO",
+      "content": "DUOMO – OSPEDALE SACCO\n\nVIA MENGONI – LARGO ABBADO – VIA SAN PROTASO – LARGO BELOTTI – VIA PORRONE – DX VIA BROLETTO – VIA PONTE VETERO CON PIAZZA DEL CARMINE – VIA MERCATO – CORSO GARIBALDI – SX. VIA ANFITEATRO – VIA GIULIANOVA – DX IN VIA LEGNANO – PIAZZA LEGA LOMBARDA CON P.LE BIANCAMANO  – VIA MONTELLO – P.LE BAIAMONTI – VIA CERESIO – P.ZA CIMITERO MONUMENTALE – VIA LUIGI IX – P.ZA CORIOLANO – VIA CENISIO – LARGO PIAN DEL RE – VIA CENISIO – P.ZA DIOCLEZIANO – DX IN VIA MAC MAHON FINO A PIAZZA POMPEO CASTELLI – VIA CONSOLE MARCELLO – CAVALCAVIA PALIZZI – VIA PALIZZI – VIA MAMBRETTI (STAZIONE DELLA CERTOSA) – LARGO BOCCIONI – VIA G.B. GRASSI – OSPEDALE SACCO  \n\n"
+    },
+    {
+      "id": 1790530092064.9146,
+      "title": "DUOMO-MALPENSA",
+      "content": "DUOMO – MALPENSA\n\nVIA MENGONI – LARGO ABBADO – VIA SAN PROTASO – LARGO BELOTTI – VIA PORRONE – VIA BROLETTO – A SX. IN VIA CUSANI – LARGO CAIROLI – FORO BONAPARTE DISPARI CON LARGO MARIA CALLAS – P. LE CADORNA – VIA PALEOCAPA – VIA ALEMAGNA – VIALE MOLIER – VIALE MILTON – VIA CANOVA – CORSO SEMPIONE – P.ZA FIRENZE – VIALE CERTOSA CON PIAZZALE ACCURSIO E PZLE AI LAGHI – VIA MONTEFELTRO PER POI IMBOCCARE IL CAVALCAVIA DEL GHISALLO PER PRENDERE LA MILANO LAGHI;\n\nSI INCONTRA LA PRIMA USCITA SULLA DESTRA CHE VA IN DIREZIONE:\n\nA4 DIREZIONE VENEZIA\n\nVIA COGNE – OSPEDALE SACCO – SS VARESINA\n\nSECONDA USCITA A SINISTRA\n\nA4 DIREZIONE TORINO – A1 BOLOGNA – A7 GENOVA – TANGENZIALE OVEST\n\n\n\nSI PROSEGUE DRITTO VERSO LA A8/A9 DOVE PRIMA DELLA BARRIERA NORD SI INCONTRANO ALTRE DUE USCITE CHE SONO:\n\nPOLO FIERISTICO RHO – PERO \n\nMILANO/MEDA – MONZA/BOLLATE – TANGENZIALE NORD\n\nPASSATA LA BARRIERA INCONTRIAMO LE SEGUENTI USCITE\n\nARESE/LAINATE\n\nBIVIO A9 COMO/CHIASSO – A8 VARESE/GRAVELLONA\n\nSI PROSEGUE SU A8 PER POI INCONTRARE LE SEGUENTI USCITE:\n\nORIGGIO OVEST\n\nLEGNANO RESCALDINA\n\nCASTELLANZA\n\nBUSTO ARSIZIO\n\nIMBOCCHIAMO L’USCITA BUSTO ARSIZIO PER POI PRENDERE LA STRADA STATALE 336 DOVE ARRIVIAMO PRIMA AL TERMINAL 2 E POI AL TERMINAL 1\n\n"
+    },
+    {
+      "id": 1790530090003.2397,
+      "title": "DUOMO-PIAZZA GIOVINE ITALIA",
+      "content": "DUOMO – PIAZZA GIOVINE ITALIA\n\nVIA MENGONI – LARGO ABBADO – VIA SAN PROTASO – LARGO BELOTTI – VIA PORRONE – VIA SAN PROSPERO – VIA MERAVIGLI – PIAZZA SANTI PIETRO E LINO  – VIA MERAVIGLI - CORSO MAGENTA – LARGO ENZO TORTORA – CORSO MAGENTA – LARGO D’ANCONA – A DX IN VIA VINCENZO MONTI – PIAZZA SAN VIRGILIO – A SX IN VIA BOCCACCIO – PIAZZA GIOVINE ITALIA\n\n"
+    },
+    {
+      "id": 1790530092273.1873,
+      "title": "LARGO ISABELLA D'ARAGONA - OSPEDALE GAETANO PINI",
+      "content": "LARGO ISABELLA D’ARAGONA – OSPEDALE GAETANO PINI\n\nLARGO ISABELLA D’ARAGONA – SX IN VIA BIANCA DI SAVOIA – P.ZA MONDADORI – VIA BIANCA DI SAVOIA – PIAZZA FERRARI – VIA GAETANO PINI – OSPEDALE GAETANO PINI \n\n"
+    },
+    {
+      "id": 1790530090269.47,
+      "title": "LARGO PIAN DEL RE - BOLLATE",
+      "content": "LARGO PIAN DEL RE – BOLLATE \n\n\n\nLARGO PIAN DEL RE – VIA MESSINA – P.ZA PEREGO – VIA STILICONE – VIA PRINCIPE EUGENIO – VIA MAC MAHON – P.ZA POMPEO CASTELLLI – VIA CONSOLE MARCELLO – CAVALCAVIA PALIZZI – VIA PALIZZI – VIA MAMBRETTI (STAZIONE FC CERTOSA) – LARGO BOCCIONI – VIA GRASSI – OSPEDALE SACCO – VIA MILANO DI BARANZATE - BOLLATE\n\n"
+    },
+    {
+      "id": 1790530092485.9697,
+      "title": "LINATE - DUOMO",
+      "content": "LINATE – DUOMO\n\n\n\nLINATE – V.LE FORLANINI – TRE PONTI – VIALE CORSICA – LARGO RODARI – VIALE CORSICA – C.SO 22 MARZO CON (PIAZZA GRANDI – PIAZZA EMILIA – PIAZZA SANTA MARIA DEL SUFFRAGIO) – PIAZZA 5 GIORNATE – CORSO DI PORTA VITTORIA – LARGO BIAGI (TRIBUNALE DI MILANO) – CORSO DI PORTA VITTORIA – LARGO AUGUSTO – VIA DEL VERZIERE – CI LASCIAMO SULLA DESTRA LARGO BERSAGLIERI D’ITALIA E PIAZZA FONTANA POI PRENDIAMO - VIA LARGA – VIA BARACCHINI – PIAZZA DIAZ – VIA GAETANO GIARDINO – LARGO BORGES  -  VIA MAZZINI – PIAZZA DUOMO\n\n"
+    },
+    {
+      "id": 1790530090546.647,
+      "title": "LINATE - LARGO ASCARI",
+      "content": "LINATE – LARGO ASCARI\n\nLINATE – VIALE FORLANINI – VIA REPETTI – VIA MARCO BRUTO – P. LE OVIDIO – VIA ATTILIO REGOLO – P. ZA CARTAGINE – VIA CERSARE LOMBROSO – A SINISTRA IN VIALE MOLISE – ED ARRIVIAMO IN P. LE CUOCO – PRENDIAMO VIA CARABELLI (DOVE C’E’ LA STAZIONE DEI VIGILI DEL FUOCO – P. ZA EMILIO SALGARI – VIA CARONCINI – VIA TERTULLIANO – SX IN VIALE UMBRIA – PIAZZA LODI -  IN VIALE ISONZO CON P.ZA TRENTO – VIALE TOSCANA CON LARGO BEETHOVEN  - VIALE TIBALDI CON PIAZZA BIBBIENA – VIALE LIGURIA CON PIAZZA BELFANTI – ANCORA UN PEZZO VIALE LIGURIA ED ARRIVIAMO IN LARGO ASCARI. \n\n\n\nPERCORSO ALTERNATIVO DA VIA TERTULLIANO\n\nVIA TERTULLIANO – PROSEGUIAMO DRITTI SU VIA MURATORI – SX IN VIA LAZZARO PAPI – PIAZZA BUOZZI – VIA PIACENZA – VIA GIULIO ROMANO – VIA BELLEZZA – SX IN VIA VITTADINI ED USCIAMO SU VIALE ISONZO CON P.ZA TRENTO – VIALE TOSCANA CON LARGO BEETHOVEN  - VIALE TIBALDI CON PIAZZA BIBBIENA – VIALE LIGURIA CON PIAZZA BELFANTI – ANCORA UN PEZZO VIALE LIGURIA ED ARRIVIAMO IN LARGO ASCARI.\n\n"
+    },
+    {
+      "id": 1790530092675.549,
+      "title": "LINATE - PIAZZA BAUSAN O CIRCONVALLAZIONE ESTERNA",
+      "content": "LINATE – PIAZZA BAUSAN/CAVALCAVIA BACULA\n\nCIRCONVALLAZIONE INTERNA\n\n\n\nVIALE FORLANINI – 3 PONTI VIALE CORSICA – LARGO RODARI – VIA CARDINAL MEZZO DANTI – LARGO SERENI – VIA PANNONIA – VIALE ARGONNE – PIAZZA FUSINA – VIALE ARGONNE – PIAZZALE SUSA – VIA SIDOLI – PIAZZA NOVELLI VIA GAIO – VIALE DEI MILLE – PIAZZA ASCOLI – VIALE ABRUZZI – SX. IN VIA PICCINNI – VIA PERGOLESI (ATTRAVERSIAMO BUOENOS AIRES  E SE GIRIAMO A DESTRA CI TROVIAMO PIAZZA ARGENTINA) – PIAZZA CAIAZZO – VIA PERGOLESI – PIAZZA LUIGI DI SAVOIA – SI PASSA SOTTO IL SOTTOPASSO MORTIROLO – SI PRENDE VIA TONALE – ATTRAVERSIAMO MELCHIORRE GIOIA – VIALE SONDRIO – VIALE NAZARIO SAURO – PIAZZA APPIO CLAUDIO – VIALE NAZARIO SAURO E ATTRAVERSIAMO VIALE ZARA – VIALE STELVIO – PIAZZA SPOTORNO – VIALE STELVIO – VIALE LANCETTI: \n\nDA QUI SE SI VUOLE ANDARE VERSO PIAZZA BAUSAN \n\nSI PROSEGUE SU VIA LANCETTI – VIA TORELLI – PIAZZA NIGRA – VIA DEGLI IMBRIANI – PIAZZA BAUSAN\n\n\n\nSE INVECE SU VUOLE FARE LA CERCHIA:\n\nDA VIALE LANCETTI SI PRENDE A DESTRA LA VIA RESEGONE (CON LA PREFERENZIALE) – SX VIALE JENNER – PIAZZA NIGRA – VIALE BODIO – PIAZZALE LUGANO – CAVALCAVIA BACULA.\n\n"
+    },
+    {
+      "id": 1790530090813.803,
+      "title": "LINATE - PIAZZALE LIBIA",
+      "content": "LINATE - PIAZZALE LIBIA\n\nVIALE FORLANINI – 3 PONTI – VIALE CORSICA – LARGO RODARI – VIALE CORSICA – CORSO 22 MARZO – PIAZZA GRANDI E PIAZZA EMILIA – CORSO 22 MARZO – SX. IN VIA CADORE – PIAZZALE LIBIA\n\n\n\nPIAZZALE LIBIA – PIAZZA DI PORTA LODOVICA\n\nPIAZZALE LIBIA – VIA TIRABOSCHI – VIA LAZZARO PAPI – PIAZZA BUOZZI – VIA PIACENZA – VIA GIULIO ROMANO – VIA BELLEZZA – DX IN VIA VITTADINI – SX. IN VIALE BLIGNI – PIAZZA DI PORTA LODOVICA\n\n"
+    },
+    {
+      "id": 1790530092865.6604,
+      "title": "LINATE - SAN BABILA",
+      "content": "LINATE – SAN BABILA\n\n\n\nLINATE – V.LE FORLANINI – TRE PONTI – VIALE CORSICA – LARGO RODARI – VIA CARDINAL MEZZOFANTI – LARGO SERENI – VIA PANNONIA – VIALE ARGONE – PIAZZA FUSINA – VIALE ARGONNE – P.LE SUSA – CORSO PLEBISCITI – P.LE DATEO – CORSO INDIPENDENZA – P.ZA DEL RISORGIMENTO – C.SO CONCORDIA – P.ZA DEL TRICOLORE – CORSO MONFORTE – P.ZA SAN BABILA.\n\n"
+    },
+    {
+      "id": 1790530091083.9968,
+      "title": "LINATE - VILLA TURRO",
+      "content": "LINATE – VILLA TURRO DISTACCAMENTO SAN RAFFELE (VIA STAMIRA D’ANCONA)\n\n\n\nLINATE – 3 PONTI – VIALE CORSICA – LARGO RODARI – VIA CARDINAL MEZZO FANTI – LARGO SERENI – SX. IN VIA PANNONIA – VIALE ARGONNE – PIAZZA FUSINA – DX. IN VIA ASELLI – PIAZZA GORINI – VIA PONZIO – VIA TEODOSIO – PIAZZA SIRE RAUL – VIA CLITUMNO – DX. IN VIA PADOVA – SX. IN VIA CAVEZZALI – PIAZZA SESIA – VIA STAMIRA D’ANCONA – ARRIVATI A VILLA TURRO\n\n"
+    },
+    {
+      "id": 1790530095160.6797,
+      "title": "LINATE-SAN PAOLO-SAN CARLO",
+      "content": "LINATE – OSP. SAN PAOLO (VIA DI RUDINI) – OSP. SAN CARLO (VIA PIO II)\n\nVIALE FORLANINI – SX. IN VIA REPETTI – VIA MARCO BRUTO – PIAZZA OVIDIO – VIA ATTILIO REGOLO – PIAZZA CARTAGINE – VIA CESARE LOMBROSO – SX. IN VIALE MOLISE – PIAZZALE CUOCO – VIALE PUGLIE – PIAZZALE BOLOGNA – VIA BACCHIGLIONE - VIALE BRENTA – PIAZZA BONOMELLI – VIALE ORTELS – SX. IN VIA RIPAMONTI – DX IN VIA GALLURA – PIAZZA CHIARADIA – VIA ANTONINI – VIALE CERMENATE – PIAZZA CARRARA – CAVALCAVIA SCHIAVONI – PRENDIAMO IL SOTTOPASSO DI PIAZZA MAGGI – ARRIVIAMO SU VIALE FAMAGOSTA – SX. VIA SAN VIGILIO (INGRESSO PRONTO SOCCORSO) – DX. IN VIA DI RUDINI (INGRESSO OSPEDALE)\n\n\n\nVIA DI RUDINI – DX. IN VIA VOLTRI – PIAZZA MIANI – SX- IN VIA SANTA RITA DA CASCIA – LARGO GIO PONTI – VIA SANTA RITA DA CASCIA – PIAZZA OHM – CAVALCAVIA DON MILANI – VIA BRUNELLESCHI – SX. IN VIA GIAMBELLINO – LARGO BALESTRA – VIA GIAMBELLINO – LARGO GIAMBELLINO – VIA GIAMBELLINO – PIAZZA TIRANA – PRENDIAMO VIA INGANNI – PROSEGUIAMO IN VIA SAM BON (OSPEDALE MILITARE) – SX. VIA FORZE ARMATE – PIAZZA OLIVELLI – VIA FORZE ARMATE – VIA OLIVERI – VIA VENEGONI – VIA PIO II (INGRESSO OSPEDALE E PRONTO SOCCORSO)\n\n"
+    },
+    {
+      "id": 1790530091387.215,
+      "title": "P.ZA MEDAGLIE D'ORO - STAZIONE ROGOREDO",
+      "content": "P.ZA MEDAGLIE D’ORO – STAZ. ROGOREDO\n\n\n\nP.ZA MEDAGLIE D’ORO – CORSO LODI – P.ZA BUOZZI – CORSO LODI – P.ZA LODI – CORSO LODI – PONTE SAN LUIGI – CORSO LODI - P.LE CORVETTO – VIA MARTINENGO – VIA BONCOMPAGNI – VIA TOFFETTI – P.ZA MISTRAL – VIA CASSINIS – STAZIONE ROGOREDO.\n\n"
+    },
+    {
+      "id": 1790530095357.187,
+      "title": "PERCORSO LINATE - STAZIONE CENTRALE",
+      "content": "LINATE – STAZIONE CENTRALE\t\t\tPERCORSO 1\n\nLINATE – VIALE FORLANINI – TRE PONTI – VIALE CORSICA – LARGO RODARI – VIA CARDINALE MEZZOFANTI –LARGO SERENI - VIA PANNONIA – VIALE ARGONNE – PIAZZA FUSINA – VIALE ARGONNE – PIAZZALE SUSA – VIA SIDOLI – PIAZZA NOVELLI (AERONAUTICA MILITARE) – VIA GAIO – VIA DEI MILLE – PIAZZA ASCOLI – VIALE ABRUZZI – VIA PLINIO – PIAZZA LIMA – VIA VITRUVIO – PIAZZA DUCA D’AOSTA – STAZIONE CENTRALE\n\n\n\nLINATE – STAZIONE CENTRALE\t\t\tPERCORSO 2\n\nLINATE – VIALE FORLANINI – TRE PONTI – VIALE CORSICA – LARGO RODARI – VIA CARDINAL MEZZOFANTI – LARGO SERENI - VIA PANNONIA – VIALE ARGONNE – PIAZZA FUSINA – VIALE ARGONNE – PIAZZALE SUSA – VIA SIDOLI – PIAZZA NOVELLI (AERONAUTICA MILITARE) – VIA GAIO – VIA GIUSTINIANO – PIAZZA ADELAIDE DI SAVOIA – VIA BARTOLOMEO EUSTACHI – A SX VIALE PLINIO – PIAZZA LIMA – VIA VITRUVIO – PIAZZA DUCA D’AOSTA – STAZIONE CENTRALE\n\n\n\nSTAZIONE CENTRALE – LINATE\t\t\tPERCORSO 1\n\nSTAZIONE CENTRALE – PIAZZA DUCA D’AOSTA – VIA VITRUVIO – PIAZZA LIMA – VIA PLINIO – VIALE ABRUZZI – PIAZZA ASCOLI – VIA DEI MILLE – VIA GAIO – PIAZZA NOVELLI – VIA SIDOLI – VIA GOZZI – PIAZZALE SUSA – VIALE ARGONNE – LARGO PORTO DI CLASSE – VIALE ARGONNE – VIA NEGROLI – VIALE CORSICA – LARGO RODARI – TRE PONTI – VIALE FORLANINI – LINATE\n\n\n\nSTAZIONE CENTRALE – LINATE\t\t\tPERCORSO 2\n\nSTAZIONE CENTRALE – PIAZZA DUCA D’AOSTA – VIA VITRUVIO – PIAZZA LIMA – VIA PLINIO – VIALE ABRUZZI – PIAZZA ASCOLI – VIA DEI MILLE – VIA GAIO – PIAZZA NOVELLI – VIA SIDOLI – VIA GOZZI – PIAZZALE SUSA – VIALE ARGONNE – VIA DELL’ONGARO – PIAZZA ADIGRAT – VIA BATTISTOTTI – VIALE CORSICA – LARGO RODARI – TRE PONTI – VIALE FORLANINI - LINATE\n\n\n\n\n\n\n\n"
+    },
+    {
+      "id": 1790530091648.4895,
+      "title": "Percorso piazza cordusio - ospedale San Carlo",
+      "content": "PIAZZA CORDUSIO – VIA DANTE - VIA MERAVIGLI - PIAZZA SAN PIETRO E LINO – VIA MERAVIGLI – CORSO MAGENTA – LARGO ENZO TORTORA – CORSO MAGENTA CON – LARGO D’ANCONA – PIAZZA SANTA MARIA DELLE GRAZIE – CORSO MAGENTA - PIAZZALE BARACCA – CORSO VERCELLI – LARGO SETTIMIO SEVERO – PIAZZA PIEMONTE – VIA CUNEO – VIA MARGHERA – PIAZZA DE ANGELI – VIA PARMIGIANINO – PIAZZA DEL GHIRLANDAIO – VIA RUBENS – PIAZZA VELASQUEZ – VIA REMBRANT – PIAZZA MELOZZO DA FORLI – VIA NOVARA – PIAZZA CARLO AMATI – VIA NOVARA – VIA SAN GIUSTO – VIA PIO II - SAN CARLO  (IN VIA SAN PIO II C’È SIA L’OSPEDALE CHE IL PRONTO SOCCORSO)\n\n"
+    },
+    {
+      "id": 1790530095545.508,
+      "title": "PIAZZA 24 MAGGIO - LINATE",
+      "content": "PIAZZA 24 MAGGIO – LINATE\n\nPIAZZA 24 MAGGIO – CORSO DI PORTA TICINESE CON PIAZZA SANT’EUSTORGIO – DX IN VIA MOLINO DELLE ARMI – VIA SANTA SOFIA – VIA FRANCESCO SFORZA – DX. IN CORSO DI PORTA VITTORIA – LARGO BIAGI CON PIAZZA SAN PIETRO IN GESSATE – CORSO DI PORTA VITTORIA – PIAZZA 5 GIORNATE – CORSO 22 MARZO CON LE PIAZZE (SANTA MARIA DEL SUFFRAGGIO – PIAZZA EMILIA – PIAZZA GRANDI) – CORSO 22 MARZO – VIALE CORSICA -  LARGO RODARI – VIALE CORSICA – 3 PONTI – V.LE FORLANINI - LINATE\n\n\t\t\n\n"
+    },
+    {
+      "id": 1790530091921.5413,
+      "title": "PIAZZA 24 MAGGIO - MALPENSA",
+      "content": "\n\nP.ZA 24 MAGGIO – MALPENSA\n\n\n\nV.LE GABRIELE D’ANNUNZIO – P. LE CANTORE – C.SO GENOVA – VIA ARIBERTO – VIA OLONA – VIA CARDUCCI – LARGO D’ANCONA – VIA CARDUCCI – P. LE CADORNA – VIA PALEOCAPA – VIA ALEMAGNA – VIALE MOLIERE – VIALE MILTON – VIA CANOVA – C.SO SEMPIONE – P.ZA FIRENZE – VIALE CERTOSA CON P. LE ACCURSIO E PIAZZALE AI LAGHI – CONTROVIALE PRIMA DI SVOLTARE A DESTRA IN VIA MONTEFELTRO - PER POI IMBOCCARE IL CAVALCAVIA DEL GHISALLO PER PRENDERE LA MILANO LAGHI;\n\nSI INCONTRA LA PRIMA USCITA SULLA DESTRA CHE VA IN DIREZIONE: A4 DIREZIONE VENEZIA\n\nVIA COGNE – OSPEDALE SACCO – SS VARESINA\n\nSECONDA USCITA A SINISTRA\n\nA4 DIREZIONE TORINO – A1 BOLOGNA – A7 GENOVA – TANGENZIALE OVEST\n\n\n\nSI PROSEGUE DRITTO VERSO LA A8/A9 DOVE PRIMA DELLA BARRIERA NORD SI INCONTRANO ALTRE DUE USCITE CHE SONO:\n\nPOLO FIERISTICO RHO – PERO \n\nMILANO/MEDA – MONZA/BOLLATE – TANGENZIALE NORD\n\nPASSATA LA BARRIERA INCONTRIAMO LE SEGUENTI USCITE\n\nARESE/LAINATE\n\nBIVIO A9 COMO/CHIASSO – A8 VARESE/GRAVELLONA\n\nSI PROSEGUE SU A8 PER POI INCONTRARE LE SEGUENTI USCITE:\n\nORIGGIO OVEST\n\nLEGNANO RESCALDINA\n\nCASTELLANZA\n\nBUSTO ARSIZIO\n\nIMBOCCHIAMO L’USCITA BUSTO ARSIZIO PER POI PRENDERE LA STRADA STATALE 336 DOVE ARRIVIAMO PRIMA AL TERMINAL 2 E POI AL TERMINAL 1\n\n\n\n"
+    },
+    {
+      "id": 1790530095763.961,
+      "title": "PIAZZA ABBIATEGRASSO - NIGUARDA",
+      "content": "PIAZZA ABBIATEGRASSO – DUOMO – NIGUARDA (INGRESSO PRINCIPALE)\n\nPIAZZA ABBIATEGRASSO – VIA MEDEGHINO – PIAZZA AGRIPPA – VIA VALLA – VIA LAMPEDUSA – VIA CARLO BAZZI – VIA CASTELBARCO – PIAZZA SRAFFA – VIA TEULIE – PIAZZA PORTA LODOVICA – CORSO ITALIA (CASERMA MILITARE) – PIAZZA SANT’EUFEMIA – CORSO ITALIA – PIAZZA BERTARELLI – CORSO ITALIA – PIAZZA MISSORI – VIA MAZZINI – LARGO BORGES – VIA MAZZINI – PIAZZA DUOMO – VIA MENGONI – LARGO ABBADO – VIA SAN PROTASO – LARGO BELOTTI – VIA PORRONE – DX VIA BROLETTO – VIA PONTE VETERO CON A DX PIAZZA DEL CARMINE – VIA MERCATO – CORSO GARIBALDI – A SX IN VIA ANFITEATRO – VIA GIULIANOVA – VIA LEGNANO – PIAZZA LEGA LOMBARDA E PIAZZALE BIANCAMANO – VIA MONTELLO – PIAZZALE BAIAMONTI – VIA FARINI – CAVALCAVIA DELLA SORGENTE – VIA FARINI – PIAZZA PASOLINI – VIA FARINI – PIAZZALE MACIACCHINI – VIA VALASSINA – PIAZZA NIZZA – VIA BENEFATTORI DELL’OSPEDALE – PIAZZA DELL’OSPEDALE MAGGIORE CA’ GRANDA\n\n\n\nNIGUARDA PRONTO SOCCORSO (PARTENDO DA VIA VALLAZZE)\n\nVIA VALASSINA – SX IN VIA ENRICO FERMI – VIA MAJORANA\n\nPER USCIRE DAL PRONTO SOCCORSO \n\nVIA MAJORANA – SX IN VIA ENRICO FERMI – DX IN VIA CRESPI – P. LE MACIACCHINI\n\n\n\nPERCORSO ALTERNATIVO NON PASSANDO DAL CENTRO\n\nPIAZZA ABBIATEGRASSO – VIA MEDEGHINO – PIAZZA AGRIPPA – VIA VALLA – VIA LAMPEDUSA – VIA CARLO BAZZI – VIA CASTELBARCO CON PIAZZA SRAFFA – VIA TEULIE – PIAZZA DI PORTA LODOVICA – CORSO ITALIA – DX. IN VIA SANTA SOFIA – VIA FRANCESCO SFORZA – VIA VISCONTI DI MODRONE – VIA SAN DAMIANO – VIA SENATO – PIAZZA CAVOUR – VIA FATEBENEFRATELLI – DX. IN CORSO DI PORTA NUOVA – PIAZZA PRINCIPESSA CLOTILDE – SX. IN VIALE MONTE GRAPPA – PIAZZA 25 APRILE – VIALE PASUBIO – DX. IN VIA MARONCELLI – VIA FARINI – CAVALCAVIA DELLA SORGENTE – VIA FARINI – PIAZZA PASOLINI – VIA FARINI – PIAZZALE MACIACCHINI – VIA VALASSINA – PIAZZA NIZZA – VIA BENEFATTORI DELL’OSPEDALE – PIAZZA DELL’OSPEDALE MAGGIORE CA GRANDA.\n\n\n\n"
+    },
+    {
+      "id": 1790530092238.1338,
+      "title": "PIAZZA BACONE - PIAZZA BUOZZI (PERCORSO MOLTO IMPORTANTE)",
+      "content": "PIAZZA BACONE – PIAZZA BUOZZI\n\n\n\nPIAZZA BACONE – VIA EUSTACHI – PIAZZA ADELAIDE DI SAVOIA – VIA CASTEL MORRONE – VIA FRATELLI BRONZETTI – ATTRAVERSIAMO CORSO 22 MARZO – VIA CADORE - PIAZZALE LIBIA – VIA TIRABOSCHI – VIA LAZZARO PAPI – PIAZZA BUOZZI\n\n"
+    },
+    {
+      "id": 1790530095949.6936,
+      "title": "PIAZZA BAUSAN - OSPEDALE SACCO",
+      "content": "PIAZZA BAUSAN – OSPEDALE SACCO\n\n\n\nPIAZZA BAUSAN – VIA MASSARA DE CAPITANI – PIAZZA SCHIAVONE – VIA VARCHI – PIAZZALE LUGANO – CAVALCAVIA BACULA – VIALE MONTECENERI – DX IN VIA MAC MAHON – PIAZZA POMPEO CASTELLI – VIA CONSOLE MARCELLO – CAVALCAVIA PALIZZI – VIA PALIZZI – VIA MAMBRETTI – LARGO BOCCIONI – VIA G.B. GRASSI – OSPEDALE SACCO.\n\n"
+    },
+    {
+      "id": 1790530092523.4565,
+      "title": "PIAZZA FIRENZE - PIAZZA TIRANA",
+      "content": "PIAZZA FIRENZE – PIAZZA TIRANA (STAZIONE SAN CRISTOFORO)\n\nPIAZZA FIRENZE – CORSO SEMPIONE – VIA CANOVA – VIALE MILTON – VIALE MOLIER – VIA ALEMAGNA – VIA PALEOCAPA – PIAZZA CADORNA – VIA CARDUCCI – LARGO D’ANCONA – VIA CARDUCCI – VIA OLONA  PIAZZA SANT’AGOSTINO – VIA MODESTINO – VIA SOLARI – PIAZZA DEL ROSARIO – VIA SOLARI – PIAZZA NAPOLI – VIA GIAMBELLINO CON LARGO BALESTRA – LARGO GIAMBELLINO – PIAZZA TIRANA (STAZIONE SAN CRISTOFORO)\n\n"
+    },
+    {
+      "id": 1790530096136.136,
+      "title": "PIAZZA NAPOLI - PIAZZA ARGENTINA",
+      "content": "PIAZZA NAPOLI – PIAZZA ARGENTINA \n\nPIAZZA NAPOLI – VIA SOLARI – PIAZZA DEL ROSARIO – VIA SOLARI – VIA GHISLERI – VIA AUSONIO – VIA SAN CALOCERO – VIA SAPETO – CORSO GENOVA – PIAZZA RESISTENZA PARTIGIANA – DX IN VIA DE AMICIS –  VIA MOLINO DELLE ARMI - VIA SANTA SOFIA – VIA FRANCESCO SFORZA – VIA VISCONTI DI MODRONE – VIA SAN DAMIANO - DX. IN CORSO VENEZIA – PIAZZA OBERDAN – CORSO BUENOS AIRES – CON PIAZZA LIMA E PIAZZA ARGENTINA\n\n"
+    },
+    {
+      "id": 1790530092795.1848,
+      "title": "PIAZZALE ROGOREDO - OSPEDALE SAN CARLO",
+      "content": "PIAZZALE ROGOREDO – OSPEDALE SAN CARLO\n\nVIA CASSINIS – PIAZZA MISTRAL – VIA CASSINIS – VIA MAROCCHETTI – PIAZZALE CORVETTO – CORSO LODI – PONTE SAN LUIGI (STAZIONE DI PORTA ROMANA) – CORSO LODI – PIAZZA LODI – VIALE ISONZO CON PIAZZA TRENTO – VIALE TOSCANA CON LARGO BEETHOVEN – VIALE TIBALDI CON PIAZZA BIBBIENA – VIALE LIGURIA CON PIAZZA BELFANTI – LARGO ASCARI – VIALE CASSALA – PONTE CREPAX – VIALE TROIA – PIAZZA NAPOLI – VIALE MISURATA – PIAZZA BOLIVAR – VIALE MISURATA – PIAZZA TRIPOLI – VIALE BEZZI – A SX. IN VIA TRIVULZIO – PIAZZALE GAMBARA – VIA ANTONELLO DA MESSINA – PIAZZA VELASQUEZ – VIA REMBRANT – PIAZZA MELOZZO DA FORLI – VIA NOVARA – PIAZZA AMATI – VIA NOVARA – SX. IN VIA SAN GIUSTO – VIA PIO II – OSPEDALE SAN CARLO.\n\n"
+    },
+    {
+      "id": 1790530096325.3127,
+      "title": "PIAZZALE SELINUNTE - CENTRALE DUCA D'AOSTA",
+      "content": "PIAZZALE SELINUNTE – CENTRALE\n\nPIAZZALE SELINUNTE – VIA MARATTA – PIAZZALE FALTERONA – VIA VODICE - PIAZZALE ZAVATTARI – VIA TEMPESTA – VIA GUGLIELMO SILVA – VIA COLLEONI –  PIAZZA DAMIANO CHIESA – VIA EMANUELE FILIBERTO - VIA EZIO BIONDI – PIAZZA CANEVA – DX IN VIA CENISIO – PIAZZA DIOCLEZIANO – VIA CENISIO – LARGO PIAN DEL RE – VIA CENISIO - PIAZZA CORIOLANO – VIA LUIGI IX – PIAZZA CIMITERO MONUMENTALE – VIA FERRARI – VIA LUIGI STURZO – VIA DEL NORD – VIA LUIGI STURZO – SX. IN VIA MELCHIORRE GIOIA – PIAZZA ENAUDI – VIA PIRELLI – PIAZZALE DUCA D’AOSTA \n\n"
+    },
+    {
+      "id": 1790530096421.059,
+      "title": "SAN BABILA - SANTA MARIA DELLE GRAZIE E PIAZZA PIEMONTE",
+      "content": "SAN BABILA – PIAZZA SANTA MARIA DELLE GRAZIE(CENACOLO) PER POI ARRIVARE IN PIAZZA PIEMONTE\n\n\n\nSAN BABILA – CORSO MATTEOTTI – PIAZZA MEDA – VIA CATENA – LARGO MATTIOLI – VIA CASE ROTTE – P.ZA DELLA SCALA CON LARGO GHIRINGHELLI (MONUMENTO DEDICATO A GIULIO RICORDI) – SX IN VIA SANTA MARGHERITA POI A DESTRA IN VIA SAN PROTASO – LARGO BELOTTI – VIA PORRONE – VIA SAN PROSPERO – VIA MERAVIGLI CON PIAZZA SANTI PIETRO E LINO – CORSO MAGENTA CON LARGO ENZO TORTORA – E LARGO D’ANCONA ANCORA CORSO MAGENTA ED ARRIVIAMO IN PIAZZA SANTA MARIA DELLE GRAZIE.DA PIAZZA SANTA MARIA DELLE GRAZIE PROSEGUIAMO ANCORA SU CORSO MAGENTA – ARRIVIAMO IN PIAZZALE BARACCA – C.SO VERCELLI CON LARGO SETTIMIO SEVERO – CORSO VERCELLI – PIAZZA PIEMONTE.\n\n"
     }
   ],
   "regolamenti": [
@@ -674,7 +1115,6 @@
   "stataliDescriptions": {},
   "stataliList": [
     "SS 9: Via Emilia",
-    "SS 9 dir: Tangenziale Est di Lodi",
     "SS 10: Padana Inferiore",
     "SS 11: Padana Superiore",
     "SS 12: dell'Abetone e del Brennero",
@@ -687,16 +1127,14 @@
     "SS 39: del Passo di Aprica",
     "SS 42: del Tonale e della Mendola",
     "SS 45: Gardesana",
-    "SS 49: della Pusteria",
+    "SS 52: della Cisa",
+    "SS 211: della Lomellina",
     "SS 226: di Valle Scrivia",
     "SS 233: Varesina",
     "SS 234: Codognese",
     "SS 235: di Orzinuovi",
     "SS 236: Goitese",
     "SS 237: del Caffaro",
-    "SS 238: delle Palade",
-    "SS 239: di Campiglio",
-    "SS 240: di Loppio e di Val di Ledro",
     "SS 294: della Val di Scalve",
     "SS 301: del Foscagno",
     "SS 336: dell'Aeroporto della Malpensa",
@@ -704,6 +1142,7 @@
     "SS 341: Gallaratese",
     "SS 342: Briantea",
     "SS 344: di Porto Ceresio",
+    "SS 345: delle Tre Valli",
     "SS 360: di Ardesio",
     "SS 394: del Verbano Orientale",
     "SS 412: della Val Tidone",
@@ -724,8 +1163,8 @@
     "SS 596: dei Cairoli",
     "SS 629: del Lago di Monate",
     "SS 639: dei Laghi di Pusiano e di Garlate",
-    "SS 671: della Val Seriana",
     "SS 671 dir: della Valle Borlezza",
+    "SS 671: della Val Seriana",
     "SS 707: Raccordo Gazzada - Varese",
     "SS 712: Tangenziale Est di Varese"
   ]

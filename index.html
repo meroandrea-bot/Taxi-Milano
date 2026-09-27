@@ -59,7 +59,7 @@
             touch-action: manipulation;
             -webkit-user-select: none;
             user-select: none;
-            -webkit-touch-callout: none; /* Disattiva menu contestuale di condivisione/copia su iOS e Android */
+            -webkit-touch-callout: none;
         }
         input, select, textarea {
             -webkit-user-select: text;
@@ -99,7 +99,6 @@
                     <button onclick="handleLogin(false)" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 rounded-lg transition shadow-lg text-base">Accedi</button>
                     <button onclick="handleLogin(true)" class="px-4 bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3.5 rounded-lg transition text-sm sm:text-base"><i class="fa-solid fa-user-shield mr-1"></i> Admin</button>
                 </div>
-                <!-- Pulsante Installazione Rapida App Mobile -->
                 <button id="install-app-btn" onclick="installPWA()" class="hidden w-full mt-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-lg transition flex items-center justify-center gap-2 text-sm sm:text-base shadow">
                     <i class="fa-solid fa-mobile-screen-button"></i> Installa App sullo Schermo
                 </button>
@@ -120,14 +119,12 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2 mt-2 sm:mt-0">
-                    <!-- Pulsante Installa App Mobile Header -->
                     <button id="header-install-btn" onclick="installPWA()" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-2 rounded-lg text-sm transition items-center gap-1.5 shadow">
                         <i class="fa-solid fa-download"></i> Installa
                     </button>
                     <button onclick="logoutApp()" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-sm" title="Esci"><i class="fa-solid fa-right-from-bracket text-base"></i></button>
                 </div>
             </div>
-            <!-- MENU DI NAVIGAZIONE ORIZZONTALE MOBILE FRIENDLY -->
             <nav class="bg-slate-800 px-2 py-2 flex space-x-1.5 overflow-x-auto scrollbar-none border-t border-slate-700">
                 <button onclick="switchTab('home')" id="btn-home" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-house mr-1"></i> Home</button>
                 <button onclick="switchTab('enciclopedia')" id="btn-enciclopedia" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition">Enciclopedia (<span id="total-count">0</span>)</button>
@@ -249,8 +246,9 @@
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3.5 gap-3">
                         <h2 class="text-lg sm:text-2xl font-bold flex items-center"><i class="fa-solid fa-book text-amber-500 mr-2.5"></i> Indice Toponomastico</h2>
-                        <button onclick="toggleAlphabeticalSort()" id="sort-alpha-btn" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs sm:text-sm font-bold border border-slate-300 transition flex items-center shadow-sm">
-                            <i class="fa-solid fa-arrow-down-a-z mr-1.5 text-amber-600 text-base"></i> Ordina A-Z
+                        <!-- Tasto ordinamento modificato per consentire all'utente di ordinare a piacimento -->
+                        <button onclick="cycleSortMode()" id="sort-alpha-btn" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs sm:text-sm font-bold border border-slate-300 transition flex items-center shadow-sm">
+                            <i class="fa-solid fa-sort mr-1.5 text-amber-600 text-base"></i> Ordine Originale
                         </button>
                     </div>
                     
@@ -336,7 +334,6 @@
                     <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
                         <h2 class="text-lg sm:text-2xl font-bold text-red-600 flex items-center"><i class="fa-solid fa-user-shield mr-2.5"></i> Gestione Database</h2>
                         <div class="flex items-center gap-2.5">
-                            <!-- TASTO ADMIN PER LA CONDIVISIONE DEL LINK DELL'APPLICAZIONE -->
                             <button onclick="copyAdminAppLink()" class="px-3.5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs sm:text-sm font-bold transition flex items-center shadow">
                                 <i class="fa-solid fa-share-nodes mr-1.5"></i> Condividi Link App
                             </button>
@@ -362,30 +359,28 @@
                                 <button onclick="uploadRegolamentoWord()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Carica Word Regolamento</button>
                             </div>
                             <div class="mt-3.5 pt-3 border-t border-slate-200">
-                                <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Regolamento</label>
-                                <select id="admin-delete-regolamento-select" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-2 font-semibold"></select>
-                                <button onclick="deleteRegolamento()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition">Elimina</button>
+                                <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Regolamenti (Seleziona multipli)</label>
+                                <input type="text" id="filter-admin-regolamenti" oninput="filterAdminSelect('admin-delete-regolamento-select', this.value)" placeholder="Cerca tra i regolamenti..." class="w-full px-3 py-1.5 mb-2 border rounded text-xs bg-white">
+                                <select id="admin-delete-regolamento-select" multiple class="w-full h-32 px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-2 font-semibold"></select>
+                                <button onclick="deleteRegolamentoMulti()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition">Elimina Selezionati</button>
                             </div>
                         </div>
 
-                        <!-- Carica Percorso Taxi Word -->
+                        <!-- Carica Percorsi Taxi Word (Aggiornato per caricamento multiplo e nome file come titolo) -->
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <h3 class="font-bold text-sm sm:text-base mb-3"><i class="fa-solid fa-file-word mr-1.5 text-red-600"></i> Carica Percorso (.docx)</h3>
+                            <h3 class="font-bold text-sm sm:text-base mb-3"><i class="fa-solid fa-file-word mr-1.5 text-red-600"></i> Carica Percorsi (.docx)</h3>
                             <div class="space-y-3">
                                 <div>
-                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Titolo</label>
-                                    <input type="text" id="admin-percorso-title" placeholder="Es. Tratta Duomo - Malpensa" class="w-full px-3.5 py-2 border rounded-lg text-xs sm:text-sm bg-white">
+                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Seleziona File Word (anche multipli)</label>
+                                    <input type="file" id="admin-percorso-file" accept=".docx" multiple class="w-full text-xs text-slate-600 file:mr-2 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-red-50 file:text-red-700">
                                 </div>
-                                <div>
-                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">File Word</label>
-                                    <input type="file" id="admin-percorso-file" accept=".docx" class="w-full text-xs text-slate-600 file:mr-2 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-red-50 file:text-red-700">
-                                </div>
-                                <button onclick="uploadPercorsoWord()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Carica Percorso</button>
+                                <button onclick="uploadPercorsiWordMulti()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Carica Percorsi</button>
                             </div>
                             <div class="mt-3.5 pt-3 border-t border-slate-200">
-                                <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Percorso</label>
-                                <select id="admin-delete-percorso-select" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-2 font-semibold"></select>
-                                <button onclick="deletePercorso()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition">Elimina</button>
+                                <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Percorsi (Seleziona multipli)</label>
+                                <input type="text" id="filter-admin-percorsi" oninput="filterAdminSelect('admin-delete-percorso-select', this.value)" placeholder="Cerca tra i percorsi..." class="w-full px-3 py-1.5 mb-2 border rounded text-xs bg-white">
+                                <select id="admin-delete-percorso-select" multiple class="w-full h-32 px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-2 font-semibold"></select>
+                                <button onclick="deletePercorsoMulti()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition">Elimina Selezionati</button>
                             </div>
                         </div>
 
@@ -399,7 +394,7 @@
                             </div>
                             <div class="space-y-2">
                                 <div>
-                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Seleziona Statale</label>
+                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Seleziona Statale (Modifica)</label>
                                     <select id="admin-statale-select" onchange="loadAdminStataleData()" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white font-semibold"></select>
                                 </div>
                                 <div>
@@ -408,8 +403,14 @@
                                 </div>
                                 <div class="flex gap-2">
                                     <button onclick="saveStataleDescription()" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition">Salva</button>
-                                    <button onclick="deleteStatale()" class="px-3.5 bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition"><i class="fa-solid fa-trash"></i></button>
                                 </div>
+                            </div>
+                            <!-- Sezione cancellazione massiva statali -->
+                            <div class="pt-2 border-t border-slate-200">
+                                <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Statali (Seleziona multipli)</label>
+                                <input type="text" id="filter-admin-statali" oninput="filterAdminSelect('admin-statali-delete-select', this.value)" placeholder="Cerca statali..." class="w-full px-3 py-1.5 mb-2 border rounded text-xs bg-white">
+                                <select id="admin-statali-delete-select" multiple class="w-full h-28 px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-2 font-semibold"></select>
+                                <button onclick="deleteStataleMulti()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition"><i class="fa-solid fa-trash mr-1"></i> Elimina Selezionate</button>
                             </div>
                         </div>
 
@@ -431,7 +432,7 @@
                         <!-- Modifica / Rimuovi & Rotazione -->
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3.5">
                             <div>
-                                <h3 class="font-bold text-sm sm:text-base mb-2.5"><i class="fa-solid fa-pen-to-square mr-1.5 text-red-600"></i> Modifica Piazza</h3>
+                                <h3 class="font-bold text-sm sm:text-base mb-2.5"><i class="fa-solid fa-pen-to-square mr-1.5 text-red-600"></i> Modifica / Elimina Piazze</h3>
                                 <div class="space-y-2.5">
                                     <select id="admin-piazza-select" onchange="loadAdminPiazzaData()" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white font-semibold"></select>
                                     <select id="edit-piazza-type" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white font-bold">
@@ -441,9 +442,17 @@
                                     </select>
                                     <input type="text" id="edit-piazza-name" placeholder="Nome" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm">
                                     <textarea id="edit-piazza-confluences" placeholder="Confluenze separate da virgola" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm h-16"></textarea>
+                                    
+                                    <!-- Cancellazione massiva piazze -->
+                                    <div class="pt-2 border-t border-slate-200">
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Piazze (Seleziona multipli)</label>
+                                        <input type="text" id="filter-admin-piazze" oninput="filterAdminSelect('admin-piazze-delete-select', this.value)" placeholder="Cerca piazze..." class="w-full px-3 py-1.5 mb-2 border rounded text-xs bg-white">
+                                        <select id="admin-piazze-delete-select" multiple class="w-full h-28 px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-2 font-semibold"></select>
+                                    </div>
+
                                     <div class="flex gap-2">
                                         <button onclick="updatePiazza()" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition">Aggiorna</button>
-                                        <button onclick="deletePiazza()" class="px-3.5 bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition"><i class="fa-solid fa-trash"></i></button>
+                                        <button onclick="deletePiazzaMulti()" class="px-3.5 bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition" title="Elimina Selezionate"><i class="fa-solid fa-trash"></i> Elimina</button>
                                     </div>
                                 </div>
                             </div>
@@ -495,16 +504,16 @@
         ];
         let stataliDescriptions = JSON.parse(localStorage.getItem("milan_statali_descriptions")) || {};
         let isAdmin = false;
-        let isAlphaSorted = false;
+        
+        let sortMode = 'default';
+
         let selectedStreetForTap = null;
         let deferredPrompt = null;
 
-        // Funzione di ordinamento naturale alfanumerico (A-Z e numeri dal più piccolo al più grande)
         function naturalSort(a, b) {
             return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
         }
 
-        // Funzione per la condivisione esclusiva del link dell'app riservata all'Admin
         function copyAdminAppLink() {
             const appLink = "https://meroandrea-bot.github.io/Taxi-Milano/";
             if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -518,7 +527,6 @@
             }
         }
 
-        // Configurazione e creazione PWA Manifest dinamico per installazione schermata Home con Taxxi_2png.png
         function setupDynamicManifest() {
             const manifestData = {
                 "name": "Ruolo Conducenti Milano",
@@ -738,17 +746,31 @@
             }
         }
 
-        function toggleAlphabeticalSort() {
-            isAlphaSorted = !isAlphaSorted;
-            const btn = document.getElementById("sort-alpha-btn");
-            if (isAlphaSorted) {
-                btn.className = "px-3.5 py-2 bg-amber-500 text-white rounded-lg text-xs sm:text-sm font-bold transition flex items-center shadow";
-                btn.innerHTML = `<i class="fa-solid fa-arrow-up-a-z mr-1.5 text-base"></i> A-Z`;
+        function cycleSortMode() {
+            if (sortMode === 'default') {
+                sortMode = 'asc';
+            } else if (sortMode === 'asc') {
+                sortMode = 'desc';
             } else {
-                btn.className = "px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs sm:text-sm font-bold border border-slate-300 transition flex items-center shadow-sm";
-                btn.innerHTML = `<i class="fa-solid fa-arrow-down-a-z mr-1.5 text-amber-600 text-base"></i> Ordina A-Z`;
+                sortMode = 'default';
             }
+            updateSortButtonUI();
             renderEncyclopedia();
+        }
+
+        function updateSortButtonUI() {
+            const btn = document.getElementById("sort-alpha-btn");
+            if (!btn) return;
+            if (sortMode === 'default') {
+                btn.className = "px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs sm:text-sm font-bold border border-slate-300 transition flex items-center shadow-sm";
+                btn.innerHTML = `<i class="fa-solid fa-sort mr-1.5 text-amber-600 text-base"></i> Ordine Originale`;
+            } else if (sortMode === 'asc') {
+                btn.className = "px-3.5 py-2 bg-amber-500 text-white rounded-lg text-xs sm:text-sm font-bold transition flex items-center shadow";
+                btn.innerHTML = `<i class="fa-solid fa-arrow-down-a-z mr-1.5 text-base"></i> A - Z`;
+            } else {
+                btn.className = "px-3.5 py-2 bg-amber-600 text-white rounded-lg text-xs sm:text-sm font-bold transition flex items-center shadow";
+                btn.innerHTML = `<i class="fa-solid fa-arrow-up-a-z mr-1.5 text-base"></i> Z - A`;
+            }
         }
 
         // --- GESTIONE REGOLAMENTI WORD (.docx) ---
@@ -777,8 +799,12 @@
                     saveData();
                     titleInput.value = "";
                     fileInput.value = "";
+                    
                     renderRegolamenti();
                     populateAdminSelect();
+                    document.getElementById("total-count").textContent = piazzeData.length;
+                    document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
+                    
                     alert("Regolamento Word caricato con successo!");
                 } catch (e) {
                     alert("Errore durante la lettura del file Word.");
@@ -839,47 +865,55 @@
             document.getElementById("regolamento-detail-view").classList.add("hidden");
         }
 
-        function deleteRegolamento() {
+        function deleteRegolamentoMulti() {
             const select = document.getElementById("admin-delete-regolamento-select");
-            const id = Number(select.value);
-            if (!id) return;
-            if (confirm("Vuoi eliminare questo regolamento?")) {
-                regolamentiData = regolamentiData.filter(r => r.id !== id);
+            const selectedOptions = Array.from(select.selectedOptions);
+            if (selectedOptions.length === 0) {
+                alert("Seleziona almeno un regolamento da eliminare.");
+                return;
+            }
+            if (confirm(`Vuoi eliminare ${selectedOptions.length} regolamenti selezionati?`)) {
+                const idsToDelete = selectedOptions.map(opt => Number(opt.value));
+                regolamentiData = regolamentiData.filter(r => !idsToDelete.includes(r.id));
                 saveData();
                 renderRegolamenti();
                 populateAdminSelect();
-                alert("Regolamento eliminato.");
+                alert("Regolamenti eliminati con successo.");
             }
         }
 
-        // --- GESTIONE PERCORSI TAXI ---
-        async function uploadPercorsoWord() {
-            const titleInput = document.getElementById("admin-percorso-title");
+        // --- GESTIONE PERCORSI TAXI (AGGIORNATO: MULTIPLO & NOME FILE COME TITOLO) ---
+        async function uploadPercorsiWordMulti() {
             const fileInput = document.getElementById("admin-percorso-file");
-            const title = titleInput.value.trim();
-            
-            if (!title) { alert("Inserisci il titolo del percorso!"); return; }
-            if (fileInput.files.length === 0) { alert("Seleziona un file Word (.docx)!"); return; }
+            if (fileInput.files.length === 0) { alert("Seleziona almeno un file Word (.docx)!"); return; }
 
-            const file = fileInput.files[0];
-            const reader = new FileReader();
-            reader.onload = async function(event) {
-                const arrayBuffer = event.target.result;
+            const files = Array.from(fileInput.files);
+            let loadedCount = 0;
+
+            for (const file of files) {
+                let title = file.name.replace(/\.[^/.]+$/, "");
+
                 try {
+                    const arrayBuffer = await file.arrayBuffer();
                     const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
-                    percorsiData.push({ id: Date.now(), title: title, content: result.value });
-                    percorsiData.sort((a, b) => naturalSort(a.title, b.title));
-                    saveData();
-                    titleInput.value = "";
-                    fileInput.value = "";
-                    renderPercorsi();
-                    populateAdminSelect();
-                    alert("Percorso taxi caricato con successo!");
+                    
+                    percorsiData.push({ 
+                        id: Date.now() + Math.random(), 
+                        title: title, 
+                        content: result.value 
+                    });
+                    loadedCount++;
                 } catch (e) {
-                    alert("Errore durante la lettura del file Word.");
+                    console.error(`Errore durante la lettura del file ${file.name}`, e);
                 }
-            };
-            reader.readAsArrayBuffer(file);
+            }
+
+            percorsiData.sort((a, b) => naturalSort(a.title, b.title));
+            saveData();
+            fileInput.value = "";
+            renderPercorsi();
+            populateAdminSelect();
+            alert(`Caricamento completato! Aggiunti ${loadedCount} percorsi.`);
         }
 
         function renderPercorsi() {
@@ -925,16 +959,20 @@
             document.getElementById("percorso-detail-view").classList.add("hidden");
         }
 
-        function deletePercorso() {
+        function deletePercorsoMulti() {
             const select = document.getElementById("admin-delete-percorso-select");
-            const id = Number(select.value);
-            if (!id) return;
-            if (confirm("Vuoi eliminare questo percorso?")) {
-                percorsiData = percorsiData.filter(p => p.id !== id);
+            const selectedOptions = Array.from(select.selectedOptions);
+            if (selectedOptions.length === 0) {
+                alert("Seleziona almeno un percorso da eliminare.");
+                return;
+            }
+            if (confirm(`Vuoi eliminare ${selectedOptions.length} percorsi selezionati?`)) {
+                const idsToDelete = selectedOptions.map(opt => Number(opt.value));
+                percorsiData = percorsiData.filter(p => !idsToDelete.includes(p.id));
                 saveData();
                 renderPercorsi();
                 populateAdminSelect();
-                alert("Percorso eliminato.");
+                alert("Percorsi eliminati con successo.");
             }
         }
 
@@ -1002,17 +1040,21 @@
             alert("Statale aggiunta!");
         }
 
-        function deleteStatale() {
-            const select = document.getElementById("admin-statale-select");
-            const val = select.value;
-            if (!val) return;
-            if (confirm(`Eliminare "${val}"?`)) {
-                stataliListDynamic = stataliListDynamic.filter(s => s !== val);
-                delete stataliDescriptions[val];
+        function deleteStataleMulti() {
+            const select = document.getElementById("admin-statali-delete-select");
+            const selectedOptions = Array.from(select.selectedOptions);
+            if (selectedOptions.length === 0) {
+                alert("Seleziona almeno una strada statale da eliminare.");
+                return;
+            }
+            if (confirm(`Eliminare ${selectedOptions.length} strade statali selezionate?`)) {
+                const valuesToDelete = selectedOptions.map(opt => opt.value);
+                stataliListDynamic = stataliListDynamic.filter(s => !valuesToDelete.includes(s));
+                valuesToDelete.forEach(s => delete stataliDescriptions[s]);
                 saveData();
                 renderStatali();
                 populateAdminSelect();
-                alert("Eliminata.");
+                alert("Statali eliminate con successo.");
             }
         }
 
@@ -1028,10 +1070,12 @@
                 return matchName || matchConfluence;
             });
             
-            if (isAlphaSorted) {
-                filtered.sort((a, b) => naturalSort(a.name, b.name));
+            if (sortMode === 'asc') {
+                filtered.sort((a, b) => naturalSort(`${a.type} ${a.name}`, `${b.type} ${b.name}`));
+            } else if (sortMode === 'desc') {
+                filtered.sort((a, b) => naturalSort(`${b.type} ${b.name}`, `${a.type} ${a.name}`));
             } else {
-                filtered.sort((a, b) => naturalSort(a.name, b.name));
+                filtered.sort((a, b) => piazzeData.indexOf(a) - piazzeData.indexOf(b));
             }
 
             if(filtered.length === 0) {
@@ -1377,26 +1421,42 @@
         function populateAdminSelect() {
             let sortedPiazze = [...piazzeData].sort((a, b) => naturalSort(a.name, b.name));
 
+            // Select di modifica singola piazza
             const select = document.getElementById("admin-piazza-select");
             select.innerHTML = "";
-            sortedPiazze.forEach((p) => {
+            sortedPiazze.forEach((p, originalIdx) => {
                 const opt = document.createElement("option");
-                opt.value = piazzeData.findIndex(item => item.id === p.id);
+                // Troviamo l'indice reale nell'array globale piazzeData
+                const realIndex = piazzeData.findIndex(item => item.id === p.id);
+                opt.value = realIndex;
                 opt.textContent = `${p.type} ${p.name}`;
                 select.appendChild(opt);
             });
             loadAdminPiazzaData();
 
+            // Select multiplo eliminazione piazze
+            const piazzeDelSelect = document.getElementById("admin-piazze-delete-select");
+            piazzeDelSelect.innerHTML = "";
+            sortedPiazze.forEach((p) => {
+                const realIndex = piazzeData.findIndex(item => item.id === p.id);
+                const opt = document.createElement("option");
+                opt.value = realIndex;
+                opt.textContent = `${p.type} ${p.name}`;
+                piazzeDelSelect.appendChild(opt);
+            });
+
             const customPiazzaSelect = document.getElementById("admin-custom-piazza");
             customPiazzaSelect.innerHTML = "";
             sortedPiazze.forEach((p) => {
+                const realIndex = piazzeData.findIndex(item => item.id === p.id);
                 const opt = document.createElement("option");
-                opt.value = piazzeData.findIndex(item => item.id === p.id);
+                opt.value = realIndex;
                 opt.textContent = `${p.type} ${p.name}`;
                 customPiazzaSelect.appendChild(opt);
             });
             populateAdminStreets();
 
+            // Select singola statale
             const stataliSelect = document.getElementById("admin-statale-select");
             stataliSelect.innerHTML = "";
             stataliListDynamic.sort(naturalSort);
@@ -1408,6 +1468,17 @@
             });
             loadAdminStataleData();
 
+            // Select multiplo eliminazione statali
+            const stataliDelSelect = document.getElementById("admin-statali-delete-select");
+            stataliDelSelect.innerHTML = "";
+            stataliListDynamic.forEach(s => {
+                const opt = document.createElement("option");
+                opt.value = s;
+                opt.textContent = s;
+                stataliDelSelect.appendChild(opt);
+            });
+
+            // Select multiplo eliminazione percorsi
             const delPercorsoSelect = document.getElementById("admin-delete-percorso-select");
             delPercorsoSelect.innerHTML = "";
             let sortedPercorsi = [...percorsiData].sort((a, b) => naturalSort(a.title, b.title));
@@ -1418,6 +1489,7 @@
                 delPercorsoSelect.appendChild(opt);
             });
 
+            // Select multiplo eliminazione regolamenti
             const delRegolamentoSelect = document.getElementById("admin-delete-regolamento-select");
             if (delRegolamentoSelect) {
                 delRegolamentoSelect.innerHTML = "";
@@ -1429,6 +1501,21 @@
                     delRegolamentoSelect.appendChild(opt);
                 });
             }
+        }
+
+        // Funzione per filtrare al volo i select multipli nella sezione admin tramite l'input di ricerca sopra
+        function filterAdminSelect(selectId, query) {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            const filter = query.toLowerCase();
+            Array.from(select.options).forEach(opt => {
+                const text = opt.textContent.toLowerCase();
+                if (text.includes(filter)) {
+                    opt.style.display = "";
+                } else {
+                    opt.style.display = "none";
+                }
+            });
         }
 
         function populateAdminStreets() {
@@ -1533,7 +1620,14 @@
             saveData();
             document.getElementById("new-piazza-name").value = "";
             document.getElementById("new-piazza-confluences").value = "";
-            initApp();
+            
+            document.getElementById("total-count").textContent = piazzeData.length;
+            document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
+            renderEncyclopedia();
+            renderStatali();
+            populateExerciseSelect();
+            populateAdminSelect();
+            
             alert("Aggiunto!");
         }
 
@@ -1547,17 +1641,40 @@
             piazzeData[index] = { ...piazzeData[index], type, name, confluences };
             piazzeData.sort((a, b) => naturalSort(a.name, b.name));
             saveData();
-            initApp();
+            
+            document.getElementById("total-count").textContent = piazzeData.length;
+            document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
+            renderEncyclopedia();
+            renderStatali();
+            populateExerciseSelect();
+            populateAdminSelect();
+            
             alert("Aggiornato!");
         }
 
-        function deletePiazza() {
-            const selectIndex = document.getElementById("admin-piazza-select").value;
-            if(confirm("Eliminare?")) {
-                piazzeData.splice(selectIndex, 1);
+        function deletePiazzaMulti() {
+            const select = document.getElementById("admin-piazze-delete-select");
+            const selectedOptions = Array.from(select.selectedOptions);
+            if (selectedOptions.length === 0) {
+                alert("Seleziona almeno una piazza da eliminare.");
+                return;
+            }
+            if (confirm(`Vuoi eliminare ${selectedOptions.length} piazze/luoghi selezionati?`)) {
+                // Ricaviamo gli indici e ordiniamoli in modo discendente per evitare problemi di shifting durante lo splice
+                const indicesToDelete = selectedOptions.map(opt => Number(opt.value)).sort((a, b) => b - a);
+                indicesToDelete.forEach(idx => {
+                    piazzeData.splice(idx, 1);
+                });
                 saveData();
-                initApp();
-                alert("Eliminato.");
+                
+                document.getElementById("total-count").textContent = piazzeData.length;
+                document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
+                renderEncyclopedia();
+                renderStatali();
+                populateExerciseSelect();
+                populateAdminSelect();
+                
+                alert("Piazze eliminate con successo.");
             }
         }
 
@@ -1580,6 +1697,7 @@
         window.onload = async function() {
             setupDynamicManifest();
             await loadCloudDatabase();
+            updateSortButtonUI();
         };
     </script>
 </body>
