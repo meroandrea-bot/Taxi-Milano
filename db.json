@@ -167,9 +167,6 @@
       "type": "Largo",
       "name": "Augusto",
       "confluences": [
-        "Corso di porta Vittoria",
-        "Via Francesco Sforza",
-        "Via Battisti",
         "Via Visconti di Modrone",
         "Via Marziale",
         "Via Cerva",
@@ -178,7 +175,10 @@
         "Via Verziere",
         "Corso di Porta Vittoria",
         "Via della Signora",
-        "Via Francesco Sforza"
+        "Via Francesco Sforza",
+        "Corso di porta Vittoria",
+        "Via Francesco Sforza",
+        "Via Battisti"
       ]
     },
     {
