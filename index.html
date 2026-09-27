@@ -736,17 +736,37 @@
             renderEncyclopedia();
         }
 
-        // --- FUNZIONE CONDIVISIONE LINK APP (RISERVATA ADMIN) ---
-        function shareAppUrl() {
-            const appUrl = window.location.href;
-            if (navigator.clipboard) {
+        // --- BLOCCO ASSOLUTO CONDIVISIONE LINK APP (RISERVATO ESCLUSIVAMENTE ALL'ADMIN) ---
+        async function shareAppUrl() {
+            if (!isAdmin) {
+                alert("Accesso negato: Funzione riservata esclusivamente all'amministratore.");
+                return;
+            }
+
+            let appUrl = window.location.href.split('#')[0];
+            if (appUrl.startsWith('file://') || window.location.protocol === 'file:') {
+                appUrl = window.location.origin + window.location.pathname;
+            }
+
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Ruolo Conducenti Milano - Taxi',
+                        text: 'Simulatore e Database Toponomastico per esame Taxi Milano',
+                        url: appUrl,
+                    });
+                    return;
+                } catch (err) {}
+            }
+
+            if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(appUrl).then(() => {
-                    alert("Link dell'applicazione copiato negli appunti con successo!\nPotrai inviarlo solo tu.");
+                    alert("Link dell'applicazione copiato negli appunti con successo!\nCollegamento: " + appUrl);
                 }).catch(() => {
-                    prompt("Copia questo link:", appUrl);
+                    prompt("Copia questo link corretto:", appUrl);
                 });
             } else {
-                prompt("Copia questo link:", appUrl);
+                prompt("Copia questo link corretto:", appUrl);
             }
         }
 
@@ -777,7 +797,6 @@
                     fileInput.value = "";
                     renderRegolamenti();
                     populateAdminSelect();
-                    // Rimane sulla sezione admin aggiornando le viste necessarie in background
                     document.getElementById("total-count").textContent = piazzeData.length;
                     document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
                     alert("Regolamento Word caricato con successo! (Sei rimasto nella sezione Admin)");
@@ -1516,7 +1535,6 @@
             document.getElementById("new-piazza-name").value = "";
             document.getElementById("new-piazza-confluences").value = "";
             
-            // Rimane sulla sezione admin aggiornando i dati e i menu a tendina senza cambiare tab
             renderEncyclopedia();
             renderStatali();
             populateExerciseSelect();
@@ -1536,7 +1554,6 @@
             piazzeData[index] = { ...piazzeData[index], type, name, confluences };
             saveData();
             
-            // Rimane sulla sezione admin aggiornando i dati in background
             renderEncyclopedia();
             renderStatali();
             populateExerciseSelect();
@@ -1552,7 +1569,6 @@
                 piazzeData.splice(selectIndex, 1);
                 saveData();
                 
-                // Rimane sulla sezione admin aggiornando i dati in background
                 renderEncyclopedia();
                 renderStatali();
                 populateExerciseSelect();
