@@ -132,6 +132,7 @@
                 <button onclick="switchTab('enciclopedia')" id="btn-enciclopedia" class="px-3 py-1.5 rounded-lg bg-slate-700 font-semibold text-xs whitespace-nowrap transition">Enciclopedia (<span id="total-count">0</span>)</button>
                 <button onclick="switchTab('percorsi')" id="btn-percorsi" class="px-3 py-1.5 rounded-lg bg-slate-700 font-semibold text-xs whitespace-nowrap transition"><i class="fa-solid fa-route"></i> Percorsi</button>
                 <button onclick="switchTab('statali')" id="btn-statali" class="px-3 py-1.5 rounded-lg bg-slate-700 font-semibold text-xs whitespace-nowrap transition"><i class="fa-solid fa-road"></i> Statali</button>
+                <button onclick="switchTab('regolamenti')" id="btn-regolamenti" class="px-3 py-1.5 rounded-lg bg-slate-700 font-semibold text-xs whitespace-nowrap transition"><i class="fa-solid fa-scale-balanced"></i> Regolamenti</button>
                 <button onclick="switchTab('esercizio')" id="btn-esercizio" class="px-3 py-1.5 rounded-lg bg-slate-700 font-semibold text-xs whitespace-nowrap transition">Esercizi</button>
                 <button onclick="switchTab('admin')" id="btn-admin" class="hidden px-3 py-1.5 rounded-lg bg-red-600 font-semibold text-xs whitespace-nowrap transition"><i class="fa-solid fa-lock-open mr-1"></i> Admin</button>
             </nav>
@@ -146,7 +147,7 @@
         <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 flex flex-col justify-center">
             
             <!-- SCHEDA HOME PAGE -->
-            <section id="tab-home" class="space-y-4 max-w-3xl mx-auto w-full text-center py-4">
+            <section id="tab-home" class="space-y-4 max-w-4xl mx-auto w-full text-center py-4">
                 <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
                     <div class="space-y-2">
                         <img src="Taxxi_2png.png" alt="Logo Taxi" class="w-20 h-20 mx-auto mb-1 rounded-2xl shadow-md object-cover">
@@ -154,7 +155,7 @@
                         <p class="text-xs sm:text-sm text-slate-500">Seleziona una delle opzioni sottostanti per iniziare a consultare il database o metterti alla prova.</p>
                     </div>
 
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
+                    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 pt-2">
                         <button onclick="switchTab('enciclopedia')" class="p-4 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
                             <i class="fa-solid fa-book text-2xl sm:text-3xl text-amber-500 mb-2 group-hover:scale-110 transition"></i>
                             <span class="font-bold text-xs sm:text-base text-slate-800">Enciclopedia</span>
@@ -172,13 +173,39 @@
                             <span class="font-bold text-xs sm:text-base text-slate-800">Strade Statali</span>
                             <span class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5">Elenco statali</span>
                         </button>
+
+                        <button onclick="switchTab('regolamenti')" class="p-4 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
+                            <i class="fa-solid fa-scale-balanced text-2xl sm:text-3xl text-amber-500 mb-2 group-hover:scale-110 transition"></i>
+                            <span class="font-bold text-xs sm:text-base text-slate-800">Regolamenti</span>
+                            <span class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5">Documenti PDF</span>
+                        </button>
                         
-                        <button onclick="switchTab('esercizio')" class="p-4 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
+                        <button onclick="switchTab('esercizio')" class="p-4 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm col-span-2 lg:col-span-1">
                             <i class="fa-solid fa-map-location-dot text-2xl sm:text-3xl text-amber-500 mb-2 group-hover:scale-110 transition"></i>
                             <span class="font-bold text-xs sm:text-base text-slate-800">Esercizi</span>
                             <span class="text-[10px] sm:text-[11px] text-slate-500 mt-0.5">Mettiti alla prova</span>
                         </button>
                     </div>
+                </div>
+            </section>
+
+            <!-- SCHEDA REGOLAMENTI PDF -->
+            <section id="tab-regolamenti" class="hidden space-y-4">
+                <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+                        <h2 class="text-lg sm:text-xl font-bold flex items-center"><i class="fa-solid fa-scale-balanced text-amber-500 mr-2"></i> Regolamenti e Normative</h2>
+                        <input type="text" id="search-regolamento" onkeyup="renderRegolamenti()" placeholder="Cerca regolamento..." class="px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none w-full sm:w-72">
+                    </div>
+
+                    <div id="regolamento-detail-view" class="hidden mb-4 p-4 bg-amber-50 border border-amber-300 rounded-xl shadow-sm">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 id="regolamento-detail-title" class="font-bold text-base sm:text-lg text-amber-900"></h3>
+                            <button onclick="closeRegolamentoDetail()" class="text-amber-800 font-bold px-2.5 py-1 bg-amber-200 rounded-lg text-xs">Chiudi</button>
+                        </div>
+                        <div id="regolamento-detail-content" class="text-slate-800 text-xs sm:text-sm whitespace-pre-wrap taxi-custom-font bg-white p-3 rounded-lg border border-amber-200 shadow-inner max-h-80 overflow-y-auto"></div>
+                    </div>
+
+                    <div id="regolamenti-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[65vh] overflow-y-auto p-1"></div>
                 </div>
             </section>
 
@@ -311,6 +338,27 @@
                     </div>
                     
                     <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                        <!-- Carica Regolamento PDF -->
+                        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                            <h3 class="font-bold text-sm mb-2.5"><i class="fa-solid fa-file-pdf mr-1 text-red-600"></i> Carica Regolamento PDF</h3>
+                            <div class="space-y-2.5">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Titolo Regolamento</label>
+                                    <input type="text" id="admin-regolamento-title" placeholder="Es. Regolamento Servizio Taxi Milano" class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Seleziona File PDF</label>
+                                    <input type="file" id="admin-regolamento-file" accept=".pdf" class="w-full text-[11px] text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-red-50 file:text-red-700">
+                                </div>
+                                <button onclick="uploadRegolamentoPDF()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-lg text-xs transition">Carica PDF Regolamento</button>
+                            </div>
+                            <div class="mt-3 pt-2.5 border-t border-slate-200">
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Elimina Regolamento</label>
+                                <select id="admin-delete-regolamento-select" class="w-full px-2.5 py-1.5 border rounded-lg text-xs bg-white mb-2"></select>
+                                <button onclick="deleteRegolamento()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-1.5 rounded-lg text-xs transition">Elimina</button>
+                            </div>
+                        </div>
+
                         <!-- Carica Percorso Taxi Word -->
                         <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                             <h3 class="font-bold text-sm mb-2.5"><i class="fa-solid fa-file-word mr-1 text-red-600"></i> Carica Percorso (.docx)</h3>
@@ -433,6 +481,9 @@
         let adminPwd = localStorage.getItem("milan_admin_pwd") || "admin_taxi_2026";
         let customDescriptions = JSON.parse(localStorage.getItem("milan_custom_descriptions")) || {};
         let percorsiData = JSON.parse(localStorage.getItem("milan_percorsi_data")) || [];
+        let regolamentiData = JSON.parse(localStorage.getItem("milan_regolamenti_data")) || [
+            { id: 1, title: "Regolamento Servizio Taxi Comune di Milano", content: "Contenuto ufficiale del regolamento taxi comunale..." }
+        ];
         let stataliDescriptions = JSON.parse(localStorage.getItem("milan_statali_descriptions")) || {};
         let isAdmin = false;
         let isAlphaSorted = false;
@@ -533,6 +584,7 @@
                         if (data.piazze) piazzeData = data.piazze;
                         if (data.customDescriptions) customDescriptions = data.customDescriptions;
                         if (data.percorsi) percorsiData = data.percorsi;
+                        if (data.regolamenti) regolamentiData = data.regolamenti;
                         if (data.stataliDescriptions) stataliDescriptions = data.stataliDescriptions;
                         if (data.stataliList) stataliListDynamic = data.stataliList;
                     }
@@ -547,6 +599,7 @@
             localStorage.setItem("milan_piazze_data_full", JSON.stringify(piazzeData));
             localStorage.setItem("milan_custom_descriptions", JSON.stringify(customDescriptions));
             localStorage.setItem("milan_percorsi_data", JSON.stringify(percorsiData));
+            localStorage.setItem("milan_regolamenti_data", JSON.stringify(regolamentiData));
             localStorage.setItem("milan_statali_descriptions", JSON.stringify(stataliDescriptions));
             localStorage.setItem("milan_statali_list", JSON.stringify(stataliListDynamic));
             localStorage.setItem("milan_user_pwd", userPwd);
@@ -595,6 +648,7 @@
             document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
             renderEncyclopedia();
             renderPercorsi();
+            renderRegolamenti();
             renderStatali();
             populateExerciseSelect();
             populateAdminSelect();
@@ -606,7 +660,7 @@
         }
 
         function switchTab(tab) {
-            ['home', 'enciclopedia', 'percorsi', 'statali', 'esercizio', 'admin'].forEach(t => {
+            ['home', 'enciclopedia', 'percorsi', 'statali', 'regolamenti', 'esercizio', 'admin'].forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
                 if(el) el.classList.add("hidden");
                 const btn = document.getElementById(`btn-${t}`);
@@ -637,6 +691,9 @@
             if(tab === 'percorsi') {
                 renderPercorsi();
             }
+            if(tab === 'regolamenti') {
+                renderRegolamenti();
+            }
             if(tab === 'statali') {
                 renderStatali();
             }
@@ -661,6 +718,110 @@
                 btn.innerHTML = `<i class="fa-solid fa-arrow-down-a-z mr-1 text-amber-600"></i> Ordina A-Z`;
             }
             renderEncyclopedia();
+        }
+
+        // --- GESTIONE REGOLAMENTI PDF ---
+        async function uploadRegolamentoPDF() {
+            const titleInput = document.getElementById("admin-regolamento-title");
+            const fileInput = document.getElementById("admin-regolamento-file");
+            const title = titleInput.value.trim();
+
+            if (!title) { alert("Inserisci il titolo del regolamento!"); return; }
+            if (fileInput.files.length === 0) { alert("Seleziona un file PDF!"); return; }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = async function(event) {
+                // Salviamo il file come Data URL in modo da poterlo aprire o scaricare direttamente dalla visualizzazione
+                const pdfDataUrl = event.target.result;
+                regolamentiData.push({ 
+                    id: Date.now(), 
+                    title: title, 
+                    content: `Documento PDF caricato: ${file.name}`,
+                    pdfUrl: pdfDataUrl,
+                    fileName: file.name
+                });
+                saveData();
+                titleInput.value = "";
+                fileInput.value = "";
+                renderRegolamenti();
+                populateAdminSelect();
+                alert("Regolamento PDF caricato con successo!");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderRegolamenti() {
+            const query = document.getElementById("search-regolamento").value.toLowerCase();
+            const container = document.getElementById("regolamenti-list");
+            container.innerHTML = "";
+
+            let filtered = regolamentiData.filter(r => r.title.toLowerCase().includes(query));
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<p class="text-slate-400 col-span-full text-center py-6 text-xs">Nessun regolamento trovato.</p>`;
+                return;
+            }
+
+            filtered.forEach(r => {
+                const card = document.createElement("div");
+                card.className = "bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md transition flex flex-col justify-between cursor-pointer group hover:border-amber-500";
+                card.onclick = () => showRegolamentoDetail(r);
+                card.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2.5 bg-amber-50 rounded-lg group-hover:bg-amber-100 transition text-amber-600">
+                            <i class="fa-solid fa-file-pdf text-lg text-red-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm sm:text-base text-slate-900 group-hover:text-amber-700">${r.title}</h3>
+                            <span class="text-[11px] text-slate-400">Clicca per visualizzare / scaricare PDF</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function showRegolamentoDetail(reg) {
+            document.getElementById("regolamento-detail-title").textContent = reg.title;
+            const contentDiv = document.getElementById("regolamento-detail-content");
+            
+            if (reg.pdfUrl) {
+                contentDiv.innerHTML = `
+                    <p class="mb-3 text-slate-700">File allegato: <strong>${reg.fileName || 'Documento.pdf'}</strong></p>
+                    <div class="flex gap-2">
+                        <a href="${reg.pdfUrl}" target="_blank" class="px-3 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold transition inline-flex items-center gap-1.5 shadow">
+                            <i class="fa-solid fa-eye"></i> Apri PDF in nuova scheda
+                        </a>
+                        <a href="${reg.pdfUrl}" download="${reg.fileName || 'regolamento.pdf'}" class="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold transition inline-flex items-center gap-1.5 shadow">
+                            <i class="fa-solid fa-download"></i> Scarica PDF
+                        </a>
+                    </div>
+                `;
+            } else {
+                contentDiv.textContent = reg.content;
+            }
+
+            document.getElementById("regolamento-detail-view").classList.remove("hidden");
+            document.getElementById("regolamento-detail-view").scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function closeRegolamentoDetail() {
+            document.getElementById("regolamento-detail-view").classList.add("hidden");
+        }
+
+        function deleteRegolamento() {
+            const select = document.getElementById("admin-delete-regolamento-select");
+            const id = Number(select.value);
+            if (!id) return;
+            if (confirm("Vuoi eliminare questo regolamento?")) {
+                regolamentiData = regolamentiData.filter(r => r.id !== id);
+                saveData();
+                renderRegolamenti();
+                populateAdminSelect();
+                alert("Regolamento eliminato.");
+            }
         }
 
         // --- GESTIONE PERCORSI TAXI ---
@@ -879,7 +1040,6 @@
             if (customDescriptions[key]) destText.textContent = customDescriptions[key];
             else destText.textContent = `La via "${streetName}" confluisce direttamente su ${piazzaFullName}.`;
             
-            // Sviluppo punto due: Visualizzatore online (Google Maps / OpenStreetMap)
             const query = encodeURIComponent(`Milano, ${streetName} (vicino a ${piazzaFullName})`);
             mapLink.href = `https://www.google.com/maps/search/?api=1&query=${query}`;
             
@@ -968,7 +1128,6 @@
             const mapSlotsContainer = document.getElementById("map-slots-container");
             mapSlotsContainer.innerHTML = "";
 
-            // Dimensioni adattate per mobile
             const isMobile = window.innerWidth < 640;
             const baseRadius = isMobile ? 110 : 175;
             const radius = Math.max(baseRadius, 95 + (totalNodes * 9)); 
@@ -1214,6 +1373,17 @@
                 opt.textContent = p.title;
                 delPercorsoSelect.appendChild(opt);
             });
+
+            const delRegolamentoSelect = document.getElementById("admin-delete-regolamento-select");
+            if (delRegolamentoSelect) {
+                delRegolamentoSelect.innerHTML = "";
+                regolamentiData.forEach(r => {
+                    const opt = document.createElement("option");
+                    opt.value = r.id;
+                    opt.textContent = r.title;
+                    delRegolamentoSelect.appendChild(opt);
+                });
+            }
         }
 
         function populateAdminStreets() {
@@ -1347,6 +1517,7 @@
                 piazze: piazzeData,
                 customDescriptions: customDescriptions,
                 percorsi: percorsiData,
+                regolamenti: regolamentiData,
                 stataliDescriptions: stataliDescriptions,
                 stataliList: stataliListDynamic
             };
