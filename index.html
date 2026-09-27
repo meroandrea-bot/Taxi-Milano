@@ -499,6 +499,13 @@
         let selectedStreetForTap = null;
         let deferredPrompt = null;
 
+        // Disabilita il menu contestuale (pressione prolungata / condivisione / segnalibro) per i non admin su tutti i dispositivi
+        document.addEventListener('contextmenu', function(e) {
+            if (!isAdmin) {
+                e.preventDefault();
+            }
+        });
+
         // Configurazione e creazione PWA Manifest dinamico per installazione schermata Home con Taxxi_2png.png
         function setupDynamicManifest() {
             const manifestData = {
