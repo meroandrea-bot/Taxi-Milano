@@ -787,18 +787,43 @@
             });
         }
 
-        // Funzione di supporto per scaricare file binari salvati
+        // Funzione di supporto aggiornata per il download sicuro dei file in PWA e browser
         function downloadFileFromData(base64Data, defaultFilename) {
             if (!base64Data) {
                 alert("File binario originale non disponibile per questo elemento.");
                 return;
             }
-            const a = document.createElement('a');
-            a.href = base64Data;
-            a.download = defaultFilename || "documento.docx";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            try {
+                const arr = base64Data.split(',');
+                const mimeMatch = arr[0].match(/:(.*?);/);
+                const mime = mimeMatch ? mimeMatch[1] : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+                const bstr = atob(arr[1]);
+                let n = bstr.length;
+                const u8arr = new Uint8Array(n);
+                while (n--) {
+                    u8arr[n] = bstr.charCodeAt(n);
+                }
+                const blob = new Blob([u8arr], { type: mime });
+                const blobUrl = URL.createObjectURL(blob);
+
+                const a = document.createElement('a');
+                a.href = blobUrl;
+                a.download = defaultFilename || "documento.docx";
+                
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(blobUrl);
+                }, 1000);
+            } catch (e) {
+                const win = window.open(base64Data, '_blank');
+                if (!win) {
+                    alert("Il browser ha bloccato il download automatico. Assicurati di consentire i popup per questa app.");
+                }
+            }
         }
 
         // --- GESTIONE REGOLAMENTI WORD (.docx) ---
@@ -910,7 +935,7 @@
             }
         }
 
-        // --- GESTIONE PERCORSI TAXI (AGGIORNATO: MULTIPLO & NOME FILE COME TITOLO & DOWNLOAD ORIGINALE) ---
+        // --- GESTIONE PERCORSI TAXI ---
         async function uploadPercorsiWordMulti() {
             const fileInput = document.getElementById("admin-percorso-file");
             if (fileInput.files.length === 0) { alert("Seleziona almeno un file Word (.docx)!"); return; }
@@ -1459,7 +1484,6 @@
         function populateAdminSelect() {
             let sortedPiazze = [...piazzeData].sort((a, b) => naturalSort(a.name, b.name));
 
-            // Select di modifica singola piazza
             const select = document.getElementById("admin-piazza-select");
             select.innerHTML = "";
             sortedPiazze.forEach((p, originalIdx) => {
@@ -1471,7 +1495,6 @@
             });
             loadAdminPiazzaData();
 
-            // Select multiplo eliminazione piazze
             const piazzeDelSelect = document.getElementById("admin-piazze-delete-select");
             piazzeDelSelect.innerHTML = "";
             sortedPiazze.forEach((p) => {
@@ -1493,7 +1516,6 @@
             });
             populateAdminStreets();
 
-            // Select singola statale
             const stataliSelect = document.getElementById("admin-statale-select");
             stataliSelect.innerHTML = "";
             stataliListDynamic.sort(naturalSort);
@@ -1505,7 +1527,6 @@
             });
             loadAdminStataleData();
 
-            // Select multiplo eliminazione statali
             const stataliDelSelect = document.getElementById("admin-statali-delete-select");
             stataliDelSelect.innerHTML = "";
             stataliListDynamic.forEach(s => {
@@ -1515,7 +1536,6 @@
                 stataliDelSelect.appendChild(opt);
             });
 
-            // Select multiplo eliminazione percorsi
             const delPercorsoSelect = document.getElementById("admin-delete-percorso-select");
             delPercorsoSelect.innerHTML = "";
             let sortedPercorsi = [...percorsiData].sort((a, b) => naturalSort(a.title, b.title));
@@ -1526,7 +1546,6 @@
                 delPercorsoSelect.appendChild(opt);
             });
 
-            // Select multiplo eliminazione regolamenti
             const delRegolamentoSelect = document.getElementById("admin-delete-regolamento-select");
             if (delRegolamentoSelect) {
                 delRegolamentoSelect.innerHTML = "";
