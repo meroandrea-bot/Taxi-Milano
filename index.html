@@ -199,6 +199,7 @@
                         <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
                             <h3 id="regolamento-detail-title" class="font-bold text-base sm:text-xl text-amber-900"></h3>
                             <div class="flex items-center gap-2">
+                                <button id="regolamento-download-btn" class="text-white font-bold px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow"><i class="fa-solid fa-download"></i> Scarica Word</button>
                                 <button onclick="closeRegolamentoDetail()" class="text-amber-900 font-bold px-3.5 py-1.5 bg-amber-200 hover:bg-amber-300 rounded-lg text-xs sm:text-sm transition">Chiudi</button>
                             </div>
                         </div>
@@ -218,9 +219,12 @@
                     </div>
 
                     <div id="percorso-detail-view" class="hidden mb-4 p-4 sm:p-5 bg-amber-50 border border-amber-300 rounded-xl shadow-sm">
-                        <div class="flex justify-between items-center mb-3">
+                        <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
                             <h3 id="percorso-detail-title" class="font-bold text-base sm:text-xl text-amber-900"></h3>
-                            <button onclick="closePercorsoDetail()" class="text-amber-900 font-bold px-3.5 py-1.5 bg-amber-200 hover:bg-amber-300 rounded-lg text-xs sm:text-sm">Chiudi</button>
+                            <div class="flex items-center gap-2">
+                                <button id="percorso-download-btn" class="text-white font-bold px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow"><i class="fa-solid fa-download"></i> Scarica Word</button>
+                                <button onclick="closePercorsoDetail()" class="text-amber-900 font-bold px-3.5 py-1.5 bg-amber-200 hover:bg-amber-300 rounded-lg text-xs sm:text-sm">Chiudi</button>
+                            </div>
                         </div>
                         <div id="percorso-detail-content" class="text-slate-900 text-sm sm:text-base whitespace-pre-wrap taxi-custom-font bg-white p-4 rounded-lg border border-amber-200 shadow-inner max-h-96 overflow-y-auto leading-relaxed"></div>
                     </div>
@@ -500,7 +504,7 @@
         let customDescriptions = JSON.parse(localStorage.getItem("milan_custom_descriptions")) || {};
         let percorsiData = JSON.parse(localStorage.getItem("milan_percorsi_data")) || [];
         let regolamentiData = JSON.parse(localStorage.getItem("milan_regolamenti_data")) || [
-            { id: 1, title: "Regolamento Servizio Taxi Comune di Milano", content: "Contenuto ufficiale del regolamento taxi comunale..." }
+            { id: 1, title: "Regolamento Servizio Taxi Comune di Milano", content: "Contenuto ufficiale del regolamento taxi comunale...", fileBase64: "", fileName: "Regolamento_Taxi_Milano.docx" }
         ];
         let stataliDescriptions = JSON.parse(localStorage.getItem("milan_statali_descriptions")) || {};
         let isAdmin = false;
@@ -773,6 +777,30 @@
             }
         }
 
+        // Funzione di supporto per convertire File in Base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Funzione di supporto per scaricare file binari salvati
+        function downloadFileFromData(base64Data, defaultFilename) {
+            if (!base64Data) {
+                alert("File binario originale non disponibile per questo elemento.");
+                return;
+            }
+            const a = document.createElement('a');
+            a.href = base64Data;
+            a.download = defaultFilename || "documento.docx";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
         // --- GESTIONE REGOLAMENTI WORD (.docx) ---
         async function uploadRegolamentoWord() {
             const titleInput = document.getElementById("admin-regolamento-title");
@@ -783,34 +811,32 @@
             if (fileInput.files.length === 0) { alert("Seleziona un file Word (.docx)!"); return; }
 
             const file = fileInput.files[0];
-            const reader = new FileReader();
-            
-            reader.onload = async function(event) {
-                const arrayBuffer = event.target.result;
-                try {
-                    const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
-                    regolamentiData.push({ 
-                        id: Date.now(), 
-                        title: title, 
-                        content: result.value,
-                        fileName: file.name
-                    });
-                    regolamentiData.sort((a, b) => naturalSort(a.title, b.title));
-                    saveData();
-                    titleInput.value = "";
-                    fileInput.value = "";
-                    
-                    renderRegolamenti();
-                    populateAdminSelect();
-                    document.getElementById("total-count").textContent = piazzeData.length;
-                    document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
-                    
-                    alert("Regolamento Word caricato con successo!");
-                } catch (e) {
-                    alert("Errore durante la lettura del file Word.");
-                }
-            };
-            reader.readAsArrayBuffer(file);
+            try {
+                const base64String = await fileToBase64(file);
+                const arrayBuffer = await file.arrayBuffer();
+                const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+                
+                regolamentiData.push({ 
+                    id: Date.now(), 
+                    title: title, 
+                    content: result.value,
+                    fileBase64: base64String,
+                    fileName: file.name
+                });
+                regolamentiData.sort((a, b) => naturalSort(a.title, b.title));
+                saveData();
+                titleInput.value = "";
+                fileInput.value = "";
+                
+                renderRegolamenti();
+                populateAdminSelect();
+                document.getElementById("total-count").textContent = piazzeData.length;
+                document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
+                
+                alert("Regolamento Word caricato con successo!");
+            } catch (e) {
+                alert("Errore durante la lettura del file Word.");
+            }
         }
 
         function renderRegolamenti() {
@@ -830,8 +856,7 @@
                 const card = document.createElement("div");
                 card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between group hover:border-amber-500 cursor-pointer";
                 
-                const safeTitle = r.title.replace(/'/g, "\\'");
-                card.onclick = () => showRegolamentoDetail(safeTitle, r.id);
+                card.onclick = () => showRegolamentoDetail(r.id);
                 
                 card.innerHTML = `
                     <div class="flex items-center justify-between mb-2">
@@ -841,7 +866,7 @@
                             </div>
                             <div>
                                 <h3 class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-amber-700 leading-snug">${r.title}</h3>
-                                <span class="text-xs text-slate-500 font-medium">Clicca per visualizzare il testo</span>
+                                <span class="text-xs text-slate-500 font-medium">Clicca per leggere o scaricare</span>
                             </div>
                         </div>
                     </div>
@@ -850,12 +875,15 @@
             });
         }
 
-        function showRegolamentoDetail(title, id) {
+        function showRegolamentoDetail(id) {
             const reg = regolamentiData.find(r => r.id === id);
             if (!reg) return;
 
             document.getElementById("regolamento-detail-title").textContent = reg.title;
             document.getElementById("regolamento-detail-content").textContent = reg.content;
+            
+            const downloadBtn = document.getElementById("regolamento-download-btn");
+            downloadBtn.onclick = () => downloadFileFromData(reg.fileBase64, reg.fileName || `${reg.title}.docx`);
 
             document.getElementById("regolamento-detail-view").classList.remove("hidden");
             document.getElementById("regolamento-detail-view").scrollIntoView({ behavior: 'smooth' });
@@ -882,7 +910,7 @@
             }
         }
 
-        // --- GESTIONE PERCORSI TAXI (AGGIORNATO: MULTIPLO & NOME FILE COME TITOLO) ---
+        // --- GESTIONE PERCORSI TAXI (AGGIORNATO: MULTIPLO & NOME FILE COME TITOLO & DOWNLOAD ORIGINALE) ---
         async function uploadPercorsiWordMulti() {
             const fileInput = document.getElementById("admin-percorso-file");
             if (fileInput.files.length === 0) { alert("Seleziona almeno un file Word (.docx)!"); return; }
@@ -894,13 +922,16 @@
                 let title = file.name.replace(/\.[^/.]+$/, "");
 
                 try {
+                    const base64String = await fileToBase64(file);
                     const arrayBuffer = await file.arrayBuffer();
                     const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
                     
                     percorsiData.push({ 
                         id: Date.now() + Math.random(), 
                         title: title, 
-                        content: result.value 
+                        content: result.value,
+                        fileBase64: base64String,
+                        fileName: file.name
                     });
                     loadedCount++;
                 } catch (e) {
@@ -932,7 +963,7 @@
             filtered.forEach(p => {
                 const card = document.createElement("div");
                 card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between cursor-pointer group hover:border-amber-500";
-                card.onclick = () => showPercorsoDetail(p.title, p.content);
+                card.onclick = () => showPercorsoDetail(p.id);
                 card.innerHTML = `
                     <div class="flex items-center space-x-3.5">
                         <div class="p-3 bg-amber-50 rounded-xl group-hover:bg-amber-100 transition text-amber-600">
@@ -940,7 +971,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-amber-700 leading-snug">${p.title}</h3>
-                            <span class="text-xs text-slate-500 font-medium">Clicca per visualizzare</span>
+                            <span class="text-xs text-slate-500 font-medium">Clicca per visualizzare o scaricare</span>
                         </div>
                     </div>
                 `;
@@ -948,9 +979,16 @@
             });
         }
 
-        function showPercorsoDetail(title, content) {
-            document.getElementById("percorso-detail-title").textContent = title;
-            document.getElementById("percorso-detail-content").textContent = content;
+        function showPercorsoDetail(id) {
+            const percorso = percorsiData.find(p => p.id === id);
+            if (!percorso) return;
+
+            document.getElementById("percorso-detail-title").textContent = percorso.title;
+            document.getElementById("percorso-detail-content").textContent = percorso.content;
+
+            const downloadBtn = document.getElementById("percorso-download-btn");
+            downloadBtn.onclick = () => downloadFileFromData(percorso.fileBase64, percorso.fileName || `${percorso.title}.docx`);
+
             document.getElementById("percorso-detail-view").classList.remove("hidden");
             document.getElementById("percorso-detail-view").scrollIntoView({ behavior: 'smooth' });
         }
@@ -1426,7 +1464,6 @@
             select.innerHTML = "";
             sortedPiazze.forEach((p, originalIdx) => {
                 const opt = document.createElement("option");
-                // Troviamo l'indice reale nell'array globale piazzeData
                 const realIndex = piazzeData.findIndex(item => item.id === p.id);
                 opt.value = realIndex;
                 opt.textContent = `${p.type} ${p.name}`;
@@ -1503,7 +1540,6 @@
             }
         }
 
-        // Funzione per filtrare al volo i select multipli nella sezione admin tramite l'input di ricerca sopra
         function filterAdminSelect(selectId, query) {
             const select = document.getElementById(selectId);
             if (!select) return;
@@ -1660,7 +1696,6 @@
                 return;
             }
             if (confirm(`Vuoi eliminare ${selectedOptions.length} piazze/luoghi selezionati?`)) {
-                // Ricaviamo gli indici e ordiniamoli in modo discendente per evitare problemi di shifting durante lo splice
                 const indicesToDelete = selectedOptions.map(opt => Number(opt.value)).sort((a, b) => b - a);
                 indicesToDelete.forEach(idx => {
                     piazzeData.splice(idx, 1);
