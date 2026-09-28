@@ -483,6 +483,48 @@
       ]
     },
     {
+      "id": 1790625704013,
+      "type": "Piazza",
+      "name": "Cavour",
+      "confluences": [
+        "Via Manin",
+        "Via Turati",
+        "Via Fatebenefratelli",
+        "Via Manzoni",
+        "Via Senato",
+        "Via Vecchio Politecnico",
+        "Via Palestro"
+      ]
+    },
+    {
+      "id": 1790625781073,
+      "type": "Piazza",
+      "name": "Chiaradia",
+      "confluences": [
+        "Via Gallura",
+        "Via Fontanili",
+        "Via Antonini",
+        "Via cuore Immacolato di Maria",
+        "Via Solaroli",
+        "Via Pasinetti"
+      ]
+    },
+    {
+      "id": 1790625896188,
+      "type": "Piazza",
+      "name": "Cimitero Monumentale",
+      "confluences": [
+        "Cavalcavia della Sorgente",
+        "Via Luigi IX",
+        "Via Procaccini",
+        "Via Niccolini",
+        "Via Bramante",
+        "Via Ceresio",
+        "Via Farini",
+        "Via Ferrari"
+      ]
+    },
+    {
       "id": 5,
       "type": "Piazza",
       "name": "Cinque Giornate",
@@ -521,6 +563,45 @@
         "Via Martini",
         "Via Marocchetti",
         "Via Martinengo"
+      ]
+    },
+    {
+      "id": 1790626013483,
+      "type": "Piazzale",
+      "name": "Cuoco",
+      "confluences": [
+        "Viale Molise",
+        "Via Faà di Bruno",
+        "Via Carabelli",
+        "Viale Puglie",
+        "Via Monte Cimone",
+        "Via del Turchino"
+      ]
+    },
+    {
+      "id": 1790626227786,
+      "type": "Largo",
+      "name": "D'Ancona",
+      "confluences": [
+        "Via Carducci",
+        "Via Vincenzo Monti",
+        "Corso Magenta",
+        "Via Carducci",
+        "Via Buttinone",
+        "Corso Magenta"
+      ]
+    },
+    {
+      "id": 1790626131170,
+      "type": "Piazzale",
+      "name": "Damiano Chiesa",
+      "confluences": [
+        "Via Ruggero di Lauria",
+        "Via Colonna",
+        "Via Bartolomeo Colleoni",
+        "Via Alcuino",
+        "Via Giovanni da Procida",
+        "Via Emanuele Filiberto"
       ]
     },
     {
