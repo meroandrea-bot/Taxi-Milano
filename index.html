@@ -258,9 +258,9 @@
                         <input type="text" id="search-percorso" onkeyup="renderPercorsi()" placeholder="Cerca percorso..." class="px-4 py-2.5 rounded-lg border border-slate-300 text-sm sm:text-base focus:ring-2 focus:ring-amber-500 focus:outline-none w-full sm:w-80">
                     </div>
 
-                    <!-- LETTURA PERCORSO A TUTTA PAGINA (MODALE FULL SCREEN) -->
+                    <!-- LETTURA PERCORSO A TUTTA PAGINA CON TIMELINE A TAPPE -->
                     <div id="percorso-detail-view" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-6">
-                        <div class="bg-white w-full max-w-5xl h-[95vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-300">
+                        <div class="bg-white w-full max-w-4xl h-[95vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-300">
                             <!-- Header Modale -->
                             <div class="bg-slate-900 text-white px-4 sm:px-6 py-4 flex justify-between items-center shadow">
                                 <h3 id="percorso-detail-title" class="font-bold text-base sm:text-xl truncate pr-2"></h3>
@@ -273,9 +273,9 @@
                                     </button>
                                 </div>
                             </div>
-                            <!-- Corpo Testuale (A tutta altezza scrollabile) -->
-                            <div id="percorso-content-box" class="flex-1 text-slate-800 text-sm sm:text-base p-4 sm:p-8 overflow-y-auto space-y-4 bg-slate-50 leading-relaxed">
-                                <!-- Testo estratto del documento Word -->
+                            <!-- Corpo Timeline Tappe (A tutta altezza scrollabile) -->
+                            <div id="percorso-content-box" class="flex-1 text-slate-800 text-sm sm:text-base p-4 sm:p-8 overflow-y-auto bg-slate-50">
+                                <!-- Generato dinamicamente a tappe -->
                             </div>
                         </div>
                     </div>
@@ -966,12 +966,12 @@
             };
 
             document.getElementById("regolamento-detail-view").classList.remove("hidden");
-            document.body.style.overflow = 'hidden'; // Blocca lo scroll della pagina sotto
+            document.body.style.overflow = 'hidden';
         }
 
         function closeRegolamentoDetail() {
             document.getElementById("regolamento-detail-view").classList.add("hidden");
-            document.body.style.overflow = 'auto'; // Ripristina lo scroll
+            document.body.style.overflow = 'auto';
         }
 
         function deleteRegolamentoMulti() {
@@ -1067,7 +1067,39 @@
                     }
                     mammoth.convertToHtml({ arrayBuffer: bytes.buffer })
                         .then(function(result) {
-                            contentBox.innerHTML = result.value || "<p class='text-slate-500'>Documento vuoto.</p>";
+                            const rawHtml = result.value || "";
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = rawHtml;
+                            const elements = tempDiv.querySelectorAll('p, li');
+                            
+                            let stepsArr = [];
+                            elements.forEach(el => {
+                                const text = el.textContent.trim();
+                                if (text) stepsArr.push(text);
+                            });
+
+                            if (stepsArr.length > 0) {
+                                let timelineHtml = `<div class="relative pl-6 sm:pl-10 space-y-4 before:absolute before:left-3 sm:before:left-5 before:top-4 before:bottom-4 before:w-1 before:bg-blue-400 rounded-full">`;
+                                stepsArr.forEach((stepText, idx) => {
+                                    const stepNum = idx + 1;
+                                    const isFirst = idx === 0;
+                                    timelineHtml += `
+                                        <div class="relative flex items-start group">
+                                            <div class="absolute -left-6 sm:-left-10 mt-1 w-7 h-7 sm:w-10 sm:h-10 rounded-full ${isFirst ? 'bg-emerald-600 text-white' : 'bg-blue-600 text-white'} flex items-center justify-center font-bold text-xs sm:text-sm shadow-md z-10 border-2 border-white">
+                                                ${isFirst ? '<i class="fa-solid fa-house text-xs sm:text-sm"></i>' : stepNum}
+                                            </div>
+                                            <div class="flex-1 bg-white border border-slate-200 rounded-xl p-3.5 sm:p-4 shadow-sm hover:border-amber-500 transition ml-2">
+                                                <div class="text-slate-900 font-bold text-sm sm:text-base leading-snug">${stepText}</div>
+                                                <div class="text-xs text-slate-500 mt-1 font-semibold">Tappa ${stepNum} di ${stepsArr.length}</div>
+                                            </div>
+                                        </div>
+                                    `;
+                                });
+                                timelineHtml += `</div>`;
+                                contentBox.innerHTML = timelineHtml;
+                            } else {
+                                contentBox.innerHTML = rawHtml || "<p class='text-slate-500'>Documento vuoto.</p>";
+                            }
                         })
                         .catch(function(err) {
                             contentBox.innerHTML = "<p class='text-red-500'>Errore durante la lettura del documento Word.</p>";
@@ -1091,12 +1123,12 @@
             };
 
             document.getElementById("percorso-detail-view").classList.remove("hidden");
-            document.body.style.overflow = 'hidden'; // Blocca lo scroll della pagina sotto
+            document.body.style.overflow = 'hidden';
         }
 
         function closePercorsoDetail() {
             document.getElementById("percorso-detail-view").classList.add("hidden");
-            document.body.style.overflow = 'auto'; // Ripristina lo scroll
+            document.body.style.overflow = 'auto';
         }
 
         function deletePercorsoMulti() {
