@@ -228,10 +228,13 @@
                         <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
                             <h3 id="regolamento-detail-title" class="font-bold text-base sm:text-xl text-amber-900"></h3>
                             <div class="flex items-center gap-2">
+                                <button id="regolamento-download-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-xs sm:text-sm transition flex items-center gap-2 shadow"><i class="fa-solid fa-download"></i> Scarica File Word</button>
                                 <button onclick="closeRegolamentoDetail()" class="text-amber-900 font-bold px-3.5 py-1.5 bg-amber-200 hover:bg-amber-300 rounded-lg text-xs sm:text-sm transition">Chiudi</button>
                             </div>
                         </div>
-                        <div id="regolamento-detail-content" class="text-slate-900 text-sm sm:text-base whitespace-pre-wrap taxi-custom-font bg-white p-4 rounded-lg border border-amber-200 shadow-inner max-h-96 overflow-y-auto leading-relaxed"></div>
+                        <div class="text-slate-700 text-sm sm:text-base bg-white p-4 rounded-lg border border-amber-200 shadow-inner">
+                            Documento pronto per il download sul tuo dispositivo per la lettura tramite Word.
+                        </div>
                     </div>
 
                     <div id="regolamenti-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 max-h-[65vh] overflow-y-auto p-1"></div>
@@ -247,11 +250,16 @@
                     </div>
 
                     <div id="percorso-detail-view" class="hidden mb-4 p-4 sm:p-5 bg-amber-50 border border-amber-300 rounded-xl shadow-sm">
-                        <div class="flex justify-between items-center mb-3">
+                        <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
                             <h3 id="percorso-detail-title" class="font-bold text-base sm:text-xl text-amber-900"></h3>
-                            <button onclick="closePercorsoDetail()" class="text-amber-900 font-bold px-3.5 py-1.5 bg-amber-200 hover:bg-amber-300 rounded-lg text-xs sm:text-sm">Chiudi</button>
+                            <div class="flex items-center gap-2">
+                                <button id="percorso-download-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-xs sm:text-sm transition flex items-center gap-2 shadow"><i class="fa-solid fa-download"></i> Scarica File Word</button>
+                                <button onclick="closePercorsoDetail()" class="text-amber-900 font-bold px-3.5 py-1.5 bg-amber-200 hover:bg-amber-300 rounded-lg text-xs sm:text-sm">Chiudi</button>
+                            </div>
                         </div>
-                        <div id="percorso-detail-content" class="text-slate-900 text-sm sm:text-base whitespace-pre-wrap taxi-custom-font bg-white p-4 rounded-lg border border-amber-200 shadow-inner max-h-96 overflow-y-auto leading-relaxed"></div>
+                        <div class="text-slate-700 text-sm sm:text-base bg-white p-4 rounded-lg border border-amber-200 shadow-inner">
+                            Documento pronto per il download sul tuo dispositivo per la lettura tramite Word.
+                        </div>
                     </div>
 
                     <div id="percorsi-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 max-h-[65vh] overflow-y-auto p-1"></div>
@@ -524,7 +532,7 @@
         let customDescriptions = JSON.parse(localStorage.getItem("milan_custom_descriptions")) || {};
         let percorsiData = JSON.parse(localStorage.getItem("milan_percorsi_data")) || [];
         let regolamentiData = JSON.parse(localStorage.getItem("milan_regolamenti_data")) || [
-            { id: 1, title: "Regolamento Servizio Taxi Comune di Milano", content: "Contenuto ufficiale del regolamento taxi comunale..." }
+            { id: 1, title: "Regolamento Servizio Taxi Comune di Milano", fileData: "", fileName: "regolamento.docx" }
         ];
         let stataliDescriptions = JSON.parse(localStorage.getItem("milan_statali_descriptions")) || {};
         let isAdmin = false;
@@ -692,7 +700,6 @@
             }
 
             try {
-                // Generazione o recupero ID univoco del dispositivo locale
                 let deviceId = localStorage.getItem("milan_taxi_device_id");
                 if (!deviceId) {
                     deviceId = 'dev_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
@@ -717,10 +724,8 @@
                     return;
                 }
 
-                // Controllo se il codice nel database ha i privilegi di amministratore
                 const isCodeAdmin = codeData.isAdmin === true;
 
-                // Controllo e associazione del dispositivo
                 if (!codeData.dispositivoAutorizzato) {
                     await window.updateDoc(codeDocRef, { dispositivoAutorizzato: deviceId });
                     isAdmin = isCodeAdmin;
@@ -852,23 +857,18 @@
             const file = fileInput.files[0];
             const reader = new FileReader();
             
-            reader.onload = async function(event) {
-                const arrayBuffer = event.target.result;
-                try {
-                    const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
-                    regolamentiData.push({ id: Date.now(), title: title, content: result.value, fileName: file.name });
-                    regolamentiData.sort((a, b) => naturalSort(a.title, b.title));
-                    saveData();
-                    titleInput.value = "";
-                    fileInput.value = "";
-                    renderRegolamenti();
-                    populateAdminSelect();
-                    alert("Regolamento Word caricato con successo!");
-                } catch (e) {
-                    alert("Errore durante la lettura del file Word.");
-                }
+            reader.onload = function(event) {
+                const base64Data = event.target.result;
+                regolamentiData.push({ id: Date.now(), title: title, fileData: base64Data, fileName: file.name });
+                regolamentiData.sort((a, b) => naturalSort(a.title, b.title));
+                saveData();
+                titleInput.value = "";
+                fileInput.value = "";
+                renderRegolamenti();
+                populateAdminSelect();
+                alert("Regolamento Word caricato con successo!");
             };
-            reader.readAsArrayBuffer(file);
+            reader.readAsDataURL(file);
         }
 
         function renderRegolamenti() {
@@ -887,8 +887,7 @@
             filtered.forEach(r => {
                 const card = document.createElement("div");
                 card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between group hover:border-amber-500 cursor-pointer";
-                const safeTitle = r.title.replace(/'/g, "\\'");
-                card.onclick = () => showRegolamentoDetail(safeTitle, r.id);
+                card.onclick = () => showRegolamentoDetail(r.id);
                 card.innerHTML = `
                     <div class="flex items-center justify-between mb-2">
                         <div class="flex items-center space-x-3.5">
@@ -897,7 +896,7 @@
                             </div>
                             <div>
                                 <h3 class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-amber-700 leading-snug">${r.title}</h3>
-                                <span class="text-xs text-slate-500 font-medium">Clicca per visualizzare il testo</span>
+                                <span class="text-xs text-slate-500 font-medium">Clicca per scaricare o visualizzare</span>
                             </div>
                         </div>
                     </div>
@@ -906,11 +905,22 @@
             });
         }
 
-        function showRegolamentoDetail(title, id) {
+        function showRegolamentoDetail(id) {
             const reg = regolamentiData.find(r => r.id === id);
             if (!reg) return;
             document.getElementById("regolamento-detail-title").textContent = reg.title;
-            document.getElementById("regolamento-detail-content").textContent = reg.content;
+            
+            const downloadBtn = document.getElementById("regolamento-download-btn");
+            downloadBtn.onclick = () => {
+                if (!reg.fileData) { alert("File originale non disponibile."); return; }
+                const a = document.createElement('a');
+                a.href = reg.fileData;
+                a.download = reg.fileName || `${reg.title}.docx`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            };
+
             document.getElementById("regolamento-detail-view").classList.remove("hidden");
             document.getElementById("regolamento-detail-view").scrollIntoView({ behavior: 'smooth' });
         }
@@ -942,14 +952,15 @@
 
             for (const file of files) {
                 let title = file.name.replace(/\.[^/.]+$/, "");
-                try {
-                    const arrayBuffer = await file.arrayBuffer();
-                    const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
-                    percorsiData.push({ id: Date.now() + Math.random(), title: title, content: result.value });
-                    loadedCount++;
-                } catch (e) {
-                    console.error(`Errore durante la lettura del file ${file.name}`, e);
-                }
+                await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        percorsiData.push({ id: Date.now() + Math.random(), title: title, fileData: event.target.result, fileName: file.name });
+                        loadedCount++;
+                        resolve();
+                    };
+                    reader.readAsDataURL(file);
+                });
             }
 
             percorsiData.sort((a, b) => naturalSort(a.title, b.title));
@@ -976,7 +987,7 @@
             filtered.forEach(p => {
                 const card = document.createElement("div");
                 card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between cursor-pointer group hover:border-amber-500";
-                card.onclick = () => showPercorsoDetail(p.title, p.content);
+                card.onclick = () => showPercorsoDetail(p.id);
                 card.innerHTML = `
                     <div class="flex items-center space-x-3.5">
                         <div class="p-3 bg-amber-50 rounded-xl group-hover:bg-amber-100 transition text-amber-600">
@@ -984,7 +995,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-amber-700 leading-snug">${p.title}</h3>
-                            <span class="text-xs text-slate-500 font-medium">Clicca per visualizzare</span>
+                            <span class="text-xs text-slate-500 font-medium">Clicca per scaricare o visualizzare</span>
                         </div>
                     </div>
                 `;
@@ -992,9 +1003,22 @@
             });
         }
 
-        function showPercorsoDetail(title, content) {
-            document.getElementById("percorso-detail-title").textContent = title;
-            document.getElementById("percorso-detail-content").textContent = content;
+        function showPercorsoDetail(id) {
+            const percorso = percorsiData.find(p => p.id === id);
+            if (!percorso) return;
+            document.getElementById("percorso-detail-title").textContent = percorso.title;
+            
+            const downloadBtn = document.getElementById("percorso-download-btn");
+            downloadBtn.onclick = () => {
+                if (!percorso.fileData) { alert("File originale non disponibile."); return; }
+                const a = document.createElement('a');
+                a.href = percorso.fileData;
+                a.download = percorso.fileName || `${percorso.title}.docx`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            };
+
             document.getElementById("percorso-detail-view").classList.remove("hidden");
             document.getElementById("percorso-detail-view").scrollIntoView({ behavior: 'smooth' });
         }
@@ -1586,7 +1610,7 @@
 
         function updateAdminPassword() {
             const newAdminPwd = document.getElementById("admin-new-admin-pwd").value.trim();
-            if (!newAdminPwd) { alert("La password non può essere vuota!"); return; }
+            if (!newAdminPwd) { alert(" La password non può essere vuota!"); return; }
             adminPwd = newAdminPwd;
             saveData();
             alert("Password Admin aggiornata!");
