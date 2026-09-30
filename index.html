@@ -232,8 +232,8 @@
                                 <button onclick="closeRegolamentoDetail()" class="text-amber-900 font-bold px-3.5 py-1.5 bg-amber-200 hover:bg-amber-300 rounded-lg text-xs sm:text-sm transition">Chiudi</button>
                             </div>
                         </div>
-                        <div class="text-slate-700 text-sm sm:text-base bg-white p-4 rounded-lg border border-amber-200 shadow-inner">
-                            Documento pronto per il download sul tuo dispositivo per la lettura tramite Word.
+                        <div id="regolamento-content-box" class="text-slate-700 text-sm sm:text-base bg-white p-4 sm:p-6 rounded-lg border border-amber-200 shadow-inner max-h-[60vh] overflow-y-auto space-y-3">
+                            <!-- Testo estratto del documento Word -->
                         </div>
                     </div>
 
@@ -257,8 +257,8 @@
                                 <button onclick="closePercorsoDetail()" class="text-amber-900 font-bold px-3.5 py-1.5 bg-amber-200 hover:bg-amber-300 rounded-lg text-xs sm:text-sm">Chiudi</button>
                             </div>
                         </div>
-                        <div class="text-slate-700 text-sm sm:text-base bg-white p-4 rounded-lg border border-amber-200 shadow-inner">
-                            Documento pronto per il download sul tuo dispositivo per la lettura tramite Word.
+                        <div id="percorso-content-box" class="text-slate-700 text-sm sm:text-base bg-white p-4 sm:p-6 rounded-lg border border-amber-200 shadow-inner max-h-[60vh] overflow-y-auto space-y-3">
+                            <!-- Testo estratto del documento Word -->
                         </div>
                     </div>
 
@@ -896,7 +896,7 @@
                             </div>
                             <div>
                                 <h3 class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-amber-700 leading-snug">${r.title}</h3>
-                                <span class="text-xs text-slate-500 font-medium">Clicca per scaricare o visualizzare</span>
+                                <span class="text-xs text-slate-500 font-medium">Clicca per leggere o scaricare</span>
                             </div>
                         </div>
                     </div>
@@ -910,6 +910,32 @@
             if (!reg) return;
             document.getElementById("regolamento-detail-title").textContent = reg.title;
             
+            const contentBox = document.getElementById("regolamento-content-box");
+            contentBox.innerHTML = `<p class="text-slate-500 italic"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Caricamento documento in corso...</p>`;
+
+            if (reg.fileData) {
+                try {
+                    const base64Content = reg.fileData.split(',')[1];
+                    const binaryString = atob(base64Content);
+                    const len = binaryString.length;
+                    const bytes = new Uint8Array(len);
+                    for (let i = 0; i < len; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    mammoth.convertToHtml({ arrayBuffer: bytes.buffer })
+                        .then(function(result) {
+                            contentBox.innerHTML = result.value || "<p class='text-slate-500'>Documento vuoto.</p>";
+                        })
+                        .catch(function(err) {
+                            contentBox.innerHTML = "<p class='text-red-500'>Errore durante la lettura del documento Word.</p>";
+                        });
+                } catch (e) {
+                    contentBox.innerHTML = "<p class='text-red-500'>Impossibile elaborare il file salvato.</p>";
+                }
+            } else {
+                contentBox.innerHTML = "<p class='text-slate-500'>Nessun testo disponibile per questo elemento di default.</p>";
+            }
+
             const downloadBtn = document.getElementById("regolamento-download-btn");
             downloadBtn.onclick = () => {
                 if (!reg.fileData) { alert("File originale non disponibile."); return; }
@@ -995,7 +1021,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-amber-700 leading-snug">${p.title}</h3>
-                            <span class="text-xs text-slate-500 font-medium">Clicca per scaricare o visualizzare</span>
+                            <span class="text-xs text-slate-500 font-medium">Clicca per leggere o scaricare</span>
                         </div>
                     </div>
                 `;
@@ -1008,6 +1034,32 @@
             if (!percorso) return;
             document.getElementById("percorso-detail-title").textContent = percorso.title;
             
+            const contentBox = document.getElementById("percorso-content-box");
+            contentBox.innerHTML = `<p class="text-slate-500 italic"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Caricamento percorso in corso...</p>`;
+
+            if (percorso.fileData) {
+                try {
+                    const base64Content = percorso.fileData.split(',')[1];
+                    const binaryString = atob(base64Content);
+                    const len = binaryString.length;
+                    const bytes = new Uint8Array(len);
+                    for (let i = 0; i < len; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    mammoth.convertToHtml({ arrayBuffer: bytes.buffer })
+                        .then(function(result) {
+                            contentBox.innerHTML = result.value || "<p class='text-slate-500'>Documento vuoto.</p>";
+                        })
+                        .catch(function(err) {
+                            contentBox.innerHTML = "<p class='text-red-500'>Errore durante la lettura del documento Word.</p>";
+                        });
+                } catch (e) {
+                    contentBox.innerHTML = "<p class='text-red-500'>Impossibile elaborare il file salvato.</p>";
+                }
+            } else {
+                contentBox.innerHTML = "<p class='text-slate-500'>Nessun testo disponibile.</p>";
+            }
+
             const downloadBtn = document.getElementById("percorso-download-btn");
             downloadBtn.onclick = () => {
                 if (!percorso.fileData) { alert("File originale non disponibile."); return; }
