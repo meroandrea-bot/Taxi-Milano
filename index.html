@@ -1687,14 +1687,16 @@
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
             const dlAnchorElem = document.createElement('a');
             dlAnchorElem.setAttribute("href", dataStr);
-            dlAnchorElem.setAttribute("download", "db.json");
+            dlAnchorElem.setAttribute("download", "milano_taxi_database_backup.json");
+            document.body.appendChild(dlAnchorElem);
             dlAnchorElem.click();
+            dlAnchorElem.remove();
         }
 
-        window.onload = async function() {
-            setupDynamicManifest();
-            await loadCloudDatabase();
-            updateSortButtonUI();
+        window.onload = function() {
+            loadCloudDatabase().then(() => {
+                setupDynamicManifest();
+            });
         };
     </script>
 </body>
