@@ -325,62 +325,119 @@
                 </div>
             </section>
 
-            <!-- SCHEDA ESERCIZI (SIMULATORE ANTICORARIO OTTIMIZZATO MOBILE) -->
+            <!-- SCHEDA ESERCIZI (SELEZIONE INIZIALE) -->
             <section id="tab-esercizio" class="hidden space-y-4">
-                <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
-                    <div class="flex justify-between items-center mb-3.5 flex-wrap gap-3">
-                        <h2 class="text-lg sm:text-2xl font-bold flex items-center"><i class="fa-solid fa-route text-amber-500 mr-2.5"></i> Esercizi Confluenze</h2>
-                        
-                        <div class="flex items-center gap-2.5 w-full sm:w-auto">
-                            <div class="relative flex-1 sm:w-72">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
-                                    <i class="fa-solid fa-magnifying-glass text-sm"></i>
-                                </span>
-                                <input type="text" id="exercise-search-input" oninput="filterExerciseDropdown()" placeholder="Cerca piazza..." class="w-full pl-9 pr-3 py-2 border rounded-lg text-sm sm:text-base bg-slate-50 font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none">
-                                <div id="exercise-suggestions" class="absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-xl max-h-56 overflow-y-auto z-30 hidden"></div>
-                            </div>
-                            <select id="exercise-select" onchange="loadExercise()" class="px-3 py-2 border rounded-lg text-sm sm:text-base bg-slate-50 font-bold text-slate-800 max-w-[140px] sm:max-w-xs"></select>
+                <div class="bg-white p-6 sm:p-10 rounded-xl shadow-sm border border-slate-200 max-w-2xl mx-auto text-center space-y-6">
+                    <div class="space-y-2">
+                        <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-inner">
+                            <i class="fa-solid fa-map-location-dot"></i>
                         </div>
-                    </div>
-                    
-                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-3.5 text-xs sm:text-sm font-semibold text-amber-900 shadow-sm">
-                        <i class="fa-solid fa-circle-info mr-1.5 text-amber-600"></i> <strong>Smartphone:</strong> Tocca una via dall'elenco e poi tocca il riquadro vuoto attorno alla piazza per posizionarla! (Senso antiorario).
+                        <h2 class="text-xl sm:text-3xl font-bold">Simulatore Confluenze</h2>
+                        <p class="text-sm sm:text-base text-slate-600">Seleziona una piazza o un luogo dall'elenco o cerca per nome per avviare l'esercizio a tutto schermo.</p>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4">
-                        <div class="lg:col-span-8 bg-slate-900 rounded-xl p-3.5 relative flex flex-col items-center justify-center min-h-[420px] sm:min-h-[520px] shadow-inner border border-slate-700 overflow-x-auto overflow-y-auto">
-                            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#f59e0b_1.5px,transparent_1.5px)] [background-size:16px_16px]"></div>
-
-                            <div class="orbit-container my-auto">
-                                <div class="orbit-center w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-slate-800 border-4 border-amber-500 shadow-2xl flex flex-col items-center justify-center text-center p-2 z-10">
-                                    <div id="ex-square-type" class="text-[10px] sm:text-xs uppercase tracking-widest text-amber-400 font-extrabold">Piazza</div>
-                                    <div id="ex-square-title" class="text-sm sm:text-base font-black text-white leading-tight mt-1">-</div>
-                                </div>
-                                <div id="map-slots-container"></div>
-                            </div>
-
-                            <div class="absolute bottom-3 text-xs sm:text-sm text-slate-300 font-bold tracking-wide bg-slate-800/80 px-3 py-1 rounded-full border border-slate-600">
-                                <i class="fa-solid fa-arrows-spin mr-1.5 text-amber-400"></i> Senso Antiorario
-                            </div>
+                    <div class="space-y-4 text-left">
+                        <div class="relative">
+                            <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Cerca Piazza / Luogo</label>
+                            <span class="absolute inset-y-0 top-6 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                            </span>
+                            <input type="text" id="exercise-search-input" oninput="filterExerciseDropdown()" placeholder="Cerca..." class="w-full pl-9 pr-3 py-3 border rounded-lg text-sm sm:text-base bg-slate-50 font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            <div id="exercise-suggestions" class="absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-xl max-h-56 overflow-y-auto z-30 hidden"></div>
                         </div>
 
-                        <div class="lg:col-span-4 flex flex-col bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                            <div class="text-xs sm:text-sm font-bold uppercase text-slate-700 tracking-wider mb-2 flex items-center justify-between">
-                                <span><i class="fa-solid fa-list text-amber-500 mr-1.5"></i> Vie Disponibili</span>
-                                <span id="pool-count" class="text-xs bg-slate-200 px-2.5 py-0.5 rounded text-slate-800 font-bold">0</span>
-                            </div>
-                            <p class="text-xs text-slate-600 mb-2.5 font-medium">Trascina o tocca le vie nei riquadri.</p>
-                            <div id="source-pool" class="space-y-2 min-h-[240px] sm:min-h-[350px] max-h-[420px] overflow-y-auto p-1.5 bg-white border border-slate-200 rounded-lg"></div>
+                        <div>
+                            <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Seleziona dall'elenco</label>
+                            <select id="exercise-select" class="w-full px-4 py-3 border rounded-lg text-sm sm:text-base bg-slate-50 font-bold text-slate-800"></select>
                         </div>
                     </div>
 
-                    <div class="flex flex-wrap gap-2.5">
-                        <button onclick="verifyExercise()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-lg transition shadow text-sm sm:text-base flex items-center justify-center"><i class="fa-solid fa-check mr-2 text-base"></i> Verifica</button>
-                        <button onclick="showExerciseSolution()" class="px-5 sm:px-8 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-3.5 rounded-lg transition text-sm sm:text-base flex items-center justify-center"><i class="fa-solid fa-eye mr-2 text-base"></i> Soluzione</button>
+                    <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                        <button onclick="startExerciseModal()" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 rounded-xl transition shadow-lg text-base flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-play"></i> Avvia Esercizio
+                        </button>
+                        <button onclick="startRandomExercise()" class="px-6 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-xl transition shadow text-base flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-shuffle"></i> Casuale
+                        </button>
                     </div>
-                    <div id="exercise-feedback" class="mt-3 text-center font-bold text-sm sm:text-base"></div>
                 </div>
             </section>
+
+            <!-- MODALE ESERCIZIO A TUTTA PAGINA -->
+            <div id="exercise-detail-view" class="hidden fixed inset-0 z-50 bg-slate-900/90 backdrop-blur-sm flex flex-col">
+                <!-- Header Modale Esercizio -->
+                <div class="bg-slate-900 text-white px-4 sm:px-6 py-3 flex justify-between items-center shadow border-b border-slate-800">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2 bg-amber-500/20 rounded-lg text-amber-400">
+                            <i class="fa-solid fa-map-location-dot text-lg"></i>
+                        </div>
+                        <div>
+                            <span id="ex-modal-type" class="text-[10px] uppercase font-bold text-amber-400 block leading-none">Piazza</span>
+                            <h3 id="ex-modal-title" class="font-black text-base sm:text-xl text-white">Nome Piazza</h3>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="closeExerciseModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold px-3.5 py-2 rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-xmark text-base"></i> Chiudi
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Barra Controlli Extra Esercizio (Reset, Indietro, Avanti, Casuale) -->
+                <div class="bg-slate-800 px-4 py-2.5 flex flex-wrap justify-between items-center gap-2 border-b border-slate-700 text-xs sm:text-sm font-semibold text-white">
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="exercisePrev()" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition flex items-center gap-1" title="Precedente"><i class="fa-solid fa-chevron-left"></i> <span class="hidden sm:inline">Indietro</span></button>
+                        <button onclick="exerciseNext()" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition flex items-center gap-1" title="Successiva"><span class="hidden sm:inline">Avanti</span> <i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="resetCurrentExercise()" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition flex items-center gap-1.5"><i class="fa-solid fa-rotate-right"></i> Reset</button>
+                        <button onclick="startRandomExercise()" class="px-3 py-2 bg-amber-600 hover:bg-amber-700 rounded-lg transition flex items-center gap-1.5"><i class="fa-solid fa-shuffle"></i> Casuale</button>
+                    </div>
+                </div>
+
+                <!-- Corpo Interattivo Esercizio -->
+                <div class="flex-1 overflow-y-auto p-3 sm:p-6 bg-slate-100 flex flex-col justify-center">
+                    <div class="max-w-6xl w-full mx-auto space-y-4">
+                        <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs sm:text-sm font-semibold text-amber-900 shadow-sm flex items-center gap-2">
+                            <i class="fa-solid fa-circle-info text-amber-600 text-base flex-shrink-0"></i>
+                            <span>Tocca una via dall'elenco e poi tocca il riquadro vuoto attorno alla piazza per posizionarla! (Senso antiorario).</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                            <div class="lg:col-span-8 bg-slate-900 rounded-2xl p-3.5 relative flex flex-col items-center justify-center min-h-[420px] sm:min-h-[500px] shadow-inner border border-slate-700 overflow-x-auto overflow-y-auto">
+                                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#f59e0b_1.5px,transparent_1.5px)] [background-size:16px_16px]"></div>
+
+                                <div class="orbit-container my-auto">
+                                    <div class="orbit-center w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-slate-800 border-4 border-amber-500 shadow-2xl flex flex-col items-center justify-center text-center p-2 z-10">
+                                        <div id="ex-square-type" class="text-[10px] sm:text-xs uppercase tracking-widest text-amber-400 font-extrabold">Piazza</div>
+                                        <div id="ex-square-title" class="text-sm sm:text-base font-black text-white leading-tight mt-1">-</div>
+                                    </div>
+                                    <div id="map-slots-container"></div>
+                                </div>
+
+                                <div class="absolute bottom-3 text-xs sm:text-sm text-slate-300 font-bold tracking-wide bg-slate-800/80 px-3 py-1 rounded-full border border-slate-600">
+                                    <i class="fa-solid fa-arrows-spin mr-1.5 text-amber-400"></i> Senso Antiorario
+                                </div>
+                            </div>
+
+                            <div class="lg:col-span-4 flex flex-col bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                                <div class="text-xs sm:text-sm font-bold uppercase text-slate-700 tracking-wider mb-2 flex items-center justify-between">
+                                    <span><i class="fa-solid fa-list text-amber-500 mr-1.5"></i> Vie Disponibili</span>
+                                    <span id="pool-count" class="text-xs bg-slate-100 px-2.5 py-0.5 rounded text-slate-800 font-bold">0</span>
+                                </div>
+                                <p class="text-xs text-slate-500 mb-2.5 font-medium">Trascina o tocca le vie nei riquadri.</p>
+                                <div id="source-pool" class="space-y-2 min-h-[220px] sm:min-h-[320px] max-h-[380px] overflow-y-auto p-1.5 bg-slate-50 border border-slate-200 rounded-xl"></div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2.5 pt-1">
+                            <button onclick="verifyExercise()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition shadow text-sm sm:text-base flex items-center justify-center"><i class="fa-solid fa-check mr-2 text-base"></i> Verifica Risposta</button>
+                            <button onclick="showExerciseSolution()" class="px-6 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-3.5 rounded-xl transition text-sm sm:text-base flex items-center justify-center"><i class="fa-solid fa-eye mr-2 text-base"></i> Mostra Soluzione</button>
+                        </div>
+                        <div id="exercise-feedback" class="text-center font-bold text-sm sm:text-base"></div>
+                    </div>
+                </div>
+            </div>
 
             <!-- SCHEDA ADMIN -->
             <section id="tab-admin" class="hidden space-y-4">
@@ -819,7 +876,6 @@
             }
 
             if(tab === 'esercizio') {
-                loadExercise();
                 document.addEventListener("click", handleOutsideClick);
             } else {
                 document.removeEventListener("click", handleOutsideClick);
@@ -1056,7 +1112,6 @@
             const contentBox = document.getElementById("percorso-content-box");
             contentBox.innerHTML = `<p class="text-slate-500 italic"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Caricamento percorso in corso...</p>`;
 
-            // Estrae Da e A dal titolo (supporta trattino o parole chiave come " a ")
             let titleParts = percorso.title.split(/[-–]|(?:\s+a\s+)/i);
             let daText = titleParts[0] ? titleParts[0].trim() : percorso.title;
             let aText = titleParts[1] ? titleParts[1].trim() : "";
@@ -1346,7 +1401,6 @@
                     document.getElementById("exercise-select").value = m.index;
                     document.getElementById("exercise-search-input").value = m.text;
                     suggestionsBox.classList.add("hidden");
-                    loadExercise();
                 };
                 suggestionsBox.appendChild(div);
             });
@@ -1354,20 +1408,64 @@
         }
 
         let currentCorrectOrder = [];
+        let currentExerciseIndex = 0;
 
-        function loadExercise() {
+        function startExerciseModal() {
+            const select = document.getElementById("exercise-select");
+            currentExerciseIndex = parseInt(select.value);
+            loadExerciseIntoModal(currentExerciseIndex);
+            document.getElementById("exercise-detail-view").classList.remove("hidden");
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeExerciseModal() {
+            document.getElementById("exercise-detail-view").classList.add("hidden");
+            document.body.style.overflow = 'auto';
+        }
+
+        function resetCurrentExercise() {
+            loadExerciseIntoModal(currentExerciseIndex);
+        }
+
+        function exercisePrev() {
+            currentExerciseIndex = (currentExerciseIndex - 1 + piazzeData.length) % piazzeData.length;
+            document.getElementById("exercise-select").value = currentExerciseIndex;
+            loadExerciseIntoModal(currentExerciseIndex);
+        }
+
+        function exerciseNext() {
+            currentExerciseIndex = (currentExerciseIndex + 1) % piazzeData.length;
+            document.getElementById("exercise-select").value = currentExerciseIndex;
+            loadExerciseIntoModal(currentExerciseIndex);
+        }
+
+        function startRandomExercise() {
+            if (piazzeData.length === 0) return;
+            let randomIndex = Math.floor(Math.random() * piazzeData.length);
+            currentExerciseIndex = randomIndex;
+            document.getElementById("exercise-select").value = currentExerciseIndex;
+            
+            const piazza = piazzeData[currentExerciseIndex];
+            const searchInput = document.getElementById("exercise-search-input");
+            if (searchInput) searchInput.value = `${piazza.type} ${piazza.name}`;
+
+            loadExerciseIntoModal(currentExerciseIndex);
+            if (document.getElementById("exercise-detail-view").classList.contains("hidden")) {
+                document.getElementById("exercise-detail-view").classList.remove("hidden");
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function loadExerciseIntoModal(index) {
             selectedStreetForTap = null;
-            const index = document.getElementById("exercise-select").value;
             const piazza = piazzeData[index];
             if (!piazza || piazza.confluences.length === 0) return;
 
-            const searchInput = document.getElementById("exercise-search-input");
-            if (searchInput && document.activeElement !== searchInput) searchInput.value = `${piazza.type} ${piazza.name}`;
-            const suggestionsBox = document.getElementById("exercise-suggestions");
-            if (suggestionsBox) suggestionsBox.classList.add("hidden");
-
+            document.getElementById("ex-modal-type").textContent = piazza.type;
+            document.getElementById("ex-modal-title").textContent = piazza.name;
             document.getElementById("ex-square-type").textContent = piazza.type;
             document.getElementById("ex-square-title").textContent = piazza.name;
+            
             currentCorrectOrder = [...piazza.confluences];
 
             const totalNodes = currentCorrectOrder.length;
