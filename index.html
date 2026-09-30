@@ -51,8 +51,8 @@
     <style>
         .orbit-container {
             position: relative;
-            width: 400px;
-            height: 400px;
+            width: 380px;
+            height: 380px;
             margin: auto;
             flex-shrink: 0;
             transform-origin: center center;
@@ -60,8 +60,8 @@
         }
         @media (min-width: 640px) {
             .orbit-container {
-                width: 560px;
-                height: 560px;
+                width: 520px;
+                height: 520px;
             }
         }
         .orbit-center {
@@ -73,8 +73,8 @@
         }
         .orbit-slot {
             position: absolute;
-            width: 125px;
-            min-height: 42px;
+            width: 120px;
+            min-height: 40px;
             transform: translate(-50%, -50%);
             z-index: 20;
             word-break: break-word;
@@ -82,8 +82,8 @@
         }
         @media (min-width: 640px) {
             .orbit-slot {
-                width: 150px;
-                min-height: 46px;
+                width: 145px;
+                min-height: 44px;
             }
         }
         body {
@@ -227,7 +227,7 @@
                     </div>
 
                     <div id="regolamento-detail-view" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-6">
-                        <div class="bg-white w-full max-w-5xl h-[95vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-300">
+                        <div class="bg-white w-full max-w-5xl h-[90vh] sm:h-[95vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-300">
                             <div class="bg-slate-900 text-white px-4 sm:px-6 py-4 flex justify-between items-center shadow">
                                 <h3 id="regolamento-detail-title" class="font-bold text-base sm:text-xl truncate pr-2"></h3>
                                 <div class="flex items-center gap-2.5 flex-shrink-0">
@@ -257,7 +257,7 @@
                     </div>
 
                     <div id="percorso-detail-view" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-6">
-                        <div class="bg-white w-full max-w-4xl h-[95vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-300">
+                        <div class="bg-white w-full max-w-4xl h-[90vh] sm:h-[95vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-300">
                             <div class="bg-slate-900 text-white px-4 sm:px-6 py-4 flex justify-between items-center shadow">
                                 <h3 id="percorso-detail-title" class="font-bold text-base sm:text-xl truncate pr-2"></h3>
                                 <div class="flex items-center gap-2.5 flex-shrink-0">
@@ -357,10 +357,10 @@
                 </div>
             </section>
 
-            <!-- MODALE ESERCIZIO A TUTTA PAGINA -->
-            <div id="exercise-detail-view" class="hidden fixed inset-0 z-50 bg-slate-900/90 backdrop-blur-sm flex flex-col">
+            <!-- MODALE ESERCIZIO A TUTTA PAGINA (CORRETTO PER PC E ANDROID) -->
+            <div id="exercise-detail-view" class="hidden fixed inset-0 z-50 bg-slate-900/95 backdrop-blur-sm flex flex-col h-[100dvh] w-full overflow-hidden">
                 <!-- Header Modale Esercizio -->
-                <div class="bg-slate-900 text-white px-4 sm:px-6 py-3 flex justify-between items-center shadow border-b border-slate-800">
+                <div class="bg-slate-900 text-white px-4 sm:px-6 py-3 flex justify-between items-center shadow border-b border-slate-800 flex-shrink-0">
                     <div class="flex items-center space-x-3">
                         <div class="p-2 bg-amber-500/20 rounded-lg text-amber-400">
                             <i class="fa-solid fa-map-location-dot text-lg"></i>
@@ -378,7 +378,7 @@
                 </div>
 
                 <!-- Barra Controlli Extra Esercizio -->
-                <div class="bg-slate-800 px-4 py-2.5 flex flex-wrap justify-between items-center gap-2 border-b border-slate-700 text-xs sm:text-sm font-semibold text-white">
+                <div class="bg-slate-800 px-4 py-2.5 flex flex-wrap justify-between items-center gap-2 border-b border-slate-700 text-xs sm:text-sm font-semibold text-white flex-shrink-0">
                     <div class="flex items-center gap-1.5">
                         <button onclick="exercisePrev()" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition flex items-center gap-1" title="Precedente"><i class="fa-solid fa-chevron-left"></i> <span class="hidden sm:inline">Indietro</span></button>
                         <button onclick="exerciseNext()" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition flex items-center gap-1" title="Successiva"><span class="hidden sm:inline">Avanti</span> <i class="fa-solid fa-chevron-right"></i></button>
@@ -389,9 +389,9 @@
                     </div>
                 </div>
 
-                <!-- Corpo Interattivo Esercizio -->
-                <div class="flex-1 overflow-y-auto p-3 sm:p-6 bg-slate-100 flex flex-col justify-center">
-                    <div class="max-w-6xl w-full mx-auto space-y-4">
+                <!-- Corpo Interattivo Esercizio con Padding Superiore e Scrolling Fluido -->
+                <div class="flex-1 overflow-y-auto p-3 sm:p-5 bg-slate-100 flex flex-col justify-start w-full">
+                    <div class="max-w-6xl w-full mx-auto space-y-4 my-auto">
                         <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs sm:text-sm font-semibold text-amber-900 shadow-sm flex items-center justify-between gap-2">
                             <div class="flex items-center gap-2">
                                 <i class="fa-solid fa-circle-info text-amber-600 text-base flex-shrink-0"></i>
@@ -401,11 +401,11 @@
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                            <!-- Area Mappa con correzione Flex-1 per Android/iOS -->
-                            <div id="map-viewport" class="lg:col-span-8 bg-slate-900 rounded-2xl p-3.5 relative flex flex-col items-center justify-center min-h-[420px] sm:min-h-[500px] shadow-inner border border-slate-700 overflow-hidden cursor-grab active:cursor-grabbing">
+                            <!-- Area Mappa con altezza minima e spazi corretti -->
+                            <div id="map-viewport" class="lg:col-span-8 bg-slate-900 rounded-2xl p-3.5 relative flex flex-col items-center justify-center min-h-[420px] sm:min-h-[480px] shadow-inner border border-slate-700 overflow-hidden cursor-grab active:cursor-grabbing">
                                 <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#f59e0b_1.5px,transparent_1.5px)] [background-size:16px_16px] pointer-events-none"></div>
 
-                                <div id="orbit-wrapper" class="w-full flex-1 flex items-center justify-center relative touch-none">
+                                <div id="orbit-wrapper" class="w-full flex-1 flex items-center justify-center relative touch-none py-4">
                                     <div class="orbit-container my-auto flex-shrink-0" id="orbit-container-el">
                                         <!-- Piazza Centrale (Perfettamente al centro) -->
                                         <div class="orbit-center w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-slate-800 border-4 border-amber-500 shadow-2xl flex flex-col items-center justify-center text-center p-2 z-10">
@@ -427,7 +427,7 @@
                                     <span id="pool-count" class="text-xs bg-slate-100 px-2.5 py-0.5 rounded text-slate-800 font-bold">0</span>
                                 </div>
                                 <p class="text-xs text-slate-500 mb-2.5 font-medium">Trascina o tocca le vie nei riquadri.</p>
-                                <div id="source-pool" class="space-y-2 min-h-[220px] sm:min-h-[320px] max-h-[380px] overflow-y-auto p-1.5 bg-slate-50 border border-slate-200 rounded-xl"></div>
+                                <div id="source-pool" class="space-y-2 min-h-[220px] sm:min-h-[300px] max-h-[360px] overflow-y-auto p-1.5 bg-slate-50 border border-slate-200 rounded-xl"></div>
                             </div>
                         </div>
 
@@ -435,7 +435,7 @@
                             <button onclick="verifyExercise()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition shadow text-sm sm:text-base flex items-center justify-center"><i class="fa-solid fa-check mr-2 text-base"></i> Verifica Risposta</button>
                             <button onclick="showExerciseSolution()" class="px-6 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-3.5 rounded-xl transition text-sm sm:text-base flex items-center justify-center"><i class="fa-solid fa-eye mr-2 text-base"></i> Mostra Soluzione</button>
                         </div>
-                        <div id="exercise-feedback" class="text-center font-bold text-sm sm:text-base"></div>
+                        <div id="exercise-feedback" class="text-center font-bold text-sm sm:text-base pb-2"></div>
                     </div>
                 </div>
             </div>
@@ -1319,25 +1319,21 @@
             filtered.forEach(p => {
                 let sortedConfluences = [...p.confluences].sort(naturalSort);
                 let confluencesHtml = sortedConfluences.map(c => `
-                    <li onclick="showStreetDetails('${c}', '${p.type} ${p.name}')" class="py-1.5 px-2.5 bg-slate-50 hover:bg-amber-100 rounded-lg border border-slate-200/90 flex justify-between items-center text-xs sm:text-sm cursor-pointer transition group">
-                        <span class="text-slate-800 font-semibold group-hover:text-amber-900"><i class="fa-solid fa-arrow-right text-amber-500 mr-2 text-xs"></i> ${c}</span>
-                        <span class="text-xs text-amber-700 font-bold underline whitespace-nowrap ml-1">Info</span>
+                    <li onclick="showStreetDetails('${c}', '${p.type} ${p.name}')" class="py-1.5 px-2.5 bg-slate-50 hover:bg-amber-50 rounded-lg text-xs sm:text-sm font-semibold text-slate-800 transition cursor-pointer flex items-center justify-between border border-slate-100">
+                        <span><i class="fa-solid fa-arrow-right text-amber-500 mr-1.5 text-xs"></i> ${c}</span>
+                        <span class="text-[10px] text-amber-700 bg-amber-100 px-2 py-0.5 rounded font-bold">collegamento</span>
                     </li>
                 `).join('');
 
-                let badgeColor = 'bg-amber-100 text-amber-900';
-                if(p.type === 'Piazzale') badgeColor = 'bg-purple-100 text-purple-900';
-                if(p.type === 'Largo') badgeColor = 'bg-blue-100 text-blue-900';
-
                 const card = document.createElement("div");
-                card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between";
+                card.className = "bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:border-amber-500 transition flex flex-col justify-between";
                 card.innerHTML = `
                     <div>
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-[10px] sm:text-xs font-extrabold uppercase px-2 py-0.5 rounded-md ${badgeColor}">${p.type}</span>
-                            <span class="text-xs text-slate-500 font-bold">${p.confluences.length} vie</span>
+                        <div class="flex items-center justify-between mb-2.5">
+                            <span class="text-xs uppercase font-bold px-2.5 py-1 bg-amber-100 text-amber-900 rounded-md tracking-wider">${p.type}</span>
+                            <span class="text-xs text-slate-500 font-semibold">${p.confluences.length} confluenze</span>
                         </div>
-                        <h3 class="font-bold text-lg text-slate-900 mb-3">${p.name}</h3>
+                        <h3 class="font-black text-base sm:text-lg text-slate-900 mb-3">${p.name}</h3>
                         <ul class="space-y-1.5 max-h-40 overflow-y-auto pr-1">${confluencesHtml}</ul>
                     </div>
                 `;
@@ -1345,18 +1341,13 @@
             });
         }
 
-        function showStreetDetails(streetName, piazzaFullName) {
+        function showStreetDetails(streetName, piazzaName) {
             const infoBox = document.getElementById("street-destination-info");
-            const destText = document.getElementById("street-dest-text");
+            const textSpan = document.getElementById("street-dest-text");
             const mapLink = document.getElementById("street-map-link");
-            const key = `${piazzaFullName}_${streetName}`;
-            
-            if (customDescriptions[key]) destText.textContent = customDescriptions[key];
-            else destText.textContent = `La via "${streetName}" confluisce direttamente su ${piazzaFullName}.`;
-            
-            const query = encodeURIComponent(`Milano, ${streetName} (vicino a ${piazzaFullName})`);
-            mapLink.href = `https://www.google.com/maps/search/?api=1&query=${query}`;
-            
+
+            textSpan.textContent = `Da "${streetName}" verso "${piazzaName}"`;
+            mapLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(streetName + ", " + piazzaName + ", Milano")}`;
             infoBox.classList.remove("hidden");
             infoBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
@@ -1368,57 +1359,96 @@
         function populateExerciseSelect() {
             const select = document.getElementById("exercise-select");
             select.innerHTML = "";
-            let sortedPiazze = [...piazzeData].sort((a, b) => naturalSort(a.name, b.name));
-            sortedPiazze.forEach((p) => {
-                const originalIndex = piazzeData.findIndex(item => item.id === p.id);
+            let sorted = [...piazzeData].sort((a, b) => naturalSort(`${a.type} ${a.name}`, `${b.type} ${b.name}`));
+            sorted.forEach(p => {
                 const opt = document.createElement("option");
-                opt.value = originalIndex;
-                opt.textContent = `${p.type} ${p.name}`;
+                opt.value = p.id;
+                opt.textContent = `${p.type} ${p.name} (${p.confluences.length} vie)`;
                 select.appendChild(opt);
             });
         }
 
         function filterExerciseDropdown() {
-            const query = document.getElementById("exercise-search-input").value.toLowerCase().trim();
-            const suggestionsBox = document.getElementById("exercise-suggestions");
-            suggestionsBox.innerHTML = "";
+            const query = document.getElementById("exercise-search-input").value.toLowerCase();
+            const suggestions = document.getElementById("exercise-suggestions");
+            suggestions.innerHTML = "";
 
-            if (!query) { suggestionsBox.classList.add("hidden"); return; }
+            if (!query) {
+                suggestions.classList.add("hidden");
+                return;
+            }
 
-            let matches = [];
-            piazzeData.forEach((p, index) => {
-                if (`${p.type} ${p.name}`.toLowerCase().includes(query)) {
-                    matches.push({ index, text: `${p.type} ${p.name}`, count: p.confluences.length });
-                }
-            });
+            let filtered = piazzeData.filter(p => `${p.type} ${p.name}`.toLowerCase().includes(query));
+            sorted = filtered.sort((a, b) => naturalSort(`${a.type} ${a.name}`, `${b.type} ${b.name}`));
 
-            matches.sort((a, b) => naturalSort(a.text, b.text));
-            if (matches.length === 0) { suggestionsBox.classList.add("hidden"); return; }
+            if (sorted.length === 0) {
+                suggestions.classList.add("hidden");
+                return;
+            }
 
-            matches.forEach(m => {
+            sorted.forEach(p => {
                 const div = document.createElement("div");
-                div.className = "px-3.5 py-2.5 hover:bg-amber-50 cursor-pointer text-xs sm:text-sm font-bold text-slate-800 border-b border-slate-100 flex justify-between items-center";
-                div.innerHTML = `<span>${m.text}</span> <span class="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded font-bold">${m.count} vie</span>`;
-                div.onmousedown = function() {
-                    document.getElementById("exercise-select").value = m.index;
-                    document.getElementById("exercise-search-input").value = m.text;
-                    suggestionsBox.classList.add("hidden");
+                div.className = "px-4 py-2.5 hover:bg-amber-50 cursor-pointer text-xs sm:text-sm font-bold text-slate-800 border-b border-slate-100 last:border-b-0";
+                div.textContent = `${p.type} ${p.name}`;
+                div.onclick = () => {
+                    document.getElementById("exercise-select").value = p.id;
+                    document.getElementById("exercise-search-input").value = `${p.type} ${p.name}`;
+                    suggestions.classList.add("hidden");
+                    startExerciseModal();
                 };
-                suggestionsBox.appendChild(div);
+                suggestions.appendChild(div);
             });
-            suggestionsBox.classList.remove("hidden");
+            suggestions.classList.remove("hidden");
         }
 
-        let currentCorrectOrder = [];
-        let currentExerciseIndex = 0;
+        let currentExercisePiazzaId = null;
 
         function startExerciseModal() {
-            const select = document.getElementById("exercise-select");
-            currentExerciseIndex = parseInt(select.value);
-            resetZoom();
-            loadExerciseIntoModal(currentExerciseIndex);
+            const selectVal = document.getElementById("exercise-select").value;
+            const p = piazzeData.find(item => item.id == selectVal);
+            if (!p) { alert("Seleziona una piazza valida."); return; }
+            currentExercisePiazzaId = p.id;
+            loadExerciseData(p);
             document.getElementById("exercise-detail-view").classList.remove("hidden");
             document.body.style.overflow = 'hidden';
+            resetZoom();
+        }
+
+        function startRandomExercise() {
+            if (piazzeData.length === 0) return;
+            const randomIndex = Math.floor(Math.random() * piazzeData.length);
+            const p = piazzeData[randomIndex];
+            document.getElementById("exercise-select").value = p.id;
+            document.getElementById("exercise-search-input").value = `${p.type} ${p.name}`;
+            currentExercisePiazzaId = p.id;
+            loadExerciseData(p);
+            document.getElementById("exercise-detail-view").classList.remove("hidden");
+            document.body.style.overflow = 'hidden';
+            resetZoom();
+        }
+
+        function exercisePrev() {
+            const currentIndex = piazzeData.findIndex(item => item.id == currentExercisePiazzaId);
+            if (currentIndex > 0) {
+                const p = piazzeData[currentIndex - 1];
+                currentExercisePiazzaId = p.id;
+                document.getElementById("exercise-select").value = p.id;
+                document.getElementById("exercise-search-input").value = `${p.type} ${p.name}`;
+                loadExerciseData(p);
+                resetZoom();
+            }
+        }
+
+        function exerciseNext() {
+            const currentIndex = piazzeData.findIndex(item => item.id == currentExercisePiazzaId);
+            if (currentIndex >= 0 && currentIndex < piazzeData.length - 1) {
+                const p = piazzeData[currentIndex + 1];
+                currentExercisePiazzaId = p.id;
+                document.getElementById("exercise-select").value = p.id;
+                document.getElementById("exercise-search-input").value = `${p.type} ${p.name}`;
+                loadExerciseData(p);
+                resetZoom();
+            }
         }
 
         function closeExerciseModal() {
@@ -1426,139 +1456,215 @@
             document.body.style.overflow = 'auto';
         }
 
-        function resetCurrentExercise() {
-            resetZoom();
-            loadExerciseIntoModal(currentExerciseIndex);
-        }
+        let currentActivePiazza = null;
 
-        function exercisePrev() {
-            currentExerciseIndex = (currentExerciseIndex - 1 + piazzeData.length) % piazzeData.length;
-            document.getElementById("exercise-select").value = currentExerciseIndex;
-            resetZoom();
-            loadExerciseIntoModal(currentExerciseIndex);
-        }
-
-        function exerciseNext() {
-            currentExerciseIndex = (currentExerciseIndex + 1) % piazzeData.length;
-            document.getElementById("exercise-select").value = currentExerciseIndex;
-            resetZoom();
-            loadExerciseIntoModal(currentExerciseIndex);
-        }
-
-        function startRandomExercise() {
-            if (piazzeData.length === 0) return;
-            let randomIndex = Math.floor(Math.random() * piazzeData.length);
-            currentExerciseIndex = randomIndex;
-            document.getElementById("exercise-select").value = currentExerciseIndex;
-            
-            const piazza = piazzeData[currentExerciseIndex];
-            const searchInput = document.getElementById("exercise-search-input");
-            if (searchInput) searchInput.value = `${piazza.type} ${piazza.name}`;
-
-            resetZoom();
-            loadExerciseIntoModal(currentExerciseIndex);
-            if (document.getElementById("exercise-detail-view").classList.contains("hidden")) {
-                document.getElementById("exercise-detail-view").classList.remove("hidden");
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        function loadExerciseIntoModal(index) {
-            selectedStreetForTap = null;
-            const piazza = piazzeData[index];
-            if (!piazza || piazza.confluences.length === 0) return;
-
+        function loadExerciseData(piazza) {
+            currentActivePiazza = piazza;
             document.getElementById("ex-modal-type").textContent = piazza.type;
             document.getElementById("ex-modal-title").textContent = piazza.name;
             document.getElementById("ex-square-type").textContent = piazza.type;
             document.getElementById("ex-square-title").textContent = piazza.name;
-            
-            currentCorrectOrder = [...piazza.confluences];
+            document.getElementById("exercise-feedback").textContent = "";
 
-            const totalNodes = currentCorrectOrder.length;
-            const remaining = currentCorrectOrder.slice(1);
-            shuffleArray(remaining);
+            const slotsContainer = document.getElementById("map-slots-container");
+            slotsContainer.innerHTML = "";
+            const poolContainer = document.getElementById("source-pool");
+            poolContainer.innerHTML = "";
 
-            const sourcePool = document.getElementById("source-pool");
-            sourcePool.innerHTML = "";
-            document.getElementById("exercise-feedback").innerHTML = "";
+            let confluences = piazza.confluences;
+            let count = confluences.length;
+            let radius = window.innerWidth >= 640 ? 175 : 135;
 
-            remaining.forEach((street) => {
-                sourcePool.appendChild(createStreetCard(street));
-            });
-
-            const mapSlotsContainer = document.getElementById("map-slots-container");
-            mapSlotsContainer.innerHTML = "";
-
-            const isMobile = window.innerWidth < 640;
-            const slotWidth = isMobile ? 125 : 150;
-            const minCircumference = totalNodes * (slotWidth + 28);
-            const calculatedRadius = minCircumference / (2 * Math.PI);
-            const baseRadius = isMobile ? 150 : 210;
-            const radius = Math.max(baseRadius, calculatedRadius); 
-            const containerSize = (radius * 2) + 200;
-            
-            const orbitContainer = document.getElementById("orbit-container-el");
-            orbitContainer.style.width = `${containerSize}px`;
-            orbitContainer.style.height = `${containerSize}px`;
-
-            const centerX = containerSize / 2;
-            const centerY = containerSize / 2;
-
-            for (let i = 0; i < totalNodes; i++) {
-                const angle = - (i * 2 * Math.PI) / totalNodes - Math.PI / 2;
-                const x = centerX + radius * Math.cos(angle);
-                const y = centerY + radius * Math.sin(angle);
+            for (let i = 0; i < count; i++) {
+                let angle = (i * 2 * Math.PI) / count - Math.PI / 2;
+                let x = Math.cos(angle) * radius;
+                let y = Math.sin(angle) * radius;
 
                 const slot = document.createElement("div");
-                slot.className = "orbit-slot p-1.5 bg-slate-800/95 border border-slate-600 rounded-xl flex flex-col justify-center text-xs font-bold text-white shadow-xl";
-                slot.style.left = `${x}px`;
-                slot.style.top = `${y}px`;
-                slot.setAttribute("data-index", i);
-                slot.onclick = function() { handleSlotTap(slot); };
+                slot.className = "orbit-slot bg-white/95 border-2 border-dashed border-slate-400 rounded-xl flex items-center justify-center p-1.5 text-center text-xs sm:text-sm font-bold text-slate-700 shadow-sm transition";
+                slot.style.left = `calc(50% + ${x}px)`;
+                slot.style.top = `calc(50% + ${y}px)`;
+                slot.dataset.index = i;
+                slot.innerHTML = `<span class="text-slate-400 font-normal text-[10px] sm:text-xs pointer-events-none">Slot ${i+1}</span>`;
+                slotsContainer.appendChild(slot);
+            }
 
-                if (i === 0) {
-                    slot.classList.add("border-amber-500", "bg-amber-950/90");
-                    slot.innerHTML = `
-                        <span class="text-[9px] uppercase font-black text-amber-400 block leading-none mb-0.5">Rif. (#1)</span>
-                        <span class="text-xs sm:text-sm font-bold text-white block leading-tight break-words">${currentCorrectOrder[0]}</span>
-                    `;
-                } else {
-                    slot.classList.add("slot-item");
-                    slot.innerHTML = `
-                        <div class="slot-placeholder flex items-center justify-between pointer-events-none mb-0.5">
-                            <span class="text-slate-400 italic text-[10px]"><i class="fa-solid fa-arrow-down text-[9px] mr-0.5"></i> #${i + 1}</span>
-                            <span class="text-[9px] bg-slate-900 text-amber-400 px-1.5 py-0.5 rounded font-bold border border-amber-500/30 ml-0.5">#${i + 1}</span>
-                        </div>
-                    `;
+            let shuffled = [...confluences].sort(() => Math.random() - 0.5);
+            shuffled.forEach((street, idx) => {
+                const item = document.createElement("div");
+                item.className = "street-card bg-white border border-slate-200 rounded-xl p-2.5 text-xs sm:text-sm font-bold text-slate-800 shadow-sm flex items-center justify-between hover:border-amber-500 transition select-none";
+                item.textContent = street;
+                item.dataset.street = street;
+                item.onclick = () => handleStreetCardClick(item);
+                poolContainer.appendChild(item);
+            });
+
+            document.getElementById("pool-count").textContent = shuffled.length;
+
+            if (poolSortable) poolSortable.destroy();
+            slotSortables.forEach(s => s.destroy());
+            slotSortables = [];
+
+            poolSortable = new Sortable(poolContainer, {
+                group: 'shared-exercise',
+                animation: 150,
+                onAdd: updatePoolCount,
+                onRemove: updatePoolCount
+            });
+
+            const slotEls = slotsContainer.querySelectorAll(".orbit-slot");
+            slotEls.forEach(slotEl => {
+                let s = new Sortable(slotEl, {
+                    group: 'shared-exercise',
+                    animation: 150,
+                    onAdd: function (evt) {
+                        if (slotEl.children.length > 1) {
+                            let itemToMove = slotEl.children[0] === evt.item ? slotEl.children[1] : slotEl.children[0];
+                            poolContainer.appendChild(itemToMove);
+                        }
+                        updatePoolCount();
+                    },
+                    onRemove: updatePoolCount
+                });
+                slotSortables.push(s);
+            });
+        }
+
+        function handleStreetCardClick(cardEl) {
+            const poolContainer = document.getElementById("source-pool");
+            const slotsContainer = document.getElementById("map-slots-container");
+            const slotEls = slotsContainer.querySelectorAll(".orbit-slot");
+
+            if (selectedStreetForTap === cardEl) {
+                cardEl.classList.remove("selected-for-tap");
+                selectedStreetForTap = null;
+                return;
+            }
+
+            if (selectedStreetForTap) {
+                selectedStreetForTap.classList.remove("selected-for-tap");
+            }
+
+            if (cardEl.parentElement === poolContainer) {
+                selectedStreetForTap = cardEl;
+                cardEl.classList.add("selected-for-tap");
+            } else {
+                poolContainer.appendChild(cardEl);
+                selectedStreetForTap = null;
+                updatePoolCount();
+            }
+        }
+
+        document.addEventListener("click", function(e) {
+            const slotsContainer = document.getElementById("map-slots-container");
+            if (!slotsContainer) return;
+            const slotEls = slotsContainer.querySelectorAll(".orbit-slot");
+
+            slotEls.forEach(slot => {
+                if (slot.contains(e.target) && selectedStreetForTap) {
+                    if (slot.children.length > 0) {
+                        let existing = null;
+                        for(let child of slot.children) {
+                            if(child.classList.contains("street-card")) existing = child;
+                        }
+                        if(existing) document.getElementById("source-pool").appendChild(existing);
+                    }
+                    slot.appendChild(selectedStreetForTap);
+                    selectedStreetForTap.classList.remove("selected-for-tap");
+                    selectedStreetForTap = null;
+                    updatePoolCount();
                 }
-                mapSlotsContainer.appendChild(slot);
-            }
+            });
+        });
 
-            updatePoolCount();
-            initDragAndDrop();
+        function updatePoolCount() {
+            const poolContainer = document.getElementById("source-pool");
+            let cards = poolContainer.querySelectorAll(".street-card");
+            document.getElementById("pool-count").textContent = cards.length;
         }
 
-        function resetZoom() {
-            mapScale = 1;
-            mapPanX = 0;
-            mapPanY = 0;
-            updateMapTransform();
+        function resetCurrentExercise() {
+            if (currentActivePiazza) loadExerciseData(currentActivePiazza);
         }
 
-        function updateMapTransform() {
-            const container = document.getElementById("orbit-container-el");
-            if (container) {
-                container.style.transform = `translate(${mapPanX}px, ${mapPanY}px) scale(${mapScale})`;
+        function verifyExercise() {
+            if (!currentActivePiazza) return;
+            const slotsContainer = document.getElementById("map-slots-container");
+            const slotEls = slotsContainer.querySelectorAll(".orbit-slot");
+            let correctConfluences = currentActivePiazza.confluences;
+            let allFilled = true;
+            let correctCount = 0;
+
+            slotEls.forEach((slot, idx) => {
+                let card = null;
+                for(let child of slot.children) {
+                    if(child.classList.contains("street-card")) card = child;
+                }
+                if (!card) {
+                    allFilled = false;
+                } else {
+                    let streetName = card.dataset.street;
+                    if (correctConfluences.includes(streetName)) {
+                        correctCount++;
+                    }
+                }
+            });
+
+            const feedback = document.getElementById("exercise-feedback");
+            if (!allFilled) {
+                feedback.className = "text-center font-bold text-sm sm:text-base text-amber-600";
+                feedback.textContent = "Attenzione: Compila tutti gli slot posizionando tutte le vie!";
+                return;
             }
+
+            if (correctCount === correctConfluences.length) {
+                feedback.className = "text-center font-bold text-sm sm:text-base text-emerald-600";
+                feedback.textContent = "Ottimo! Tutte le confluenze sono corrette!";
+            } else {
+                feedback.className = "text-center font-bold text-sm sm:text-base text-red-600";
+                feedback.textContent = `Hai posizionato ${correctCount} vie corrette su ${correctConfluences.length}. Riprova!`;
+            }
+        }
+
+        function showExerciseSolution() {
+            if (!currentActivePiazza) return;
+            const slotsContainer = document.getElementById("map-slots-container");
+            const slotEls = slotsContainer.querySelectorAll(".orbit-slot");
+            const poolContainer = document.getElementById("source-pool");
+
+            let allCards = poolContainer.querySelectorAll(".street-card");
+            allCards.forEach(c => poolContainer.removeChild(c));
+            slotEls.forEach(slot => {
+                let card = null;
+                for(let child of slot.children) {
+                    if(child.classList.contains("street-card")) card = child;
+                }
+                if(card) slot.removeChild(card);
+            });
+
+            let correctConfluences = currentActivePiazza.confluences;
+            slotEls.forEach((slot, idx) => {
+                if (correctConfluences[idx]) {
+                    const item = document.createElement("div");
+                    item.className = "street-card bg-emerald-50 border border-emerald-300 rounded-xl p-2.5 text-xs sm:text-sm font-bold text-emerald-900 shadow-sm flex items-center justify-between select-none";
+                    item.textContent = correctConfluences[idx];
+                    item.dataset.street = correctConfluences[idx];
+                    slot.appendChild(item);
+                }
+            });
+            document.getElementById("pool-count").textContent = 0;
+            const feedback = document.getElementById("exercise-feedback");
+            feedback.className = "text-center font-bold text-sm sm:text-base text-blue-600";
+            feedback.textContent = "Soluzione mostrata.";
         }
 
         function initMapZoomAndPan() {
             const viewport = document.getElementById("map-viewport");
-            if (!viewport) return;
+            const container = document.getElementById("orbit-container-el");
+            if (!viewport || !container) return;
 
             viewport.addEventListener("mousedown", (e) => {
-                if (e.target.closest('.street-card') || e.target.closest('.orbit-slot') || e.target.closest('.orbit-center')) return;
+                if(e.target.closest('.street-card') || e.target.closest('button')) return;
                 isDraggingMap = true;
                 startX = e.clientX - mapPanX;
                 startY = e.clientY - mapPanY;
@@ -1568,305 +1674,157 @@
                 if (!isDraggingMap) return;
                 mapPanX = e.clientX - startX;
                 mapPanY = e.clientY - startY;
-                updateMapTransform();
+                updateTransform();
             });
 
-            window.addEventListener("mouseup", () => {
-                isDraggingMap = false;
-            });
-
-            viewport.addEventListener("wheel", (e) => {
-                e.preventDefault();
-                const zoomFactor = 1.1;
-                if (e.deltaY < 0) {
-                    mapScale = Math.min(mapScale * zoomFactor, 4);
-                } else {
-                    mapScale = Math.max(mapScale / zoomFactor, 0.5);
-                }
-                updateMapTransform();
-            }, { passive: false });
+            window.addEventListener("mouseup", () => { isDraggingMap = false; });
 
             viewport.addEventListener("touchstart", (e) => {
-                if (e.target.closest('.street-card') || e.target.closest('.orbit-slot') || e.target.closest('.orbit-center')) return;
+                if(e.target.closest('.street-card') || e.target.closest('button')) return;
                 if (e.touches.length === 1) {
                     isDraggingMap = true;
                     startX = e.touches[0].clientX - mapPanX;
                     startY = e.touches[0].clientY - mapPanY;
+                    initialPinchDistance = null;
                 } else if (e.touches.length === 2) {
                     isDraggingMap = false;
-                    initialPinchDistance = getPinchDistance(e.touches);
+                    initialPinchDistance = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
                 }
-            }, { passive: false });
+            }, { passive: true });
 
             viewport.addEventListener("touchmove", (e) => {
-                if (e.target.closest('.street-card') || e.target.closest('.orbit-slot') || e.target.closest('.orbit-center')) return;
-                if (e.touches.length === 1 && isDraggingMap) {
+                if (isDraggingMap && e.touches.length === 1) {
                     mapPanX = e.touches[0].clientX - startX;
                     mapPanY = e.touches[0].clientY - startY;
-                    updateMapTransform();
-                } else if (e.touches.length === 2 && initialPinchDistance !== null) {
-                    e.preventDefault();
-                    const currentDistance = getPinchDistance(e.touches);
-                    const factor = currentDistance / initialPinchDistance;
-                    initialPinchDistance = currentDistance;
-                    mapScale = Math.max(0.5, Math.min(mapScale * factor, 4));
-                    updateMapTransform();
+                    updateTransform();
+                } else if (e.touches.length === 2 && initialPinchDistance) {
+                    let currentDist = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    let factor = currentDist / initialPinchDistance;
+                    mapScale = Math.min(Math.max(0.5, mapScale * (factor > 1 ? 1.02 : 0.98)), 2.5);
+                    initialPinchDistance = currentDist;
+                    updateTransform();
                 }
-            }, { passive: false });
+            }, { passive: true });
 
-            viewport.addEventListener("touchend", (e) => {
+            viewport.addEventListener("touchend", () => {
                 isDraggingMap = false;
-                if (e.touches.length < 2) {
-                    initialPinchDistance = null;
-                }
+                initialPinchDistance = null;
             });
+
+            viewport.addEventListener("wheel", (e) => {
+                e.preventDefault();
+                let zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+                mapScale = Math.min(Math.max(0.5, mapScale * zoomFactor), 2.5);
+                updateTransform();
+            }, { passive: false });
         }
 
-        function getPinchDistance(touches) {
-            const dx = touches[0].clientX - touches[1].clientX;
-            const dy = touches[0].clientY - touches[1].clientY;
-            return Math.sqrt(dx * dx + dy * dy);
-        }
-
-        function createStreetCard(streetName) {
-            const item = document.createElement("div");
-            item.className = "street-card p-2 sm:p-2.5 bg-white border border-slate-200 rounded-xl shadow-sm flex items-center justify-between hover:border-amber-500 transition text-xs sm:text-sm font-semibold text-slate-800 w-full";
-            item.setAttribute("data-name", streetName);
-            item.innerHTML = `
-                <span class="flex items-center mr-1 overflow-hidden pointer-events-none"><i class="fa-solid fa-grip-vertical text-slate-400 mr-1.5 text-xs flex-shrink-0"></i> <span class="break-words">${streetName}</span></span>
-                <span class="text-[10px] bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded-md font-bold border border-amber-200 whitespace-nowrap flex-shrink-0 pointer-events-none">Via</span>
-            `;
-            item.onclick = function(e) {
-                e.stopPropagation();
-                selectStreetForTap(item);
-            };
-            return item;
-        }
-
-        function selectStreetForTap(cardElement) {
-            document.querySelectorAll(".street-card").forEach(c => c.classList.remove("selected-for-tap"));
-            if (selectedStreetForTap === cardElement) {
-                selectedStreetForTap = null;
-            } else {
-                selectedStreetForTap = cardElement;
-                cardElement.classList.add("selected-for-tap");
+        function updateTransform() {
+            const container = document.getElementById("orbit-container-el");
+            if (container) {
+                container.style.transform = `translate(${mapPanX}px, ${mapPanY}px) scale(${mapScale})`;
             }
         }
 
-        function handleSlotTap(slotElement) {
-            if (slotElement.getAttribute("data-index") === "0") return;
-
-            if (selectedStreetForTap) {
-                const existingCard = slotElement.querySelector(".street-card");
-                const sourcePool = document.getElementById("source-pool");
-                if (existingCard) sourcePool.appendChild(existingCard);
-
-                slotElement.appendChild(selectedStreetForTap);
-                selectedStreetForTap.className = "street-card p-1.5 bg-slate-800 border border-amber-500/80 rounded-lg shadow-sm flex items-center justify-between text-white font-bold text-xs w-full";
-                
-                const placeholder = slotElement.querySelector('.slot-placeholder');
-                if (placeholder) placeholder.style.display = 'none';
-
-                selectedStreetForTap.classList.remove("selected-for-tap");
-                selectedStreetForTap = null;
-                updatePoolCount();
-            } else {
-                const existingCard = slotElement.querySelector(".street-card");
-                if (existingCard) {
-                    const sourcePool = document.getElementById("source-pool");
-                    sourcePool.appendChild(existingCard);
-                    existingCard.className = "street-card p-2 sm:p-2.5 bg-white border border-slate-200 rounded-xl shadow-sm flex items-center justify-between hover:border-amber-500 transition text-xs sm:text-sm font-semibold text-slate-800 w-full";
-                    
-                    const placeholder = slotElement.querySelector('.slot-placeholder');
-                    if (placeholder) placeholder.style.display = 'flex';
-                    updatePoolCount();
-                }
-            }
-        }
-
-        function initDragAndDrop() {
-            if (poolSortable) poolSortable.destroy();
-            slotSortables.forEach(s => s.destroy());
-            slotSortables = [];
-
-            const sourcePool = document.getElementById("source-pool");
-            poolSortable = Sortable.create(sourcePool, {
-                group: 'shared-streets',
-                animation: 150,
-                forceFallback: true,
-                fallbackClass: 'sortable-fallback',
-                onAdd: updatePoolCount,
-                onRemove: updatePoolCount
-            });
-
-            document.querySelectorAll(".slot-item").forEach(slot => {
-                const s = Sortable.create(slot, {
-                    group: 'shared-streets',
-                    animation: 150,
-                    forceFallback: true,
-                    fallbackClass: 'sortable-fallback',
-                    put: function (to) { return to.el.querySelectorAll('.street-card').length === 0; },
-                    onAdd: function (evt) {
-                        evt.item.className = "street-card p-1.5 bg-slate-800 border border-amber-500/80 rounded-lg shadow-sm flex items-center justify-between text-white font-bold text-xs w-full";
-                        const placeholder = slot.querySelector('.slot-placeholder');
-                        if (placeholder) placeholder.style.display = 'none';
-                        updatePoolCount();
-                    },
-                    onRemove: function (evt) {
-                        if (evt.from.querySelectorAll('.street-card').length === 0) {
-                            const placeholder = evt.from.querySelector('.slot-placeholder');
-                            if (placeholder) placeholder.style.display = 'flex';
-                        }
-                        updatePoolCount();
-                    }
-                });
-                slotSortables.push(s);
-            });
-        }
-
-        function updatePoolCount() {
-            document.getElementById("pool-count").textContent = document.getElementById("source-pool").children.length;
-        }
-
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
-
-        function verifyExercise() {
-            const slots = document.querySelectorAll(".orbit-slot");
-            let allFilled = true;
-            let allCorrect = true;
-
-            slots.forEach((slot, idx) => {
-                if (idx === 0) return;
-                const card = slot.querySelector(".street-card");
-                if (!card) {
-                    allFilled = false;
-                    slot.classList.add("border-red-500");
-                } else {
-                    slot.classList.remove("border-red-500");
-                    if (card.getAttribute("data-name") === currentCorrectOrder[idx]) {
-                        card.className = "street-card p-1.5 bg-emerald-950/90 border border-emerald-500 rounded-lg shadow-sm flex items-center justify-between text-emerald-200 font-bold text-xs w-full";
-                    } else {
-                        card.className = "street-card p-1.5 bg-red-950/90 border border-red-500 rounded-lg shadow-sm flex items-center justify-between text-red-200 font-bold text-xs w-full";
-                        allCorrect = false;
-                    }
-                }
-            });
-
-            const feedback = document.getElementById("exercise-feedback");
-            if (!allFilled) {
-                feedback.innerHTML = `<span class="text-amber-700 bg-amber-50 border border-amber-200 px-4 py-2 rounded-xl inline-block text-sm sm:text-base font-bold"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Riempi tutti i riquadri.</span>`;
-                return;
-            }
-
-            if (allCorrect) feedback.innerHTML = `<span class="text-emerald-700 bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-xl inline-block text-sm sm:text-base font-bold"><i class="fa-solid fa-circle-check mr-1.5"></i> Sequenza corretta!</span>`;
-            else feedback.innerHTML = `<span class="text-red-700 bg-red-50 border border-red-200 px-4 py-2 rounded-xl inline-block text-sm sm:text-base font-bold"><i class="fa-solid fa-circle-xmark mr-1.5"></i> Alcune posizioni errate (in rosso).</span>`;
-        }
-
-        function showExerciseSolution() {
-            const piazza = piazzeData[currentExerciseIndex];
-            if (!piazza) return;
-            document.getElementById("exercise-select").value = currentExerciseIndex;
-            loadExerciseIntoModal(currentExerciseIndex);
-            
-            const slots = document.querySelectorAll(".orbit-slot");
-            const sourcePool = document.getElementById("source-pool");
-            sourcePool.innerHTML = "";
-
-            slots.forEach((slot, idx) => {
-                const streetName = piazza.confluences[idx];
-                const card = document.createElement("div");
-                card.className = "street-card p-1.5 bg-slate-800 border border-amber-500/80 rounded-lg shadow-sm flex items-center justify-between text-white font-bold text-xs w-full";
-                card.setAttribute("data-name", streetName);
-                card.innerHTML = `<span class="flex items-center mr-1 overflow-hidden pointer-events-none"><span class="break-words">${streetName}</span></span>`;
-                
-                const existing = slot.querySelector(".street-card");
-                if (existing) existing.remove();
-                const placeholder = slot.querySelector('.slot-placeholder');
-                if (placeholder) placeholder.style.display = 'none';
-                
-                if (idx > 0) slot.appendChild(card);
-            });
-            updatePoolCount();
-            document.getElementById("exercise-feedback").innerHTML = `<span class="text-blue-700 bg-blue-50 border border-blue-200 px-4 py-2 rounded-xl inline-block text-sm sm:text-base font-bold"><i class="fa-solid fa-circle-info mr-1.5"></i> Soluzione visualizzata.</span>`;
+        function resetZoom() {
+            mapScale = 1;
+            mapPanX = 0;
+            mapPanY = 0;
+            updateTransform();
         }
 
         function populateAdminSelect() {
-            const regSelect = document.getElementById("admin-delete-regolamento-select");
-            regSelect.innerHTML = "";
+            const delRegSelect = document.getElementById("admin-delete-regolamento-select");
+            delRegSelect.innerHTML = "";
             regolamentiData.forEach(r => {
                 const opt = document.createElement("option");
                 opt.value = r.id;
                 opt.textContent = r.title;
-                regSelect.appendChild(opt);
+                delRegSelect.appendChild(opt);
             });
 
-            const percSelect = document.getElementById("admin-delete-percorso-select");
-            percSelect.innerHTML = "";
+            const delPercSelect = document.getElementById("admin-delete-percorso-select");
+            delPercSelect.innerHTML = "";
             percorsiData.forEach(p => {
                 const opt = document.createElement("option");
                 opt.value = p.id;
                 opt.textContent = p.title;
-                percSelect.appendChild(opt);
+                delPercSelect.appendChild(opt);
             });
 
-            const statSelect = document.getElementById("admin-statale-select");
-            const statDeleteSelect = document.getElementById("admin-statali-delete-select");
-            statSelect.innerHTML = "";
-            statDeleteSelect.innerHTML = "";
+            const stataleSelect = document.getElementById("admin-statale-select");
+            stataleSelect.innerHTML = "";
             stataliListDynamic.forEach(s => {
                 const opt = document.createElement("option");
                 opt.value = s;
                 opt.textContent = s;
-                statSelect.appendChild(opt.cloneNode(true));
-                statDeleteSelect.appendChild(opt);
+                stataleSelect.appendChild(opt);
             });
-            if (stataliListDynamic.length > 0) loadAdminStataleData();
+            loadAdminStataleData();
 
-            const piazzeSelect = document.getElementById("admin-piazza-select");
-            const piazzeDeleteSelect = document.getElementById("admin-piazze-delete-select");
-            piazzeSelect.innerHTML = "";
-            piazzeDeleteSelect.innerHTML = "";
-            piazzeData.forEach((p, index) => {
+            const stataliDelSelect = document.getElementById("admin-statali-delete-select");
+            stataliDelSelect.innerHTML = "";
+            stataliListDynamic.forEach(s => {
                 const opt = document.createElement("option");
-                opt.value = index;
-                opt.textContent = `${p.type} ${p.name}`;
-                piazzeSelect.appendChild(opt.cloneNode(true));
-                piazzeDeleteSelect.appendChild(opt);
+                opt.value = s;
+                opt.textContent = s;
+                stataliDelSelect.appendChild(opt);
             });
-            if (piazzeData.length > 0) loadAdminPiazzaData();
+
+            const piazzaSelect = document.getElementById("admin-piazza-select");
+            piazzaSelect.innerHTML = "";
+            let sortedPiazze = [...piazzeData].sort((a, b) => naturalSort(`${a.type} ${a.name}`, `${b.type} ${b.name}`));
+            sortedPiazze.forEach(p => {
+                const opt = document.createElement("option");
+                opt.value = p.id;
+                opt.textContent = `${p.type} ${p.name}`;
+                piazzaSelect.appendChild(opt);
+            });
+            loadAdminPiazzaData();
+
+            const piazzeDelSelect = document.getElementById("admin-piazze-delete-select");
+            piazzeDelSelect.innerHTML = "";
+            sortedPiazze.forEach(p => {
+                const opt = document.createElement("option");
+                opt.value = p.id;
+                opt.textContent = `${p.type} ${p.name}`;
+                piazzeDelSelect.appendChild(opt);
+            });
 
             const customPiazzaSelect = document.getElementById("admin-custom-piazza");
             customPiazzaSelect.innerHTML = "";
-            piazzeData.forEach((p, index) => {
+            sortedPiazze.forEach(p => {
                 const opt = document.createElement("option");
-                opt.value = index;
+                opt.value = p.id;
                 opt.textContent = `${p.type} ${p.name}`;
                 customPiazzaSelect.appendChild(opt);
             });
-            if (piazzeData.length > 0) populateAdminStreets();
+            populateAdminStreets();
         }
 
-        function filterAdminSelect(selectId, filterText) {
-            const selectEl = document.getElementById(selectId);
-            const query = filterText.toLowerCase();
-            Array.from(selectEl.options).forEach(opt => {
-                const text = opt.textContent.toLowerCase();
-                if (text.includes(query)) {
-                    opt.style.display = '';
+        function filterAdminSelect(selectId, filterVal) {
+            const select = document.getElementById(selectId);
+            const options = select.options;
+            const query = filterVal.toLowerCase();
+            for (let i = 0; i < options.length; i++) {
+                let txt = options[i].textContent.toLowerCase();
+                if (txt.includes(query)) {
+                    options[i].style.display = "";
                 } else {
-                    opt.style.display = 'none';
+                    options[i].style.display = "none";
                 }
-            });
+            }
         }
 
         function loadAdminPiazzaData() {
-            const index = document.getElementById("admin-piazza-select").value;
-            const p = piazzeData[index];
+            const id = document.getElementById("admin-piazza-select").value;
+            const p = piazzeData.find(item => item.id == id);
             if (!p) return;
             document.getElementById("edit-piazza-type").value = p.type;
             document.getElementById("edit-piazza-name").value = p.name;
@@ -1882,54 +1840,28 @@
             });
         }
 
-        function applyStreetRotation() {
-            const index = document.getElementById("admin-piazza-select").value;
-            const p = piazzeData[index];
-            const streetToTop = document.getElementById("admin-rotation-street").value;
-            if (!p) return;
-
-            const idx = p.confluences.indexOf(streetToTop);
-            if (idx > -1) {
-                const rotated = [...p.confluences.slice(idx), ...p.confluences.slice(0, idx)];
-                p.confluences = rotated;
-                saveData();
-                renderEncyclopedia();
-                alert(`Rotazione applicata! "${streetToTop}" è ora la prima via.`);
-            }
-        }
-
         function updatePiazza() {
-            const index = document.getElementById("admin-piazza-select").value;
-            const p = piazzeData[index];
+            const id = document.getElementById("admin-piazza-select").value;
+            const p = piazzeData.find(item => item.id == id);
             if (!p) return;
-
-            const type = document.getElementById("edit-piazza-type").value;
-            const name = document.getElementById("edit-piazza-name").value.trim();
-            const confStr = document.getElementById("edit-piazza-confluences").value.trim();
-
-            if (!name) { alert("Inserisci il nome!"); return; }
-            const confluences = confStr ? confStr.split(',').map(s => s.trim()).filter(Boolean) : [];
-
-            p.type = type;
-            p.name = name;
-            p.confluences = confluences;
-
+            p.type = document.getElementById("edit-piazza-type").value;
+            p.name = document.getElementById("edit-piazza-name").value.trim();
+            const confStr = document.getElementById("edit-piazza-confluences").value;
+            p.confluences = confStr.split(',').map(s => s.trim()).filter(s => s.length > 0);
             saveData();
             renderEncyclopedia();
             populateExerciseSelect();
             populateAdminSelect();
-            alert("Piazza aggiornata con successo!");
+            alert("Piazza aggiornata!");
         }
 
         function deletePiazzaMulti() {
             const select = document.getElementById("admin-piazze-delete-select");
             const selectedOptions = Array.from(select.selectedOptions);
             if (selectedOptions.length === 0) { alert("Seleziona almeno una piazza da eliminare."); return; }
-            if (confirm(`Vuoi eliminare ${selectedOptions.length} piazze selezionate?`)) {
-                const indicesToDelete = selectedOptions.map(opt => Number(opt.value)).sort((a, b) => b - a);
-                indicesToDelete.forEach(idx => {
-                    piazzeData.splice(idx, 1);
-                });
+            if (confirm(`Eliminare ${selectedOptions.length} piazze selezionate?`)) {
+                const idsToDelete = selectedOptions.map(opt => Number(opt.value));
+                piazzeData = piazzeData.filter(p => !idsToDelete.includes(p.id));
                 saveData();
                 renderEncyclopedia();
                 populateExerciseSelect();
@@ -1941,12 +1873,12 @@
         function addNewPiazza() {
             const type = document.getElementById("new-piazza-type").value;
             const name = document.getElementById("new-piazza-name").value.trim();
-            const confStr = document.getElementById("new-piazza-confluences").value.trim();
-
+            const confStr = document.getElementById("new-piazza-confluences").value;
             if (!name) { alert("Inserisci il nome!"); return; }
-            const confluences = confStr ? confStr.split(',').map(s => s.trim()).filter(Boolean) : [];
+            const confluences = confStr.split(',').map(s => s.trim()).filter(s => s.length > 0);
 
-            piazzeData.push({ id: Date.now(), type, name, confluences });
+            const newId = piazzeData.length > 0 ? Math.max(...piazzeData.map(p => p.id)) + 1 : 1;
+            piazzeData.push({ id: newId, type: type, name: name, confluences: confluences });
             saveData();
             document.getElementById("new-piazza-name").value = "";
             document.getElementById("new-piazza-confluences").value = "";
@@ -1956,13 +1888,27 @@
             alert("Nuova piazza aggiunta!");
         }
 
+        function applyStreetRotation() {
+            const id = document.getElementById("admin-piazza-select").value;
+            const p = piazzeData.find(item => item.id == id);
+            const targetStreet = document.getElementById("admin-rotation-street").value;
+            if (!p || !targetStreet) return;
+            const idx = p.confluences.indexOf(targetStreet);
+            if (idx > -1) {
+                let rotated = p.confluences.slice(idx).concat(p.confluences.slice(0, idx));
+                p.confluences = rotated;
+                saveData();
+                loadAdminPiazzaData();
+                alert("Ordine di rotazione applicato!");
+            }
+        }
+
         function populateAdminStreets() {
-            const piazzaIndex = document.getElementById("admin-custom-piazza").value;
-            const p = piazzeData[piazzaIndex];
+            const piazzaId = document.getElementById("admin-custom-piazza").value;
             const streetSelect = document.getElementById("admin-custom-street");
             streetSelect.innerHTML = "";
+            const p = piazzeData.find(item => item.id == piazzaId);
             if (!p) return;
-
             p.confluences.forEach(c => {
                 const opt = document.createElement("option");
                 opt.value = c;
@@ -1973,33 +1919,26 @@
         }
 
         function loadCustomStreetText() {
-            const piazzaIndex = document.getElementById("admin-custom-piazza").value;
-            const p = piazzeData[piazzaIndex];
+            const piazzaId = document.getElementById("admin-custom-piazza").value;
             const streetName = document.getElementById("admin-custom-street").value;
-            if (!p || !streetName) return;
-
-            const key = `${p.type} ${p.name}_${streetName}`;
+            const key = `${piazzaId}_${streetName}`;
             document.getElementById("admin-custom-text").value = customDescriptions[key] || "";
         }
 
         function saveCustomStreetDescription() {
-            const piazzaIndex = document.getElementById("admin-custom-piazza").value;
-            const p = piazzeData[piazzaIndex];
+            const piazzaId = document.getElementById("admin-custom-piazza").value;
             const streetName = document.getElementById("admin-custom-street").value;
             const text = document.getElementById("admin-custom-text").value.trim();
-            if (!p || !streetName) return;
-
-            const key = `${p.type} ${p.name}_${streetName}`;
+            const key = `${piazzaId}_${streetName}`;
             if (text) customDescriptions[key] = text;
             else delete customDescriptions[key];
-
             saveData();
-            alert("Descrizione confluenza salvata!");
+            alert("Descrizione salvata!");
         }
 
         function updateAdminPassword() {
             const newPwd = document.getElementById("admin-new-admin-pwd").value.trim();
-            if (!newPwd) { alert("La password non può essere vuota."); return; }
+            if (!newPwd) { alert("Inserisci una password valida."); return; }
             adminPwd = newPwd;
             saveData();
             alert("Password Admin aggiornata con successo!");
@@ -2015,18 +1954,22 @@
                 stataliList: stataliListDynamic
             };
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, 2));
-            const dlAnchorElem = document.createElement('a');
-            dlAnchorElem.setAttribute("href", dataStr);
-            dlAnchorElem.setAttribute("download", "db_milano_taxi.json");
-            document.body.appendChild(dlAnchorElem);
-            dlAnchorElem.click();
-            dlAnchorElem.remove();
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "db_taxi_milano_backup.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
         }
 
         window.onload = function() {
             setupDynamicManifest();
             loadCloudDatabase().then(() => {
                 renderEncyclopedia();
+                renderPercorsi();
+                renderRegolamenti();
+                renderStatali();
+                populateExerciseSelect();
             });
         };
     </script>
