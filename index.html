@@ -55,6 +55,8 @@
             width: 340px;
             height: 340px;
             margin: 0 auto;
+            transform-origin: center center;
+            transition: transform 0.05s ease-out;
         }
         @media (min-width: 640px) {
             .orbit-container {
@@ -395,27 +397,33 @@
                     </div>
                 </div>
 
-                <!-- Corpo Interattivo Esercizio -->
+                <!-- Corpo Interattivo Esercizio (Con supporto Zoom & Pan con due dita) -->
                 <div class="flex-1 overflow-y-auto p-3 sm:p-6 bg-slate-100 flex flex-col justify-center">
                     <div class="max-w-6xl w-full mx-auto space-y-4">
-                        <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs sm:text-sm font-semibold text-amber-900 shadow-sm flex items-center gap-2">
-                            <i class="fa-solid fa-circle-info text-amber-600 text-base flex-shrink-0"></i>
-                            <span>Tocca una via dall'elenco e poi tocca il riquadro vuoto attorno alla piazza per posizionarla! (Senso antiorario).</span>
+                        <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs sm:text-sm font-semibold text-amber-900 shadow-sm flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-circle-info text-amber-600 text-base flex-shrink-0"></i>
+                                <span>Tocca una via e posizionala. Usa due dita per zoomare o trascina per muovere la mappa.</span>
+                            </div>
+                            <button onclick="resetZoom()" class="px-2.5 py-1 bg-amber-200 hover:bg-amber-300 text-amber-900 rounded font-bold text-xs whitespace-nowrap"><i class="fa-solid fa-expand mr-1"></i> Resetta Zoom</button>
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                            <div class="lg:col-span-8 bg-slate-900 rounded-2xl p-3.5 relative flex flex-col items-center justify-center min-h-[420px] sm:min-h-[500px] shadow-inner border border-slate-700 overflow-x-auto overflow-y-auto">
-                                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#f59e0b_1.5px,transparent_1.5px)] [background-size:16px_16px]"></div>
+                            <!-- Area Mappa con Pinch-to-Zoom e Pan -->
+                            <div id="map-viewport" class="lg:col-span-8 bg-slate-900 rounded-2xl p-3.5 relative flex flex-col items-center justify-center min-h-[420px] sm:min-h-[500px] shadow-inner border border-slate-700 overflow-hidden cursor-grab active:cursor-grabbing">
+                                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#f59e0b_1.5px,transparent_1.5px)] [background-size:16px_16px] pointer-events-none"></div>
 
-                                <div class="orbit-container my-auto">
-                                    <div class="orbit-center w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-slate-800 border-4 border-amber-500 shadow-2xl flex flex-col items-center justify-center text-center p-2 z-10">
-                                        <div id="ex-square-type" class="text-[10px] sm:text-xs uppercase tracking-widest text-amber-400 font-extrabold">Piazza</div>
-                                        <div id="ex-square-title" class="text-sm sm:text-base font-black text-white leading-tight mt-1">-</div>
+                                <div id="orbit-wrapper" class="w-full h-full flex items-center justify-center relative touch-none">
+                                    <div class="orbit-container my-auto" id="orbit-container-el">
+                                        <div class="orbit-center w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-slate-800 border-4 border-amber-500 shadow-2xl flex flex-col items-center justify-center text-center p-2 z-10">
+                                            <div id="ex-square-type" class="text-[10px] sm:text-xs uppercase tracking-widest text-amber-400 font-extrabold">Piazza</div>
+                                            <div id="ex-square-title" class="text-sm sm:text-base font-black text-white leading-tight mt-1">-</div>
+                                        </div>
+                                        <div id="map-slots-container"></div>
                                     </div>
-                                    <div id="map-slots-container"></div>
                                 </div>
 
-                                <div class="absolute bottom-3 text-xs sm:text-sm text-slate-300 font-bold tracking-wide bg-slate-800/80 px-3 py-1 rounded-full border border-slate-600">
+                                <div class="absolute bottom-3 left-3 text-xs sm:text-sm text-slate-300 font-bold tracking-wide bg-slate-800/80 px-3 py-1 rounded-full border border-slate-600 pointer-events-none">
                                     <i class="fa-solid fa-arrows-spin mr-1.5 text-amber-400"></i> Senso Antiorario
                                 </div>
                             </div>
@@ -615,6 +623,14 @@
         let sortMode = 'default';
         let selectedStreetForTap = null;
         let deferredPrompt = null;
+
+        // Variabili per Zoom & Pan mappa esercizi
+        let mapScale = 1;
+        let mapPanX = 0;
+        let mapPanY = 0;
+        let isDraggingMap = false;
+        let startX = 0, startY = 0;
+        let initialPinchDistance = null;
 
         function naturalSort(a, b) {
             return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
@@ -851,6 +867,7 @@
             populateExerciseSelect();
             populateAdminSelect();
             switchTab('home');
+            initMapZoomAndPan();
         }
 
         function goHome() {
@@ -1413,6 +1430,7 @@
         function startExerciseModal() {
             const select = document.getElementById("exercise-select");
             currentExerciseIndex = parseInt(select.value);
+            resetZoom();
             loadExerciseIntoModal(currentExerciseIndex);
             document.getElementById("exercise-detail-view").classList.remove("hidden");
             document.body.style.overflow = 'hidden';
@@ -1424,18 +1442,21 @@
         }
 
         function resetCurrentExercise() {
+            resetZoom();
             loadExerciseIntoModal(currentExerciseIndex);
         }
 
         function exercisePrev() {
             currentExerciseIndex = (currentExerciseIndex - 1 + piazzeData.length) % piazzeData.length;
             document.getElementById("exercise-select").value = currentExerciseIndex;
+            resetZoom();
             loadExerciseIntoModal(currentExerciseIndex);
         }
 
         function exerciseNext() {
             currentExerciseIndex = (currentExerciseIndex + 1) % piazzeData.length;
             document.getElementById("exercise-select").value = currentExerciseIndex;
+            resetZoom();
             loadExerciseIntoModal(currentExerciseIndex);
         }
 
@@ -1449,6 +1470,7 @@
             const searchInput = document.getElementById("exercise-search-input");
             if (searchInput) searchInput.value = `${piazza.type} ${piazza.name}`;
 
+            resetZoom();
             loadExerciseIntoModal(currentExerciseIndex);
             if (document.getElementById("exercise-detail-view").classList.contains("hidden")) {
                 document.getElementById("exercise-detail-view").classList.remove("hidden");
@@ -1491,7 +1513,7 @@
             const radius = Math.max(baseRadius, calculatedRadius); 
             const containerSize = (radius * 2) + 180;
             
-            const orbitContainer = document.querySelector(".orbit-container");
+            const orbitContainer = document.getElementById("orbit-container-el");
             orbitContainer.style.width = `${containerSize}px`;
             orbitContainer.style.height = `${containerSize}px`;
 
@@ -1530,6 +1552,98 @@
 
             updatePoolCount();
             initDragAndDrop();
+        }
+
+        // --- GESTIONE ZOOM & PAN MAPPA ESERCIZI ---
+        function resetZoom() {
+            mapScale = 1;
+            mapPanX = 0;
+            mapPanY = 0;
+            updateMapTransform();
+        }
+
+        function updateMapTransform() {
+            const container = document.getElementById("orbit-container-el");
+            if (container) {
+                container.style.transform = `translate(${mapPanX}px, ${mapPanY}px) scale(${mapScale})`;
+            }
+        }
+
+        function initMapZoomAndPan() {
+            const viewport = document.getElementById("map-viewport");
+            if (!viewport) return;
+
+            // Mouse Drag & Wheel Zoom (Desktop)
+            viewport.addEventListener("mousedown", (e) => {
+                if (e.target.closest('.street-card') || e.target.closest('.orbit-slot')) return;
+                isDraggingMap = true;
+                startX = e.clientX - mapPanX;
+                startY = e.clientY - mapPanY;
+            });
+
+            window.addEventListener("mousemove", (e) => {
+                if (!isDraggingMap) return;
+                mapPanX = e.clientX - startX;
+                mapPanY = e.clientY - startY;
+                updateMapTransform();
+            });
+
+            window.addEventListener("mouseup", () => {
+                isDraggingMap = false;
+            });
+
+            viewport.addEventListener("wheel", (e) => {
+                e.preventDefault();
+                const zoomFactor = 1.1;
+                if (e.deltaY < 0) {
+                    mapScale = Math.min(mapScale * zoomFactor, 4);
+                } else {
+                    mapScale = Math.max(mapScale / zoomFactor, 0.5);
+                }
+                updateMapTransform();
+            }, { passive: false });
+
+            // Touch Drag & Pinch-to-Zoom (Mobile con due dita)
+            viewport.addEventListener("touchstart", (e) => {
+                if (e.target.closest('.street-card') || e.target.closest('.orbit-slot')) return;
+                if (e.touches.length === 1) {
+                    isDraggingMap = true;
+                    startX = e.touches[0].clientX - mapPanX;
+                    startY = e.touches[0].clientY - mapPanY;
+                } else if (e.touches.length === 2) {
+                    isDraggingMap = false;
+                    initialPinchDistance = getPinchDistance(e.touches);
+                }
+            }, { passive: false });
+
+            viewport.addEventListener("touchmove", (e) => {
+                if (e.target.closest('.street-card') || e.target.closest('.orbit-slot')) return;
+                if (e.touches.length === 1 && isDraggingMap) {
+                    mapPanX = e.touches[0].clientX - startX;
+                    mapPanY = e.touches[0].clientY - startY;
+                    updateMapTransform();
+                } else if (e.touches.length === 2 && initialPinchDistance !== null) {
+                    e.preventDefault();
+                    const currentDistance = getPinchDistance(e.touches);
+                    const factor = currentDistance / initialPinchDistance;
+                    initialPinchDistance = currentDistance;
+                    mapScale = Math.max(0.5, Math.min(mapScale * factor, 4));
+                    updateMapTransform();
+                }
+            }, { passive: false });
+
+            viewport.addEventListener("touchend", (e) => {
+                isDraggingMap = false;
+                if (e.touches.length < 2) {
+                    initialPinchDistance = null;
+                }
+            });
+        }
+
+        function getPinchDistance(touches) {
+            const dx = touches[0].clientX - touches[1].clientX;
+            const dy = touches[0].clientY - touches[1].clientY;
+            return Math.sqrt(dx * dx + dy * dy);
         }
 
         function createStreetCard(streetName) {
