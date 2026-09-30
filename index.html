@@ -24,7 +24,7 @@
     <!-- FIREBASE SDK (MODULO FIRESTORE) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, where, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // CONFIGURAZIONE FIREBASE AGGIORNATA CON I TUOI DATI REALI
         const firebaseConfig = {
@@ -45,6 +45,8 @@
         window.collection = collection;
         window.query = query;
         window.where = where;
+        window.updateDoc = updateDoc;
+        window.doc = doc;
     </script>
 
     <style>
@@ -665,9 +667,9 @@
             localStorage.setItem("milan_admin_pwd", adminPwd);
         }
 
-        // --- CONTROLLO ACCESSO TRAMITE FIRESTORE ---
+        // --- CONTROLLO ACCESSO TRAMITE FIRESTORE CON BLOCCO DISPOSITIVO ---
         async function handleLogin(forceAdmin) {
-            const inputVal = document.getElementById("login-pwd").value.trim();
+            const inputVal = document.getElementById("login-pwd").value.trim().toUpperCase();
             const err = document.getElementById("login-error");
             err.classList.add("hidden");
 
@@ -690,26 +692,46 @@
             }
 
             try {
+                // Generazione o recupero ID univoco del dispositivo locale
+                let deviceId = localStorage.getItem("milan_taxi_device_id");
+                if (!deviceId) {
+                    deviceId = 'dev_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+                    localStorage.setItem("milan_taxi_device_id", deviceId);
+                }
+
                 const codesRef = window.collection(window.db, "codes");
                 const q = window.query(codesRef, window.where("codice", "==", inputVal));
                 const querySnapshot = await window.getDocs(q);
 
-                let codeFoundAndActive = false;
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    if (data.attivo === true) {
-                        codeFoundAndActive = true;
-                    }
+                let codeDocRef = null;
+                let codeData = null;
+
+                querySnapshot.forEach((docSnap) => {
+                    codeDocRef = docSnap.ref;
+                    codeData = docSnap.data();
                 });
 
-                if (codeFoundAndActive) {
+                if (!codeData || codeData.attivo !== true) {
+                    err.textContent = "Codice inesistente o disattivato.";
+                    err.classList.remove("hidden");
+                    return;
+                }
+
+                // Controllo e associazione del dispositivo
+                if (!codeData.dispositivoAutorizzato) {
+                    await window.updateDoc(codeDocRef, { dispositivoAutorizzato: deviceId });
+                    isAdmin = false;
+                    document.getElementById("btn-admin").classList.add("hidden");
+                    initApp();
+                } else if (codeData.dispositivoAutorizzato === deviceId) {
                     isAdmin = false;
                     document.getElementById("btn-admin").classList.add("hidden");
                     initApp();
                 } else {
-                    err.textContent = "Codice inesistente o disattivato.";
+                    err.textContent = "Questo codice è già stato associato a un altro dispositivo.";
                     err.classList.remove("hidden");
                 }
+
             } catch (e) {
                 console.error("Errore di connessione a Firebase:", e);
                 err.textContent = "Errore di connessione al Cloud. Riprova.";
