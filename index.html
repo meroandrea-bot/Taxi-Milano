@@ -20,6 +20,33 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- FIREBASE SDK (MODULO FIRESTORE) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // CONFIGURAZIONE FIREBASE AGGIORNATA CON I TUOI DATI REALI
+        const firebaseConfig = {
+            apiKey: "AIzaSyB9NDTSWiODSZhL0XyQeLL2uzbEYm5yYzA",
+            authDomain: "scuola-taxi.firebaseapp.com",
+            projectId: "scuola-taxi",
+            storageBucket: "scuola-taxi.appspot.com",
+            messagingSenderId: "1003512667871",
+            appId: "1:1003512667871:web:9f4bcd79ec4babad5a136a"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Rendiamo db e funzioni accessibili globalmente nello script della pagina
+        window.db = db;
+        window.getDocs = getDocs;
+        window.collection = collection;
+        window.query = query;
+        window.where = where;
+    </script>
+
     <style>
         .orbit-container {
             position: relative;
@@ -92,8 +119,8 @@
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs sm:text-sm font-bold uppercase text-slate-700 mb-1">Password</label>
-                    <input type="password" id="login-pwd" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:outline-none text-base sm:text-lg" placeholder="Inserisci la password...">
+                    <label class="block text-xs sm:text-sm font-bold uppercase text-slate-700 mb-1">Codice di Accesso</label>
+                    <input type="text" id="login-pwd" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:outline-none text-base sm:text-lg uppercase" placeholder="Inserisci il codice...">
                 </div>
                 <div class="flex gap-2">
                     <button onclick="handleLogin(false)" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 rounded-lg transition shadow-lg text-base">Accedi</button>
@@ -102,7 +129,7 @@
                 <button id="install-app-btn" onclick="installPWA()" class="hidden w-full mt-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-lg transition flex items-center justify-center gap-2 text-sm sm:text-base shadow">
                     <i class="fa-solid fa-mobile-screen-button"></i> Installa App sullo Schermo
                 </button>
-                <div id="login-error" class="text-red-600 text-sm font-semibold text-center hidden">Password errata. Riprova.</div>
+                <div id="login-error" class="text-red-600 text-sm font-semibold text-center hidden">Codice errato o non attivo. Riprova.</div>
             </div>
         </div>
     </div>
@@ -199,7 +226,6 @@
                         <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
                             <h3 id="regolamento-detail-title" class="font-bold text-base sm:text-xl text-amber-900"></h3>
                             <div class="flex items-center gap-2">
-                                <button id="regolamento-download-btn" class="text-white font-bold px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow"><i class="fa-solid fa-download"></i> Scarica Word</button>
                                 <button onclick="closeRegolamentoDetail()" class="text-amber-900 font-bold px-3.5 py-1.5 bg-amber-200 hover:bg-amber-300 rounded-lg text-xs sm:text-sm transition">Chiudi</button>
                             </div>
                         </div>
@@ -219,12 +245,9 @@
                     </div>
 
                     <div id="percorso-detail-view" class="hidden mb-4 p-4 sm:p-5 bg-amber-50 border border-amber-300 rounded-xl shadow-sm">
-                        <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
+                        <div class="flex justify-between items-center mb-3">
                             <h3 id="percorso-detail-title" class="font-bold text-base sm:text-xl text-amber-900"></h3>
-                            <div class="flex items-center gap-2">
-                                <button id="percorso-download-btn" class="text-white font-bold px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow"><i class="fa-solid fa-download"></i> Scarica Word</button>
-                                <button onclick="closePercorsoDetail()" class="text-amber-900 font-bold px-3.5 py-1.5 bg-amber-200 hover:bg-amber-300 rounded-lg text-xs sm:text-sm">Chiudi</button>
-                            </div>
+                            <button onclick="closePercorsoDetail()" class="text-amber-900 font-bold px-3.5 py-1.5 bg-amber-200 hover:bg-amber-300 rounded-lg text-xs sm:text-sm">Chiudi</button>
                         </div>
                         <div id="percorso-detail-content" class="text-slate-900 text-sm sm:text-base whitespace-pre-wrap taxi-custom-font bg-white p-4 rounded-lg border border-amber-200 shadow-inner max-h-96 overflow-y-auto leading-relaxed"></div>
                     </div>
@@ -250,7 +273,6 @@
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3.5 gap-3">
                         <h2 class="text-lg sm:text-2xl font-bold flex items-center"><i class="fa-solid fa-book text-amber-500 mr-2.5"></i> Indice Toponomastico</h2>
-                        <!-- Tasto ordinamento modificato per consentire all'utente di ordinare a piacimento -->
                         <button onclick="cycleSortMode()" id="sort-alpha-btn" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs sm:text-sm font-bold border border-slate-300 transition flex items-center shadow-sm">
                             <i class="fa-solid fa-sort mr-1.5 text-amber-600 text-base"></i> Ordine Originale
                         </button>
@@ -370,7 +392,7 @@
                             </div>
                         </div>
 
-                        <!-- Carica Percorsi Taxi Word (Aggiornato per caricamento multiplo e nome file come titolo) -->
+                        <!-- Carica Percorsi Taxi Word -->
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
                             <h3 class="font-bold text-sm sm:text-base mb-3"><i class="fa-solid fa-file-word mr-1.5 text-red-600"></i> Carica Percorsi (.docx)</h3>
                             <div class="space-y-3">
@@ -409,7 +431,6 @@
                                     <button onclick="saveStataleDescription()" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition">Salva</button>
                                 </div>
                             </div>
-                            <!-- Sezione cancellazione massiva statali -->
                             <div class="pt-2 border-t border-slate-200">
                                 <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Statali (Seleziona multipli)</label>
                                 <input type="text" id="filter-admin-statali" oninput="filterAdminSelect('admin-statali-delete-select', this.value)" placeholder="Cerca statali..." class="w-full px-3 py-1.5 mb-2 border rounded text-xs bg-white">
@@ -447,7 +468,6 @@
                                     <input type="text" id="edit-piazza-name" placeholder="Nome" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm">
                                     <textarea id="edit-piazza-confluences" placeholder="Confluenze separate da virgola" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm h-16"></textarea>
                                     
-                                    <!-- Cancellazione massiva piazze -->
                                     <div class="pt-2 border-t border-slate-200">
                                         <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Piazze (Seleziona multipli)</label>
                                         <input type="text" id="filter-admin-piazze" oninput="filterAdminSelect('admin-piazze-delete-select', this.value)" placeholder="Cerca piazze..." class="w-full px-3 py-1.5 mb-2 border rounded text-xs bg-white">
@@ -483,11 +503,10 @@
                             </div>
 
                             <div class="border-t border-slate-200 pt-3">
-                                <h3 class="font-bold text-xs sm:text-sm mb-2"><i class="fa-solid fa-key mr-1.5 text-red-600"></i> Password</h3>
+                                <h3 class="font-bold text-xs sm:text-sm mb-2"><i class="fa-solid fa-key mr-1.5 text-red-600"></i> Password Admin</h3>
                                 <div class="space-y-2">
-                                    <input type="text" id="admin-new-user-pwd" placeholder="Password utente..." class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white font-semibold">
                                     <input type="text" id="admin-new-admin-pwd" placeholder="Password admin..." class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white font-semibold">
-                                    <button onclick="updatePasswords()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition">Aggiorna Password</button>
+                                    <button onclick="updateAdminPassword()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition">Aggiorna Password Admin</button>
                                 </div>
                             </div>
                         </div>
@@ -499,18 +518,16 @@
     </div>
 
     <script>
-        let userPwd = localStorage.getItem("milan_user_pwd") || "milano2026";
         let adminPwd = localStorage.getItem("milan_admin_pwd") || "admin_taxi_2026";
         let customDescriptions = JSON.parse(localStorage.getItem("milan_custom_descriptions")) || {};
         let percorsiData = JSON.parse(localStorage.getItem("milan_percorsi_data")) || [];
         let regolamentiData = JSON.parse(localStorage.getItem("milan_regolamenti_data")) || [
-            { id: 1, title: "Regolamento Servizio Taxi Comune di Milano", content: "Contenuto ufficiale del regolamento taxi comunale...", fileBase64: "", fileName: "Regolamento_Taxi_Milano.docx" }
+            { id: 1, title: "Regolamento Servizio Taxi Comune di Milano", content: "Contenuto ufficiale del regolamento taxi comunale..." }
         ];
         let stataliDescriptions = JSON.parse(localStorage.getItem("milan_statali_descriptions")) || {};
         let isAdmin = false;
         
         let sortMode = 'default';
-
         let selectedStreetForTap = null;
         let deferredPrompt = null;
 
@@ -645,15 +662,17 @@
             localStorage.setItem("milan_regolamenti_data", JSON.stringify(regolamentiData));
             localStorage.setItem("milan_statali_descriptions", JSON.stringify(stataliDescriptions));
             localStorage.setItem("milan_statali_list", JSON.stringify(stataliListDynamic));
-            localStorage.setItem("milan_user_pwd", userPwd);
             localStorage.setItem("milan_admin_pwd", adminPwd);
         }
 
-        function handleLogin(forceAdmin) {
-            const pwd = document.getElementById("login-pwd").value;
+        // --- CONTROLLO ACCESSO TRAMITE FIRESTORE ---
+        async function handleLogin(forceAdmin) {
+            const inputVal = document.getElementById("login-pwd").value.trim();
             const err = document.getElementById("login-error");
+            err.classList.add("hidden");
+
             if (forceAdmin) {
-                if (pwd === adminPwd) {
+                if (inputVal === adminPwd) {
                     isAdmin = true;
                     document.getElementById("btn-admin").classList.remove("hidden");
                     initApp();
@@ -661,17 +680,40 @@
                     err.textContent = "Password Admin errata.";
                     err.classList.remove("hidden");
                 }
-            } else {
-                if (pwd === userPwd || pwd === adminPwd) {
-                    if (pwd === adminPwd) {
-                        isAdmin = true;
-                        document.getElementById("btn-admin").classList.remove("hidden");
+                return;
+            }
+
+            if (!inputVal) {
+                err.textContent = "Inserisci un codice valido.";
+                err.classList.remove("hidden");
+                return;
+            }
+
+            try {
+                const codesRef = window.collection(window.db, "codes");
+                const q = window.query(codesRef, window.where("codice", "==", inputVal));
+                const querySnapshot = await window.getDocs(q);
+
+                let codeFoundAndActive = false;
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.attivo === true) {
+                        codeFoundAndActive = true;
                     }
+                });
+
+                if (codeFoundAndActive) {
+                    isAdmin = false;
+                    document.getElementById("btn-admin").classList.add("hidden");
                     initApp();
                 } else {
-                    err.textContent = "Password errata.";
+                    err.textContent = "Codice inesistente o disattivato.";
                     err.classList.remove("hidden");
                 }
+            } catch (e) {
+                console.error("Errore di connessione a Firebase:", e);
+                err.textContent = "Errore di connessione al Cloud. Riprova.";
+                err.classList.remove("hidden");
             }
         }
 
@@ -728,18 +770,11 @@
             }
             if(tab === 'admin') {
                 populateAdminSelect();
-                document.getElementById("admin-new-user-pwd").value = userPwd;
                 document.getElementById("admin-new-admin-pwd").value = adminPwd;
             }
-            if(tab === 'percorsi') {
-                renderPercorsi();
-            }
-            if(tab === 'regolamenti') {
-                renderRegolamenti();
-            }
-            if(tab === 'statali') {
-                renderStatali();
-            }
+            if(tab === 'percorsi') { renderPercorsi(); }
+            if(tab === 'regolamenti') { renderRegolamenti(); }
+            if(tab === 'statali') { renderStatali(); }
         }
 
         function handleOutsideClick(e) {
@@ -751,13 +786,9 @@
         }
 
         function cycleSortMode() {
-            if (sortMode === 'default') {
-                sortMode = 'asc';
-            } else if (sortMode === 'asc') {
-                sortMode = 'desc';
-            } else {
-                sortMode = 'default';
-            }
+            if (sortMode === 'default') sortMode = 'asc';
+            else if (sortMode === 'asc') sortMode = 'desc';
+            else sortMode = 'default';
             updateSortButtonUI();
             renderEncyclopedia();
         }
@@ -777,56 +808,6 @@
             }
         }
 
-        // Funzione di supporto per convertire File in Base64
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-        }
-
-        // Funzione di supporto aggiornata per il download sicuro dei file in PWA e browser
-        function downloadFileFromData(base64Data, defaultFilename) {
-            if (!base64Data) {
-                alert("File binario originale non disponibile per questo elemento.");
-                return;
-            }
-            try {
-                const arr = base64Data.split(',');
-                const mimeMatch = arr[0].match(/:(.*?);/);
-                const mime = mimeMatch ? mimeMatch[1] : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-                const bstr = atob(arr[1]);
-                let n = bstr.length;
-                const u8arr = new Uint8Array(n);
-                while (n--) {
-                    u8arr[n] = bstr.charCodeAt(n);
-                }
-                const blob = new Blob([u8arr], { type: mime });
-                const blobUrl = URL.createObjectURL(blob);
-
-                const a = document.createElement('a');
-                a.href = blobUrl;
-                a.download = defaultFilename || "documento.docx";
-                
-                a.style.display = 'none';
-                document.body.appendChild(a);
-                a.click();
-                
-                setTimeout(() => {
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(blobUrl);
-                }, 1000);
-            } catch (e) {
-                const win = window.open(base64Data, '_blank');
-                if (!win) {
-                    alert("Il browser ha bloccato il download automatico. Assicurati di consentire i popup per questa app.");
-                }
-            }
-        }
-
-        // --- GESTIONE REGOLAMENTI WORD (.docx) ---
         async function uploadRegolamentoWord() {
             const titleInput = document.getElementById("admin-regolamento-title");
             const fileInput = document.getElementById("admin-regolamento-file");
@@ -836,32 +817,25 @@
             if (fileInput.files.length === 0) { alert("Seleziona un file Word (.docx)!"); return; }
 
             const file = fileInput.files[0];
-            try {
-                const base64String = await fileToBase64(file);
-                const arrayBuffer = await file.arrayBuffer();
-                const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
-                
-                regolamentiData.push({ 
-                    id: Date.now(), 
-                    title: title, 
-                    content: result.value,
-                    fileBase64: base64String,
-                    fileName: file.name
-                });
-                regolamentiData.sort((a, b) => naturalSort(a.title, b.title));
-                saveData();
-                titleInput.value = "";
-                fileInput.value = "";
-                
-                renderRegolamenti();
-                populateAdminSelect();
-                document.getElementById("total-count").textContent = piazzeData.length;
-                document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
-                
-                alert("Regolamento Word caricato con successo!");
-            } catch (e) {
-                alert("Errore durante la lettura del file Word.");
-            }
+            const reader = new FileReader();
+            
+            reader.onload = async function(event) {
+                const arrayBuffer = event.target.result;
+                try {
+                    const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+                    regolamentiData.push({ id: Date.now(), title: title, content: result.value, fileName: file.name });
+                    regolamentiData.sort((a, b) => naturalSort(a.title, b.title));
+                    saveData();
+                    titleInput.value = "";
+                    fileInput.value = "";
+                    renderRegolamenti();
+                    populateAdminSelect();
+                    alert("Regolamento Word caricato con successo!");
+                } catch (e) {
+                    alert("Errore durante la lettura del file Word.");
+                }
+            };
+            reader.readAsArrayBuffer(file);
         }
 
         function renderRegolamenti() {
@@ -880,9 +854,8 @@
             filtered.forEach(r => {
                 const card = document.createElement("div");
                 card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between group hover:border-amber-500 cursor-pointer";
-                
-                card.onclick = () => showRegolamentoDetail(r.id);
-                
+                const safeTitle = r.title.replace(/'/g, "\\'");
+                card.onclick = () => showRegolamentoDetail(safeTitle, r.id);
                 card.innerHTML = `
                     <div class="flex items-center justify-between mb-2">
                         <div class="flex items-center space-x-3.5">
@@ -891,7 +864,7 @@
                             </div>
                             <div>
                                 <h3 class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-amber-700 leading-snug">${r.title}</h3>
-                                <span class="text-xs text-slate-500 font-medium">Clicca per leggere o scaricare</span>
+                                <span class="text-xs text-slate-500 font-medium">Clicca per visualizzare il testo</span>
                             </div>
                         </div>
                     </div>
@@ -900,16 +873,11 @@
             });
         }
 
-        function showRegolamentoDetail(id) {
+        function showRegolamentoDetail(title, id) {
             const reg = regolamentiData.find(r => r.id === id);
             if (!reg) return;
-
             document.getElementById("regolamento-detail-title").textContent = reg.title;
             document.getElementById("regolamento-detail-content").textContent = reg.content;
-            
-            const downloadBtn = document.getElementById("regolamento-download-btn");
-            downloadBtn.onclick = () => downloadFileFromData(reg.fileBase64, reg.fileName || `${reg.title}.docx`);
-
             document.getElementById("regolamento-detail-view").classList.remove("hidden");
             document.getElementById("regolamento-detail-view").scrollIntoView({ behavior: 'smooth' });
         }
@@ -921,10 +889,7 @@
         function deleteRegolamentoMulti() {
             const select = document.getElementById("admin-delete-regolamento-select");
             const selectedOptions = Array.from(select.selectedOptions);
-            if (selectedOptions.length === 0) {
-                alert("Seleziona almeno un regolamento da eliminare.");
-                return;
-            }
+            if (selectedOptions.length === 0) { alert("Seleziona almeno un regolamento da eliminare."); return; }
             if (confirm(`Vuoi eliminare ${selectedOptions.length} regolamenti selezionati?`)) {
                 const idsToDelete = selectedOptions.map(opt => Number(opt.value));
                 regolamentiData = regolamentiData.filter(r => !idsToDelete.includes(r.id));
@@ -935,7 +900,6 @@
             }
         }
 
-        // --- GESTIONE PERCORSI TAXI ---
         async function uploadPercorsiWordMulti() {
             const fileInput = document.getElementById("admin-percorso-file");
             if (fileInput.files.length === 0) { alert("Seleziona almeno un file Word (.docx)!"); return; }
@@ -945,19 +909,10 @@
 
             for (const file of files) {
                 let title = file.name.replace(/\.[^/.]+$/, "");
-
                 try {
-                    const base64String = await fileToBase64(file);
                     const arrayBuffer = await file.arrayBuffer();
                     const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
-                    
-                    percorsiData.push({ 
-                        id: Date.now() + Math.random(), 
-                        title: title, 
-                        content: result.value,
-                        fileBase64: base64String,
-                        fileName: file.name
-                    });
+                    percorsiData.push({ id: Date.now() + Math.random(), title: title, content: result.value });
                     loadedCount++;
                 } catch (e) {
                     console.error(`Errore durante la lettura del file ${file.name}`, e);
@@ -988,7 +943,7 @@
             filtered.forEach(p => {
                 const card = document.createElement("div");
                 card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between cursor-pointer group hover:border-amber-500";
-                card.onclick = () => showPercorsoDetail(p.id);
+                card.onclick = () => showPercorsoDetail(p.title, p.content);
                 card.innerHTML = `
                     <div class="flex items-center space-x-3.5">
                         <div class="p-3 bg-amber-50 rounded-xl group-hover:bg-amber-100 transition text-amber-600">
@@ -996,7 +951,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-amber-700 leading-snug">${p.title}</h3>
-                            <span class="text-xs text-slate-500 font-medium">Clicca per visualizzare o scaricare</span>
+                            <span class="text-xs text-slate-500 font-medium">Clicca per visualizzare</span>
                         </div>
                     </div>
                 `;
@@ -1004,16 +959,9 @@
             });
         }
 
-        function showPercorsoDetail(id) {
-            const percorso = percorsiData.find(p => p.id === id);
-            if (!percorso) return;
-
-            document.getElementById("percorso-detail-title").textContent = percorso.title;
-            document.getElementById("percorso-detail-content").textContent = percorso.content;
-
-            const downloadBtn = document.getElementById("percorso-download-btn");
-            downloadBtn.onclick = () => downloadFileFromData(percorso.fileBase64, percorso.fileName || `${percorso.title}.docx`);
-
+        function showPercorsoDetail(title, content) {
+            document.getElementById("percorso-detail-title").textContent = title;
+            document.getElementById("percorso-detail-content").textContent = content;
             document.getElementById("percorso-detail-view").classList.remove("hidden");
             document.getElementById("percorso-detail-view").scrollIntoView({ behavior: 'smooth' });
         }
@@ -1025,10 +973,7 @@
         function deletePercorsoMulti() {
             const select = document.getElementById("admin-delete-percorso-select");
             const selectedOptions = Array.from(select.selectedOptions);
-            if (selectedOptions.length === 0) {
-                alert("Seleziona almeno un percorso da eliminare.");
-                return;
-            }
+            if (selectedOptions.length === 0) { alert("Seleziona almeno un percorso da eliminare."); return; }
             if (confirm(`Vuoi eliminare ${selectedOptions.length} percorsi selezionati?`)) {
                 const idsToDelete = selectedOptions.map(opt => Number(opt.value));
                 percorsiData = percorsiData.filter(p => !idsToDelete.includes(p.id));
@@ -1039,7 +984,6 @@
             }
         }
 
-        // --- GESTIONE STRADE STATALI ---
         function renderStatali() {
             const query = document.getElementById("search-statale").value.toLowerCase();
             const container = document.getElementById("statali-list");
@@ -1106,10 +1050,7 @@
         function deleteStataleMulti() {
             const select = document.getElementById("admin-statali-delete-select");
             const selectedOptions = Array.from(select.selectedOptions);
-            if (selectedOptions.length === 0) {
-                alert("Seleziona almeno una strada statale da eliminare.");
-                return;
-            }
+            if (selectedOptions.length === 0) { alert("Seleziona almeno una strada statale da eliminare."); return; }
             if (confirm(`Eliminare ${selectedOptions.length} strade statali selezionate?`)) {
                 const valuesToDelete = selectedOptions.map(opt => opt.value);
                 stataliListDynamic = stataliListDynamic.filter(s => !valuesToDelete.includes(s));
@@ -1121,7 +1062,6 @@
             }
         }
 
-        // --- ENCICLOPEDIA E CONFLUENZE ---
         function renderEncyclopedia() {
             const query = document.getElementById("search-piazza").value.toLowerCase();
             const listContainer = document.getElementById("encyclopedia-list");
@@ -1223,7 +1163,6 @@
             });
 
             matches.sort((a, b) => naturalSort(a.text, b.text));
-
             if (matches.length === 0) { suggestionsBox.classList.add("hidden"); return; }
 
             matches.forEach(m => {
@@ -1238,7 +1177,6 @@
                 };
                 suggestionsBox.appendChild(div);
             });
-
             suggestionsBox.classList.remove("hidden");
         }
 
@@ -1299,7 +1237,6 @@
                 slot.style.left = `${x}px`;
                 slot.style.top = `${y}px`;
                 slot.setAttribute("data-index", i);
-
                 slot.onclick = function() { handleSlotTap(slot); };
 
                 if (i === 0) {
@@ -1332,12 +1269,10 @@
                 <span class="flex items-center mr-1 overflow-hidden pointer-events-none"><i class="fa-solid fa-grip-vertical text-slate-400 mr-1.5 text-xs flex-shrink-0"></i> <span class="break-words">${streetName}</span></span>
                 <span class="text-[10px] bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded-md font-bold border border-amber-200 whitespace-nowrap flex-shrink-0 pointer-events-none">Via</span>
             `;
-
             item.onclick = function(e) {
                 e.stopPropagation();
                 selectStreetForTap(item);
             };
-
             return item;
         }
 
@@ -1486,9 +1421,9 @@
 
             const select = document.getElementById("admin-piazza-select");
             select.innerHTML = "";
-            sortedPiazze.forEach((p, originalIdx) => {
-                const opt = document.createElement("option");
+            sortedPiazze.forEach((p) => {
                 const realIndex = piazzeData.findIndex(item => item.id === p.id);
+                const opt = document.createElement("option");
                 opt.value = realIndex;
                 opt.textContent = `${p.type} ${p.name}`;
                 select.appendChild(opt);
@@ -1565,11 +1500,8 @@
             const filter = query.toLowerCase();
             Array.from(select.options).forEach(opt => {
                 const text = opt.textContent.toLowerCase();
-                if (text.includes(filter)) {
-                    opt.style.display = "";
-                } else {
-                    opt.style.display = "none";
-                }
+                if (text.includes(filter)) opt.style.display = "";
+                else opt.style.display = "none";
             });
         }
 
@@ -1619,14 +1551,12 @@
             }
         }
 
-        function updatePasswords() {
-            const newUserPwd = document.getElementById("admin-new-user-pwd").value.trim();
+        function updateAdminPassword() {
             const newAdminPwd = document.getElementById("admin-new-admin-pwd").value.trim();
-            if (!newUserPwd || !newAdminPwd) { alert("Le password non possono essere vuote!"); return; }
-            userPwd = newUserPwd;
+            if (!newAdminPwd) { alert("La password non può essere vuota!"); return; }
             adminPwd = newAdminPwd;
             saveData();
-            alert("Password aggiornate!");
+            alert("Password Admin aggiornata!");
         }
 
         function loadAdminPiazzaData() {
@@ -1682,7 +1612,6 @@
             renderStatali();
             populateExerciseSelect();
             populateAdminSelect();
-            
             alert("Aggiunto!");
         }
 
@@ -1703,31 +1632,23 @@
             renderStatali();
             populateExerciseSelect();
             populateAdminSelect();
-            
             alert("Aggiornato!");
         }
 
         function deletePiazzaMulti() {
             const select = document.getElementById("admin-piazze-delete-select");
             const selectedOptions = Array.from(select.selectedOptions);
-            if (selectedOptions.length === 0) {
-                alert("Seleziona almeno una piazza da eliminare.");
-                return;
-            }
+            if (selectedOptions.length === 0) { alert("Seleziona almeno una piazza da eliminare."); return; }
             if (confirm(`Vuoi eliminare ${selectedOptions.length} piazze/luoghi selezionati?`)) {
                 const indicesToDelete = selectedOptions.map(opt => Number(opt.value)).sort((a, b) => b - a);
-                indicesToDelete.forEach(idx => {
-                    piazzeData.splice(idx, 1);
-                });
+                indicesToDelete.forEach(idx => { piazzeData.splice(idx, 1); });
                 saveData();
-                
                 document.getElementById("total-count").textContent = piazzeData.length;
                 document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
                 renderEncyclopedia();
                 renderStatali();
                 populateExerciseSelect();
                 populateAdminSelect();
-                
                 alert("Piazze eliminate con successo.");
             }
         }
