@@ -52,16 +52,16 @@
     <style>
         .orbit-container {
             position: relative;
-            width: 340px;
-            height: 340px;
+            width: 400px;
+            height: 400px;
             margin: 0 auto;
             transform-origin: center center;
             transition: transform 0.05s ease-out;
         }
         @media (min-width: 640px) {
             .orbit-container {
-                width: 500px;
-                height: 500px;
+                width: 560px;
+                height: 560px;
             }
         }
         .orbit-center {
@@ -415,6 +415,7 @@
 
                                 <div id="orbit-wrapper" class="w-full h-full flex items-center justify-center relative touch-none">
                                     <div class="orbit-container my-auto" id="orbit-container-el">
+                                        <!-- Piazza Centrale (Perfettamente al centro) -->
                                         <div class="orbit-center w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-slate-800 border-4 border-amber-500 shadow-2xl flex flex-col items-center justify-center text-center p-2 z-10">
                                             <div id="ex-square-type" class="text-[10px] sm:text-xs uppercase tracking-widest text-amber-400 font-extrabold">Piazza</div>
                                             <div id="ex-square-title" class="text-sm sm:text-base font-black text-white leading-tight mt-1">-</div>
@@ -1507,11 +1508,11 @@
 
             const isMobile = window.innerWidth < 640;
             const slotWidth = isMobile ? 125 : 150;
-            const minCircumference = totalNodes * (slotWidth + 20);
+            const minCircumference = totalNodes * (slotWidth + 28);
             const calculatedRadius = minCircumference / (2 * Math.PI);
-            const baseRadius = isMobile ? 130 : 200;
+            const baseRadius = isMobile ? 150 : 210;
             const radius = Math.max(baseRadius, calculatedRadius); 
-            const containerSize = (radius * 2) + 180;
+            const containerSize = (radius * 2) + 200;
             
             const orbitContainer = document.getElementById("orbit-container-el");
             orbitContainer.style.width = `${containerSize}px`;
@@ -1575,7 +1576,7 @@
 
             // Mouse Drag & Wheel Zoom (Desktop)
             viewport.addEventListener("mousedown", (e) => {
-                if (e.target.closest('.street-card') || e.target.closest('.orbit-slot')) return;
+                if (e.target.closest('.street-card') || e.target.closest('.orbit-slot') || e.target.closest('.orbit-center')) return;
                 isDraggingMap = true;
                 startX = e.clientX - mapPanX;
                 startY = e.clientY - mapPanY;
@@ -1605,7 +1606,7 @@
 
             // Touch Drag & Pinch-to-Zoom (Mobile con due dita)
             viewport.addEventListener("touchstart", (e) => {
-                if (e.target.closest('.street-card') || e.target.closest('.orbit-slot')) return;
+                if (e.target.closest('.street-card') || e.target.closest('.orbit-slot') || e.target.closest('.orbit-center')) return;
                 if (e.touches.length === 1) {
                     isDraggingMap = true;
                     startX = e.touches[0].clientX - mapPanX;
@@ -1617,7 +1618,7 @@
             }, { passive: false });
 
             viewport.addEventListener("touchmove", (e) => {
-                if (e.target.closest('.street-card') || e.target.closest('.orbit-slot')) return;
+                if (e.target.closest('.street-card') || e.target.closest('.orbit-slot') || e.target.closest('.orbit-center')) return;
                 if (e.touches.length === 1 && isDraggingMap) {
                     mapPanX = e.touches[0].clientX - startX;
                     mapPanY = e.touches[0].clientY - startY;
