@@ -26,7 +26,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, query, where, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // CONFIGURAZIONE FIREBASE AGGIORNATA CON I TUOI DATI REALI
+        // CONFIGURAZIONE FIREBASE AGGIORNATA CON I DATI REALI
         const firebaseConfig = {
             apiKey: "AIzaSyB9NDTSWiODSZhL0XyQeLL2uzbEYm5yYzA",
             authDomain: "scuola-taxi.firebaseapp.com",
@@ -39,7 +39,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Rendiamo db e funzioni accessibili globalmente nello script della pagina
         window.db = db;
         window.getDocs = getDocs;
         window.collection = collection;
@@ -54,7 +53,8 @@
             position: relative;
             width: 400px;
             height: 400px;
-            margin: 0 auto;
+            margin: auto;
+            flex-shrink: 0;
             transform-origin: center center;
             transition: transform 0.05s ease-out;
         }
@@ -226,10 +226,8 @@
                         <input type="text" id="search-regolamento" onkeyup="renderRegolamenti()" placeholder="Cerca regolamento..." class="px-4 py-2.5 rounded-lg border border-slate-300 text-sm sm:text-base focus:ring-2 focus:ring-amber-500 focus:outline-none w-full sm:w-80">
                     </div>
 
-                    <!-- LETTURA REGOLAMENTO A TUTTA PAGINA (MODALE FULL SCREEN) -->
                     <div id="regolamento-detail-view" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-6">
                         <div class="bg-white w-full max-w-5xl h-[95vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-300">
-                            <!-- Header Modale -->
                             <div class="bg-slate-900 text-white px-4 sm:px-6 py-4 flex justify-between items-center shadow">
                                 <h3 id="regolamento-detail-title" class="font-bold text-base sm:text-xl truncate pr-2"></h3>
                                 <div class="flex items-center gap-2.5 flex-shrink-0">
@@ -241,9 +239,7 @@
                                     </button>
                                 </div>
                             </div>
-                            <!-- Corpo Testuale (A tutta altezza scrollabile) -->
                             <div id="regolamento-content-box" class="flex-1 text-slate-800 text-sm sm:text-base p-4 sm:p-8 overflow-y-auto space-y-4 bg-slate-50 leading-relaxed">
-                                <!-- Testo estratto del documento Word -->
                             </div>
                         </div>
                     </div>
@@ -260,10 +256,8 @@
                         <input type="text" id="search-percorso" onkeyup="renderPercorsi()" placeholder="Cerca percorso..." class="px-4 py-2.5 rounded-lg border border-slate-300 text-sm sm:text-base focus:ring-2 focus:ring-amber-500 focus:outline-none w-full sm:w-80">
                     </div>
 
-                    <!-- LETTURA PERCORSO A TUTTA PAGINA CON TIMELINE A TAPPE E INTESTAZIONE DA/A -->
                     <div id="percorso-detail-view" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-6">
                         <div class="bg-white w-full max-w-4xl h-[95vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-300">
-                            <!-- Header Modale -->
                             <div class="bg-slate-900 text-white px-4 sm:px-6 py-4 flex justify-between items-center shadow">
                                 <h3 id="percorso-detail-title" class="font-bold text-base sm:text-xl truncate pr-2"></h3>
                                 <div class="flex items-center gap-2.5 flex-shrink-0">
@@ -275,9 +269,7 @@
                                     </button>
                                 </div>
                             </div>
-                            <!-- Corpo Timeline Tappe (A tutta altezza scrollabile) -->
                             <div id="percorso-content-box" class="flex-1 text-slate-800 text-sm sm:text-base p-4 sm:p-8 overflow-y-auto bg-slate-50 space-y-4">
-                                <!-- Generato dinamicamente con Da/A e Tappe -->
                             </div>
                         </div>
                     </div>
@@ -385,7 +377,7 @@
                     </div>
                 </div>
 
-                <!-- Barra Controlli Extra Esercizio (Reset, Indietro, Avanti, Casuale) -->
+                <!-- Barra Controlli Extra Esercizio -->
                 <div class="bg-slate-800 px-4 py-2.5 flex flex-wrap justify-between items-center gap-2 border-b border-slate-700 text-xs sm:text-sm font-semibold text-white">
                     <div class="flex items-center gap-1.5">
                         <button onclick="exercisePrev()" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition flex items-center gap-1" title="Precedente"><i class="fa-solid fa-chevron-left"></i> <span class="hidden sm:inline">Indietro</span></button>
@@ -397,7 +389,7 @@
                     </div>
                 </div>
 
-                <!-- Corpo Interattivo Esercizio (Con supporto Zoom & Pan con due dita) -->
+                <!-- Corpo Interattivo Esercizio -->
                 <div class="flex-1 overflow-y-auto p-3 sm:p-6 bg-slate-100 flex flex-col justify-center">
                     <div class="max-w-6xl w-full mx-auto space-y-4">
                         <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs sm:text-sm font-semibold text-amber-900 shadow-sm flex items-center justify-between gap-2">
@@ -409,12 +401,12 @@
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                            <!-- Area Mappa con Pinch-to-Zoom e Pan -->
+                            <!-- Area Mappa con correzione Flex-1 per Android/iOS -->
                             <div id="map-viewport" class="lg:col-span-8 bg-slate-900 rounded-2xl p-3.5 relative flex flex-col items-center justify-center min-h-[420px] sm:min-h-[500px] shadow-inner border border-slate-700 overflow-hidden cursor-grab active:cursor-grabbing">
                                 <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#f59e0b_1.5px,transparent_1.5px)] [background-size:16px_16px] pointer-events-none"></div>
 
-                                <div id="orbit-wrapper" class="w-full h-full flex items-center justify-center relative touch-none">
-                                    <div class="orbit-container my-auto" id="orbit-container-el">
+                                <div id="orbit-wrapper" class="w-full flex-1 flex items-center justify-center relative touch-none">
+                                    <div class="orbit-container my-auto flex-shrink-0" id="orbit-container-el">
                                         <!-- Piazza Centrale (Perfettamente al centro) -->
                                         <div class="orbit-center w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-slate-800 border-4 border-amber-500 shadow-2xl flex flex-col items-center justify-center text-center p-2 z-10">
                                             <div id="ex-square-type" class="text-[10px] sm:text-xs uppercase tracking-widest text-amber-400 font-extrabold">Piazza</div>
@@ -464,7 +456,6 @@
                     </div>
                     
                     <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                        <!-- Carica Regolamento Word -->
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
                             <h3 class="font-bold text-sm sm:text-base mb-3"><i class="fa-solid fa-file-word mr-1.5 text-blue-600"></i> Carica Regolamento (.docx)</h3>
                             <div class="space-y-3">
@@ -486,7 +477,6 @@
                             </div>
                         </div>
 
-                        <!-- Carica Percorsi Taxi Word -->
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
                             <h3 class="font-bold text-sm sm:text-base mb-3"><i class="fa-solid fa-file-word mr-1.5 text-red-600"></i> Carica Percorsi (.docx)</h3>
                             <div class="space-y-3">
@@ -504,7 +494,6 @@
                             </div>
                         </div>
 
-                        <!-- Gestione Strade Statali -->
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
                             <h3 class="font-bold text-sm sm:text-base mb-1.5"><i class="fa-solid fa-road mr-1.5 text-red-600"></i> Strade Statali</h3>
                             <div class="bg-white p-3 rounded-lg border border-slate-200 space-y-2">
@@ -533,7 +522,6 @@
                             </div>
                         </div>
 
-                        <!-- Aggiungi Piazza -->
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
                             <h3 class="font-bold text-sm sm:text-base mb-3"><i class="fa-solid fa-square-plus mr-1.5 text-red-600"></i> Aggiungi Piazza</h3>
                             <div class="space-y-3">
@@ -548,7 +536,6 @@
                             </div>
                         </div>
 
-                        <!-- Modifica / Rimuovi & Rotazione -->
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3.5">
                             <div>
                                 <h3 class="font-bold text-sm sm:text-base mb-2.5"><i class="fa-solid fa-pen-to-square mr-1.5 text-red-600"></i> Modifica / Elimina Piazze</h3>
@@ -584,7 +571,6 @@
                             </div>
                         </div>
 
-                        <!-- Destinazione & Password -->
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3.5">
                             <div>
                                 <h3 class="font-bold text-sm sm:text-base mb-2"><i class="fa-solid fa-comment-dots mr-1.5 text-red-600"></i> Info Confluenze</h3>
@@ -625,7 +611,6 @@
         let selectedStreetForTap = null;
         let deferredPrompt = null;
 
-        // Variabili per Zoom & Pan mappa esercizi
         let mapScale = 1;
         let mapPanX = 0;
         let mapPanY = 0;
@@ -767,7 +752,6 @@
             localStorage.setItem("milan_admin_pwd", adminPwd);
         }
 
-        // --- CONTROLLO ACCESSO TRAMITE FIRESTORE CON RICONOSCIMENTO ADMIN ---
         async function handleLogin(forceAdmin) {
             const inputVal = document.getElementById("login-pwd").value.trim();
             const err = document.getElementById("login-error");
@@ -1555,7 +1539,6 @@
             initDragAndDrop();
         }
 
-        // --- GESTIONE ZOOM & PAN MAPPA ESERCIZI ---
         function resetZoom() {
             mapScale = 1;
             mapPanX = 0;
@@ -1574,7 +1557,6 @@
             const viewport = document.getElementById("map-viewport");
             if (!viewport) return;
 
-            // Mouse Drag & Wheel Zoom (Desktop)
             viewport.addEventListener("mousedown", (e) => {
                 if (e.target.closest('.street-card') || e.target.closest('.orbit-slot') || e.target.closest('.orbit-center')) return;
                 isDraggingMap = true;
@@ -1604,7 +1586,6 @@
                 updateMapTransform();
             }, { passive: false });
 
-            // Touch Drag & Pinch-to-Zoom (Mobile con due dita)
             viewport.addEventListener("touchstart", (e) => {
                 if (e.target.closest('.street-card') || e.target.closest('.orbit-slot') || e.target.closest('.orbit-center')) return;
                 if (e.touches.length === 1) {
@@ -1787,260 +1768,245 @@
         }
 
         function showExerciseSolution() {
-            document.querySelectorAll(".orbit-slot").forEach((slot, idx) => {
-                if (idx === 0) return;
-                slot.innerHTML = "";
-                const correctStreet = currentCorrectOrder[idx];
+            const piazza = piazzeData[currentExerciseIndex];
+            if (!piazza) return;
+            document.getElementById("exercise-select").value = currentExerciseIndex;
+            loadExerciseIntoModal(currentExerciseIndex);
+            
+            const slots = document.querySelectorAll(".orbit-slot");
+            const sourcePool = document.getElementById("source-pool");
+            sourcePool.innerHTML = "";
+
+            slots.forEach((slot, idx) => {
+                const streetName = piazza.confluences[idx];
                 const card = document.createElement("div");
-                card.className = "street-card p-1.5 bg-emerald-950/95 border border-emerald-500 rounded-lg shadow flex items-center justify-between text-emerald-200 font-bold text-xs w-full";
-                card.setAttribute("data-name", correctStreet);
-                card.innerHTML = `<span class="mr-1 break-words"><i class="fa-solid fa-check text-emerald-400 mr-1 text-xs"></i> ${correctStreet}</span><span class="text-[10px] bg-emerald-900 px-1.5 py-0.5 rounded whitespace-nowrap flex-shrink-0 font-bold">#${idx + 1}</span>`;
-                slot.appendChild(card);
+                card.className = "street-card p-1.5 bg-slate-800 border border-amber-500/80 rounded-lg shadow-sm flex items-center justify-between text-white font-bold text-xs w-full";
+                card.setAttribute("data-name", streetName);
+                card.innerHTML = `<span class="flex items-center mr-1 overflow-hidden pointer-events-none"><span class="break-words">${streetName}</span></span>`;
+                
+                const existing = slot.querySelector(".street-card");
+                if (existing) existing.remove();
+                const placeholder = slot.querySelector('.slot-placeholder');
+                if (placeholder) placeholder.style.display = 'none';
+                
+                if (idx > 0) slot.appendChild(card);
             });
-            document.getElementById("source-pool").innerHTML = "";
             updatePoolCount();
-            document.getElementById("exercise-feedback").innerHTML = `<span class="text-amber-800 bg-amber-50 border border-amber-200 px-4 py-2 rounded-xl inline-block text-sm sm:text-base font-bold">Soluzione mostrata.</span>`;
+            document.getElementById("exercise-feedback").innerHTML = `<span class="text-blue-700 bg-blue-50 border border-blue-200 px-4 py-2 rounded-xl inline-block text-sm sm:text-base font-bold"><i class="fa-solid fa-circle-info mr-1.5"></i> Soluzione visualizzata.</span>`;
         }
 
         function populateAdminSelect() {
-            let sortedPiazze = [...piazzeData].sort((a, b) => naturalSort(a.name, b.name));
-
-            const select = document.getElementById("admin-piazza-select");
-            select.innerHTML = "";
-            sortedPiazze.forEach((p) => {
-                const realIndex = piazzeData.findIndex(item => item.id === p.id);
+            const regSelect = document.getElementById("admin-delete-regolamento-select");
+            regSelect.innerHTML = "";
+            regolamentiData.forEach(r => {
                 const opt = document.createElement("option");
-                opt.value = realIndex;
-                opt.textContent = `${p.type} ${p.name}`;
-                select.appendChild(opt);
-            });
-            loadAdminPiazzaData();
-
-            const piazzeDelSelect = document.getElementById("admin-piazze-delete-select");
-            piazzeDelSelect.innerHTML = "";
-            sortedPiazze.forEach((p) => {
-                const realIndex = piazzeData.findIndex(item => item.id === p.id);
-                const opt = document.createElement("option");
-                opt.value = realIndex;
-                opt.textContent = `${p.type} ${p.name}`;
-                piazzeDelSelect.appendChild(opt);
+                opt.value = r.id;
+                opt.textContent = r.title;
+                regSelect.appendChild(opt);
             });
 
-            const customPiazzaSelect = document.getElementById("admin-custom-piazza");
-            customPiazzaSelect.innerHTML = "";
-            sortedPiazze.forEach((p) => {
-                const realIndex = piazzeData.findIndex(item => item.id === p.id);
-                const opt = document.createElement("option");
-                opt.value = realIndex;
-                opt.textContent = `${p.type} ${p.name}`;
-                customPiazzaSelect.appendChild(opt);
-            });
-            populateAdminStreets();
-
-            const stataliSelect = document.getElementById("admin-statale-select");
-            stataliSelect.innerHTML = "";
-            stataliListDynamic.sort(naturalSort);
-            stataliListDynamic.forEach(s => {
-                const opt = document.createElement("option");
-                opt.value = s;
-                opt.textContent = s;
-                stataliSelect.appendChild(opt);
-            });
-            loadAdminStataleData();
-
-            const stataliDelSelect = document.getElementById("admin-statali-delete-select");
-            stataliDelSelect.innerHTML = "";
-            stataliListDynamic.forEach(s => {
-                const opt = document.createElement("option");
-                opt.value = s;
-                opt.textContent = s;
-                stataliDelSelect.appendChild(opt);
-            });
-
-            const delPercorsoSelect = document.getElementById("admin-delete-percorso-select");
-            delPercorsoSelect.innerHTML = "";
-            let sortedPercorsi = [...percorsiData].sort((a, b) => naturalSort(a.title, b.title));
-            sortedPercorsi.forEach(p => {
+            const percSelect = document.getElementById("admin-delete-percorso-select");
+            percSelect.innerHTML = "";
+            percorsiData.forEach(p => {
                 const opt = document.createElement("option");
                 opt.value = p.id;
                 opt.textContent = p.title;
-                delPercorsoSelect.appendChild(opt);
+                percSelect.appendChild(opt);
             });
 
-            const delRegolamentoSelect = document.getElementById("admin-delete-regolamento-select");
-            if (delRegolamentoSelect) {
-                delRegolamentoSelect.innerHTML = "";
-                let sortedRegolamenti = [...regolamentiData].sort((a, b) => naturalSort(a.title, b.title));
-                sortedRegolamenti.forEach(r => {
-                    const opt = document.createElement("option");
-                    opt.value = r.id;
-                    opt.textContent = r.title;
-                    delRegolamentoSelect.appendChild(opt);
-                });
-            }
+            const statSelect = document.getElementById("admin-statale-select");
+            const statDeleteSelect = document.getElementById("admin-statali-delete-select");
+            statSelect.innerHTML = "";
+            statDeleteSelect.innerHTML = "";
+            stataliListDynamic.forEach(s => {
+                const opt = document.createElement("option");
+                opt.value = s;
+                opt.textContent = s;
+                statSelect.appendChild(opt.cloneNode(true));
+                statDeleteSelect.appendChild(opt);
+            });
+            if (stataliListDynamic.length > 0) loadAdminStataleData();
+
+            const piazzeSelect = document.getElementById("admin-piazza-select");
+            const piazzeDeleteSelect = document.getElementById("admin-piazze-delete-select");
+            piazzeSelect.innerHTML = "";
+            piazzeDeleteSelect.innerHTML = "";
+            piazzeData.forEach((p, index) => {
+                const opt = document.createElement("option");
+                opt.value = index;
+                opt.textContent = `${p.type} ${p.name}`;
+                piazzeSelect.appendChild(opt.cloneNode(true));
+                piazzeDeleteSelect.appendChild(opt);
+            });
+            if (piazzeData.length > 0) loadAdminPiazzaData();
+
+            const customPiazzaSelect = document.getElementById("admin-custom-piazza");
+            customPiazzaSelect.innerHTML = "";
+            piazzeData.forEach((p, index) => {
+                const opt = document.createElement("option");
+                opt.value = index;
+                opt.textContent = `${p.type} ${p.name}`;
+                customPiazzaSelect.appendChild(opt);
+            });
+            if (piazzeData.length > 0) populateAdminStreets();
         }
 
-        function filterAdminSelect(selectId, query) {
-            const select = document.getElementById(selectId);
-            if (!select) return;
-            const filter = query.toLowerCase();
-            Array.from(select.options).forEach(opt => {
+        function filterAdminSelect(selectId, filterText) {
+            const selectEl = document.getElementById(selectId);
+            const query = filterText.toLowerCase();
+            Array.from(selectEl.options).forEach(opt => {
                 const text = opt.textContent.toLowerCase();
-                if (text.includes(filter)) opt.style.display = "";
-                else opt.style.display = "none";
+                if (text.includes(query)) {
+                    opt.style.display = '';
+                } else {
+                    opt.style.display = 'none';
+                }
             });
-        }
-
-        function populateAdminStreets() {
-            const piazzaIndex = document.getElementById("admin-custom-piazza").value;
-            const piazza = piazzeData[piazzaIndex];
-            const streetSelect = document.getElementById("admin-custom-street");
-            streetSelect.innerHTML = "";
-            if(piazza && piazza.confluences) {
-                let sortedConfluences = [...piazza.confluences].sort(naturalSort);
-                sortedConfluences.forEach(c => {
-                    const opt = document.createElement("option");
-                    opt.value = c;
-                    opt.textContent = c;
-                    streetSelect.appendChild(opt);
-                });
-            }
-            loadCustomStreetText();
-        }
-
-        function loadCustomStreetText() {
-            const piazzaIndex = document.getElementById("admin-custom-piazza").value;
-            const piazza = piazzeData[piazzaIndex];
-            const street = document.getElementById("admin-custom-street").value;
-            const textArea = document.getElementById("admin-custom-text");
-            if(piazza && street) {
-                const fullName = `${piazza.type} ${piazza.name}`;
-                const key = `${fullName}_${street}`;
-                textArea.value = customDescriptions[key] || `La via "${street}" confluisce direttamente su ${fullName}.`;
-            } else {
-                textArea.value = "";
-            }
-        }
-
-        function saveCustomStreetDescription() {
-            const piazzaIndex = document.getElementById("admin-custom-piazza").value;
-            const piazza = piazzeData[piazzaIndex];
-            const street = document.getElementById("admin-custom-street").value;
-            const textAreaVal = document.getElementById("admin-custom-text").value.trim();
-            if(piazza && street) {
-                const fullName = `${piazza.type} ${piazza.name}`;
-                const key = `${fullName}_${street}`;
-                if(textAreaVal) customDescriptions[key] = textAreaVal;
-                else delete customDescriptions[key];
-                saveData();
-                alert("Aggiornato!");
-            }
-        }
-
-        function updateAdminPassword() {
-            const newAdminPwd = document.getElementById("admin-new-admin-pwd").value.trim();
-            if (!newAdminPwd) { alert(" La password non può essere vuota!"); return; }
-            adminPwd = newAdminPwd;
-            saveData();
-            alert("Password Admin aggiornata!");
         }
 
         function loadAdminPiazzaData() {
             const index = document.getElementById("admin-piazza-select").value;
-            const piazza = piazzeData[index];
-            if(piazza) {
-                document.getElementById("edit-piazza-type").value = piazza.type;
-                document.getElementById("edit-piazza-name").value = piazza.name;
-                document.getElementById("edit-piazza-confluences").value = piazza.confluences.join(", ");
-                
-                const rotSelect = document.getElementById("admin-rotation-street");
-                rotSelect.innerHTML = "";
-                let sortedConfluences = [...piazza.confluences].sort(naturalSort);
-                sortedConfluences.forEach(c => {
-                    const opt = document.createElement("option");
-                    opt.value = c;
-                    opt.textContent = c;
-                    rotSelect.appendChild(opt);
-                });
-            }
+            const p = piazzeData[index];
+            if (!p) return;
+            document.getElementById("edit-piazza-type").value = p.type;
+            document.getElementById("edit-piazza-name").value = p.name;
+            document.getElementById("edit-piazza-confluences").value = p.confluences.join(", ");
+
+            const rotSelect = document.getElementById("admin-rotation-street");
+            rotSelect.innerHTML = "";
+            p.confluences.forEach(c => {
+                const opt = document.createElement("option");
+                opt.value = c;
+                opt.textContent = c;
+                rotSelect.appendChild(opt);
+            });
         }
 
         function applyStreetRotation() {
             const index = document.getElementById("admin-piazza-select").value;
-            const targetStreet = document.getElementById("admin-rotation-street").value;
-            const piazza = piazzeData[index];
-            if (!piazza) return;
+            const p = piazzeData[index];
+            const streetToTop = document.getElementById("admin-rotation-street").value;
+            if (!p) return;
 
-            const streetIndex = piazza.confluences.indexOf(targetStreet);
-            if (streetIndex === -1) return;
-
-            piazza.confluences = [...piazza.confluences.slice(streetIndex), ...piazza.confluences.slice(0, streetIndex)];
-            saveData();
-            loadAdminPiazzaData();
-            alert(`"${targetStreet}" impostata come prima via (in alto).`);
-        }
-
-        function addNewPiazza() {
-            const type = document.getElementById("new-piazza-type").value;
-            const name = document.getElementById("new-piazza-name").value.trim();
-            const confluencesStr = document.getElementById("new-piazza-confluences").value.trim();
-            if(!name || !confluencesStr) { alert("Compila tutti i campi!"); return; }
-            const confluences = confluencesStr.split(",").map(s => s.trim()).filter(s => s.length > 0);
-            piazzeData.push({ id: Date.now(), type, name, confluences });
-            piazzeData.sort((a, b) => naturalSort(a.name, b.name));
-            saveData();
-            document.getElementById("new-piazza-name").value = "";
-            document.getElementById("new-piazza-confluences").value = "";
-            
-            document.getElementById("total-count").textContent = piazzeData.length;
-            document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
-            renderEncyclopedia();
-            renderStatali();
-            populateExerciseSelect();
-            populateAdminSelect();
-            alert("Aggiunto!");
+            const idx = p.confluences.indexOf(streetToTop);
+            if (idx > -1) {
+                const rotated = [...p.confluences.slice(idx), ...p.confluences.slice(0, idx)];
+                p.confluences = rotated;
+                saveData();
+                renderEncyclopedia();
+                alert(`Rotazione applicata! "${streetToTop}" è ora la prima via.`);
+            }
         }
 
         function updatePiazza() {
             const index = document.getElementById("admin-piazza-select").value;
+            const p = piazzeData[index];
+            if (!p) return;
+
             const type = document.getElementById("edit-piazza-type").value;
             const name = document.getElementById("edit-piazza-name").value.trim();
-            const confluencesStr = document.getElementById("edit-piazza-confluences").value.trim();
-            if(!name || !confluencesStr) { alert("Compila tutti i campi!"); return; }
-            const confluences = confluencesStr.split(",").map(s => s.trim()).filter(s => s.length > 0);
-            piazzeData[index] = { ...piazzeData[index], type, name, confluences };
-            piazzeData.sort((a, b) => naturalSort(a.name, b.name));
+            const confStr = document.getElementById("edit-piazza-confluences").value.trim();
+
+            if (!name) { alert("Inserisci il nome!"); return; }
+            const confluences = confStr ? confStr.split(',').map(s => s.trim()).filter(Boolean) : [];
+
+            p.type = type;
+            p.name = name;
+            p.confluences = confluences;
+
             saveData();
-            
-            document.getElementById("total-count").textContent = piazzeData.length;
-            document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
             renderEncyclopedia();
-            renderStatali();
             populateExerciseSelect();
             populateAdminSelect();
-            alert("Aggiornato!");
+            alert("Piazza aggiornata con successo!");
         }
 
         function deletePiazzaMulti() {
             const select = document.getElementById("admin-piazze-delete-select");
             const selectedOptions = Array.from(select.selectedOptions);
             if (selectedOptions.length === 0) { alert("Seleziona almeno una piazza da eliminare."); return; }
-            if (confirm(`Vuoi eliminare ${selectedOptions.length} piazze/luoghi selezionati?`)) {
+            if (confirm(`Vuoi eliminare ${selectedOptions.length} piazze selezionate?`)) {
                 const indicesToDelete = selectedOptions.map(opt => Number(opt.value)).sort((a, b) => b - a);
-                indicesToDelete.forEach(idx => { piazzeData.splice(idx, 1); });
+                indicesToDelete.forEach(idx => {
+                    piazzeData.splice(idx, 1);
+                });
                 saveData();
-                document.getElementById("total-count").textContent = piazzeData.length;
-                document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
                 renderEncyclopedia();
-                renderStatali();
                 populateExerciseSelect();
                 populateAdminSelect();
                 alert("Piazze eliminate con successo.");
             }
         }
 
+        function addNewPiazza() {
+            const type = document.getElementById("new-piazza-type").value;
+            const name = document.getElementById("new-piazza-name").value.trim();
+            const confStr = document.getElementById("new-piazza-confluences").value.trim();
+
+            if (!name) { alert("Inserisci il nome!"); return; }
+            const confluences = confStr ? confStr.split(',').map(s => s.trim()).filter(Boolean) : [];
+
+            piazzeData.push({ id: Date.now(), type, name, confluences });
+            saveData();
+            document.getElementById("new-piazza-name").value = "";
+            document.getElementById("new-piazza-confluences").value = "";
+            renderEncyclopedia();
+            populateExerciseSelect();
+            populateAdminSelect();
+            alert("Nuova piazza aggiunta!");
+        }
+
+        function populateAdminStreets() {
+            const piazzaIndex = document.getElementById("admin-custom-piazza").value;
+            const p = piazzeData[piazzaIndex];
+            const streetSelect = document.getElementById("admin-custom-street");
+            streetSelect.innerHTML = "";
+            if (!p) return;
+
+            p.confluences.forEach(c => {
+                const opt = document.createElement("option");
+                opt.value = c;
+                opt.textContent = c;
+                streetSelect.appendChild(opt);
+            });
+            loadCustomStreetText();
+        }
+
+        function loadCustomStreetText() {
+            const piazzaIndex = document.getElementById("admin-custom-piazza").value;
+            const p = piazzeData[piazzaIndex];
+            const streetName = document.getElementById("admin-custom-street").value;
+            if (!p || !streetName) return;
+
+            const key = `${p.type} ${p.name}_${streetName}`;
+            document.getElementById("admin-custom-text").value = customDescriptions[key] || "";
+        }
+
+        function saveCustomStreetDescription() {
+            const piazzaIndex = document.getElementById("admin-custom-piazza").value;
+            const p = piazzeData[piazzaIndex];
+            const streetName = document.getElementById("admin-custom-street").value;
+            const text = document.getElementById("admin-custom-text").value.trim();
+            if (!p || !streetName) return;
+
+            const key = `${p.type} ${p.name}_${streetName}`;
+            if (text) customDescriptions[key] = text;
+            else delete customDescriptions[key];
+
+            saveData();
+            alert("Descrizione confluenza salvata!");
+        }
+
+        function updateAdminPassword() {
+            const newPwd = document.getElementById("admin-new-admin-pwd").value.trim();
+            if (!newPwd) { alert("La password non può essere vuota."); return; }
+            adminPwd = newPwd;
+            saveData();
+            alert("Password Admin aggiornata con successo!");
+        }
+
         function exportJSON() {
-            const exportData = {
+            const exportObj = {
                 piazze: piazzeData,
                 customDescriptions: customDescriptions,
                 percorsi: percorsiData,
@@ -2048,18 +2014,19 @@
                 stataliDescriptions: stataliDescriptions,
                 stataliList: stataliListDynamic
             };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, 2));
             const dlAnchorElem = document.createElement('a');
             dlAnchorElem.setAttribute("href", dataStr);
-            dlAnchorElem.setAttribute("download", "milano_taxi_database_backup.json");
+            dlAnchorElem.setAttribute("download", "db_milano_taxi.json");
             document.body.appendChild(dlAnchorElem);
             dlAnchorElem.click();
             dlAnchorElem.remove();
         }
 
         window.onload = function() {
+            setupDynamicManifest();
             loadCloudDatabase().then(() => {
-                setupDynamicManifest();
+                renderEncyclopedia();
             });
         };
     </script>
