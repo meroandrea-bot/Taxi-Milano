@@ -667,7 +667,7 @@
             localStorage.setItem("milan_admin_pwd", adminPwd);
         }
 
-        // --- CONTROLLO ACCESSO TRAMITE FIRESTORE CON BLOCCO DISPOSITIVO ---
+        // --- CONTROLLO ACCESSO TRAMITE FIRESTORE CON RICONOSCIMENTO ADMIN ---
         async function handleLogin(forceAdmin) {
             const inputVal = document.getElementById("login-pwd").value.trim();
             const err = document.getElementById("login-error");
@@ -717,15 +717,26 @@
                     return;
                 }
 
+                // Controllo se il codice nel database ha i privilegi di amministratore
+                const isCodeAdmin = codeData.isAdmin === true;
+
                 // Controllo e associazione del dispositivo
                 if (!codeData.dispositivoAutorizzato) {
                     await window.updateDoc(codeDocRef, { dispositivoAutorizzato: deviceId });
-                    isAdmin = false;
-                    document.getElementById("btn-admin").classList.add("hidden");
+                    isAdmin = isCodeAdmin;
+                    if (isAdmin) {
+                        document.getElementById("btn-admin").classList.remove("hidden");
+                    } else {
+                        document.getElementById("btn-admin").classList.add("hidden");
+                    }
                     initApp();
                 } else if (codeData.dispositivoAutorizzato === deviceId) {
-                    isAdmin = false;
-                    document.getElementById("btn-admin").classList.add("hidden");
+                    isAdmin = isCodeAdmin;
+                    if (isAdmin) {
+                        document.getElementById("btn-admin").classList.remove("hidden");
+                    } else {
+                        document.getElementById("btn-admin").classList.add("hidden");
+                    }
                     initApp();
                 } else {
                     err.textContent = "Questo codice è già stato associato a un altro dispositivo.";
