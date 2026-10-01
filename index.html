@@ -73,17 +73,20 @@
         }
         .orbit-slot {
             position: absolute;
-            width: 120px;
-            min-height: 40px;
+            width: 130px;
+            min-height: 44px;
             transform: translate(-50%, -50%);
             z-index: 20;
             word-break: break-word;
             cursor: pointer;
+            font-size: 0.75rem;
+            line-height: 1.1;
         }
         @media (min-width: 640px) {
             .orbit-slot {
-                width: 145px;
-                min-height: 44px;
+                width: 160px;
+                min-height: 48px;
+                font-size: 0.85rem;
             }
         }
         body {
@@ -357,9 +360,8 @@
                 </div>
             </section>
 
-            <!-- MODALE ESERCIZIO A TUTTA PAGINA (CORRETTO PER PC E ANDROID) -->
+            <!-- MODALE ESERCIZIO A TUTTA PAGINA -->
             <div id="exercise-detail-view" class="hidden fixed inset-0 z-50 bg-slate-900/95 backdrop-blur-sm flex flex-col h-[100dvh] w-full overflow-hidden">
-                <!-- Header Modale Esercizio -->
                 <div class="bg-slate-900 text-white px-4 sm:px-6 py-3 flex justify-between items-center shadow border-b border-slate-800 flex-shrink-0">
                     <div class="flex items-center space-x-3">
                         <div class="p-2 bg-amber-500/20 rounded-lg text-amber-400">
@@ -377,7 +379,6 @@
                     </div>
                 </div>
 
-                <!-- Barra Controlli Extra Esercizio -->
                 <div class="bg-slate-800 px-4 py-2.5 flex flex-wrap justify-between items-center gap-2 border-b border-slate-700 text-xs sm:text-sm font-semibold text-white flex-shrink-0">
                     <div class="flex items-center gap-1.5">
                         <button onclick="exercisePrev()" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition flex items-center gap-1" title="Precedente"><i class="fa-solid fa-chevron-left"></i> <span class="hidden sm:inline">Indietro</span></button>
@@ -389,7 +390,6 @@
                     </div>
                 </div>
 
-                <!-- Corpo Interattivo Esercizio con Padding Superiore e Scrolling Fluido -->
                 <div class="flex-1 overflow-y-auto p-3 sm:p-5 bg-slate-100 flex flex-col justify-start w-full">
                     <div class="max-w-6xl w-full mx-auto space-y-4 my-auto">
                         <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs sm:text-sm font-semibold text-amber-900 shadow-sm flex items-center justify-between gap-2">
@@ -401,13 +401,12 @@
                         </div>
 
                         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                            <!-- Area Mappa con altezza minima e spazi corretti -->
-                            <div id="map-viewport" class="lg:col-span-8 bg-slate-900 rounded-2xl p-3.5 relative flex flex-col items-center justify-center min-h-[420px] sm:min-h-[480px] shadow-inner border border-slate-700 overflow-hidden cursor-grab active:cursor-grabbing">
+                            <!-- Area Mappa con supporto Zoom a due dita e Pan a un dito -->
+                            <div id="map-viewport" class="lg:col-span-8 bg-slate-900 rounded-2xl p-3.5 relative flex flex-col items-center justify-center min-h-[450px] sm:min-h-[520px] shadow-inner border border-slate-700 overflow-hidden cursor-grab active:cursor-grabbing touch-none">
                                 <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#f59e0b_1.5px,transparent_1.5px)] [background-size:16px_16px] pointer-events-none"></div>
 
-                                <div id="orbit-wrapper" class="w-full flex-1 flex items-center justify-center relative touch-none py-4">
+                                <div id="orbit-wrapper" class="w-full flex-1 flex items-center justify-center relative py-4">
                                     <div class="orbit-container my-auto flex-shrink-0" id="orbit-container-el">
-                                        <!-- Piazza Centrale (Perfettamente al centro) -->
                                         <div class="orbit-center w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-slate-800 border-4 border-amber-500 shadow-2xl flex flex-col items-center justify-center text-center p-2 z-10">
                                             <div id="ex-square-type" class="text-[10px] sm:text-xs uppercase tracking-widest text-amber-400 font-extrabold">Piazza</div>
                                             <div id="ex-square-title" class="text-sm sm:text-base font-black text-white leading-tight mt-1">-</div>
@@ -605,6 +604,7 @@
             { id: 1, title: "Regolamento Servizio Taxi Comune di Milano", fileData: "", fileName: "regolamento.docx" }
         ];
         let stataliDescriptions = JSON.parse(localStorage.getItem("milan_statali_descriptions")) || {};
+        let piazzaRotations = JSON.parse(localStorage.getItem("milan_piazza_rotations")) || {};
         let isAdmin = false;
         
         let sortMode = 'default';
@@ -617,6 +617,7 @@
         let isDraggingMap = false;
         let startX = 0, startY = 0;
         let initialPinchDistance = null;
+        let initialMapScale = 1;
 
         function naturalSort(a, b) {
             return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
@@ -732,6 +733,7 @@
                         if (data.regolamenti) regolamentiData = data.regolamenti;
                         if (data.stataliDescriptions) stataliDescriptions = data.stataliDescriptions;
                         if (data.stataliList) stataliListDynamic = data.stataliList;
+                        if (data.piazzaRotations) piazzaRotations = data.piazzaRotations;
                     }
                     stataliListDynamic.sort(naturalSort);
                     saveData();
@@ -749,6 +751,7 @@
             localStorage.setItem("milan_regolamenti_data", JSON.stringify(regolamentiData));
             localStorage.setItem("milan_statali_descriptions", JSON.stringify(stataliDescriptions));
             localStorage.setItem("milan_statali_list", JSON.stringify(stataliListDynamic));
+            localStorage.setItem("milan_piazza_rotations", JSON.stringify(piazzaRotations));
             localStorage.setItem("milan_admin_pwd", adminPwd);
         }
 
@@ -1471,9 +1474,25 @@
             const poolContainer = document.getElementById("source-pool");
             poolContainer.innerHTML = "";
 
-            let confluences = piazza.confluences;
+            let confluences = [...piazza.confluences];
+            let topStreet = piazzaRotations[piazza.id] || confluences[0];
+            
+            // Riordina le confluenze mettendo la via impostata in alto come primo elemento
+            if (confluences.includes(topStreet)) {
+                let idxTop = confluences.indexOf(topStreet);
+                confluences = confluences.slice(idxTop).concat(confluences.slice(0, idxTop));
+            }
+
             let count = confluences.length;
-            let radius = window.innerWidth >= 640 ? 175 : 135;
+            // Raggio dinamico basato sul numero di vie per evitare accavallamenti
+            let baseRadius = window.innerWidth >= 640 ? 190 : 150;
+            let radius = Math.max(baseRadius, count * 15);
+
+            // Container size adattivo
+            const orbitEl = document.getElementById("orbit-container-el");
+            let containerSize = radius * 2 + 160;
+            orbitEl.style.width = `${containerSize}px`;
+            orbitEl.style.height = `${containerSize}px`;
 
             for (let i = 0; i < count; i++) {
                 let angle = (i * 2 * Math.PI) / count - Math.PI / 2;
@@ -1481,16 +1500,29 @@
                 let y = Math.sin(angle) * radius;
 
                 const slot = document.createElement("div");
-                slot.className = "orbit-slot bg-white/95 border-2 border-dashed border-slate-400 rounded-xl flex items-center justify-center p-1.5 text-center text-xs sm:text-sm font-bold text-slate-700 shadow-sm transition";
+                slot.className = "orbit-slot bg-white/95 border-2 border-dashed border-slate-400 rounded-xl flex items-center justify-center p-2 text-center text-xs sm:text-sm font-bold text-slate-700 shadow-sm transition";
                 slot.style.left = `calc(50% + ${x}px)`;
                 slot.style.top = `calc(50% + ${y}px)`;
                 slot.dataset.index = i;
-                slot.innerHTML = `<span class="text-slate-400 font-normal text-[10px] sm:text-xs pointer-events-none">Slot ${i+1}</span>`;
+
+                if (i === 0) {
+                    // Precompila automaticamente la prima via in alto impostata nell'admin
+                    slot.classList.remove("border-dashed", "border-slate-400");
+                    slot.classList.add("border-solid", "border-emerald-500", "bg-emerald-50");
+                    slot.innerHTML = `<span class="text-slate-900 font-extrabold text-xs sm:text-sm pointer-events-none">${topStreet}</span>`;
+                    slot.dataset.prefilled = "true";
+                    slot.dataset.street = topStreet;
+                } else {
+                    slot.innerHTML = `<span class="text-slate-400 font-normal text-[10px] sm:text-xs pointer-events-none">Slot ${i+1}</span>`;
+                }
                 slotsContainer.appendChild(slot);
             }
 
-            let shuffled = [...confluences].sort(() => Math.random() - 0.5);
-            shuffled.forEach((street, idx) => {
+            // Per il pool delle vie disponibili da trascinare, escludiamo la prima via già precompilata
+            let remainingConfluences = confluences.slice(1);
+            let shuffled = [...remainingConfluences].sort(() => Math.random() - 0.5);
+
+            shuffled.forEach((street) => {
                 const item = document.createElement("div");
                 item.className = "street-card bg-white border border-slate-200 rounded-xl p-2.5 text-xs sm:text-sm font-bold text-slate-800 shadow-sm flex items-center justify-between hover:border-amber-500 transition select-none";
                 item.textContent = street;
@@ -1514,12 +1546,13 @@
 
             const slotEls = slotsContainer.querySelectorAll(".orbit-slot");
             slotEls.forEach(slotEl => {
+                if (slotEl.dataset.prefilled === "true") return; // Non rendere sortable lo slot precompilato
                 let s = new Sortable(slotEl, {
                     group: 'shared-exercise',
                     animation: 150,
                     onAdd: function (evt) {
                         if (slotEl.children.length > 1) {
-                            let itemToMove = slotEl.children[0] === evt.item ? slotEl.children[1] : slotEl.children[0];
+                            let itemToMove = slotEl.children[0];
                             poolContainer.appendChild(itemToMove);
                         }
                         updatePoolCount();
@@ -1530,138 +1563,180 @@
             });
         }
 
-        function handleStreetCardClick(cardEl) {
+        function updatePoolCount() {
             const poolContainer = document.getElementById("source-pool");
-            const slotsContainer = document.getElementById("map-slots-container");
+            document.getElementById("pool-count").textContent = poolContainer.children.length;
+        }
 
-            if (selectedStreetForTap === cardEl) {
-                cardEl.classList.remove("selected-for-tap");
-                selectedStreetForTap = null;
-                return;
+        function handleStreetCardClick(itemEl) {
+            const slots = document.querySelectorAll("#map-slots-container .orbit-slot");
+            let emptySlot = Array.from(slots).find(s => s.children.length === 0 || s.children[0].tagName !== 'SPAN');
+            if (!emptySlot) {
+                emptySlot = Array.from(slots).find(s => s.dataset.prefilled !== "true" && s.children.length === 1);
             }
 
-            if (selectedStreetForTap) {
-                selectedStreetForTap.classList.remove("selected-for-tap");
-            }
-
-            if (cardEl.parentElement === poolContainer) {
-                selectedStreetForTap = cardEl;
-                cardEl.classList.add("selected-for-tap");
-            } else {
-                poolContainer.appendChild(cardEl);
-                selectedStreetForTap = null;
+            if (emptySlot) {
+                if (emptySlot.children.length > 0 && emptySlot.dataset.prefilled !== "true") {
+                    document.getElementById("source-pool").appendChild(emptySlot.children[0]);
+                }
+                emptySlot.innerHTML = "";
+                emptySlot.appendChild(itemEl);
+                emptySlot.classList.remove("border-dashed", "border-slate-400");
+                emptySlot.classList.add("border-solid", "border-amber-500", "bg-amber-50");
                 updatePoolCount();
             }
         }
 
-        document.addEventListener("click", function(e) {
-            const slotsContainer = document.getElementById("map-slots-container");
-            if (!slotsContainer) return;
-            const slotEls = slotsContainer.querySelectorAll(".orbit-slot");
-
-            slotEls.forEach(slot => {
-                if (slot.contains(e.target) && selectedStreetForTap) {
-                    if (slot.children.length > 0) {
-                        let existing = null;
-                        for(let child of slot.children) {
-                            if(child.classList.contains("street-card")) existing = child;
-                        }
-                        if(existing) document.getElementById("source-pool").appendChild(existing);
-                    }
-                    slot.appendChild(selectedStreetForTap);
-                    selectedStreetForTap.classList.remove("selected-for-tap");
-                    selectedStreetForTap = null;
-                    updatePoolCount();
-                }
-            });
-        });
-
-        function updatePoolCount() {
-            const poolContainer = document.getElementById("source-pool");
-            let cards = poolContainer.querySelectorAll(".street-card");
-            document.getElementById("pool-count").textContent = cards.length;
-        }
-
-        function resetCurrentExercise() {
-            if (currentActivePiazza) loadExerciseData(currentActivePiazza);
-        }
-
         function verifyExercise() {
             if (!currentActivePiazza) return;
-            const slotsContainer = document.getElementById("map-slots-container");
-            const slotEls = slotsContainer.querySelectorAll(".orbit-slot");
-            let correctConfluences = currentActivePiazza.confluences;
-            let allFilled = true;
-            let correctCount = 0;
+            const slots = document.querySelectorAll("#map-slots-container .orbit-slot");
+            let confluences = [...currentActivePiazza.confluences];
+            let topStreet = piazzaRotations[currentActivePiazza.id] || confluences[0];
+            if (confluences.includes(topStreet)) {
+                let idxTop = confluences.indexOf(topStreet);
+                confluences = confluences.slice(idxTop).concat(confluences.slice(0, idxTop));
+            }
 
-            slotEls.forEach((slot, idx) => {
-                let card = null;
-                for(let child of slot.children) {
-                    if(child.classList.contains("street-card")) card = child;
-                }
-                if (!card) {
-                    allFilled = false;
-                } else {
-                    let streetName = card.dataset.street;
-                    if (correctConfluences.includes(streetName)) {
-                        correctCount++;
-                    }
+            let correct = true;
+            slots.forEach((slot, idx) => {
+                let expectedStreet = confluences[idx];
+                let card = slot.querySelector(".street-card");
+                let streetInSlot = slot.dataset.prefilled === "true" ? slot.dataset.street : (card ? card.textContent.trim() : "");
+                if (streetInSlot !== expectedStreet) {
+                    correct = false;
                 }
             });
 
             const feedback = document.getElementById("exercise-feedback");
-            if (!allFilled) {
-                feedback.className = "text-center font-bold text-sm sm:text-base text-amber-600";
-                feedback.textContent = "Attenzione: Compila tutti gli slot posizionando tutte le vie!";
-                return;
-            }
-
-            if (correctCount === correctConfluences.length) {
-                feedback.className = "text-center font-bold text-sm sm:text-base text-emerald-600";
-                feedback.textContent = "Ottimo! Tutte le confluenze sono corrette!";
+            if (correct) {
+                feedback.className = "text-center font-bold text-sm sm:text-base pb-2 text-emerald-400";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-check mr-1.5"></i> Ottimo! Tutte le confluenze sono corrette nel senso antiorario.`;
             } else {
-                feedback.className = "text-center font-bold text-sm sm:text-base text-red-600";
-                feedback.textContent = `Hai posizionato ${correctCount} vie corrette su ${correctConfluences.length}. Riprova!`;
+                feedback.className = "text-center font-bold text-sm sm:text-base pb-2 text-red-400";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1.5"></i> Alcune vie non sono corrette. Riprova o mostra la soluzione.`;
             }
         }
 
         function showExerciseSolution() {
             if (!currentActivePiazza) return;
-            const slotsContainer = document.getElementById("map-slots-container");
-            const slotEls = slotsContainer.querySelectorAll(".orbit-slot");
+            let confluences = [...currentActivePiazza.confluences];
+            let topStreet = piazzaRotations[currentActivePiazza.id] || confluences[0];
+            if (confluences.includes(topStreet)) {
+                let idxTop = confluences.indexOf(topStreet);
+                confluences = confluences.slice(idxTop).concat(confluences.slice(0, idxTop));
+            }
+
+            const slots = document.querySelectorAll("#map-slots-container .orbit-slot");
             const poolContainer = document.getElementById("source-pool");
+            poolContainer.innerHTML = "";
 
-            let allCards = poolContainer.querySelectorAll(".street-card");
-            allCards.forEach(c => poolContainer.removeChild(c));
-            slotEls.forEach(slot => {
-                let card = null;
-                for(let child of slot.children) {
-                    if(child.classList.contains("street-card")) card = child;
-                }
-                if(card) slot.removeChild(card);
+            slots.forEach((slot, idx) => {
+                slot.innerHTML = "";
+                let expectedStreet = confluences[idx];
+                const item = document.createElement("div");
+                item.className = "street-card bg-emerald-50 border border-emerald-300 rounded-xl p-2.5 text-xs sm:text-sm font-bold text-emerald-900 shadow-sm flex items-center justify-between select-none w-full";
+                item.textContent = expectedStreet;
+                slot.appendChild(item);
+                slot.classList.remove("border-dashed", "border-slate-400");
+                slot.classList.add("border-solid", "border-emerald-500", "bg-emerald-50");
             });
 
-            let correctConfluences = currentActivePiazza.confluences;
-            slotEls.forEach((slot, idx) => {
-                if (correctConfluences[idx]) {
-                    const item = document.createElement("div");
-                    item.className = "street-card bg-emerald-50 border border-emerald-300 rounded-xl p-2.5 text-xs sm:text-sm font-bold text-emerald-900 shadow-sm flex items-center justify-between select-none";
-                    item.textContent = correctConfluences[idx];
-                    item.dataset.street = correctConfluences[idx];
-                    slot.appendChild(item);
-                }
-            });
-            document.getElementById("pool-count").textContent = 0;
+            updatePoolCount();
             const feedback = document.getElementById("exercise-feedback");
-            feedback.className = "text-center font-bold text-sm sm:text-base text-blue-600";
-            feedback.textContent = "Ecco la soluzione corretta.";
+            feedback.className = "text-center font-bold text-sm sm:text-base pb-2 text-amber-400";
+            feedback.innerHTML = `<i class="fa-solid fa-lightbulb mr-1.5"></i> Soluzione visualizzata.`;
         }
 
-        function resetZoom() {
-            mapScale = 1;
-            mapPanX = 0;
-            mapPanY = 0;
-            updateMapTransform();
+        function resetCurrentExercise() {
+            if (currentActivePiazza) {
+                loadExerciseData(currentActivePiazza);
+            }
+        }
+
+        function initMapZoomAndPan() {
+            const viewport = document.getElementById("map-viewport");
+            const container = document.getElementById("orbit-container-el");
+            if (!viewport || !container) return;
+
+            viewport.addEventListener("pointerdown", (e) => {
+                if (e.pointerType === 'touch') return; // Gestito dai touch events
+                isDraggingMap = true;
+                startX = e.clientX - mapPanX;
+                startY = e.clientY - mapPanY;
+                viewport.setPointerCapture(e.pointerId);
+            });
+
+            viewport.addEventListener("pointermove", (e) => {
+                if (!isDraggingMap) return;
+                mapPanX = e.clientX - startX;
+                mapPanY = e.clientY - startY;
+                updateMapTransform();
+            });
+
+            viewport.addEventListener("pointerup", (e) => {
+                isDraggingMap = false;
+                try { viewport.releasePointerCapture(e.pointerId); } catch(err){}
+            });
+
+            // Gestione touch per Zoom a due dita e Pan a un dito
+            let activeTouches = new Map();
+
+            viewport.addEventListener("touchstart", (e) => {
+                for (let touch of e.changedTouches) {
+                    activeTouches.set(touch.identifier, { x: touch.clientX, y: touch.clientY });
+                }
+                if (activeTouches.size === 2) {
+                    let touchesArr = Array.from(activeTouches.values());
+                    initialPinchDistance = Math.hypot(touchesArr[0].x - touchesArr[1].x, touchesArr[0].y - touchesArr[1].y);
+                    initialMapScale = mapScale;
+                } else if (activeTouches.size === 1) {
+                    let touch = e.touches[0];
+                    startX = touch.clientX - mapPanX;
+                    startY = touch.clientY - mapPanY;
+                }
+            }, { passive: true });
+
+            viewport.addEventListener("touchmove", (e) => {
+                for (let touch of e.changedTouches) {
+                    if (activeTouches.has(touch.identifier)) {
+                        activeTouches.set(touch.identifier, { x: touch.clientX, y: touch.clientY });
+                    }
+                }
+                if (activeTouches.size === 2) {
+                    let touchesArr = Array.from(activeTouches.values());
+                    let currentDistance = Math.hypot(touchesArr[0].x - touchesArr[1].x, touchesArr[0].y - touchesArr[1].y);
+                    if (initialPinchDistance > 0) {
+                        mapScale = Math.min(Math.max(0.5, initialMapScale * (currentDistance / initialPinchDistance)), 3.5);
+                        updateMapTransform();
+                    }
+                } else if (activeTouches.size === 1 && activeTouches.size < 2) {
+                    let touch = e.touches[0];
+                    mapPanX = touch.clientX - startX;
+                    mapPanY = touch.clientY - startY;
+                    updateMapTransform();
+                }
+            }, { passive: true });
+
+            viewport.addEventListener("touchend", (e) => {
+                for (let touch of e.changedTouches) {
+                    activeTouches.delete(touch.identifier);
+                }
+                if (activeTouches.size < 2) {
+                    initialPinchDistance = null;
+                }
+                if (activeTouches.size === 1) {
+                    let touch = Array.from(activeTouches.values())[0];
+                    startX = touch.clientX - mapPanX;
+                    startY = touch.clientY - mapPanY;
+                }
+            }, { passive: true });
+
+            viewport.addEventListener("wheel", (e) => {
+                e.preventDefault();
+                let zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+                mapScale = Math.min(Math.max(0.5, mapScale * zoomFactor), 3.5);
+                updateMapTransform();
+            }, { passive: false });
         }
 
         function updateMapTransform() {
@@ -1671,78 +1746,263 @@
             }
         }
 
-        function initMapZoomAndPan() {
-            const viewport = document.getElementById("map-viewport");
-            if (!viewport) return;
+        function resetZoom() {
+            mapScale = 1;
+            mapPanX = 0;
+            mapPanY = 0;
+            updateMapTransform();
+        }
 
-            viewport.addEventListener("mousedown", (e) => {
-                if (e.target.closest('.orbit-slot') || e.target.closest('.street-card') || e.target.closest('.orbit-center')) return;
-                isDraggingMap = true;
-                startX = e.clientX - mapPanX;
-                startY = e.clientY - mapPanY;
-                viewport.style.cursor = "grabbing";
+        function populateAdminSelect() {
+            const regSelect = document.getElementById("admin-delete-regolamento-select");
+            regSelect.innerHTML = "";
+            regolamentiData.forEach(r => {
+                const opt = document.createElement("option");
+                opt.value = r.id;
+                opt.textContent = r.title;
+                regSelect.appendChild(opt);
             });
 
-            window.addEventListener("mousemove", (e) => {
-                if (!isDraggingMap) return;
-                mapPanX = e.clientX - startX;
-                mapPanY = e.clientY - startY;
-                updateMapTransform();
+            const percSelect = document.getElementById("admin-delete-percorso-select");
+            percSelect.innerHTML = "";
+            percorsiData.forEach(p => {
+                const opt = document.createElement("option");
+                opt.value = p.id;
+                opt.textContent = p.title;
+                percSelect.appendChild(opt);
             });
 
-            window.addEventListener("mouseup", () => {
-                isDraggingMap = false;
-                viewport.style.cursor = "grab";
+            const statSelect = document.getElementById("admin-statale-select");
+            statSelect.innerHTML = "";
+            stataliListDynamic.forEach(s => {
+                const opt = document.createElement("option");
+                opt.value = s;
+                opt.textContent = s;
+                statSelect.appendChild(opt);
             });
 
-            viewport.addEventListener("wheel", (e) => {
-                e.preventDefault();
-                const zoomFactor = 1.1;
-                if (e.deltaY < 0) {
-                    mapScale = Math.min(mapScale * zoomFactor, 3);
-                } else {
-                    mapScale = Math.max(mapScale / zoomFactor, 0.5);
-                }
-                updateMapTransform();
-            }, { passive: false });
+            const statDelSelect = document.getElementById("admin-statali-delete-select");
+            statDelSelect.innerHTML = "";
+            stataliListDynamic.forEach(s => {
+                const opt = document.createElement("option");
+                opt.value = s;
+                opt.textContent = s;
+                statDelSelect.appendChild(opt);
+            });
 
-            viewport.addEventListener("touchstart", (e) => {
-                if (e.touches.length === 1) {
-                    if (e.target.closest('.orbit-slot') || e.target.closest('.street-card') || e.target.closest('.orbit-center')) return;
-                    isDraggingMap = true;
-                    startX = e.touches[0].clientX - mapPanX;
-                    startY = e.touches[0].clientY - mapPanY;
-                } else if (e.touches.length === 2) {
-                    isDraggingMap = false;
-                    initialPinchDistance = Math.hypot(
-                        e.touches[0].clientX - e.touches[1].clientX,
-                        e.touches[0].clientY - e.touches[1].clientY
-                    );
-                }
-            }, { passive: true });
+            const piazzaSelect = document.getElementById("admin-piazza-select");
+            piazzaSelect.innerHTML = "";
+            let sorted = [...piazzeData].sort((a, b) => naturalSort(`${a.type} ${a.name}`, `${b.type} ${b.name}`));
+            sorted.forEach(p => {
+                const opt = document.createElement("option");
+                opt.value = p.id;
+                opt.textContent = `${p.type} ${p.name}`;
+                piazzaSelect.appendChild(opt);
+            });
 
-            viewport.addEventListener("touchmove", (e) => {
-                if (isDraggingMap && e.touches.length === 1) {
-                    mapPanX = e.touches[0].clientX - startX;
-                    mapPanY = e.touches[0].clientY - startY;
-                    updateMapTransform();
-                } else if (e.touches.length === 2 && initialPinchDistance) {
-                    const currentDistance = Math.hypot(
-                        e.touches[0].clientX - e.touches[1].clientX,
-                        e.touches[0].clientY - e.touches[1].clientY
-                    );
-                    const factor = currentDistance / initialPinchDistance;
-                    mapScale = Math.min(Math.max(mapScale * (factor > 1 ? 1.02 : 0.98), 0.5), 3);
-                    initialPinchDistance = currentDistance;
-                    updateMapTransform();
-                }
-            }, { passive: true });
+            const piazzaDelSelect = document.getElementById("admin-piazze-delete-select");
+            piazzaDelSelect.innerHTML = "";
+            sorted.forEach(p => {
+                const opt = document.createElement("option");
+                opt.value = p.id;
+                opt.textContent = `${p.type} ${p.name}`;
+                piazzaDelSelect.appendChild(opt);
+            });
 
-            viewport.addEventListener("touchend", () => {
-                isDraggingMap = false;
-                initialPinchDistance = null;
+            const customPiazzaSelect = document.getElementById("admin-custom-piazza");
+            customPiazzaSelect.innerHTML = "";
+            sorted.forEach(p => {
+                const opt = document.createElement("option");
+                opt.value = p.id;
+                opt.textContent = `${p.type} ${p.name}`;
+                customPiazzaSelect.appendChild(opt);
+            });
+
+            loadAdminPiazzaData();
+            populateAdminStreets();
+            loadAdminStataleData();
+            populateRotationStreetSelect();
+        }
+
+        function populateRotationStreetSelect() {
+            const piazzaSelect = document.getElementById("admin-piazza-select");
+            const rotationSelect = document.getElementById("admin-rotation-street");
+            rotationSelect.innerHTML = "";
+            const pId = piazzaSelect.value;
+            const p = piazzeData.find(item => item.id == pId);
+            if (!p) return;
+
+            let currentTop = piazzaRotations[p.id] || p.confluences[0];
+            p.confluences.forEach(c => {
+                const opt = document.createElement("option");
+                opt.value = c;
+                opt.textContent = c;
+                if (c === currentTop) opt.selected = true;
+                rotationSelect.appendChild(opt);
             });
         }
+
+        function applyStreetRotation() {
+            const piazzaSelect = document.getElementById("admin-piazza-select");
+            const rotationSelect = document.getElementById("admin-rotation-street");
+            const pId = piazzaSelect.value;
+            const selectedStreet = rotationSelect.value;
+            if (pId && selectedStreet) {
+                piazzaRotations[pId] = selectedStreet;
+                saveData();
+                alert(`Prima via impostata con successo per ${piazzaSelect.options[piazzaSelect.selectedIndex].text}!`);
+            }
+        }
+
+        function filterAdminSelect(selectId, query) {
+            const select = document.getElementById(selectId);
+            const options = select.options;
+            query = query.toLowerCase();
+            for (let i = 0; i < options.length; i++) {
+                let text = options[i].textContent.toLowerCase();
+                options[i].style.display = text.includes(query) ? "" : "none";
+            }
+        }
+
+        function loadAdminPiazzaData() {
+            const select = document.getElementById("admin-piazza-select");
+            const pId = select.value;
+            const p = piazzeData.find(item => item.id == pId);
+            if (!p) return;
+            document.getElementById("edit-piazza-type").value = p.type;
+            document.getElementById("edit-piazza-name").value = p.name;
+            document.getElementById("edit-piazza-confluences").value = p.confluences.join(", ");
+            populateRotationStreetSelect();
+        }
+
+        function addNewPiazza() {
+            const type = document.getElementById("new-piazza-type").value;
+            const name = document.getElementById("new-piazza-name").value.trim();
+            const confStr = document.getElementById("new-piazza-confluences").value.trim();
+
+            if (!name || !confStr) { alert("Compila tutti i campi!"); return; }
+            let confluences = confStr.split(',').map(s => s.trim()).filter(s => s.length > 0);
+
+            const newP = { id: Date.now(), type: type, name: name, confluences: confluences };
+            piazzeData.push(newP);
+            saveData();
+            document.getElementById("new-piazza-name").value = "";
+            document.getElementById("new-piazza-confluences").value = "";
+            renderEncyclopedia();
+            populateExerciseSelect();
+            populateAdminSelect();
+            alert("Piazza aggiunta con successo!");
+        }
+
+        function updatePiazza() {
+            const select = document.getElementById("admin-piazza-select");
+            const pId = select.value;
+            const p = piazzeData.find(item => item.id == pId);
+            if (!p) return;
+
+            const type = document.getElementById("edit-piazza-type").value;
+            const name = document.getElementById("edit-piazza-name").value.trim();
+            const confStr = document.getElementById("edit-piazza-confluences").value.trim();
+
+            if (!name || !confStr) { alert("Compila tutti i campi!"); return; }
+            let confluences = confStr.split(',').map(s => s.trim()).filter(s => s.length > 0);
+
+            p.type = type;
+            p.name = name;
+            p.confluences = confluences;
+            saveData();
+            renderEncyclopedia();
+            populateExerciseSelect();
+            populateAdminSelect();
+            alert("Piazza aggiornata con successo!");
+        }
+
+        function deletePiazzaMulti() {
+            const select = document.getElementById("admin-piazze-delete-select");
+            const selectedOptions = Array.from(select.selectedOptions);
+            if (selectedOptions.length === 0) { alert("Seleziona almeno una piazza da eliminare."); return; }
+            if (confirm(`Eliminare ${selectedOptions.length} piazze selezionate?`)) {
+                const idsToDelete = selectedOptions.map(opt => Number(opt.value));
+                piazzeData = piazzeData.filter(p => !idsToDelete.includes(p.id));
+                saveData();
+                renderEncyclopedia();
+                populateExerciseSelect();
+                populateAdminSelect();
+                alert("Piazze eliminate con successo.");
+            }
+        }
+
+        function populateAdminStreets() {
+            const piazzaSelect = document.getElementById("admin-custom-piazza");
+            const streetSelect = document.getElementById("admin-custom-street");
+            streetSelect.innerHTML = "";
+            const pId = piazzaSelect.value;
+            const p = piazzeData.find(item => item.id == pId);
+            if (!p) return;
+
+            p.confluences.forEach(c => {
+                const opt = document.createElement("option");
+                opt.value = c;
+                opt.textContent = c;
+                streetSelect.appendChild(opt);
+            });
+            loadCustomStreetText();
+        }
+
+        function loadCustomStreetText() {
+            const piazzaSelect = document.getElementById("admin-custom-piazza");
+            const streetSelect = document.getElementById("admin-custom-street");
+            const pId = piazzaSelect.value;
+            const street = streetSelect.value;
+            const key = `${pId}_${street}`;
+            document.getElementById("admin-custom-text").value = customDescriptions[key] || "";
+        }
+
+        function saveCustomStreetDescription() {
+            const piazzaSelect = document.getElementById("admin-custom-piazza");
+            const streetSelect = document.getElementById("admin-custom-street");
+            const pId = piazzaSelect.value;
+            const street = streetSelect.value;
+            const text = document.getElementById("admin-custom-text").value.trim();
+            const key = `${pId}_${street}`;
+
+            if (text) customDescriptions[key] = text;
+            else delete customDescriptions[key];
+            saveData();
+            alert("Descrizione salvata!");
+        }
+
+        function updateAdminPassword() {
+            const newPwd = document.getElementById("admin-new-admin-pwd").value.trim();
+            if (!newPwd) { alert("Inserisci una password valida!"); return; }
+            adminPwd = newPwd;
+            saveData();
+            alert("Password Admin aggiornata!");
+        }
+
+        function exportJSON() {
+            const dataObj = {
+                piazze: piazzeData,
+                customDescriptions: customDescriptions,
+                percorsi: percorsiData,
+                regolamenti: regolamentiData,
+                stataliDescriptions: stataliDescriptions,
+                stataliList: stataliListDynamic,
+                piazzaRotations: piazzaRotations
+            };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataObj, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", "db_milano_taxi.json");
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+        }
+
+        window.onload = function() {
+            setupDynamicManifest();
+            loadCloudDatabase();
+        };
     </script>
 </body>
 </html>
