@@ -1129,7 +1129,7 @@
             filtered.forEach(p => {
                 const card = document.createElement("div");
                 card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between cursor-pointer group hover:border-amber-500";
-                card.onclick = () => showPercorsoDetail(p.id);
+                card.onclick = () => showPercorsoDetail(p.id, false);
                 card.innerHTML = `
                     <div class="flex items-center space-x-3.5">
                         <div class="p-3 bg-amber-50 rounded-xl group-hover:bg-amber-100 transition text-amber-600">
