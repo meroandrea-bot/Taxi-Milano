@@ -1100,8 +1100,15 @@
                     mammoth.extractRawText({ arrayBuffer: bytes.buffer })
                         .then(function(result) {
                             const rawText = result.value || "";
-                            // Estrazione delle vie tramite separatori comuni (es. trattini, frecce, a capo o punti e virgola)
                             let streets = rawText.split(/[-–—>–\n;]/).map(s => s.trim()).filter(s => s.length > 2);
+                            
+                            // PULIZIA: Rimuove automaticamente i punti di partenza e arrivo se coincidono con l'inizio dell'elenco estratto
+                            let titleParts = percorso.title.split(/[-–—]/).map(s => s.trim().toLowerCase());
+                            streets = streets.filter(street => {
+                                const sLower = street.toLowerCase();
+                                return !titleParts.some(part => part && (sLower === part || sLower.includes(part) && part.length > 4));
+                            });
+
                             if (streets.length === 0) streets = [rawText];
                             currentPercorsoStreets = streets;
                             buildPercorsoViews();
@@ -1133,7 +1140,6 @@
         }
 
         function buildPercorsoViews() {
-            // 1. Costruzione Vista Elenco Sequenziale con numerazione a sinistra
             const listContainer = document.getElementById("percorso-list-view-container");
             listContainer.innerHTML = "";
             currentPercorsoStreets.forEach((street, idx) => {
@@ -1146,7 +1152,6 @@
                 listContainer.appendChild(item);
             });
 
-            // 2. Aggiornamento vista passo-passo
             updateSingleStepView();
         }
 
