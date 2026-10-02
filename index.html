@@ -416,10 +416,10 @@
                 </div>
             </section>
 
-            <!-- SCHEDA ADMIN -->
+            <!-- SCHEDA ADMIN (LAYOUT A DUE COLONNE: MENU A SINISTRA + SCHERMATA ATTIVA A DESTRA) -->
             <section id="tab-admin" class="hidden space-y-4">
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
-                    <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
+                    <div class="flex justify-between items-center mb-4 flex-wrap gap-3 pb-4 border-b border-slate-200">
                         <h2 class="text-lg sm:text-2xl font-bold text-red-600 flex items-center"><i class="fa-solid fa-user-shield mr-2.5"></i> Gestione Database</h2>
                         <div class="flex items-center gap-2.5">
                             <button onclick="copyAdminAppLink()" class="px-3.5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs sm:text-sm font-bold transition flex items-center shadow">
@@ -431,165 +431,232 @@
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                        <!-- Carica Regolamento Word -->
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <h3 class="font-bold text-sm sm:text-base mb-3"><i class="fa-solid fa-file-word mr-1.5 text-blue-600"></i> Carica Regolamento (.docx)</h3>
-                            <div class="space-y-3">
-                                <div>
-                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Titolo Regolamento</label>
-                                    <input type="text" id="admin-regolamento-title" placeholder="Es. Regolamento Servizio Taxi Milano" class="w-full px-3.5 py-2 border rounded-lg text-xs sm:text-sm bg-white">
-                                </div>
-                                <div>
-                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Seleziona File Word (.docx)</label>
-                                    <input type="file" id="admin-regolamento-file" accept=".docx" class="w-full text-xs text-slate-600 file:mr-2 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700">
-                                </div>
-                                <button onclick="uploadRegolamentoWord()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Carica Word Regolamento</button>
-                            </div>
-                            <div class="mt-3.5 pt-3 border-t border-slate-200">
-                                <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Regolamenti (Seleziona multipli)</label>
-                                <input type="text" id="filter-admin-regolamenti" oninput="filterAdminSelect('admin-delete-regolamento-select', this.value)" placeholder="Cerca tra i regolamenti..." class="w-full px-3 py-1.5 mb-2 border rounded text-xs bg-white">
-                                <select id="admin-delete-regolamento-select" multiple class="w-full h-32 px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-2 font-semibold"></select>
-                                <button onclick="deleteRegolamentoMulti()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition">Elimina Selezionati</button>
-                            </div>
+                    <!-- LAYOUT ADMIN: MENU SINISTRA + CONTENUTO DESTRA -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                        
+                        <!-- ELENCO FUNZIONI (COLONNA SINISTRA) -->
+                        <div class="lg:col-span-4 bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1.5">
+                            <span class="block text-xs font-bold uppercase tracking-wider text-slate-500 px-3 py-1.5">Funzioni Admin</span>
+                            
+                            <button onclick="switchAdminSubTab('regolamenti')" id="admin-menu-regolamenti" class="w-full text-left px-4 py-3 rounded-lg font-bold text-xs sm:text-sm transition flex items-center justify-between bg-red-600 text-white shadow-sm">
+                                <span><i class="fa-solid fa-file-word mr-2"></i> Carica Regolamento</span>
+                                <i class="fa-solid fa-chevron-right text-xs opacity-75"></i>
+                            </button>
+
+                            <button onclick="switchAdminSubTab('percorsi')" id="admin-menu-percorsi" class="w-full text-left px-4 py-3 rounded-lg font-bold text-xs sm:text-sm transition flex items-center justify-between bg-white hover:bg-slate-100 text-slate-800 border border-slate-200">
+                                <span><i class="fa-solid fa-route mr-2 text-red-600"></i> Carica Percorsi</span>
+                                <i class="fa-solid fa-chevron-right text-xs opacity-75"></i>
+                            </button>
+
+                            <button onclick="switchAdminSubTab('cerchie')" id="admin-menu-cerchie" class="w-full text-left px-4 py-3 rounded-lg font-bold text-xs sm:text-sm transition flex items-center justify-between bg-white hover:bg-slate-100 text-slate-800 border border-slate-200">
+                                <span><i class="fa-solid fa-circle-nodes mr-2 text-amber-600"></i> Carica Cinque Cerchie</span>
+                                <i class="fa-solid fa-chevron-right text-xs opacity-75"></i>
+                            </button>
+
+                            <button onclick="switchAdminSubTab('statali')" id="admin-menu-statali" class="w-full text-left px-4 py-3 rounded-lg font-bold text-xs sm:text-sm transition flex items-center justify-between bg-white hover:bg-slate-100 text-slate-800 border border-slate-200">
+                                <span><i class="fa-solid fa-road mr-2 text-red-600"></i> Strade Statali</span>
+                                <i class="fa-solid fa-chevron-right text-xs opacity-75"></i>
+                            </button>
+
+                            <button onclick="switchAdminSubTab('aggiungipiazza')" id="admin-menu-aggiungipiazza" class="w-full text-left px-4 py-3 rounded-lg font-bold text-xs sm:text-sm transition flex items-center justify-between bg-white hover:bg-slate-100 text-slate-800 border border-slate-200">
+                                <span><i class="fa-solid fa-square-plus mr-2 text-red-600"></i> Aggiungi Piazza</span>
+                                <i class="fa-solid fa-chevron-right text-xs opacity-75"></i>
+                            </button>
+
+                            <button onclick="switchAdminSubTab('modificapiazza')" id="admin-menu-modificapiazza" class="w-full text-left px-4 py-3 rounded-lg font-bold text-xs sm:text-sm transition flex items-center justify-between bg-white hover:bg-slate-100 text-slate-800 border border-slate-200">
+                                <span><i class="fa-solid fa-pen-to-square mr-2 text-red-600"></i> Modifica / Elimina Piazze</span>
+                                <i class="fa-solid fa-chevron-right text-xs opacity-75"></i>
+                            </button>
+
+                            <button onclick="switchAdminSubTab('infoextra')" id="admin-menu-infoextra" class="w-full text-left px-4 py-3 rounded-lg font-bold text-xs sm:text-sm transition flex items-center justify-between bg-white hover:bg-slate-100 text-slate-800 border border-slate-200">
+                                <span><i class="fa-solid fa-comment-dots mr-2 text-red-600"></i> Info Confluenze & Password</span>
+                                <i class="fa-solid fa-chevron-right text-xs opacity-75"></i>
+                            </button>
                         </div>
 
-                        <!-- Carica Percorsi Taxi Word -->
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <h3 class="font-bold text-sm sm:text-base mb-3"><i class="fa-solid fa-file-word mr-1.5 text-red-600"></i> Carica Percorsi (.docx)</h3>
-                            <div class="space-y-3">
-                                <div>
-                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Seleziona File Word (anche multipli)</label>
-                                    <input type="file" id="admin-percorso-file" accept=".docx" multiple class="w-full text-xs text-slate-600 file:mr-2 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-red-50 file:text-red-700">
-                                </div>
-                                <button onclick="uploadPercorsiWordMulti()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Carica Percorsi</button>
-                            </div>
-                            <div class="mt-3.5 pt-3 border-t border-slate-200">
-                                <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Percorsi (Seleziona multipli)</label>
-                                <input type="text" id="filter-admin-percorsi" oninput="filterAdminSelect('admin-delete-percorso-select', this.value)" placeholder="Cerca tra i percorsi..." class="w-full px-3 py-1.5 mb-2 border rounded text-xs bg-white">
-                                <select id="admin-delete-percorso-select" multiple class="w-full h-32 px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-2 font-semibold"></select>
-                                <button onclick="deletePercorsoMulti()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition">Elimina Selezionati</button>
-                            </div>
-                        </div>
-
-                        <!-- Carica Cinque Cerchie Word -->
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <h3 class="font-bold text-sm sm:text-base mb-3"><i class="fa-solid fa-circle-nodes mr-1.5 text-amber-600"></i> Carica Cinque Cerchie (.docx)</h3>
-                            <div class="space-y-3">
-                                <div>
-                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Seleziona File Word (anche multipli)</label>
-                                    <input type="file" id="admin-cerchia-file" accept=".docx" multiple class="w-full text-xs text-slate-600 file:mr-2 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-700">
-                                </div>
-                                <button onclick="uploadCerchieWordMulti()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Carica Cerchie</button>
-                            </div>
-                            <div class="mt-3.5 pt-3 border-t border-slate-200">
-                                <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Cerchie (Seleziona multipli)</label>
-                                <input type="text" id="filter-admin-cerchie" oninput="filterAdminSelect('admin-delete-cerchia-select', this.value)" placeholder="Cerca tra le cerchie..." class="w-full px-3 py-1.5 mb-2 border rounded text-xs bg-white">
-                                <select id="admin-delete-cerchia-select" multiple class="w-full h-32 px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-2 font-semibold"></select>
-                                <button onclick="deleteCerchiaMulti()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition">Elimina Selezionati</button>
-                            </div>
-                        </div>
-
-                        <!-- Gestione Strade Statali -->
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
-                            <h3 class="font-bold text-sm sm:text-base mb-1.5"><i class="fa-solid fa-road mr-1.5 text-red-600"></i> Strade Statali</h3>
-                            <div class="bg-white p-3 rounded-lg border border-slate-200 space-y-2">
-                                <span class="block text-xs sm:text-sm font-bold text-slate-800">Aggiungi Statale</span>
-                                <input type="text" id="admin-new-statale-name" placeholder="Es. SS 725: Nome" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white">
-                                <button onclick="addNewStatale()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition">Aggiungi</button>
-                            </div>
-                            <div class="space-y-2">
-                                <div>
-                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Seleziona Statale (Modifica)</label>
-                                    <select id="admin-statale-select" onchange="loadAdminStataleData()" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white font-semibold"></select>
-                                </div>
-                                <div>
-                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Descrizione</label>
-                                    <textarea id="admin-statale-desc" placeholder="Breve descrizione..." class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm h-16 bg-white"></textarea>
-                                </div>
-                                <div class="flex gap-2">
-                                    <button onclick="saveStataleDescription()" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition">Salva</button>
-                                </div>
-                            </div>
-                            <div class="pt-2 border-t border-slate-200">
-                                <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Statali (Seleziona multipli)</label>
-                                <input type="text" id="filter-admin-statali" oninput="filterAdminSelect('admin-statali-delete-select', this.value)" placeholder="Cerca statali..." class="w-full px-3 py-1.5 mb-2 border rounded text-xs bg-white">
-                                <select id="admin-statali-delete-select" multiple class="w-full h-28 px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-2 font-semibold"></select>
-                                <button onclick="deleteStataleMulti()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition"><i class="fa-solid fa-trash mr-1"></i> Elimina Selezionate</button>
-                            </div>
-                        </div>
-
-                        <!-- Aggiungi Piazza -->
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <h3 class="font-bold text-sm sm:text-base mb-3"><i class="fa-solid fa-square-plus mr-1.5 text-red-600"></i> Aggiungi Piazza</h3>
-                            <div class="space-y-3">
-                                <select id="new-piazza-type" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white font-bold">
-                                    <option value="Piazza">Piazza</option>
-                                    <option value="Piazzale">Piazzale</option>
-                                    <option value="Largo">Largo</option>
-                                </select>
-                                <input type="text" id="new-piazza-name" placeholder="Nome esatto" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm">
-                                <textarea id="new-piazza-confluences" placeholder="Confluenze separate da virgola (senso antiorario)" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm h-20"></textarea>
-                                <button onclick="addNewPiazza()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Salva Nuovo</button>
-                            </div>
-                        </div>
-
-                        <!-- Modifica / Rimuovi & Rotazione -->
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3.5">
-                            <div>
-                                <h3 class="font-bold text-sm sm:text-base mb-2.5"><i class="fa-solid fa-pen-to-square mr-1.5 text-red-600"></i> Modifica / Elimina Piazze</h3>
-                                <div class="space-y-2.5">
-                                    <select id="admin-piazza-select" onchange="loadAdminPiazzaData()" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white font-semibold"></select>
-                                    <select id="edit-piazza-type" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white font-bold">
-                                        <option value="Piazza">Piazza</option>
-                                        <option value="Piazzale">Piazzale</option>
-                                        <option value="Largo">Largo</option>
-                                    </select>
-                                    <input type="text" id="edit-piazza-name" placeholder="Nome" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm">
-                                    <textarea id="edit-piazza-confluences" placeholder="Confluenze separate da virgola" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm h-16"></textarea>
-                                    
-                                    <div class="pt-2 border-t border-slate-200">
-                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Piazze (Seleziona multipli)</label>
-                                        <input type="text" id="filter-admin-piazze" oninput="filterAdminSelect('admin-piazze-delete-select', this.value)" placeholder="Cerca piazze..." class="w-full px-3 py-1.5 mb-2 border rounded text-xs bg-white">
-                                        <select id="admin-piazze-delete-select" multiple class="w-full h-28 px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-2 font-semibold"></select>
+                        <!-- SCHERMATA ATTIVA (COLONNA DESTRA) -->
+                        <div class="lg:col-span-8 bg-slate-50 p-4 sm:p-6 rounded-xl border border-slate-200 min-h-[480px]">
+                            
+                            <!-- 1. CARICA REGOLAMENTO -->
+                            <div id="admin-panel-regolamenti" class="admin-panel space-y-4">
+                                <h3 class="font-bold text-base sm:text-lg mb-3 flex items-center text-slate-900"><i class="fa-solid fa-file-word mr-2 text-blue-600"></i> Gestione Regolamenti (.docx)</h3>
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Titolo Regolamento</label>
+                                        <input type="text" id="admin-regolamento-title" placeholder="Es. Regolamento Servizio Taxi Milano" class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm bg-white font-medium">
                                     </div>
-
-                                    <div class="flex gap-2">
-                                        <button onclick="updatePiazza()" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition">Aggiorna</button>
-                                        <button onclick="deletePiazzaMulti()" class="px-3.5 bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition" title="Elimina Selezionate"><i class="fa-solid fa-trash"></i> Elimina</button>
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Seleziona File Word (.docx)</label>
+                                        <input type="file" id="admin-regolamento-file" accept=".docx" class="w-full text-xs text-slate-600 file:mr-2 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 cursor-pointer">
                                     </div>
+                                    <button onclick="uploadRegolamentoWord()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg text-xs sm:text-sm transition shadow">Carica Word Regolamento</button>
+                                    <div id="upload-feedback-regolamento" class="hidden p-3 bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs sm:text-sm font-bold rounded-lg text-center"></div>
+                                </div>
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2 shadow-sm">
+                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Regolamenti (Seleziona multipli)</label>
+                                    <input type="text" id="filter-admin-regolamenti" oninput="filterAdminSelect('admin-delete-regolamento-select', this.value)" placeholder="Cerca tra i regolamenti..." class="w-full px-3.5 py-2 mb-2 border rounded-lg text-xs sm:text-sm bg-white">
+                                    <select id="admin-delete-regolamento-select" multiple class="w-full h-36 px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-3 font-semibold"></select>
+                                    <button onclick="deleteRegolamentoMulti()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Elimina Selezionati</button>
                                 </div>
                             </div>
 
-                            <div class="border-t border-slate-200 pt-3">
-                                <h3 class="font-bold text-xs sm:text-sm mb-2 text-slate-800"><i class="fa-solid fa-compass mr-1.5 text-amber-600"></i> Via Iniziale (In alto)</h3>
-                                <div class="space-y-2">
-                                    <select id="admin-rotation-street" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white font-bold"></select>
-                                    <button onclick="applyStreetRotation()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition">Imposta Prima Via</button>
+                            <!-- 2. CARICA PERCORSI -->
+                            <div id="admin-panel-percorsi" class="admin-panel space-y-4 hidden">
+                                <h3 class="font-bold text-base sm:text-lg mb-3 flex items-center text-slate-900"><i class="fa-solid fa-route mr-2 text-red-600"></i> Gestione Percorsi Taxi (.docx)</h3>
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Seleziona File Word (anche multipli)</label>
+                                        <input type="file" id="admin-percorso-file" accept=".docx" multiple class="w-full text-xs text-slate-600 file:mr-2 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-red-50 file:text-red-700 cursor-pointer">
+                                    </div>
+                                    <button onclick="uploadPercorsiWordMulti()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg text-xs sm:text-sm transition shadow">Carica Percorsi</button>
+                                    <div id="upload-feedback-percorsi" class="hidden p-3 bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs sm:text-sm font-bold rounded-lg text-center"></div>
+                                </div>
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2 shadow-sm">
+                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Percorsi (Seleziona multipli)</label>
+                                    <input type="text" id="filter-admin-percorsi" oninput="filterAdminSelect('admin-delete-percorso-select', this.value)" placeholder="Cerca tra i percorsi..." class="w-full px-3.5 py-2 mb-2 border rounded-lg text-xs sm:text-sm bg-white">
+                                    <select id="admin-delete-percorso-select" multiple class="w-full h-36 px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-3 font-semibold"></select>
+                                    <button onclick="deletePercorsoMulti()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Elimina Selezionati</button>
                                 </div>
                             </div>
+
+                            <!-- 3. CARICA CINQUE CERCHIE -->
+                            <div id="admin-panel-cerchie" class="admin-panel space-y-4 hidden">
+                                <h3 class="font-bold text-base sm:text-lg mb-3 flex items-center text-slate-900"><i class="fa-solid fa-circle-nodes mr-2 text-amber-600"></i> Gestione Cinque Cerchie (.docx)</h3>
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Seleziona File Word (anche multipli)</label>
+                                        <input type="file" id="admin-cerchia-file" accept=".docx" multiple class="w-full text-xs text-slate-600 file:mr-2 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-700 cursor-pointer">
+                                    </div>
+                                    <button onclick="uploadCerchieWordMulti()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-lg text-xs sm:text-sm transition shadow">Carica Cerchie</button>
+                                    <div id="upload-feedback-cerchie" class="hidden p-3 bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs sm:text-sm font-bold rounded-lg text-center"></div>
+                                </div>
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2 shadow-sm">
+                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Cerchie (Seleziona multipli)</label>
+                                    <input type="text" id="filter-admin-cerchie" oninput="filterAdminSelect('admin-delete-cerchia-select', this.value)" placeholder="Cerca tra le cerchie..." class="w-full px-3.5 py-2 mb-2 border rounded-lg text-xs sm:text-sm bg-white">
+                                    <select id="admin-delete-cerchia-select" multiple class="w-full h-36 px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-3 font-semibold"></select>
+                                    <button onclick="deleteCerchiaMulti()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Elimina Selezionati</button>
+                                </div>
+                            </div>
+
+                            <!-- 4. STRADE STATALI -->
+                            <div id="admin-panel-statali" class="admin-panel space-y-4 hidden">
+                                <h3 class="font-bold text-base sm:text-lg mb-3 flex items-center text-slate-900"><i class="fa-solid fa-road mr-2 text-red-600"></i> Gestione Strade Statali</h3>
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
+                                    <span class="block text-xs sm:text-sm font-bold text-slate-800">Aggiungi Statale</span>
+                                    <input type="text" id="admin-new-statale-name" placeholder="Es. SS 725: Nome" class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm bg-white">
+                                    <button onclick="addNewStatale()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Aggiungi</button>
+                                </div>
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Seleziona Statale (Modifica)</label>
+                                        <select id="admin-statale-select" onchange="loadAdminStataleData()" class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm bg-white font-semibold"></select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Descrizione</label>
+                                        <textarea id="admin-statale-desc" placeholder="Breve descrizione..." class="w-full px-3.5 py-2 border rounded-lg text-xs sm:text-sm h-20 bg-white"></textarea>
+                                    </div>
+                                    <button onclick="saveStataleDescription()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Salva Modifiche</button>
+                                </div>
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2 shadow-sm">
+                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Statali (Seleziona multipli)</label>
+                                    <input type="text" id="filter-admin-statali" oninput="filterAdminSelect('admin-statali-delete-select', this.value)" placeholder="Cerca statali..." class="w-full px-3.5 py-1.5 mb-2 border rounded text-xs bg-white">
+                                    <select id="admin-statali-delete-select" multiple class="w-full h-32 px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-2 font-semibold"></select>
+                                    <button onclick="deleteStataleMulti()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition"><i class="fa-solid fa-trash mr-1"></i> Elimina Selezionate</button>
+                                </div>
+                            </div>
+
+                            <!-- 5. AGGIUNGI PIAZZA -->
+                            <div id="admin-panel-aggiungipiazza" class="admin-panel space-y-4 hidden">
+                                <h3 class="font-bold text-base sm:text-lg mb-3 flex items-center text-slate-900"><i class="fa-solid fa-square-plus mr-2 text-red-600"></i> Aggiungi Nuova Piazza / Piazzale / Largo</h3>
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Tipo</label>
+                                        <select id="new-piazza-type" class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm bg-white font-bold">
+                                            <option value="Piazza">Piazza</option>
+                                            <option value="Piazzale">Piazzale</option>
+                                            <option value="Largo">Largo</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Nome Esatto</label>
+                                        <input type="text" id="new-piazza-name" placeholder="Es. Duomo" class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Confluenze (in senso antiorario, separate da virgola)</label>
+                                        <textarea id="new-piazza-confluences" placeholder="Via Orefici, Via Mazzini, Corso Vittorio Emanuele II..." class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm h-28"></textarea>
+                                    </div>
+                                    <button onclick="addNewPiazza()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg text-xs sm:text-sm transition shadow">Salva Nuovo Elemento</button>
+                                </div>
+                            </div>
+
+                            <!-- 6. MODIFICA / ELIMINA PIAZZE -->
+                            <div id="admin-panel-modificapiazza" class="admin-panel space-y-4 hidden">
+                                <h3 class="font-bold text-base sm:text-lg mb-3 flex items-center text-slate-900"><i class="fa-solid fa-pen-to-square mr-2 text-red-600"></i> Modifica o Elimina Piazze</h3>
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3.5 shadow-sm">
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Seleziona Piazza da Modificare</label>
+                                        <select id="admin-piazza-select" onchange="loadAdminPiazzaData()" class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm bg-white font-semibold"></select>
+                                    </div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Tipo</label>
+                                            <select id="edit-piazza-type" class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm bg-white font-bold">
+                                                <option value="Piazza">Piazza</option>
+                                                <option value="Piazzale">Piazzale</option>
+                                                <option value="Largo">Largo</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Nome</label>
+                                            <input type="text" id="edit-piazza-name" placeholder="Nome" class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm bg-white">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Confluenze (senso antiorario)</label>
+                                        <textarea id="edit-piazza-confluences" placeholder="Confluenze separate da virgola" class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm h-24 bg-white"></textarea>
+                                    </div>
+                                    <button onclick="updatePiazza()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Aggiorna Piazza</button>
+                                </div>
+
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2.5 shadow-sm">
+                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Piazze (Seleziona multipli)</label>
+                                    <input type="text" id="filter-admin-piazze" oninput="filterAdminSelect('admin-piazze-delete-select', this.value)" placeholder="Cerca piazze..." class="w-full px-3.5 py-1.5 mb-2 border rounded text-xs bg-white">
+                                    <select id="admin-piazze-delete-select" multiple class="w-full h-32 px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-2 font-semibold"></select>
+                                    <button onclick="deletePiazzaMulti()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition"><i class="fa-solid fa-trash mr-1"></i> Elimina Selezionate</button>
+                                </div>
+                            </div>
+
+                            <!-- 7. INFO CONFLUENZE & PASSWORD -->
+                            <div id="admin-panel-infoextra" class="admin-panel space-y-4 hidden">
+                                <h3 class="font-bold text-base sm:text-lg mb-3 flex items-center text-slate-900"><i class="fa-solid fa-comment-dots mr-2 text-red-600"></i> Info Confluenze (Destinazioni)</h3>
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Piazza</label>
+                                        <select id="admin-custom-piazza" onchange="populateAdminStreets()" class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm bg-white font-semibold"></select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Via / Confluenza</label>
+                                        <select id="admin-custom-street" onchange="loadCustomStreetText()" class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm bg-white font-semibold"></select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Descrizione Collegamento</label>
+                                        <textarea id="admin-custom-text" placeholder="Descrizione o indicazione..." class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm h-20 bg-white"></textarea>
+                                    </div>
+                                    <button onclick="saveCustomStreetDescription()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Salva Testo Collegamento</button>
+                                </div>
+
+                                <h3 class="font-bold text-base sm:text-lg mb-3 mt-6 flex items-center text-slate-900"><i class="fa-solid fa-key mr-2 text-red-600"></i> Password Admin</h3>
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Nuova Password Admin</label>
+                                        <input type="text" id="admin-new-admin-pwd" placeholder="Password admin..." class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm bg-white font-semibold">
+                                    </div>
+                                    <button onclick="updateAdminPassword()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Aggiorna Password Admin</button>
+                                </div>
+                            </div>
+
                         </div>
 
-                        <!-- Destinazione & Password -->
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3.5">
-                            <div>
-                                <h3 class="font-bold text-sm sm:text-base mb-2"><i class="fa-solid fa-comment-dots mr-1.5 text-red-600"></i> Info Confluenze</h3>
-                                <div class="space-y-2">
-                                    <select id="admin-custom-piazza" onchange="populateAdminStreets()" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white font-semibold"></select>
-                                    <select id="admin-custom-street" onchange="loadCustomStreetText()" class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white font-semibold"></select>
-                                    <textarea id="admin-custom-text" placeholder="Descrizione..." class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm h-16 bg-white"></textarea>
-                                    <button onclick="saveCustomStreetDescription()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition">Salva Testo</button>
-                                </div>
-                            </div>
-
-                            <div class="border-t border-slate-200 pt-3">
-                                <h3 class="font-bold text-xs sm:text-sm mb-2"><i class="fa-solid fa-key mr-1.5 text-red-600"></i> Password Admin</h3>
-                                <div class="space-y-2">
-                                    <input type="text" id="admin-new-admin-pwd" placeholder="Password admin..." class="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white font-semibold">
-                                    <button onclick="updateAdminPassword()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition">Aggiorna Password Admin</button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </section>
@@ -621,6 +688,26 @@
 
         function naturalSort(a, b) {
             return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+        }
+
+        // Funzione per commutare i pannelli nella sezione Admin (Menu a sinistra)
+        function switchAdminSubTab(panelId) {
+            const panels = ['regolamenti', 'percorsi', 'cerchie', 'statali', 'aggiungipiazza', 'modificapiazza', 'infoextra'];
+            panels.forEach(p => {
+                const el = document.getElementById(`admin-panel-${p}`);
+                if (el) el.classList.add("hidden");
+                const btn = document.getElementById(`admin-menu-${p}`);
+                if (btn) {
+                    btn.className = "w-full text-left px-4 py-3 rounded-lg font-bold text-xs sm:text-sm transition flex items-center justify-between bg-white hover:bg-slate-100 text-slate-800 border border-slate-200";
+                }
+            });
+
+            const activeEl = document.getElementById(`admin-panel-${panelId}`);
+            if (activeEl) activeEl.classList.remove("hidden");
+            const activeBtn = document.getElementById(`admin-menu-${panelId}`);
+            if (activeBtn) {
+                activeBtn.className = "w-full text-left px-4 py-3 rounded-lg font-bold text-xs sm:text-sm transition flex items-center justify-between bg-red-600 text-white shadow-sm";
+            }
         }
 
         function copyAdminAppLink() {
@@ -889,6 +976,7 @@
             if(tab === 'admin') {
                 populateAdminSelect();
                 document.getElementById("admin-new-admin-pwd").value = adminPwd;
+                switchAdminSubTab('regolamenti');
             }
             if(tab === 'percorsi') { renderPercorsi(); }
             if(tab === 'cerchie') { renderCerchie(); }
@@ -931,6 +1019,7 @@
             const titleInput = document.getElementById("admin-regolamento-title");
             const fileInput = document.getElementById("admin-regolamento-file");
             const title = titleInput.value.trim();
+            const feedbackEl = document.getElementById("upload-feedback-regolamento");
 
             if (!title) { alert("Inserisci il titolo del regolamento!"); return; }
             if (fileInput.files.length === 0) { alert("Seleziona un file Word (.docx)!"); return; }
@@ -947,7 +1036,11 @@
                 fileInput.value = "";
                 renderRegolamenti();
                 populateAdminSelect();
-                alert("Regolamento Word caricato con successo!");
+                
+                // Avviso di conferma caricamento
+                feedbackEl.textContent = `✓ Regolamento "${title}" caricato con successo all'interno dell'app!`;
+                feedbackEl.classList.remove("hidden");
+                setTimeout(() => { feedbackEl.classList.add("hidden"); }, 4000);
             };
             reader.readAsDataURL(file);
         }
@@ -1053,6 +1146,7 @@
 
         async function uploadPercorsiWordMulti() {
             const fileInput = document.getElementById("admin-percorso-file");
+            const feedbackEl = document.getElementById("upload-feedback-percorsi");
             if (fileInput.files.length === 0) { alert("Seleziona almeno un file Word (.docx)!"); return; }
 
             const files = Array.from(fileInput.files);
@@ -1076,11 +1170,16 @@
             fileInput.value = "";
             renderPercorsi();
             populateAdminSelect();
-            alert(`Caricamento completato! Aggiunti ${loadedCount} percorsi.`);
+            
+            // Avviso di conferma caricamento percorsi
+            feedbackEl.textContent = `✓ Caricamento completato! Aggiunti ${loadedCount} percorsi con successo all'interno dell'app.`;
+            feedbackEl.classList.remove("hidden");
+            setTimeout(() => { feedbackEl.classList.add("hidden"); }, 4000);
         }
 
         async function uploadCerchieWordMulti() {
             const fileInput = document.getElementById("admin-cerchia-file");
+            const feedbackEl = document.getElementById("upload-feedback-cerchie");
             if (fileInput.files.length === 0) { alert("Seleziona almeno un file Word (.docx)!"); return; }
 
             const files = Array.from(fileInput.files);
@@ -1104,7 +1203,11 @@
             fileInput.value = "";
             renderCerchie();
             populateAdminSelect();
-            alert(`Caricamento completato! Aggiunti ${loadedCount} percorsi alle cerchie.`);
+            
+            // Avviso di conferma caricamento cerchie
+            feedbackEl.textContent = `✓ Caricamento completato! Aggiunte ${loadedCount} cerchie con successo all'interno dell'app.`;
+            feedbackEl.classList.remove("hidden");
+            setTimeout(() => { feedbackEl.classList.add("hidden"); }, 4000);
         }
 
         function renderPercorsi() {
@@ -1203,128 +1306,102 @@
                             const rawText = result.value || "";
                             let steps = [];
                             const lines = rawText.split('\n');
-                            
-                            lines.forEach(line => {
-                                line = line.trim();
-                                if (!line) return;
-                                
-                                // Suddivide se trova trattini o virgole separando i vari segmenti del percorso
-                                if (line.includes(" - ") || line.includes(",")) {
-                                    const parts = line.split(/,|\s+[-–—]\s+/);
-                                    parts.forEach(p => {
-                                        let cleanP = p.trim().replace(/^[-–—,\s]+/, '').replace(/[-–—,\s]+$/, '');
-                                        if (cleanP) steps.push(cleanP);
-                                    });
-                                } else {
-                                    steps.push(line);
+                            lines.forEach(l => {
+                                const trimmed = l.trim();
+                                if (trimmed) {
+                                    // Rimuoviamo eventuali prefissi numerici esistenti per pulire la visualizzazione
+                                    const cleaned = trimmed.replace(/^(\d+[\.\)]\s*|-\s*)/, '');
+                                    if (cleaned) steps.push(cleaned);
                                 }
                             });
-
-                            currentDocumentSteps = steps.filter(s => s.length > 0);
-                            if (currentDocumentSteps.length === 0) {
-                                currentDocumentSteps = [rawText];
-                            }
-                            renderDocumentViews();
+                            
+                            if (steps.length === 0) steps = [rawText];
+                            currentDocumentSteps = steps;
+                            renderDocumentModalContent();
                         })
-                        .catch(function(err) {
-                            listContainer.innerHTML = "<p class='text-red-500 text-center py-8 font-bold'>Errore durante la lettura del documento Word originale.</p>";
+                        .catch(function() {
+                            listContainer.innerHTML = `<p class="text-red-500 text-center py-10 font-bold">Errore di lettura del file Word.</p>`;
                         });
                 } catch (e) {
-                    listContainer.innerHTML = "<p class='text-red-500 text-center py-8 font-bold'>Impossibile elaborare il file salvato.</p>";
+                    listContainer.innerHTML = `<p class="text-red-500 text-center py-10 font-bold">Impossibile elaborare il documento.</p>`;
                 }
             } else {
-                currentDocumentSteps = ["Nessun contenuto disponibile."];
-                currentRawDocBuffer = null;
-                renderDocumentViews();
+                currentDocumentSteps = ["Nessun contenuto disponibile per questo elemento di default."];
+                renderDocumentModalContent();
             }
         }
 
-        function downloadOriginalWordFile() {
-            if (!currentRawDocBuffer) {
-                alert("File originale non disponibile.");
-                return;
+        function renderDocumentModalContent() {
+            const listContainer = document.getElementById("percorso-list-view-container");
+            const stepContainer = document.getElementById("percorso-single-step-container");
+            const indicator = document.getElementById("percorso-step-indicator");
+
+            if (!isSingleStepMode) {
+                listContainer.classList.remove("hidden");
+                stepContainer.classList.add("hidden");
+                listContainer.innerHTML = "";
+
+                currentDocumentSteps.forEach((step, idx) => {
+                    const item = document.createElement("div");
+                    item.className = "flex items-start bg-white border border-slate-200 rounded-xl p-3.5 shadow-sm";
+                    item.innerHTML = `
+                        <span class="flex-shrink-0 w-8 h-8 bg-amber-500 text-white font-black rounded-lg flex items-center justify-center text-sm mr-3.5 shadow-sm">${idx + 1}</span>
+                        <p class="text-slate-800 text-sm sm:text-base font-semibold leading-relaxed my-auto">${step}</p>
+                    `;
+                    listContainer.appendChild(item);
+                });
+            } else {
+                listContainer.classList.add("hidden");
+                stepContainer.classList.remove("hidden");
+
+                if (currentDocumentSteps.length > 0) {
+                    const currentText = currentDocumentSteps[currentStepIndex];
+                    stepContainer.innerHTML = `
+                        <div class="max-w-2xl w-full bg-white border border-slate-200 rounded-2xl p-6 sm:p-10 shadow-md flex flex-col items-center justify-center my-auto space-y-6">
+                            <span class="px-4 py-1.5 bg-amber-100 text-amber-900 rounded-full font-black text-xs sm:text-sm tracking-wider uppercase">Tappa ${currentStepIndex + 1} di ${currentDocumentSteps.length}</span>
+                            <h4 class="text-lg sm:text-2xl font-bold text-slate-900 leading-snug">${currentText}</h4>
+                        </div>
+                    `;
+                    indicator.textContent = `${currentStepIndex + 1} / ${currentDocumentSteps.length}`;
+                }
             }
-            const blob = new Blob([currentRawDocBuffer], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `${currentActiveDocTitle || "percorso_taxi"}.docx`;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
         }
 
         function togglePercorsoViewMode() {
             isSingleStepMode = !isSingleStepMode;
             updateViewModeUI();
-            renderDocumentViews();
+            renderDocumentModalContent();
         }
 
         function updateViewModeUI() {
-            const listContainer = document.getElementById("percorso-list-view-container");
-            const stepContainer = document.getElementById("percorso-single-step-container");
-            const stepControls = document.getElementById("percorso-step-controls");
             const btnText = document.getElementById("toggle-view-text");
             const btnIcon = document.getElementById("toggle-view-icon");
+            const controls = document.getElementById("percorso-step-controls");
 
             if (isSingleStepMode) {
-                listContainer.classList.add("hidden");
-                stepContainer.classList.remove("hidden");
-                stepControls.classList.remove("hidden");
-                stepControls.classList.add("flex");
-                btnText.textContent = "Modalità Elenco";
+                btnText.textContent = "Vista Elenco Completo";
                 btnIcon.className = "fa-solid fa-list";
+                controls.classList.remove("hidden");
+                controls.classList.add("flex");
             } else {
-                listContainer.classList.remove("hidden");
-                stepContainer.classList.add("hidden");
-                stepControls.classList.remove("flex");
-                stepControls.classList.add("hidden");
                 btnText.textContent = "Modalità Passo-Passo";
                 btnIcon.className = "fa-solid fa-list-check";
+                controls.classList.remove("flex");
+                controls.classList.add("hidden");
             }
-        }
-
-        function renderDocumentViews() {
-            // 1. Vista Elenco Numerato (con numeri sulla sinistra)
-            const listContainer = document.getElementById("percorso-list-view-container");
-            listContainer.innerHTML = "";
-            currentDocumentSteps.forEach((step, idx) => {
-                const item = document.createElement("div");
-                item.className = "flex items-center gap-3.5 p-3.5 bg-white border border-slate-200 rounded-xl shadow-sm hover:border-amber-500 transition";
-                item.innerHTML = `
-                    <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-900 font-black text-xs sm:text-sm flex items-center justify-center flex-shrink-0 shadow-sm">${idx + 1}</span>
-                    <span class="text-slate-800 font-semibold text-sm sm:text-base leading-snug">${step}</span>
-                `;
-                listContainer.appendChild(item);
-            });
-
-            // 2. Vista Passo-Passo Singola Via
-            const stepContainer = document.getElementById("percorso-single-step-container");
-            const indicator = document.getElementById("percorso-step-indicator");
-            if (!currentDocumentSteps.length) return;
-
-            indicator.textContent = `${currentStepIndex + 1} / ${currentDocumentSteps.length}`;
-            const currentStreet = currentDocumentSteps[currentStepIndex];
-
-            stepContainer.innerHTML = `
-                <div class="bg-white border-2 border-amber-500 rounded-2xl p-6 sm:p-10 shadow-lg max-w-xl w-full text-center space-y-4">
-                    <span class="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-900 font-black text-xs sm:text-sm uppercase tracking-wider">Passo #${currentStepIndex + 1} di ${currentDocumentSteps.length}</span>
-                    <h4 class="text-xl sm:text-2xl font-black text-slate-900 leading-tight">${currentStreet}</h4>
-                    <p class="text-xs sm:text-sm text-slate-500 font-medium">Usa i tasti sottostanti per navigare tra le vie</p>
-                </div>
-            `;
         }
 
         function nextPercorsoStep() {
             if (currentStepIndex < currentDocumentSteps.length - 1) {
                 currentStepIndex++;
-                renderDocumentViews();
+                renderDocumentModalContent();
             }
         }
 
         function prevPercorsoStep() {
             if (currentStepIndex > 0) {
                 currentStepIndex--;
-                renderDocumentViews();
+                renderDocumentModalContent();
             }
         }
 
@@ -1333,13 +1410,24 @@
             document.body.style.overflow = 'auto';
         }
 
+        function downloadOriginalWordFile() {
+            const found = percorsiData.concat(cerchieData).find(x => x.title === currentActiveDocTitle);
+            if (!found || !found.fileData) { alert("File originale non disponibile per il download."); return; }
+            const a = document.createElement('a');
+            a.href = found.fileData;
+            a.download = found.fileName || `${currentActiveDocTitle}.docx`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        }
+
         function deletePercorsoMulti() {
             const select = document.getElementById("admin-delete-percorso-select");
             const selectedOptions = Array.from(select.selectedOptions);
             if (selectedOptions.length === 0) { alert("Seleziona almeno un percorso da eliminare."); return; }
             if (confirm(`Vuoi eliminare ${selectedOptions.length} percorsi selezionati?`)) {
-                const idsToDelete = selectedOptions.map(opt => Number(opt.value));
-                percorsiData = percorsiData.filter(p => !idsToDelete.includes(p.id));
+                const titlesToDelete = selectedOptions.map(opt => opt.value);
+                percorsiData = percorsiData.filter(p => !titlesToDelete.includes(p.title));
                 saveData();
                 renderPercorsi();
                 populateAdminSelect();
@@ -1350,14 +1438,14 @@
         function deleteCerchiaMulti() {
             const select = document.getElementById("admin-delete-cerchia-select");
             const selectedOptions = Array.from(select.selectedOptions);
-            if (selectedOptions.length === 0) { alert("Seleziona almeno un percorso cerchia da eliminare."); return; }
-            if (confirm(`Vuoi eliminare ${selectedOptions.length} percorsi delle cerchie selezionati?`)) {
-                const idsToDelete = selectedOptions.map(opt => Number(opt.value));
-                cerchieData = cerchieData.filter(c => !idsToDelete.includes(c.id));
+            if (selectedOptions.length === 0) { alert("Seleziona almeno una cerchia da eliminare."); return; }
+            if (confirm(`Vuoi eliminare ${selectedOptions.length} cerchie selezionate?`)) {
+                const titlesToDelete = selectedOptions.map(opt => opt.value);
+                cerchieData = cerchieData.filter(c => !titlesToDelete.includes(c.title));
                 saveData();
                 renderCerchie();
                 populateAdminSelect();
-                alert("Percorsi delle cerchie eliminati con successo.");
+                alert("Cerchie eliminate con successo.");
             }
         }
 
@@ -1366,7 +1454,6 @@
             const container = document.getElementById("statali-list");
             container.innerHTML = "";
 
-            stataliListDynamic.sort(naturalSort);
             let filtered = stataliListDynamic.filter(s => s.toLowerCase().includes(query));
 
             if(filtered.length === 0) {
@@ -1375,137 +1462,126 @@
             }
 
             filtered.forEach(s => {
-                const desc = stataliDescriptions[s] || "Nessuna descrizione disponibile. Modificabile nella sezione Admin.";
+                const desc = stataliDescriptions[s] || "Nessuna descrizione aggiuntiva inserita.";
                 const card = document.createElement("div");
-                card.className = "bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:border-amber-500 transition flex flex-col justify-between";
+                card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between";
                 card.innerHTML = `
                     <div>
-                        <div class="flex items-center space-x-2.5 mb-2">
-                            <i class="fa-solid fa-road text-amber-500 text-sm"></i>
-                            <h3 class="font-bold text-sm sm:text-base text-slate-900">${s}</h3>
+                        <div class="flex items-center space-x-3.5 mb-2.5">
+                            <div class="p-3 bg-amber-50 rounded-xl text-amber-600">
+                                <i class="fa-solid fa-road text-xl"></i>
+                            </div>
+                            <h3 class="font-bold text-base sm:text-lg text-slate-900 leading-snug">${s}</h3>
                         </div>
-                        <p class="text-xs sm:text-sm text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100 font-medium leading-relaxed">${desc}</p>
+                        <p class="text-xs sm:text-sm text-slate-600 font-medium pl-1 leading-relaxed">${desc}</p>
                     </div>
                 `;
                 container.appendChild(card);
             });
         }
 
-        function loadAdminStataleData() {
-            const select = document.getElementById("admin-statale-select");
-            const val = select.value;
-            document.getElementById("admin-statale-desc").value = stataliDescriptions[val] || "";
-        }
-
-        function saveStataleDescription() {
-            const select = document.getElementById("admin-statale-select");
-            const val = select.value;
-            const desc = document.getElementById("admin-statale-desc").value.trim();
-            if (val) {
-                if (desc) stataliDescriptions[val] = desc;
-                else delete stataliDescriptions[val];
-                saveData();
-                renderStatali();
-                alert("Descrizione aggiornata!");
-            }
-        }
-
         function addNewStatale() {
             const input = document.getElementById("admin-new-statale-name");
-            const name = input.value.trim();
-            if (!name) { alert("Inserisci il nome!"); return; }
-            if (stataliListDynamic.includes(name)) { alert("Esiste già!"); return; }
-            stataliListDynamic.push(name);
-            stataliListDynamic.sort(naturalSort);
-            saveData();
-            input.value = "";
-            renderStatali();
-            populateAdminSelect();
-            alert("Statale aggiunta!");
+            const val = input.value.trim();
+            if(!val) { alert("Inserisci il nome della strada statale!"); return; }
+            if(!stataliListDynamic.includes(val)) {
+                stataliListDynamic.push(val);
+                stataliListDynamic.sort(naturalSort);
+                saveData();
+                input.value = "";
+                renderStatali();
+                populateAdminSelect();
+                alert("Strada statale aggiunta con successo!");
+            } else {
+                alert("Questa strada statale è già presente.");
+            }
         }
 
         function deleteStataleMulti() {
             const select = document.getElementById("admin-statali-delete-select");
             const selectedOptions = Array.from(select.selectedOptions);
-            if (selectedOptions.length === 0) { alert("Seleziona almeno una strada statale da eliminare."); return; }
-            if (confirm(`Eliminare ${selectedOptions.length} strade statali selezionate?`)) {
-                const valuesToDelete = selectedOptions.map(opt => opt.value);
-                stataliListDynamic = stataliListDynamic.filter(s => !valuesToDelete.includes(s));
-                valuesToDelete.forEach(s => delete stataliDescriptions[s]);
+            if(selectedOptions.length === 0) { alert("Seleziona almeno una statale da eliminare."); return; }
+            if(confirm(`Vuoi eliminare ${selectedOptions.length} strade statali selezionate?`)) {
+                const itemsToDelete = selectedOptions.map(opt => opt.value);
+                stataliListDynamic = stataliListDynamic.filter(s => !itemsToDelete.includes(s));
+                itemsToDelete.forEach(s => delete stataliDescriptions[s]);
                 saveData();
                 renderStatali();
                 populateAdminSelect();
-                alert("Statali eliminate con successo.");
+                alert("Strade statali eliminate con successo.");
             }
+        }
+
+        function loadAdminStataleData() {
+            const sel = document.getElementById("admin-statale-select").value;
+            document.getElementById("admin-statale-desc").value = stataliDescriptions[sel] || "";
+        }
+
+        function saveStataleDescription() {
+            const sel = document.getElementById("admin-statale-select").value;
+            const desc = document.getElementById("admin-statale-desc").value.trim();
+            if(!sel) { alert("Seleziona una strada statale."); return; }
+            stataliDescriptions[sel] = desc;
+            saveData();
+            renderStatali();
+            alert("Descrizione salvata con successo!");
         }
 
         function renderEncyclopedia() {
             const query = document.getElementById("search-piazza").value.toLowerCase();
-            const listContainer = document.getElementById("encyclopedia-list");
-            listContainer.innerHTML = "";
+            const container = document.getElementById("encyclopedia-list");
+            container.innerHTML = "";
 
-            let filtered = piazzeData.filter(p => {
-                const matchName = `${p.type} ${p.name}`.toLowerCase().includes(query);
-                const matchConfluence = p.confluences.some(c => c.toLowerCase().includes(query));
-                return matchName || matchConfluence;
-            });
-            
+            let sorted = [...piazzeData];
             if (sortMode === 'asc') {
-                filtered.sort((a, b) => naturalSort(`${a.type} ${a.name}`, `${b.type} ${b.name}`));
+                sorted.sort((a, b) => naturalSort(a.name, b.name));
             } else if (sortMode === 'desc') {
-                filtered.sort((a, b) => naturalSort(`${b.type} ${b.name}`, `${a.type} ${a.name}`));
-            } else {
-                filtered.sort((a, b) => piazzeData.indexOf(a) - piazzeData.indexOf(b));
+                sorted.sort((a, b) => naturalSort(b.name, a.name));
             }
 
+            let filtered = sorted.filter(p => 
+                p.name.toLowerCase().includes(query) || 
+                p.confluences.some(c => c.toLowerCase().includes(query))
+            );
+
             if(filtered.length === 0) {
-                listContainer.innerHTML = `<p class="text-slate-500 col-span-full text-center py-6 text-sm font-medium">Nessun risultato.</p>`;
+                container.innerHTML = `<p class="text-slate-500 col-span-full text-center py-6 text-sm font-medium">Nessun elemento trovato.</p>`;
                 return;
             }
 
             filtered.forEach(p => {
-                let sortedConfluences = [...p.confluences].sort(naturalSort);
-                let confluencesHtml = sortedConfluences.map(c => `
-                    <li onclick="showStreetDetails('${c}', '${p.type} ${p.name}')" class="py-1.5 px-2.5 bg-slate-50 hover:bg-amber-100 rounded-lg border border-slate-200/90 flex justify-between items-center text-xs sm:text-sm cursor-pointer transition group">
-                        <span class="text-slate-800 font-semibold group-hover:text-amber-900"><i class="fa-solid fa-arrow-right text-amber-500 mr-2 text-xs"></i> ${c}</span>
-                        <span class="text-xs text-amber-700 font-bold underline whitespace-nowrap ml-1">Info</span>
-                    </li>
-                `).join('');
-
-                let badgeColor = 'bg-amber-100 text-amber-900';
-                if(p.type === 'Piazzale') badgeColor = 'bg-purple-100 text-purple-900';
-                if(p.type === 'Largo') badgeColor = 'bg-blue-100 text-blue-900';
-
                 const card = document.createElement("div");
-                card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between";
+                card.className = "bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md transition flex flex-col justify-between";
+                
+                let confluencesHtml = p.confluences.map(c => {
+                    const key = `${p.name}_${c}`;
+                    const hasCustom = customDescriptions[key];
+                    let badge = hasCustom ? `<span class="ml-1 text-[10px] text-amber-600 font-bold" title="Collegamento dettagliato">ℹ️</span>` : '';
+                    return `<li class="street-card hover:text-amber-600 transition font-medium py-0.5 flex items-center" onclick="showStreetDestination('${p.name.replace(/'/g, "\\'")}', '${c.replace(/'/g, "\\'")}')"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mr-2"></span><span class="flex-1">${c}</span>${badge}</li>`;
+                }).join('');
+
                 card.innerHTML = `
                     <div>
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-[10px] sm:text-xs font-extrabold uppercase px-2 py-0.5 rounded-md ${badgeColor}">${p.type}</span>
-                            <span class="text-xs text-slate-500 font-bold">${p.confluences.length} vie</span>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-black uppercase tracking-wider text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md">${p.type}</span>
+                            <span class="text-xs text-slate-400 font-bold">${p.confluences.length} vie</span>
                         </div>
-                        <h3 class="font-bold text-lg text-slate-900 mb-3">${p.name}</h3>
-                        <ul class="space-y-1.5 max-h-40 overflow-y-auto pr-1">${confluencesHtml}</ul>
+                        <h3 class="font-black text-lg text-slate-900 mb-2.5">${p.name}</h3>
+                        <ul class="text-xs sm:text-sm text-slate-700 space-y-1 max-h-36 overflow-y-auto pr-1">
+                            ${confluencesHtml}
+                        </ul>
                     </div>
                 `;
-                listContainer.appendChild(card);
+                container.appendChild(card);
             });
         }
 
-        function showStreetDetails(streetName, piazzaFullName) {
-            const infoBox = document.getElementById("street-destination-info");
-            const destText = document.getElementById("street-dest-text");
-            const mapLink = document.getElementById("street-map-link");
-            const key = `${piazzaFullName}_${streetName}`;
-            
-            if (customDescriptions[key]) destText.textContent = customDescriptions[key];
-            else destText.textContent = `La via "${streetName}" confluisce direttamente su ${piazzaFullName}.`;
-            
-            const query = encodeURIComponent(`Milano, ${streetName} (vicino a ${piazzaFullName})`);
-            mapLink.href = `https://www.google.com/maps/search/?api=1&query=${query}`;
-            
-            infoBox.classList.remove("hidden");
-            infoBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        function showStreetDestination(piazzaName, streetName) {
+            const key = `${piazzaName}_${streetName}`;
+            const desc = customDescriptions[key] || `Collegamento tra ${piazzaName} e ${streetName}.`;
+            document.getElementById("street-dest-text").textContent = desc;
+            document.getElementById("street-map-link").href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(streetName + ' ' + piazzaName + ' Milano')}`;
+            document.getElementById("street-destination-info").classList.remove("hidden");
         }
 
         function closeStreetInfo() {
@@ -1516,530 +1592,419 @@
             const select = document.getElementById("exercise-select");
             select.innerHTML = "";
             let sortedPiazze = [...piazzeData].sort((a, b) => naturalSort(a.name, b.name));
-            sortedPiazze.forEach((p) => {
-                const originalIndex = piazzeData.findIndex(item => item.id === p.id);
+            sortedPiazze.forEach(p => {
                 const opt = document.createElement("option");
-                opt.value = originalIndex;
+                opt.value = p.id;
                 opt.textContent = `${p.type} ${p.name}`;
                 select.appendChild(opt);
             });
+            if(sortedPiazze.length > 0) select.value = sortedPiazze[0].id;
         }
 
         function filterExerciseDropdown() {
-            const query = document.getElementById("exercise-search-input").value.toLowerCase().trim();
-            const suggestionsBox = document.getElementById("exercise-suggestions");
-            suggestionsBox.innerHTML = "";
+            const input = document.getElementById("exercise-search-input").value.toLowerCase();
+            const suggestions = document.getElementById("exercise-suggestions");
+            suggestions.innerHTML = "";
 
-            if (!query) { suggestionsBox.classList.add("hidden"); return; }
-
-            let matches = [];
-            piazzeData.forEach((p, index) => {
-                if (`${p.type} ${p.name}`.toLowerCase().includes(query)) {
-                    matches.push({ index, text: `${p.type} ${p.name}`, count: p.confluences.length });
-                }
-            });
-
-            matches.sort((a, b) => naturalSort(a.text, b.text));
-            if (matches.length === 0) { suggestionsBox.classList.add("hidden"); return; }
-
-            matches.forEach(m => {
-                const div = document.createElement("div");
-                div.className = "px-3.5 py-2.5 hover:bg-amber-50 cursor-pointer text-xs sm:text-sm font-bold text-slate-800 border-b border-slate-100 flex justify-between items-center";
-                div.innerHTML = `<span>${m.text}</span> <span class="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded font-bold">${m.count} vie</span>`;
-                div.onmousedown = function() {
-                    document.getElementById("exercise-select").value = m.index;
-                    document.getElementById("exercise-search-input").value = m.text;
-                    suggestionsBox.classList.add("hidden");
-                    loadExercise();
-                };
-                suggestionsBox.appendChild(div);
-            });
-            suggestionsBox.classList.remove("hidden");
-        }
-
-        let currentCorrectOrder = [];
-
-        function loadExercise() {
-            selectedStreetForTap = null;
-            const index = document.getElementById("exercise-select").value;
-            const piazza = piazzeData[index];
-            if (!piazza || piazza.confluences.length === 0) return;
-
-            const searchInput = document.getElementById("exercise-search-input");
-            if (searchInput && document.activeElement !== searchInput) searchInput.value = `${piazza.type} ${piazza.name}`;
-            const suggestionsBox = document.getElementById("exercise-suggestions");
-            if (suggestionsBox) suggestionsBox.classList.add("hidden");
-
-            document.getElementById("ex-square-type").textContent = piazza.type;
-            document.getElementById("ex-square-title").textContent = piazza.name;
-            currentCorrectOrder = [...piazza.confluences];
-
-            const totalNodes = currentCorrectOrder.length;
-            const remaining = currentCorrectOrder.slice(1);
-            shuffleArray(remaining);
-
-            const sourcePool = document.getElementById("source-pool");
-            sourcePool.innerHTML = "";
-            document.getElementById("exercise-feedback").innerHTML = "";
-
-            remaining.forEach((street) => {
-                sourcePool.appendChild(createStreetCard(street));
-            });
-
-            const mapSlotsContainer = document.getElementById("map-slots-container");
-            mapSlotsContainer.innerHTML = "";
-
-            const isMobile = window.innerWidth < 640;
-            const slotWidth = isMobile ? 125 : 150;
-            const minCircumference = totalNodes * (slotWidth + 20);
-            const calculatedRadius = minCircumference / (2 * Math.PI);
-            const baseRadius = isMobile ? 130 : 200;
-            const radius = Math.max(baseRadius, calculatedRadius); 
-            const containerSize = (radius * 2) + 180;
-            
-            const orbitContainer = document.querySelector(".orbit-container");
-            orbitContainer.style.width = `${containerSize}px`;
-            orbitContainer.style.height = `${containerSize}px`;
-
-            const centerX = containerSize / 2;
-            const centerY = containerSize / 2;
-
-            for (let i = 0; i < totalNodes; i++) {
-                const angle = - (i * 2 * Math.PI) / totalNodes - Math.PI / 2;
-                const x = centerX + radius * Math.cos(angle);
-                const y = centerY + radius * Math.sin(angle);
-
-                const slot = document.createElement("div");
-                slot.className = "orbit-slot p-1.5 bg-slate-800/95 border border-slate-600 rounded-xl flex flex-col justify-center text-xs font-bold text-white shadow-xl";
-                slot.style.left = `${x}px`;
-                slot.style.top = `${y}px`;
-                slot.setAttribute("data-index", i);
-                slot.onclick = function() { handleSlotTap(slot); };
-
-                if (i === 0) {
-                    slot.classList.add("border-amber-500", "bg-amber-950/90");
-                    slot.innerHTML = `
-                        <span class="text-[9px] uppercase font-black text-amber-400 block leading-none mb-0.5">Rif. (#1)</span>
-                        <span class="text-xs sm:text-sm font-bold text-white block leading-tight break-words">${currentCorrectOrder[0]}</span>
-                    `;
-                } else {
-                    slot.classList.add("slot-item");
-                    slot.innerHTML = `
-                        <div class="slot-placeholder flex items-center justify-between pointer-events-none mb-0.5">
-                            <span class="text-slate-400 italic text-[10px]"><i class="fa-solid fa-arrow-down text-[9px] mr-0.5"></i> #${i + 1}</span>
-                            <span class="text-[9px] bg-slate-900 text-amber-400 px-1.5 py-0.5 rounded font-bold border border-amber-500/30 ml-0.5">#${i + 1}</span>
-                        </div>
-                    `;
-                }
-                mapSlotsContainer.appendChild(slot);
-            }
-
-            updatePoolCount();
-            initDragAndDrop();
-        }
-
-        function createStreetCard(streetName) {
-            const item = document.createElement("div");
-            item.className = "street-card p-2 sm:p-2.5 bg-white border border-slate-200 rounded-xl shadow-sm flex items-center justify-between hover:border-amber-500 transition text-xs sm:text-sm font-semibold text-slate-800 w-full";
-            item.setAttribute("data-name", streetName);
-            item.innerHTML = `
-                <span class="flex items-center mr-1 overflow-hidden pointer-events-none"><i class="fa-solid fa-grip-vertical text-slate-400 mr-1.5 text-xs flex-shrink-0"></i> <span class="break-words">${streetName}</span></span>
-                <span class="text-[10px] bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded-md font-bold border border-amber-200 whitespace-nowrap flex-shrink-0 pointer-events-none">Via</span>
-            `;
-            item.onclick = function(e) {
-                e.stopPropagation();
-                selectStreetForTap(item);
-            };
-            return item;
-        }
-
-        function selectStreetForTap(cardElement) {
-            document.querySelectorAll(".street-card").forEach(c => c.classList.remove("selected-for-tap"));
-            if (selectedStreetForTap === cardElement) {
-                selectedStreetForTap = null;
-            } else {
-                selectedStreetForTap = cardElement;
-                cardElement.classList.add("selected-for-tap");
-            }
-        }
-
-        function handleSlotTap(slotElement) {
-            if (slotElement.getAttribute("data-index") === "0") return;
-
-            if (selectedStreetForTap) {
-                const existingCard = slotElement.querySelector(".street-card");
-                const sourcePool = document.getElementById("source-pool");
-                if (existingCard) sourcePool.appendChild(existingCard);
-
-                slotElement.appendChild(selectedStreetForTap);
-                selectedStreetForTap.className = "street-card p-1.5 bg-slate-800 border border-amber-500/80 rounded-lg shadow-sm flex items-center justify-between text-white font-bold text-xs w-full";
-                
-                const placeholder = slotElement.querySelector('.slot-placeholder');
-                if (placeholder) placeholder.style.display = 'none';
-
-                selectedStreetForTap.classList.remove("selected-for-tap");
-                selectedStreetForTap = null;
-                updatePoolCount();
-            } else {
-                const existingCard = slotElement.querySelector(".street-card");
-                if (existingCard) {
-                    const sourcePool = document.getElementById("source-pool");
-                    sourcePool.appendChild(existingCard);
-                    existingCard.className = "street-card p-2 sm:p-2.5 bg-white border border-slate-200 rounded-xl shadow-sm flex items-center justify-between hover:border-amber-500 transition text-xs sm:text-sm font-semibold text-slate-800 w-full";
-                    
-                    const placeholder = slotElement.querySelector('.slot-placeholder');
-                    if (placeholder) placeholder.style.display = 'flex';
-                    updatePoolCount();
-                }
-            }
-        }
-
-        function initDragAndDrop() {
-            if (poolSortable) poolSortable.destroy();
-            slotSortables.forEach(s => s.destroy());
-            slotSortables = [];
-
-            const sourcePool = document.getElementById("source-pool");
-            poolSortable = Sortable.create(sourcePool, {
-                group: 'shared-streets',
-                animation: 150,
-                forceFallback: true,
-                fallbackClass: 'sortable-fallback',
-                onAdd: updatePoolCount,
-                onRemove: updatePoolCount
-            });
-
-            document.querySelectorAll(".slot-item").forEach(slot => {
-                const s = Sortable.create(slot, {
-                    group: 'shared-streets',
-                    animation: 150,
-                    forceFallback: true,
-                    fallbackClass: 'sortable-fallback',
-                    put: function (to) { return to.el.querySelectorAll('.street-card').length === 0; },
-                    onAdd: function (evt) {
-                        evt.item.className = "street-card p-1.5 bg-slate-800 border border-amber-500/80 rounded-lg shadow-sm flex items-center justify-between text-white font-bold text-xs w-full";
-                        const placeholder = slot.querySelector('.slot-placeholder');
-                        if (placeholder) placeholder.style.display = 'none';
-                        updatePoolCount();
-                    },
-                    onRemove: function (evt) {
-                        if (evt.from.querySelectorAll('.street-card').length === 0) {
-                            const placeholder = evt.from.querySelector('.slot-placeholder');
-                            if (placeholder) placeholder.style.display = 'flex';
-                        }
-                        updatePoolCount();
-                    }
-                });
-                slotSortables.push(s);
-            });
-        }
-
-        function updatePoolCount() {
-            document.getElementById("pool-count").textContent = document.getElementById("source-pool").children.length;
-        }
-
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
-
-        function verifyExercise() {
-            const slots = document.querySelectorAll(".orbit-slot");
-            let allFilled = true;
-            let allCorrect = true;
-
-            slots.forEach((slot, idx) => {
-                if (idx === 0) return;
-                const card = slot.querySelector(".street-card");
-                if (!card) {
-                    allFilled = false;
-                    slot.classList.add("border-red-500");
-                } else {
-                    slot.classList.remove("border-red-500");
-                    if (card.getAttribute("data-name") === currentCorrectOrder[idx]) {
-                        card.className = "street-card p-1.5 bg-emerald-950/90 border border-emerald-500 rounded-lg shadow-sm flex items-center justify-between text-emerald-200 font-bold text-xs w-full";
-                    } else {
-                        card.className = "street-card p-1.5 bg-red-950/90 border border-red-500 rounded-lg shadow-sm flex items-center justify-between text-red-200 font-bold text-xs w-full";
-                        allCorrect = false;
-                    }
-                }
-            });
-
-            const feedback = document.getElementById("exercise-feedback");
-            if (!allFilled) {
-                feedback.innerHTML = `<span class="text-amber-700 bg-amber-50 border border-amber-200 px-4 py-2 rounded-xl inline-block text-sm sm:text-base font-bold"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Riempi tutti i riquadri.</span>`;
+            if (!input) {
+                suggestions.classList.add("hidden");
                 return;
             }
 
-            if (allCorrect) feedback.innerHTML = `<span class="text-emerald-700 bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-xl inline-block text-sm sm:text-base font-bold"><i class="fa-solid fa-circle-check mr-1.5"></i> Sequenza corretta!</span>`;
-            else feedback.innerHTML = `<span class="text-red-700 bg-red-50 border border-red-200 px-4 py-2 rounded-xl inline-block text-sm sm:text-base font-bold"><i class="fa-solid fa-circle-xmark mr-1.5"></i> Alcune posizioni errate (in rosso).</span>`;
+            let filtered = piazzeData.filter(p => p.name.toLowerCase().includes(input));
+            if (filtered.length === 0) {
+                suggestions.classList.add("hidden");
+                return;
+            }
+
+            filtered.forEach(p => {
+                const div = document.createElement("div");
+                div.className = "px-3 py-2 text-xs sm:text-sm font-semibold hover:bg-amber-50 cursor-pointer border-b border-slate-100 last:border-b-0";
+                div.textContent = `${p.type} ${p.name}`;
+                div.onclick = () => {
+                    document.getElementById("exercise-select").value = p.id;
+                    document.getElementById("exercise-search-input").value = `${p.type} ${p.name}`;
+                    suggestions.classList.add("hidden");
+                    loadExercise();
+                };
+                suggestions.appendChild(div);
+            });
+            suggestions.classList.remove("hidden");
+        }
+
+        let currentExercisePiazza = null;
+
+        function loadExercise() {
+            const selectId = document.getElementById("exercise-select").value;
+            currentExercisePiazza = piazzeData.find(p => p.id == selectId);
+            if (!currentExercisePiazza) return;
+
+            document.getElementById("ex-square-type").textContent = currentExercisePiazza.type;
+            document.getElementById("ex-square-title").textContent = currentExercisePiazza.name;
+            document.getElementById("exercise-feedback").textContent = "";
+
+            const slotsContainer = document.getElementById("map-slots-container");
+            slotsContainer.innerHTML = "";
+
+            slotSortables.forEach(s => s.destroy());
+            slotSortables = [];
+
+            const count = currentExercisePiazza.confluences.length;
+            const radius = window.innerWidth >= 640 ? 175 : 120;
+
+            for (let i = 0; i < count; i++) {
+                const angle = (i * 2 * Math.PI) / count - Math.PI / 2;
+                const x = Math.round(radius * Math.cos(angle));
+                const y = Math.round(radius * Math.sin(angle));
+
+                const slot = document.createElement("div");
+                slot.className = "orbit-slot bg-slate-800/90 hover:bg-slate-700 border-2 border-dashed border-slate-600 rounded-lg p-2 text-center text-xs font-bold text-slate-300 flex items-center justify-center transition shadow";
+                slot.style.left = `calc(50% + ${x}px)`;
+                slot.style.top = `calc(50% + ${y}px)`;
+                slot.dataset.index = i;
+                slot.textContent = `Slot ${i + 1}`;
+
+                slot.onclick = () => {
+                    if (selectedStreetForTap) {
+                        if (slot.children.length > 0) {
+                            document.getElementById("source-pool").appendChild(slot.children[0]);
+                        }
+                        slot.innerHTML = "";
+                        slot.appendChild(selectedStreetForTap);
+                        slot.className = "orbit-slot bg-amber-500 text-white border-2 border-amber-600 rounded-lg p-2 text-center text-xs font-bold flex items-center justify-center shadow-lg transition";
+                        selectedStreetForTap.classList.remove("selected-for-tap");
+                        selectedStreetForTap = null;
+                    } else if (slot.children.length > 0) {
+                        document.getElementById("source-pool").appendChild(slot.children[0]);
+                        slot.innerHTML = `Slot ${i + 1}`;
+                        slot.className = "orbit-slot bg-slate-800/90 hover:bg-slate-700 border-2 border-dashed border-slate-600 rounded-lg p-2 text-center text-xs font-bold text-slate-300 flex items-center justify-center transition shadow";
+                    }
+                };
+
+                slotsContainer.appendChild(slot);
+
+                const sortable = new Sortable(slot, {
+                    group: 'shared',
+                    animation: 150,
+                    onAdd: function (evt) {
+                        if (slot.children.length > 1) {
+                            const extra = slot.children[0] === evt.item ? slot.children[1] : slot.children[0];
+                            document.getElementById("source-pool").appendChild(extra);
+                        }
+                        slot.className = "orbit-slot bg-amber-500 text-white border-2 border-amber-600 rounded-lg p-2 text-center text-xs font-bold flex items-center justify-center shadow-lg transition";
+                    },
+                    onRemove: function (evt) {
+                        if (slot.children.length === 0) {
+                            slot.innerHTML = `Slot ${parseInt(slot.dataset.index) + 1}`;
+                            slot.className = "orbit-slot bg-slate-800/90 hover:bg-slate-700 border-2 border-dashed border-slate-600 rounded-lg p-2 text-center text-xs font-bold text-slate-300 flex items-center justify-center transition shadow";
+                        }
+                    }
+                });
+                slotSortables.push(sortable);
+            }
+
+            let shuffledConfluences = [...currentExercisePiazza.confluences].sort(() => Math.random() - 0.5);
+            const pool = document.getElementById("source-pool");
+            pool.innerHTML = "";
+
+            shuffledConfluences.forEach(c => {
+                const el = document.createElement("div");
+                el.className = "bg-white border border-slate-200 hover:border-amber-500 rounded-lg p-2.5 text-xs sm:text-sm font-semibold text-slate-800 shadow-sm cursor-grab active:cursor-grabbing transition";
+                el.textContent = c;
+                
+                el.onclick = (e) => {
+                    e.stopPropagation();
+                    if (selectedStreetForTap === el) {
+                        el.classList.remove("selected-for-tap");
+                        selectedStreetForTap = null;
+                    } else {
+                        if (selectedStreetForTap) selectedStreetForTap.classList.remove("selected-for-tap");
+                        selectedStreetForTap = el;
+                        el.classList.add("selected-for-tap");
+                    }
+                };
+
+                pool.appendChild(el);
+            });
+
+            if (poolSortable) poolSortable.destroy();
+            poolSortable = new Sortable(pool, {
+                group: 'shared',
+                animation: 150,
+                onAdd: function (evt) {
+                    evt.item.classList.remove("selected-for-tap");
+                    if (selectedStreetForTap === evt.item) selectedStreetForTap = null;
+                }
+            });
+
+            document.getElementById("pool-count").textContent = currentExercisePiazza.confluences.length;
+        }
+
+        function verifyExercise() {
+            if (!currentExercisePiazza) return;
+            const slots = document.querySelectorAll(".orbit-slot");
+            let correctCount = 0;
+            let total = currentExercisePiazza.confluences.length;
+
+            slots.forEach((slot, idx) => {
+                const item = slot.firstElementChild;
+                if (item && item.textContent.trim() === currentExercisePiazza.confluences[idx]) {
+                    correctCount++;
+                }
+            });
+
+            const fb = document.getElementById("exercise-feedback");
+            if (correctCount === total) {
+                fb.className = "mt-3 text-center font-bold text-sm sm:text-base text-emerald-600";
+                fb.textContent = `Ottimo! Tutte le ${total} confluenze sono corrette in senso antiorario! 🎉`;
+            } else {
+                fb.className = "mt-3 text-center font-bold text-sm sm:text-base text-red-600";
+                fb.textContent = `Hai posizionato correttamente ${correctCount} su ${total} vie. Riprova!`;
+            }
         }
 
         function showExerciseSolution() {
-            document.querySelectorAll(".orbit-slot").forEach((slot, idx) => {
-                if (idx === 0) return;
+            if (!currentExercisePiazza) return;
+            const slots = document.querySelectorAll(".orbit-slot");
+            const pool = document.getElementById("source-pool");
+            pool.innerHTML = "";
+
+            slots.forEach((slot, idx) => {
                 slot.innerHTML = "";
-                const correctStreet = currentCorrectOrder[idx];
-                const card = document.createElement("div");
-                card.className = "street-card p-1.5 bg-emerald-950/95 border border-emerald-500 rounded-lg shadow flex items-center justify-between text-emerald-200 font-bold text-xs w-full";
-                card.setAttribute("data-name", correctStreet);
-                card.innerHTML = `<span class="mr-1 break-words"><i class="fa-solid fa-check text-emerald-400 mr-1 text-xs"></i> ${correctStreet}</span><span class="text-[10px] bg-emerald-900 px-1.5 py-0.5 rounded whitespace-nowrap flex-shrink-0 font-bold">#${idx + 1}</span>`;
-                slot.appendChild(card);
+                const el = document.createElement("div");
+                el.className = "bg-white border border-amber-500 rounded-lg p-2.5 text-xs sm:text-sm font-semibold text-slate-800 shadow-sm";
+                el.textContent = currentExercisePiazza.confluences[idx];
+                slot.appendChild(el);
+                slot.className = "orbit-slot bg-amber-500 text-white border-2 border-amber-600 rounded-lg p-2 text-center text-xs font-bold flex items-center justify-center shadow-lg transition";
             });
-            document.getElementById("source-pool").innerHTML = "";
-            updatePoolCount();
-            document.getElementById("exercise-feedback").innerHTML = `<span class="text-amber-800 bg-amber-50 border border-amber-200 px-4 py-2 rounded-xl inline-block text-sm sm:text-base font-bold">Soluzione mostrata.</span>`;
+
+            document.getElementById("exercise-feedback").className = "mt-3 text-center font-bold text-sm sm:text-base text-amber-600";
+            document.getElementById("exercise-feedback").textContent = "Soluzione mostrata in senso antiorario.";
+            document.getElementById("pool-count").textContent = "0";
         }
 
         function populateAdminSelect() {
+            const piazzaSelect = document.getElementById("admin-piazza-select");
+            const customPiazzaSelect = document.getElementById("admin-custom-piazza");
+            const rotSelect = document.getElementById("admin-rotation-street");
+            const stataliDelSelect = document.getElementById("admin-statali-delete-select");
+            const stataleSelect = document.getElementById("admin-statale-select");
+            const regDelSelect = document.getElementById("admin-delete-regolamento-select");
+            const percDelSelect = document.getElementById("admin-delete-percorso-select");
+            const cerchiaDelSelect = document.getElementById("admin-delete-cerchia-select");
+            const piazzeDelSelect = document.getElementById("admin-piazze-delete-select");
+
+            if(piazzaSelect) piazzaSelect.innerHTML = "";
+            if(customPiazzaSelect) customPiazzaSelect.innerHTML = "";
+            if(rotSelect) rotSelect.innerHTML = "";
+            if(stataliDelSelect) stataliDelSelect.innerHTML = "";
+            if(stataleSelect) stataleSelect.innerHTML = "";
+            if(regDelSelect) regDelSelect.innerHTML = "";
+            if(percDelSelect) percDelSelect.innerHTML = "";
+            if(cerchiaDelSelect) cerchiaDelSelect.innerHTML = "";
+            if(piazzeDelSelect) piazzeDelSelect.innerHTML = "";
+
             let sortedPiazze = [...piazzeData].sort((a, b) => naturalSort(a.name, b.name));
 
-            const select = document.getElementById("admin-piazza-select");
-            select.innerHTML = "";
-            sortedPiazze.forEach((p) => {
-                const realIndex = piazzeData.findIndex(item => item.id === p.id);
-                const opt = document.createElement("option");
-                opt.value = realIndex;
-                opt.textContent = `${p.type} ${p.name}`;
-                select.appendChild(opt);
-            });
-            loadAdminPiazzaData();
+            sortedPiazze.forEach(p => {
+                const opt1 = document.createElement("option");
+                opt1.value = p.id;
+                opt1.textContent = `${p.type} ${p.name}`;
+                if(piazzaSelect) piazzaSelect.appendChild(opt1);
 
-            const piazzeDelSelect = document.getElementById("admin-piazze-delete-select");
-            piazzeDelSelect.innerHTML = "";
-            sortedPiazze.forEach((p) => {
-                const realIndex = piazzeData.findIndex(item => item.id === p.id);
-                const opt = document.createElement("option");
-                opt.value = realIndex;
-                opt.textContent = `${p.type} ${p.name}`;
-                piazzeDelSelect.appendChild(opt);
+                const opt2 = document.createElement("option");
+                opt2.value = p.id;
+                opt2.textContent = `${p.type} ${p.name}`;
+                if(customPiazzaSelect) customPiazzaSelect.appendChild(opt2);
+
+                const optDel = document.createElement("option");
+                optDel.value = p.id;
+                optDel.textContent = `${p.type} ${p.name}`;
+                if(piazzeDelSelect) piazzeDelSelect.appendChild(optDel);
             });
 
-            const customPiazzaSelect = document.getElementById("admin-custom-piazza");
-            customPiazzaSelect.innerHTML = "";
-            sortedPiazze.forEach((p) => {
-                const realIndex = piazzeData.findIndex(item => item.id === p.id);
-                const opt = document.createElement("option");
-                opt.value = realIndex;
-                opt.textContent = `${p.type} ${p.name}`;
-                customPiazzaSelect.appendChild(opt);
-            });
-            populateAdminStreets();
-
-            const stataliSelect = document.getElementById("admin-statale-select");
-            stataliSelect.innerHTML = "";
-            stataliListDynamic.sort(naturalSort);
             stataliListDynamic.forEach(s => {
                 const opt = document.createElement("option");
                 opt.value = s;
                 opt.textContent = s;
-                stataliSelect.appendChild(opt);
-            });
-            loadAdminStataleData();
-
-            const stataliDelSelect = document.getElementById("admin-statali-delete-select");
-            stataliDelSelect.innerHTML = "";
-            stataliListDynamic.forEach(s => {
-                const opt = document.createElement("option");
-                opt.value = s;
-                opt.textContent = s;
-                stataliDelSelect.appendChild(opt);
+                if(stataliDelSelect) stataliDelSelect.appendChild(opt.cloneNode(true));
+                if(stataleSelect) stataleSelect.appendChild(opt);
             });
 
-            const delPercorsoSelect = document.getElementById("admin-delete-percorso-select");
-            delPercorsoSelect.innerHTML = "";
-            let sortedPercorsi = [...percorsiData].sort((a, b) => naturalSort(a.title, b.title));
-            sortedPercorsi.forEach(p => {
+            regolamentiData.forEach(r => {
                 const opt = document.createElement("option");
-                opt.value = p.id;
+                opt.value = r.id;
+                opt.textContent = r.title;
+                if(regDelSelect) regDelSelect.appendChild(opt);
+            });
+
+            percorsiData.forEach(p => {
+                const opt = document.createElement("option");
+                opt.value = p.title;
                 opt.textContent = p.title;
-                delPercorsoSelect.appendChild(opt);
+                if(percDelSelect) percDelSelect.appendChild(opt);
             });
 
-            const delCerchiaSelect = document.getElementById("admin-delete-cerchia-select");
-            if (delCerchiaSelect) {
-                delCerchiaSelect.innerHTML = "";
-                let sortedCerchie = [...cerchieData].sort((a, b) => naturalSort(a.title, b.title));
-                sortedCerchie.forEach(c => {
-                    const opt = document.createElement("option");
-                    opt.value = c.id;
-                    opt.textContent = c.title;
-                    delCerchiaSelect.appendChild(opt);
-                });
-            }
+            cerchieData.forEach(c => {
+                const opt = document.createElement("option");
+                opt.value = c.title;
+                opt.textContent = c.title;
+                if(cerchiaDelSelect) cerchiaDelSelect.appendChild(opt);
+            });
 
-            const delRegolamentoSelect = document.getElementById("admin-delete-regolamento-select");
-            if (delRegolamentoSelect) {
-                delRegolamentoSelect.innerHTML = "";
-                let sortedRegolamenti = [...regolamentiData].sort((a, b) => naturalSort(a.title, b.title));
-                sortedRegolamenti.forEach(r => {
-                    const opt = document.createElement("option");
-                    opt.value = r.id;
-                    opt.textContent = r.title;
-                    delRegolamentoSelect.appendChild(opt);
-                });
+            if (sortedPiazze.length > 0) {
+                loadAdminPiazzaData();
+                populateAdminStreets();
+            }
+            if(stataliListDynamic.length > 0) {
+                loadAdminStataleData();
             }
         }
 
-        function filterAdminSelect(selectId, query) {
+        function filterAdminSelect(selectId, filterText) {
             const select = document.getElementById(selectId);
             if (!select) return;
-            const filter = query.toLowerCase();
-            Array.from(select.options).forEach(opt => {
-                const text = opt.textContent.toLowerCase();
-                if (text.includes(filter)) opt.style.display = "";
-                else opt.style.display = "none";
+            const options = select.options;
+            const query = filterText.toLowerCase();
+            for (let i = 0; i < options.length; i++) {
+                const text = options[i].text.toLowerCase();
+                if (text.includes(query)) {
+                    options[i].style.display = "";
+                } else {
+                    options[i].style.display = "none";
+                }
+            }
+        }
+
+        function loadAdminPiazzaData() {
+            const id = document.getElementById("admin-piazza-select").value;
+            const p = piazzeData.find(x => x.id == id);
+            if (!p) return;
+
+            document.getElementById("edit-piazza-type").value = p.type;
+            document.getElementById("edit-piazza-name").value = p.name;
+            document.getElementById("edit-piazza-confluences").value = p.confluences.join(", ");
+
+            const rotSelect = document.getElementById("admin-rotation-street");
+            rotSelect.innerHTML = "";
+            p.confluences.forEach(c => {
+                const opt = document.createElement("option");
+                opt.value = c;
+                opt.textContent = c;
+                rotSelect.appendChild(opt);
             });
         }
 
         function populateAdminStreets() {
-            const piazzaIndex = document.getElementById("admin-custom-piazza").value;
-            const piazza = piazzeData[piazzaIndex];
+            const piazzaId = document.getElementById("admin-custom-piazza").value;
+            const p = piazzeData.find(x => x.id == piazzaId);
             const streetSelect = document.getElementById("admin-custom-street");
+            if (!streetSelect) return;
             streetSelect.innerHTML = "";
-            if(piazza && piazza.confluences) {
-                let sortedConfluences = [...piazza.confluences].sort(naturalSort);
-                sortedConfluences.forEach(c => {
-                    const opt = document.createElement("option");
-                    opt.value = c;
-                    opt.textContent = c;
-                    streetSelect.appendChild(opt);
-                });
-            }
+            if (!p) return;
+
+            p.confluences.forEach(c => {
+                const opt = document.createElement("option");
+                opt.value = c;
+                opt.textContent = c;
+                streetSelect.appendChild(opt);
+            });
             loadCustomStreetText();
         }
 
         function loadCustomStreetText() {
-            const piazzaIndex = document.getElementById("admin-custom-piazza").value;
-            const piazza = piazzeData[piazzaIndex];
+            const piazzaId = document.getElementById("admin-custom-piazza").value;
+            const p = piazzeData.find(x => x.id == piazzaId);
             const street = document.getElementById("admin-custom-street").value;
-            const textArea = document.getElementById("admin-custom-text");
-            if(piazza && street) {
-                const fullName = `${piazza.type} ${piazza.name}`;
-                const key = `${fullName}_${street}`;
-                textArea.value = customDescriptions[key] || `La via "${street}" confluisce direttamente su ${fullName}.`;
-            } else {
-                textArea.value = "";
-            }
+            if (!p || !street) return;
+
+            const key = `${p.name}_${street}`;
+            document.getElementById("admin-custom-text").value = customDescriptions[key] || "";
         }
 
         function saveCustomStreetDescription() {
-            const piazzaIndex = document.getElementById("admin-custom-piazza").value;
-            const piazza = piazzeData[piazzaIndex];
+            const piazzaId = document.getElementById("admin-custom-piazza").value;
+            const p = piazzeData.find(x => x.id == piazzaId);
             const street = document.getElementById("admin-custom-street").value;
-            const textAreaVal = document.getElementById("admin-custom-text").value.trim();
-            if(piazza && street) {
-                const fullName = `${piazza.type} ${piazza.name}`;
-                const key = `${fullName}_${street}`;
-                if(textAreaVal) customDescriptions[key] = textAreaVal;
-                else delete customDescriptions[key];
-                saveData();
-                alert("Aggiornato!");
-            }
-        }
+            const text = document.getElementById("admin-custom-text").value.trim();
+            if (!p || !street) return;
 
-        function updateAdminPassword() {
-            const newAdminPwd = document.getElementById("admin-new-admin-pwd").value.trim();
-            if (!newAdminPwd) { alert("La password non può essere vuota!"); return; }
-            adminPwd = newAdminPwd;
+            const key = `${p.name}_${street}`;
+            customDescriptions[key] = text;
             saveData();
-            alert("Password Admin aggiornata!");
-        }
-
-        function loadAdminPiazzaData() {
-            const index = document.getElementById("admin-piazza-select").value;
-            const piazza = piazzeData[index];
-            if(piazza) {
-                document.getElementById("edit-piazza-type").value = piazza.type;
-                document.getElementById("edit-piazza-name").value = piazza.name;
-                document.getElementById("edit-piazza-confluences").value = piazza.confluences.join(", ");
-                
-                const rotSelect = document.getElementById("admin-rotation-street");
-                rotSelect.innerHTML = "";
-                let sortedConfluences = [...piazza.confluences].sort(naturalSort);
-                sortedConfluences.forEach(c => {
-                    const opt = document.createElement("option");
-                    opt.value = c;
-                    opt.textContent = c;
-                    rotSelect.appendChild(opt);
-                });
-            }
+            alert("Descrizione collegamento salvata con successo!");
+            renderEncyclopedia();
         }
 
         function applyStreetRotation() {
-            const index = document.getElementById("admin-piazza-select").value;
-            const targetStreet = document.getElementById("admin-rotation-street").value;
-            const piazza = piazzeData[index];
-            if (!piazza) return;
+            const id = document.getElementById("admin-piazza-select").value;
+            const p = piazzeData.find(x => x.id == id);
+            const streetName = document.getElementById("admin-rotation-street").value;
+            if (!p || !streetName) return;
 
-            const streetIndex = piazza.confluences.indexOf(targetStreet);
-            if (streetIndex === -1) return;
-
-            piazza.confluences = [...piazza.confluences.slice(streetIndex), ...piazza.confluences.slice(0, streetIndex)];
-            saveData();
-            loadAdminPiazzaData();
-            alert(`"${targetStreet}" impostata come prima via (in alto).`);
+            const idx = p.confluences.indexOf(streetName);
+            if (idx > -1) {
+                const rotated = p.confluences.slice(idx).concat(p.confluences.slice(0, idx));
+                p.confluences = rotated;
+                saveData();
+                loadAdminPiazzaData();
+                alert(`Prima via impostata su: ${streetName}`);
+            }
         }
 
         function addNewPiazza() {
             const type = document.getElementById("new-piazza-type").value;
             const name = document.getElementById("new-piazza-name").value.trim();
-            const confluencesStr = document.getElementById("new-piazza-confluences").value.trim();
-            if(!name || !confluencesStr) { alert("Compila tutti i campi!"); return; }
-            const confluences = confluencesStr.split(",").map(s => s.trim()).filter(s => s.length > 0);
-            piazzeData.push({ id: Date.now(), type, name, confluences });
+            const rawConfluences = document.getElementById("new-piazza-confluences").value;
+
+            if(!name) { alert("Inserisci il nome!"); return; }
+            const confluences = rawConfluences.split(',').map(s => s.trim()).filter(s => s.length > 0);
+
+            const newId = piazzeData.length > 0 ? Math.max(...piazzeData.map(p => p.id)) + 1 : 1;
+            piazzeData.push({ id: newId, type: type, name: name, confluences: confluences });
             piazzeData.sort((a, b) => naturalSort(a.name, b.name));
             saveData();
+
             document.getElementById("new-piazza-name").value = "";
             document.getElementById("new-piazza-confluences").value = "";
-            
-            document.getElementById("total-count").textContent = piazzeData.length;
-            document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
-            renderEncyclopedia();
-            renderStatali();
-            populateExerciseSelect();
-            populateAdminSelect();
-            alert("Aggiunto!");
+            initApp();
+            alert("Nuovo elemento aggiunto con successo!");
         }
 
         function updatePiazza() {
-            const index = document.getElementById("admin-piazza-select").value;
-            const type = document.getElementById("edit-piazza-type").value;
-            const name = document.getElementById("edit-piazza-name").value.trim();
-            const confluencesStr = document.getElementById("edit-piazza-confluences").value.trim();
-            if(!name || !confluencesStr) { alert("Compila tutti i campi!"); return; }
-            const confluences = confluencesStr.split(",").map(s => s.trim()).filter(s => s.length > 0);
-            piazzeData[index] = { ...piazzeData[index], type, name, confluences };
-            piazzeData.sort((a, b) => naturalSort(a.name, b.name));
+            const id = document.getElementById("admin-piazza-select").value;
+            const p = piazzeData.find(x => x.id == id);
+            if(!p) return;
+
+            p.type = document.getElementById("edit-piazza-type").value;
+            p.name = document.getElementById("edit-piazza-name").value.trim();
+            const rawConfluences = document.getElementById("edit-piazza-confluences").value;
+            p.confluences = rawConfluences.split(',').map(s => s.trim()).filter(s => s.length > 0);
+
             saveData();
-            
-            document.getElementById("total-count").textContent = piazzeData.length;
-            document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
-            renderEncyclopedia();
-            renderStatali();
-            populateExerciseSelect();
-            populateAdminSelect();
-            alert("Aggiornato!");
+            initApp();
+            alert("Aggiornato con successo!");
         }
 
         function deletePiazzaMulti() {
             const select = document.getElementById("admin-piazze-delete-select");
             const selectedOptions = Array.from(select.selectedOptions);
-            if (selectedOptions.length === 0) { alert("Seleziona almeno una piazza da eliminare."); return; }
-            if (confirm(`Vuoi eliminare ${selectedOptions.length} piazze/luoghi selezionati?`)) {
-                const indicesToDelete = selectedOptions.map(opt => Number(opt.value)).sort((a, b) => b - a);
-                indicesToDelete.forEach(idx => { piazzeData.splice(idx, 1); });
+            if(selectedOptions.length === 0) { alert("Seleziona almeno una piazza da eliminare."); return; }
+            if(confirm(`Vuoi eliminare ${selectedOptions.length} piazze selezionate?`)) {
+                const idsToDelete = selectedOptions.map(opt => Number(opt.value));
+                piazzeData = piazzeData.filter(p => !idsToDelete.includes(p.id));
                 saveData();
-                document.getElementById("total-count").textContent = piazzeData.length;
-                document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
-                renderEncyclopedia();
-                renderStatali();
-                populateExerciseSelect();
-                populateAdminSelect();
+                initApp();
                 alert("Piazze eliminate con successo.");
             }
+        }
+
+        function updateAdminPassword() {
+            const newPwd = document.getElementById("admin-new-admin-pwd").value.trim();
+            if(!newPwd) { alert("La password non può essere vuota!"); return; }
+            adminPwd = newPwd;
+            saveData();
+            alert("Password Admin aggiornata con successo!");
         }
 
         function exportJSON() {
@@ -2053,17 +2018,18 @@
                 stataliList: stataliListDynamic
             };
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
-            const dlAnchorElem = document.createElement('a');
-            dlAnchorElem.setAttribute("href", dataStr);
-            dlAnchorElem.setAttribute("download", "milano_taxi_database_backup.json");
-            document.body.appendChild(dlAnchorElem);
-            dlAnchorElem.click();
-            dlAnchorElem.remove();
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", "db_taxi_milano.json");
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
         }
 
         window.onload = function() {
+            setupDynamicManifest();
             loadCloudDatabase().then(() => {
-                setupDynamicManifest();
+                // Avvio schermata di login iniziale
             });
         };
     </script>
