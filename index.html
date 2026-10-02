@@ -179,43 +179,70 @@
                         <p class="text-sm sm:text-base text-slate-600 font-medium">Seleziona una delle opzioni sottostanti per iniziare a consultare il database o metterti alla prova.</p>
                     </div>
 
-                    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3.5 pt-2">
-                        <button onclick="switchTab('enciclopedia')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
-                            <i class="fa-solid fa-book text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
-                            <span class="font-bold text-sm sm:text-lg text-slate-900">Enciclopedia</span>
-                            <span class="text-xs text-slate-500 mt-1">Indice toponomastico</span>
+                    <!-- DUE MACRO TASTI PRINCIPALI -->
+                    <div id="home-main-menu" class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        <button onclick="showPrepMenu()" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex flex-col items-center text-center group shadow-sm">
+                            <i class="fa-solid fa-graduation-cap text-4xl sm:text-5xl text-amber-500 mb-3 group-hover:scale-110 transition"></i>
+                            <span class="font-bold text-lg sm:text-xl text-slate-900">Prepararsi all'esame</span>
+                            <span class="text-xs sm:text-sm text-slate-500 mt-1">Enciclopedia, percorsi, cerchie, statali, regolamenti ed esercizi</span>
                         </button>
 
-                        <button onclick="switchTab('percorsi')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
-                            <i class="fa-solid fa-route text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
-                            <span class="font-bold text-sm sm:text-lg text-slate-900">Percorsi Taxi</span>
-                            <span class="text-xs text-slate-500 mt-1">Consulta percorsi</span>
-                        </button>
-
-                        <button onclick="switchTab('cerchie')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
-                            <i class="fa-solid fa-circle-nodes text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
-                            <span class="font-bold text-sm sm:text-lg text-slate-900">Le cinque cerchie principali di Milano</span>
-                            <span class="text-xs text-slate-500 mt-1">Percorsi delle cerchie</span>
-                        </button>
-
-                        <button onclick="switchTab('statali')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
-                            <i class="fa-solid fa-road text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
-                            <span class="font-bold text-sm sm:text-lg text-slate-900">Strade Statali</span>
-                            <span class="text-xs text-slate-500 mt-1">Elenco statali</span>
-                        </button>
-
-                        <button onclick="switchTab('regolamenti')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
-                            <i class="fa-solid fa-scale-balanced text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
-                            <span class="font-bold text-sm sm:text-lg text-slate-900">Regolamenti</span>
-                            <span class="text-xs text-slate-500 mt-1">Documenti Word</span>
-                        </button>
-                        
-                        <button onclick="switchTab('esercizio')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
-                            <i class="fa-solid fa-map-location-dot text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
-                            <span class="font-bold text-sm sm:text-lg text-slate-900">Esercizi</span>
-                            <span class="text-xs text-slate-500 mt-1">Mettiti alla prova</span>
+                        <button onclick="alert('Sezione Quiz in fase di configurazione con le tue future indicazioni.')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex flex-col items-center text-center group shadow-sm">
+                            <i class="fa-solid fa-list-check text-4xl sm:text-5xl text-amber-500 mb-3 group-hover:scale-110 transition"></i>
+                            <span class="font-bold text-lg sm:text-xl text-slate-900">Quiz per l'esame Ruolo Conducenti</span>
+                            <span class="text-xs sm:text-sm text-slate-500 mt-1">Mettiti alla prova con i quiz</span>
                         </button>
                     </div>
+
+                    <!-- SOTTOMENU "PREPARARSI ALL'ESAME" (INGLOBA I VECCHI TASTI) -->
+                    <div id="home-prep-menu" class="hidden space-y-4 pt-2">
+                        <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+                            <button onclick="backToHomeMain()" class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs sm:text-sm font-bold transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-arrow-left"><span>Indietro</span></i>
+                            </button>
+                            <h3 class="font-bold text-base sm:text-lg text-slate-800">Prepararsi all'esame</h3>
+                            <div></div>
+                        </div>
+
+                        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3.5">
+                            <button onclick="switchTab('enciclopedia')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
+                                <i class="fa-solid fa-book text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
+                                <span class="font-bold text-sm sm:text-lg text-slate-900">Enciclopedia</span>
+                                <span class="text-xs text-slate-500 mt-1">Indice toponomastico</span>
+                            </button>
+
+                            <button onclick="switchTab('percorsi')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
+                                <i class="fa-solid fa-route text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
+                                <span class="font-bold text-sm sm:text-lg text-slate-900">Percorsi Taxi</span>
+                                <span class="text-xs text-slate-500 mt-1">Consulta percorsi</span>
+                            </button>
+
+                            <button onclick="switchTab('cerchie')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
+                                <i class="fa-solid fa-circle-nodes text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
+                                <span class="font-bold text-sm sm:text-lg text-slate-900">Le cinque cerchie principali di Milano</span>
+                                <span class="text-xs text-slate-500 mt-1">Percorsi delle cerchie</span>
+                            </button>
+
+                            <button onclick="switchTab('statali')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
+                                <i class="fa-solid fa-road text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
+                                <span class="font-bold text-sm sm:text-lg text-slate-900">Strade Statali</span>
+                                <span class="text-xs text-slate-500 mt-1">Elenco statali</span>
+                            </button>
+
+                            <button onclick="switchTab('regolamenti')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
+                                <i class="fa-solid fa-scale-balanced text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
+                                <span class="font-bold text-sm sm:text-lg text-slate-900">Regolamenti</span>
+                                <span class="text-xs text-slate-500 mt-1">Documenti Word</span>
+                            </button>
+                            
+                            <button onclick="switchTab('esercizio')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
+                                <i class="fa-solid fa-map-location-dot text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
+                                <span class="font-bold text-sm sm:text-lg text-slate-900">Esercizi</span>
+                                <span class="text-xs text-slate-500 mt-1">Mettiti alla prova</span>
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
             </section>
 
@@ -725,6 +752,16 @@
             return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
         }
 
+        function showPrepMenu() {
+            document.getElementById("home-main-menu").classList.add("hidden");
+            document.getElementById("home-prep-menu").classList.remove("hidden");
+        }
+
+        function backToHomeMain() {
+            document.getElementById("home-prep-menu").classList.add("hidden");
+            document.getElementById("home-main-menu").classList.remove("hidden");
+        }
+
         // Funzione per commutare i pannelli nella sezione Admin (Menu a sinistra)
         function switchAdminSubTab(panelId) {
             const panels = ['regolamenti', 'percorsi', 'cerchie', 'statali', 'aggiungipiazza', 'modificapiazza', 'password'];
@@ -981,6 +1018,7 @@
         }
 
         function goHome() {
+            backToHomeMain();
             switchTab('home');
         }
 
