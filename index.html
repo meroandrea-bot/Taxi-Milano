@@ -158,6 +158,7 @@
                 <button onclick="switchTab('home')" id="btn-home" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-house mr-1"></i> Home</button>
                 <button onclick="switchTab('enciclopedia')" id="btn-enciclopedia" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition">Enciclopedia (<span id="total-count">0</span>)</button>
                 <button onclick="switchTab('percorsi')" id="btn-percorsi" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-route mr-1"></i> Percorsi</button>
+                <button onclick="switchTab('cerchie')" id="btn-cerchie" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-circle-nodes mr-1"></i> Cinque Cerchie</button>
                 <button onclick="switchTab('statali')" id="btn-statali" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-road mr-1"></i> Statali</button>
                 <button onclick="switchTab('regolamenti')" id="btn-regolamenti" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-scale-balanced mr-1"></i> Regolamenti</button>
                 <button onclick="switchTab('esercizio')" id="btn-esercizio" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-map-location-dot mr-1"></i> Esercizi</button>
@@ -182,7 +183,7 @@
                         <p class="text-sm sm:text-base text-slate-600 font-medium">Seleziona una delle opzioni sottostanti per iniziare a consultare il database o metterti alla prova.</p>
                     </div>
 
-                    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3.5 pt-2">
+                    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3.5 pt-2">
                         <button onclick="switchTab('enciclopedia')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
                             <i class="fa-solid fa-book text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
                             <span class="font-bold text-sm sm:text-lg text-slate-900">Enciclopedia</span>
@@ -193,6 +194,12 @@
                             <i class="fa-solid fa-route text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
                             <span class="font-bold text-sm sm:text-lg text-slate-900">Percorsi Taxi</span>
                             <span class="text-xs text-slate-500 mt-1">Consulta percorsi</span>
+                        </button>
+
+                        <button onclick="switchTab('cerchie')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
+                            <i class="fa-solid fa-circle-nodes text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
+                            <span class="font-bold text-sm sm:text-lg text-slate-900">Le cinque cerchie principali di Milano</span>
+                            <span class="text-xs text-slate-500 mt-1">Percorsi delle cerchie</span>
                         </button>
 
                         <button onclick="switchTab('statali')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
@@ -207,7 +214,7 @@
                             <span class="text-xs text-slate-500 mt-1">Documenti Word</span>
                         </button>
                         
-                        <button onclick="switchTab('esercizio')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm col-span-2 lg:col-span-1">
+                        <button onclick="switchTab('esercizio')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
                             <i class="fa-solid fa-map-location-dot text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
                             <span class="font-bold text-sm sm:text-lg text-slate-900">Esercizi</span>
                             <span class="text-xs text-slate-500 mt-1">Mettiti alla prova</span>
@@ -303,6 +310,18 @@
                     </div>
 
                     <div id="percorsi-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 max-h-[65vh] overflow-y-auto p-1"></div>
+                </div>
+            </section>
+
+            <!-- SCHEDA CINQUE CERCHIE PRINCIPALI -->
+            <section id="tab-cerchie" class="hidden space-y-4">
+                <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+                        <h2 class="text-lg sm:text-2xl font-bold flex items-center"><i class="fa-solid fa-circle-nodes text-amber-500 mr-2.5"></i> Le cinque cerchie principali di Milano</h2>
+                        <input type="text" id="search-cerchia" onkeyup="renderCerchie()" placeholder="Cerca percorso cerchia..." class="px-4 py-2.5 rounded-lg border border-slate-300 text-sm sm:text-base focus:ring-2 focus:ring-amber-500 focus:outline-none w-full sm:w-80">
+                    </div>
+
+                    <div id="cerchie-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 max-h-[65vh] overflow-y-auto p-1"></div>
                 </div>
             </section>
 
@@ -460,6 +479,24 @@
                             </div>
                         </div>
 
+                        <!-- Carica Cinque Cerchie Word -->
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <h3 class="font-bold text-sm sm:text-base mb-3"><i class="fa-solid fa-circle-nodes mr-1.5 text-amber-600"></i> Carica Cinque Cerchie (.docx)</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Seleziona File Word (anche multipli)</label>
+                                    <input type="file" id="admin-cerchia-file" accept=".docx" multiple class="w-full text-xs text-slate-600 file:mr-2 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-700">
+                                </div>
+                                <button onclick="uploadCerchieWordMulti()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Carica Cerchie</button>
+                            </div>
+                            <div class="mt-3.5 pt-3 border-t border-slate-200">
+                                <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Cerchie (Seleziona multipli)</label>
+                                <input type="text" id="filter-admin-cerchie" oninput="filterAdminSelect('admin-delete-cerchia-select', this.value)" placeholder="Cerca tra le cerchie..." class="w-full px-3 py-1.5 mb-2 border rounded text-xs bg-white">
+                                <select id="admin-delete-cerchia-select" multiple class="w-full h-32 px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-2 font-semibold"></select>
+                                <button onclick="deleteCerchiaMulti()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-lg text-xs sm:text-sm transition">Elimina Selezionati</button>
+                            </div>
+                        </div>
+
                         <!-- Gestione Strade Statali -->
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
                             <h3 class="font-bold text-sm sm:text-base mb-1.5"><i class="fa-solid fa-road mr-1.5 text-red-600"></i> Strade Statali</h3>
@@ -571,6 +608,7 @@
         let adminPwd = localStorage.getItem("milan_admin_pwd") || "admin_taxi_2026";
         let customDescriptions = JSON.parse(localStorage.getItem("milan_custom_descriptions")) || {};
         let percorsiData = JSON.parse(localStorage.getItem("milan_percorsi_data")) || [];
+        let cerchieData = JSON.parse(localStorage.getItem("milan_cerchie_data")) || [];
         let regolamentiData = JSON.parse(localStorage.getItem("milan_regolamenti_data")) || [
             { id: 1, title: "Regolamento Servizio Taxi Comune di Milano", fileData: "", fileName: "regolamento.docx" }
         ];
@@ -697,6 +735,7 @@
                         if (data.piazze) piazzeData = data.piazze;
                         if (data.customDescriptions) customDescriptions = data.customDescriptions;
                         if (data.percorsi) percorsiData = data.percorsi;
+                        if (data.cerchie) cerchieData = data.cerchie;
                         if (data.regolamenti) regolamentiData = data.regolamenti;
                         if (data.stataliDescriptions) stataliDescriptions = data.stataliDescriptions;
                         if (data.stataliList) stataliListDynamic = data.stataliList;
@@ -714,6 +753,7 @@
             localStorage.setItem("milan_piazze_data_full", JSON.stringify(piazzeData));
             localStorage.setItem("milan_custom_descriptions", JSON.stringify(customDescriptions));
             localStorage.setItem("milan_percorsi_data", JSON.stringify(percorsiData));
+            localStorage.setItem("milan_cerchie_data", JSON.stringify(cerchieData));
             localStorage.setItem("milan_regolamenti_data", JSON.stringify(regolamentiData));
             localStorage.setItem("milan_statali_descriptions", JSON.stringify(stataliDescriptions));
             localStorage.setItem("milan_statali_list", JSON.stringify(stataliListDynamic));
@@ -740,7 +780,7 @@
 
             if (!inputVal) {
                 err.textContent = "Inserisci un codice valido.";
-                err.classList.remove("hidden");
+                err.classList.add("hidden");
                 return;
             }
 
@@ -816,6 +856,7 @@
             document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
             renderEncyclopedia();
             renderPercorsi();
+            renderCerchie();
             renderRegolamenti();
             renderStatali();
             populateExerciseSelect();
@@ -828,7 +869,7 @@
         }
 
         function switchTab(tab) {
-            ['home', 'enciclopedia', 'percorsi', 'statali', 'regolamenti', 'esercizio', 'admin'].forEach(t => {
+            ['home', 'enciclopedia', 'percorsi', 'cerchie', 'statali', 'regolamenti', 'esercizio', 'admin'].forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
                 if(el) el.classList.add("hidden");
                 const btn = document.getElementById(`btn-${t}`);
@@ -856,6 +897,7 @@
                 document.getElementById("admin-new-admin-pwd").value = adminPwd;
             }
             if(tab === 'percorsi') { renderPercorsi(); }
+            if(tab === 'cerchie') { renderCerchie(); }
             if(tab === 'regolamenti') { renderRegolamenti(); }
             if(tab === 'statali') { renderStatali(); }
         }
@@ -1043,6 +1085,34 @@
             alert(`Caricamento completato! Aggiunti ${loadedCount} percorsi.`);
         }
 
+        async function uploadCerchieWordMulti() {
+            const fileInput = document.getElementById("admin-cerchia-file");
+            if (fileInput.files.length === 0) { alert("Seleziona almeno un file Word (.docx)!"); return; }
+
+            const files = Array.from(fileInput.files);
+            let loadedCount = 0;
+
+            for (const file of files) {
+                let title = file.name.replace(/\.[^/.]+$/, "");
+                await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        cerchieData.push({ id: Date.now() + Math.random(), title: title, fileData: event.target.result, fileName: file.name });
+                        loadedCount++;
+                        resolve();
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            cerchieData.sort((a, b) => naturalSort(a.title, b.title));
+            saveData();
+            fileInput.value = "";
+            renderCerchie();
+            populateAdminSelect();
+            alert(`Caricamento completato! Aggiunti ${loadedCount} percorsi alle cerchie.`);
+        }
+
         function renderPercorsi() {
             const query = document.getElementById("search-percorso").value.toLowerCase();
             const container = document.getElementById("percorsi-list");
@@ -1075,8 +1145,40 @@
             });
         }
 
-        function showPercorsoDetail(id) {
-            const percorso = percorsiData.find(p => p.id === id);
+        function renderCerchie() {
+            const query = document.getElementById("search-cerchia").value.toLowerCase();
+            const container = document.getElementById("cerchie-list");
+            container.innerHTML = "";
+
+            let sortedCerchie = [...cerchieData].sort((a, b) => naturalSort(a.title, b.title));
+            let filtered = sortedCerchie.filter(c => c.title.toLowerCase().includes(query));
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 col-span-full text-center py-6 text-sm font-medium">Nessun percorso cerchia trovato.</p>`;
+                return;
+            }
+
+            filtered.forEach(c => {
+                const card = document.createElement("div");
+                card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between cursor-pointer group hover:border-amber-500";
+                card.onclick = () => showPercorsoDetail(c.id, true);
+                card.innerHTML = `
+                    <div class="flex items-center space-x-3.5">
+                        <div class="p-3 bg-amber-50 rounded-xl group-hover:bg-amber-100 transition text-amber-600">
+                            <i class="fa-solid fa-circle-nodes text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-amber-700 leading-snug">${c.title}</h3>
+                            <span class="text-xs text-slate-500 font-medium">Clicca per leggere o scaricare</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function showPercorsoDetail(id, isCerchia = false) {
+            const percorso = isCerchia ? cerchieData.find(c => c.id === id) : percorsiData.find(p => p.id === id);
             if (!percorso) return;
             document.getElementById("percorso-detail-title").textContent = percorso.title;
             
@@ -1100,17 +1202,32 @@
                     mammoth.extractRawText({ arrayBuffer: bytes.buffer })
                         .then(function(result) {
                             const rawText = result.value || "";
-                            let streets = rawText.split(/[-–—>–\n;]/).map(s => s.trim()).filter(s => s.length > 2);
+                            let rawStreets = rawText.split(/[-–—>–\n;]/).map(s => s.trim()).filter(s => s.length > 2);
                             
-                            // PULIZIA: Rimuove automaticamente i punti di partenza e arrivo se coincidono con l'inizio dell'elenco estratto
-                            let titleParts = percorso.title.split(/[-–—]/).map(s => s.trim().toLowerCase());
-                            streets = streets.filter(street => {
+                            // Estrazione partenza e arrivo dal titolo (es. "PIAZZA 24 MAGGIO - LINATE")
+                            let titleParts = percorso.title.split(/[-–—]/).map(s => s.trim()).filter(s => s.length > 0);
+                            let partenza = titleParts.length > 0 ? titleParts[0] : "";
+                            let arrivo = titleParts.length > 1 ? titleParts[1] : "";
+
+                            // Rimuove eventuali ripetizioni o duplicati di partenza/arrivo dal corpo estratto
+                            let cleanedStreets = rawStreets.filter(street => {
                                 const sLower = street.toLowerCase();
-                                return !titleParts.some(part => part && (sLower === part || sLower.includes(part) && part.length > 4));
+                                const pLower = partenza.toLowerCase();
+                                const aLower = arrivo.toLowerCase();
+                                return (pLower && sLower !== pLower && !sLower.includes(pLower)) &&
+                                       (aLower && sLower !== aLower && !sLower.includes(aLower));
                             });
 
-                            if (streets.length === 0) streets = [rawText];
-                            currentPercorsoStreets = streets;
+                            // Ricostruisce l'array finale: Partenza (1), Vie intermedie pulite, Arrivo (ultima posizione)
+                            let finalStreets = [];
+                            if (partenza) finalStreets.push(partenza);
+                            finalStreets = finalStreets.concat(cleanedStreets);
+                            if (arrivo && (finalStreets.length === 0 || finalStreets[finalStreets.length - 1].toLowerCase() !== arrivo.toLowerCase())) {
+                                finalStreets.push(arrivo);
+                            }
+
+                            if (finalStreets.length === 0) finalStreets = [rawText];
+                            currentPercorsoStreets = finalStreets;
                             buildPercorsoViews();
                         })
                         .catch(function(err) {
@@ -1232,6 +1349,20 @@
                 renderPercorsi();
                 populateAdminSelect();
                 alert("Percorsi eliminati con successo.");
+            }
+        }
+
+        function deleteCerchiaMulti() {
+            const select = document.getElementById("admin-delete-cerchia-select");
+            const selectedOptions = Array.from(select.selectedOptions);
+            if (selectedOptions.length === 0) { alert("Seleziona almeno un percorso cerchia da eliminare."); return; }
+            if (confirm(`Vuoi eliminare ${selectedOptions.length} percorsi delle cerchie selezionati?`)) {
+                const idsToDelete = selectedOptions.map(opt => Number(opt.value));
+                cerchieData = cerchieData.filter(c => !idsToDelete.includes(c.id));
+                saveData();
+                renderCerchie();
+                populateAdminSelect();
+                alert("Percorsi delle cerchie eliminati con successo.");
             }
         }
 
@@ -1732,6 +1863,18 @@
                 delPercorsoSelect.appendChild(opt);
             });
 
+            const delCerchiaSelect = document.getElementById("admin-delete-cerchia-select");
+            if (delCerchiaSelect) {
+                delCerchiaSelect.innerHTML = "";
+                let sortedCerchie = [...cerchieData].sort((a, b) => naturalSort(a.title, b.title));
+                sortedCerchie.forEach(c => {
+                    const opt = document.createElement("option");
+                    opt.value = c.id;
+                    opt.textContent = c.title;
+                    delCerchiaSelect.appendChild(opt);
+                });
+            }
+
             const delRegolamentoSelect = document.getElementById("admin-delete-regolamento-select");
             if (delRegolamentoSelect) {
                 delRegolamentoSelect.innerHTML = "";
@@ -1909,6 +2052,7 @@
                 piazze: piazzeData,
                 customDescriptions: customDescriptions,
                 percorsi: percorsiData,
+                cerchie: cerchieData,
                 regolamenti: regolamentiData,
                 stataliDescriptions: stataliDescriptions,
                 stataliList: stataliListDynamic
