@@ -1100,32 +1100,17 @@
                     mammoth.extractRawText({ arrayBuffer: bytes.buffer })
                         .then(function(result) {
                             const rawText = result.value || "";
-                            let rawStreets = rawText.split(/[-–—>–\n;]/).map(s => s.trim()).filter(s => s.length > 2);
+                            let streets = rawText.split(/[-–—>–\n;]/).map(s => s.trim()).filter(s => s.length > 2);
                             
-                            // Estrazione partenza e arrivo dal titolo (es. "PIAZZA 24 MAGGIO - LINATE")
-                            let titleParts = percorso.title.split(/[-–—]/).map(s => s.trim()).filter(s => s.length > 0);
-                            let partenza = titleParts.length > 0 ? titleParts[0] : "";
-                            let arrivo = titleParts.length > 1 ? titleParts[1] : "";
-
-                            // Rimuove eventuali ripetizioni o duplicati di partenza/arrivo dal corpo estratto
-                            let cleanedStreets = rawStreets.filter(street => {
+                            // PULIZIA: Rimuove automaticamente i punti di partenza e arrivo se coincidono con l'inizio dell'elenco estratto
+                            let titleParts = percorso.title.split(/[-–—]/).map(s => s.trim().toLowerCase());
+                            streets = streets.filter(street => {
                                 const sLower = street.toLowerCase();
-                                const pLower = partenza.toLowerCase();
-                                const aLower = arrivo.toLowerCase();
-                                return (pLower && sLower !== pLower && !sLower.includes(pLower)) &&
-                                       (aLower && sLower !== aLower && !sLower.includes(aLower));
+                                return !titleParts.some(part => part && (sLower === part || sLower.includes(part) && part.length > 4));
                             });
 
-                            // Ricostruisce l'array finale: Partenza (1), Vie intermedie pulite, Arrivo (ultima posizione)
-                            let finalStreets = [];
-                            if (partenza) finalStreets.push(partenza);
-                            finalStreets = finalStreets.concat(cleanedStreets);
-                            if (arrivo && (finalStreets.length === 0 || finalStreets[finalStreets.length - 1].toLowerCase() !== arrivo.toLowerCase())) {
-                                finalStreets.push(arrivo);
-                            }
-
-                            if (finalStreets.length === 0) finalStreets = [rawText];
-                            currentPercorsoStreets = finalStreets;
+                            if (streets.length === 0) streets = [rawText];
+                            currentPercorsoStreets = streets;
                             buildPercorsoViews();
                         })
                         .catch(function(err) {
