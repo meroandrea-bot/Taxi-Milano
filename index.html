@@ -1201,7 +1201,26 @@
                     mammoth.extractRawText({ arrayBuffer: bytes.buffer })
                         .then(function(result) {
                             const rawText = result.value || "";
-                            currentDocumentSteps = rawText.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+                            let steps = [];
+                            const lines = rawText.split('\n');
+                            
+                            lines.forEach(line => {
+                                line = line.trim();
+                                if (!line) return;
+                                
+                                // Suddivide se trova trattini o virgole separando i vari segmenti del percorso
+                                if (line.includes(" - ") || line.includes(",")) {
+                                    const parts = line.split(/,|\s+[-–—]\s+/);
+                                    parts.forEach(p => {
+                                        let cleanP = p.trim().replace(/^[-–—,\s]+/, '').replace(/[-–—,\s]+$/, '');
+                                        if (cleanP) steps.push(cleanP);
+                                    });
+                                } else {
+                                    steps.push(line);
+                                }
+                            });
+
+                            currentDocumentSteps = steps.filter(s => s.length > 0);
                             if (currentDocumentSteps.length === 0) {
                                 currentDocumentSteps = [rawText];
                             }
