@@ -273,9 +273,31 @@
                                     </button>
                                 </div>
                             </div>
+                            
+                            <!-- Barra comandi interni modale (Toggle Vista + Controlli passo-passo) -->
+                            <div class="bg-slate-100 border-b border-slate-200 px-4 sm:px-6 py-2.5 flex flex-wrap justify-between items-center gap-3">
+                                <div class="flex items-center gap-2">
+                                    <button id="btn-toggle-view" onclick="togglePercorsoViewMode()" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-2 shadow-sm">
+                                        <i class="fa-solid fa-list-check" id="toggle-view-icon"></i> <span id="toggle-view-text">Modalità Passo-Passo</span>
+                                    </button>
+                                </div>
+                                <div id="percorso-step-controls" class="hidden items-center gap-2">
+                                    <button onclick="prevPercorsoStep()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1 shadow-sm">
+                                        <i class="fa-solid fa-arrow-left"></i> Indietro
+                                    </button>
+                                    <span id="percorso-step-indicator" class="text-xs sm:text-sm font-bold text-slate-700 px-2">1 / 1</span>
+                                    <button onclick="nextPercorsoStep()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1 shadow-sm">
+                                        Avanti <i class="fa-solid fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+
                             <!-- Corpo Testuale (A tutta altezza scrollabile) -->
-                            <div id="percorso-content-box" class="flex-1 text-slate-800 text-sm sm:text-base p-4 sm:p-8 overflow-y-auto space-y-4 bg-slate-50 leading-relaxed">
-                                <!-- Testo estratto del documento Word -->
+                            <div class="flex-1 text-slate-800 text-sm sm:text-base p-4 sm:p-8 overflow-y-auto bg-slate-50 leading-relaxed">
+                                <!-- Vista Elenco Completo -->
+                                <div id="percorso-list-view-container" class="space-y-3"></div>
+                                <!-- Vista Passo-Passo Singola Via -->
+                                <div id="percorso-single-step-container" class="hidden h-full flex flex-col items-center justify-center text-center p-4"></div>
                             </div>
                         </div>
                     </div>
@@ -558,6 +580,11 @@
         let sortMode = 'default';
         let selectedStreetForTap = null;
         let deferredPrompt = null;
+
+        // Stato corrente del percorso aperto nella modale
+        let currentPercorsoStreets = [];
+        let currentPercorsoStepIndex = 0;
+        let isStepByStepMode = false;
 
         function naturalSort(a, b) {
             return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
@@ -966,12 +993,12 @@
             };
 
             document.getElementById("regolamento-detail-view").classList.remove("hidden");
-            document.body.style.overflow = 'hidden'; // Blocca lo scroll della pagina sotto
+            document.body.style.overflow = 'hidden';
         }
 
         function closeRegolamentoDetail() {
             document.getElementById("regolamento-detail-view").classList.add("hidden");
-            document.body.style.overflow = 'auto'; // Ripristina lo scroll
+            document.body.style.overflow = 'auto';
         }
 
         function deleteRegolamentoMulti() {
@@ -1053,8 +1080,13 @@
             if (!percorso) return;
             document.getElementById("percorso-detail-title").textContent = percorso.title;
             
-            const contentBox = document.getElementById("percorso-content-box");
-            contentBox.innerHTML = `<p class="text-slate-500 italic"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Caricamento percorso in corso...</p>`;
+            const listViewContainer = document.getElementById("percorso-list-view-container");
+            listViewContainer.innerHTML = `<p class="text-slate-500 italic"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Caricamento percorso in corso...</p>`;
+
+            // Reset modalità di visualizzazione su Elenco all'apertura
+            isStepByStepMode = false;
+            currentPercorsoStepIndex = 0;
+            updatePercorsoViewUI();
 
             if (percorso.fileData) {
                 try {
@@ -1065,18 +1097,24 @@
                     for (let i = 0; i < len; i++) {
                         bytes[i] = binaryString.charCodeAt(i);
                     }
-                    mammoth.convertToHtml({ arrayBuffer: bytes.buffer })
+                    mammoth.extractRawText({ arrayBuffer: bytes.buffer })
                         .then(function(result) {
-                            contentBox.innerHTML = result.value || "<p class='text-slate-500'>Documento vuoto.</p>";
+                            const rawText = result.value || "";
+                            // Estrazione delle vie tramite separatori comuni (es. trattini, frecce, a capo o punti e virgola)
+                            let streets = rawText.split(/[-–—>–\n;]/).map(s => s.trim()).filter(s => s.length > 2);
+                            if (streets.length === 0) streets = [rawText];
+                            currentPercorsoStreets = streets;
+                            buildPercorsoViews();
                         })
                         .catch(function(err) {
-                            contentBox.innerHTML = "<p class='text-red-500'>Errore durante la lettura del documento Word.</p>";
+                            listViewContainer.innerHTML = "<p class='text-red-500'>Errore durante la lettura del documento Word.</p>";
                         });
                 } catch (e) {
-                    contentBox.innerHTML = "<p class='text-red-500'>Impossibile elaborare il file salvato.</p>";
+                    listViewContainer.innerHTML = "<p class='text-red-500'>Impossibile elaborare il file salvato.</p>";
                 }
             } else {
-                contentBox.innerHTML = "<p class='text-slate-500'>Nessun testo disponibile.</p>";
+                currentPercorsoStreets = ["Nessun dettaglio via disponibile."];
+                buildPercorsoViews();
             }
 
             const downloadBtn = document.getElementById("percorso-download-btn");
@@ -1091,12 +1129,91 @@
             };
 
             document.getElementById("percorso-detail-view").classList.remove("hidden");
-            document.body.style.overflow = 'hidden'; // Blocca lo scroll della pagina sotto
+            document.body.style.overflow = 'hidden';
+        }
+
+        function buildPercorsoViews() {
+            // 1. Costruzione Vista Elenco Sequenziale con numerazione a sinistra
+            const listContainer = document.getElementById("percorso-list-view-container");
+            listContainer.innerHTML = "";
+            currentPercorsoStreets.forEach((street, idx) => {
+                const item = document.createElement("div");
+                item.className = "flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-xl shadow-sm hover:border-amber-500 transition";
+                item.innerHTML = `
+                    <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-900 font-black text-xs sm:text-sm flex items-center justify-center flex-shrink-0">${idx + 1}</span>
+                    <span class="text-slate-800 font-semibold text-sm sm:text-base leading-snug">${street}</span>
+                `;
+                listContainer.appendChild(item);
+            });
+
+            // 2. Aggiornamento vista passo-passo
+            updateSingleStepView();
+        }
+
+        function togglePercorsoViewMode() {
+            isStepByStepMode = !isStepByStepMode;
+            updatePercorsoViewUI();
+        }
+
+        function updatePercorsoViewUI() {
+            const listContainer = document.getElementById("percorso-list-view-container");
+            const stepContainer = document.getElementById("percorso-single-step-container");
+            const stepControls = document.getElementById("percorso-step-controls");
+            const btnText = document.getElementById("toggle-view-text");
+            const btnIcon = document.getElementById("toggle-view-icon");
+
+            if (isStepByStepMode) {
+                listContainer.classList.add("hidden");
+                stepContainer.classList.remove("hidden");
+                stepControls.classList.remove("hidden");
+                stepControls.classList.add("flex");
+                btnText.textContent = "Modalità Elenco";
+                btnIcon.className = "fa-solid fa-list";
+                updateSingleStepView();
+            } else {
+                listContainer.classList.remove("hidden");
+                stepContainer.classList.add("hidden");
+                stepControls.classList.remove("flex");
+                stepControls.classList.add("hidden");
+                btnText.textContent = "Modalità Passo-Passo";
+                btnIcon.className = "fa-solid fa-list-check";
+            }
+        }
+
+        function updateSingleStepView() {
+            const stepContainer = document.getElementById("percorso-single-step-container");
+            const indicator = document.getElementById("percorso-step-indicator");
+            if (!currentPercorsoStreets.length) return;
+
+            indicator.textContent = `${currentPercorsoStepIndex + 1} / ${currentPercorsoStreets.length}`;
+            const currentStreet = currentPercorsoStreets[currentPercorsoStepIndex];
+
+            stepContainer.innerHTML = `
+                <div class="bg-white border-2 border-amber-500 rounded-2xl p-6 sm:p-10 shadow-lg max-w-xl w-full text-center space-y-4">
+                    <span class="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-900 font-black text-xs sm:text-sm uppercase tracking-wider">Via #${currentPercorsoStepIndex + 1} di ${currentPercorsoStreets.length}</span>
+                    <h4 class="text-xl sm:text-2xl font-black text-slate-900 leading-tight">${currentStreet}</h4>
+                    <p class="text-xs sm:text-sm text-slate-500 font-medium">Usa i tasti sottostanti per navigare il percorso</p>
+                </div>
+            `;
+        }
+
+        function nextPercorsoStep() {
+            if (currentPercorsoStepIndex < currentPercorsoStreets.length - 1) {
+                currentPercorsoStepIndex++;
+                updateSingleStepView();
+            }
+        }
+
+        function prevPercorsoStep() {
+            if (currentPercorsoStepIndex > 0) {
+                currentPercorsoStepIndex--;
+                updateSingleStepView();
+            }
         }
 
         function closePercorsoDetail() {
             document.getElementById("percorso-detail-view").classList.add("hidden");
-            document.body.style.overflow = 'auto'; // Ripristina lo scroll
+            document.body.style.overflow = 'auto';
         }
 
         function deletePercorsoMulti() {
