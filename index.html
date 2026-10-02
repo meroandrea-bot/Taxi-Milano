@@ -50,14 +50,17 @@
     <style>
         .orbit-container {
             position: relative;
-            width: 340px;
-            height: 340px;
+            width: 380px;
+            height: 380px;
             margin: 0 auto;
+            transform-origin: center center;
+            transition: transform 0.1s ease-out;
+            touch-action: none;
         }
         @media (min-width: 640px) {
             .orbit-container {
-                width: 500px;
-                height: 500px;
+                width: 540px;
+                height: 540px;
             }
         }
         .orbit-center {
@@ -69,7 +72,7 @@
         }
         .orbit-slot {
             position: absolute;
-            width: 125px;
+            width: 115px;
             min-height: 42px;
             transform: translate(-50%, -50%);
             z-index: 20;
@@ -78,7 +81,7 @@
         }
         @media (min-width: 640px) {
             .orbit-slot {
-                width: 150px;
+                width: 145px;
                 min-height: 46px;
             }
         }
@@ -378,22 +381,30 @@
                     </div>
                     
                     <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-3.5 text-xs sm:text-sm font-semibold text-amber-900 shadow-sm">
-                        <i class="fa-solid fa-circle-info mr-1.5 text-amber-600"></i> <strong>Smartphone:</strong> Tocca una via dall'elenco e poi tocca il riquadro vuoto attorno alla piazza per posizionarla! (Senso antiorario).
+                        <i class="fa-solid fa-circle-info mr-1.5 text-amber-600"></i> <strong>Smartphone & PC:</strong> Tocca una via dall'elenco e poi tocca il riquadro vuoto attorno alla piazza per posizionarla! Usa un dito per spostare la mappa e due dita per fare zoom.
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4">
-                        <div class="lg:col-span-8 bg-slate-900 rounded-xl p-3.5 relative flex flex-col items-center justify-center min-h-[420px] sm:min-h-[520px] shadow-inner border border-slate-700 overflow-x-auto overflow-y-auto">
-                            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#f59e0b_1.5px,transparent_1.5px)] [background-size:16px_16px]"></div>
+                        <div id="map-viewport" class="lg:col-span-8 bg-slate-900 rounded-xl p-3.5 relative flex flex-col items-center justify-center min-h-[420px] sm:min-h-[520px] shadow-inner border border-slate-700 overflow-hidden cursor-grab active:cursor-grabbing">
+                            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#f59e0b_1.5px,transparent_1.5px)] [background-size:16px_16px] pointer-events-none"></div>
 
-                            <div class="orbit-container my-auto">
-                                <div class="orbit-center w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-slate-800 border-4 border-amber-500 shadow-2xl flex flex-col items-center justify-center text-center p-2 z-10">
-                                    <div id="ex-square-type" class="text-[10px] sm:text-xs uppercase tracking-widest text-amber-400 font-extrabold">Piazza</div>
-                                    <div id="ex-square-title" class="text-sm sm:text-base font-black text-white leading-tight mt-1">-</div>
+                            <div id="orbit-pan-zoom-wrapper" class="w-full h-full flex items-center justify-center absolute inset-0">
+                                <div class="orbit-container my-auto" id="orbit-container-box">
+                                    <div class="orbit-center w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-slate-800 border-4 border-amber-500 shadow-2xl flex flex-col items-center justify-center text-center p-2 z-10">
+                                        <div id="ex-square-type" class="text-[10px] sm:text-xs uppercase tracking-widest text-amber-400 font-extrabold">Piazza</div>
+                                        <div id="ex-square-title" class="text-sm sm:text-base font-black text-white leading-tight mt-1">-</div>
+                                    </div>
+                                    <div id="map-slots-container"></div>
                                 </div>
-                                <div id="map-slots-container"></div>
                             </div>
 
-                            <div class="absolute bottom-3 text-xs sm:text-sm text-slate-300 font-bold tracking-wide bg-slate-800/80 px-3 py-1 rounded-full border border-slate-600">
+                            <div class="absolute bottom-3 right-3 z-30 flex items-center gap-1.5 bg-slate-800/90 px-2.5 py-1.5 rounded-lg border border-slate-600 shadow">
+                                <button onclick="zoomMap(0.2)" class="w-7 h-7 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded flex items-center justify-center text-sm transition" title="Zoom In">+</button>
+                                <button onclick="zoomMap(-0.2)" class="w-7 h-7 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded flex items-center justify-center text-sm transition" title="Zoom Out">-</button>
+                                <button onclick="resetMapTransform()" class="px-2 h-7 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded flex items-center justify-center text-xs transition" title="Reset Zoom">Reset</button>
+                            </div>
+
+                            <div class="absolute bottom-3 left-3 z-30 text-xs sm:text-sm text-slate-300 font-bold tracking-wide bg-slate-800/80 px-3 py-1 rounded-full border border-slate-600 pointer-events-none">
                                 <i class="fa-solid fa-arrows-spin mr-1.5 text-amber-400"></i> Senso Antiorario
                             </div>
                         </div>
@@ -403,7 +414,7 @@
                                 <span><i class="fa-solid fa-list text-amber-500 mr-1.5"></i> Vie Disponibili</span>
                                 <span id="pool-count" class="text-xs bg-slate-200 px-2.5 py-0.5 rounded text-slate-800 font-bold">0</span>
                             </div>
-                            <p class="text-xs text-slate-600 mb-2.5 font-medium">Trascina o tocca le vie nei riquadri.</p>
+                            <p class="text-xs text-slate-600 mb-2.5 font-medium">Tocca la via e poi il riquadro sulla mappa.</p>
                             <div id="source-pool" class="space-y-2 min-h-[240px] sm:min-h-[350px] max-h-[420px] overflow-y-auto p-1.5 bg-white border border-slate-200 rounded-lg"></div>
                         </div>
                     </div>
@@ -701,6 +712,15 @@
         let currentActiveDocTitle = "";
         let currentRawDocBuffer = null;
 
+        // Stato Pan & Zoom Esercizi
+        let mapScale = 1;
+        let mapPanX = 0;
+        let mapPanY = 0;
+        let isDraggingMap = false;
+        let startDragX = 0;
+        let startDragY = 0;
+        let initialPinchDistance = null;
+
         function naturalSort(a, b) {
             return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
         }
@@ -984,6 +1004,7 @@
 
             if(tab === 'esercizio') {
                 loadExercise();
+                setupMapPanAndZoom();
                 document.addEventListener("click", handleOutsideClick);
             } else {
                 document.removeEventListener("click", handleOutsideClick);
@@ -1322,10 +1343,8 @@
                             lines.forEach(l => {
                                 const trimmed = l.trim();
                                 if (trimmed) {
-                                    // Suddivide le linee o pulisce i separatori esistenti per creare l'elenco via per via
                                     const cleaned = trimmed.replace(/^(\d+[\.\)]\s*|-\s*)/, '');
                                     if (cleaned) {
-                                        // Se all'interno di una singola riga ci sono più vie separate da trattini o virgole, separiamole
                                         const subParts = cleaned.split(/[,–—-]/).map(p => p.trim()).filter(p => p.length > 0);
                                         if (subParts.length > 1) {
                                             subParts.forEach(sp => steps.push(sp));
@@ -1904,7 +1923,87 @@
             document.getElementById("exercise-feedback").textContent = "";
 
             assignedSlots = {};
+            resetMapTransform();
             renderSlotsAndPool();
+        }
+
+        function updateMapTransform() {
+            const wrapper = document.getElementById("orbit-container-box");
+            if (wrapper) {
+                wrapper.style.transform = `translate(${mapPanX}px, ${mapPanY}px) scale(${mapScale})`;
+            }
+        }
+
+        function zoomMap(delta) {
+            mapScale = Math.min(Math.max(0.5, mapScale + delta), 3.0);
+            updateMapTransform();
+        }
+
+        function resetMapTransform() {
+            mapScale = 1;
+            mapPanX = 0;
+            mapPanY = 0;
+            updateMapTransform();
+        }
+
+        function setupMapPanAndZoom() {
+            const viewport = document.getElementById("map-viewport");
+            if (!viewport) return;
+
+            viewport.onmousedown = (e) => {
+                if (e.target.closest('.orbit-slot') || e.target.closest('.orbit-center')) return;
+                isDraggingMap = true;
+                startDragX = e.clientX - mapPanX;
+                startDragY = e.clientY - mapPanY;
+            };
+
+            window.onmousemove = (e) => {
+                if (!isDraggingMap) return;
+                mapPanX = e.clientX - startDragX;
+                mapPanY = e.clientY - startDragY;
+                updateMapTransform();
+            };
+
+            window.onmouseup = () => {
+                isDraggingMap = false;
+            };
+
+            viewport.ontouchstart = (e) => {
+                if (e.touches.length === 1) {
+                    if (e.target.closest('.orbit-slot') || e.target.closest('.orbit-center')) return;
+                    isDraggingMap = true;
+                    startDragX = e.touches[0].clientX - mapPanX;
+                    startDragY = e.touches[0].clientY - mapPanY;
+                    initialPinchDistance = null;
+                } else if (e.touches.length === 2) {
+                    isDraggingMap = false;
+                    initialPinchDistance = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                }
+            };
+
+            viewport.ontouchmove = (e) => {
+                if (e.touches.length === 1 && isDraggingMap) {
+                    mapPanX = e.touches[0].clientX - startDragX;
+                    mapPanY = e.touches[0].clientY - startDragY;
+                    updateMapTransform();
+                } else if (e.touches.length === 2 && initialPinchDistance) {
+                    const currentDistance = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    const factor = currentDistance / initialPinchDistance;
+                    mapScale = Math.min(Math.max(0.5, mapScale * (factor > 1 ? 1.03 : 0.97)), 3.0);
+                    updateMapTransform();
+                }
+            };
+
+            viewport.ontouchend = (e) => {
+                if (e.touches.length < 2) initialPinchDistance = null;
+                if (e.touches.length === 0) isDraggingMap = false;
+            };
         }
 
         function renderSlotsAndPool() {
@@ -1912,12 +2011,15 @@
             slotsContainer.innerHTML = "";
 
             const total = currentExPiazza.confluences.length;
-            const radius = window.innerWidth >= 640 ? 185 : 125;
+            
+            // Raggio dinamico adattivo in base al numero di riquadri (evita sovrapposizioni e si adatta alla quantità)
+            const baseRadius = window.innerWidth >= 640 ? 175 : 120;
+            const dynamicRadius = Math.max(baseRadius, total * 18);
 
             currentExPiazza.confluences.forEach((_, index) => {
                 const angle = (index / total) * 2 * Math.PI - Math.PI / 2;
-                const x = Math.cos(angle) * radius;
-                const y = Math.sin(angle) * radius;
+                const x = Math.cos(angle) * dynamicRadius;
+                const y = Math.sin(angle) * dynamicRadius;
 
                 const slot = document.createElement("div");
                 slot.className = "orbit-slot bg-slate-800/90 border-2 border-dashed border-amber-500/70 rounded-xl p-2 text-center flex items-center justify-center text-white text-[11px] sm:text-xs font-bold shadow-lg transition";
@@ -1932,7 +2034,8 @@
                     slot.innerHTML = `<span class="text-amber-300 opacity-80">Riquadro ${index + 1}</span>`;
                 }
 
-                slot.onclick = () => {
+                slot.onclick = (e) => {
+                    e.stopPropagation();
                     if (selectedStreetForTap && selectedStreetForTap.street) {
                         assignedSlots[index] = selectedStreetForTap.street;
                         selectedStreetForTap = null;
