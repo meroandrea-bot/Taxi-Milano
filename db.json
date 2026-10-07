@@ -618,6 +618,46 @@
       ]
     },
     {
+      "id": 1790626227788,
+      "type": "Piazza",
+      "name": "de Agostini",
+      "confluences": [
+        "Via Boni",
+        "Via Salvio Giuliano",
+        "Via Ulpiano",
+        "Via dei Grimani",
+        "Via Stendhal",
+        "Via Stromboli"
+      ]
+    },
+    {
+      "id": 1790626227789,
+      "type": "Piazza",
+      "name": "de Angeli",
+      "confluences": [
+        "Via Sanzio",
+        "Via Faruffini",
+        "Via Parmigianino",
+        "Via Trivulzio",
+        "Via privata dei Martinit",
+        "Via Luigi Sacco",
+        "Via Marghera"
+      ]
+    },
+    {
+      "id": 1790626227787,
+      "type": "Piazza",
+      "name": "del Crivellone",
+      "confluences": [
+        "Via Bordone",
+        "Via Spagnoletto",
+        "Via Magnasco",
+        "Via di Credi",
+        "Via Domenichino",
+        "Via Volpedo"
+      ]
+    },
+    {
       "id": 7,
       "type": "Piazza",
       "name": "della Repubblica",
@@ -675,6 +715,32 @@
         "Via Teulie",
         "Viale Bligni",
         "Viale Beatrice d'Este"
+      ]
+    },
+    {
+      "id": 1790626227790,
+      "type": "Piazza",
+      "name": "Diocleziano",
+      "confluences": [
+        "Via Gran Sanbernardo",
+        "Via Mac Mahon",
+        "Via Cenisio",
+        "Via Losanna",
+        "Via Galdino",
+        "Via Cenisio"
+      ]
+    },
+    {
+      "id": 1790626227791,
+      "type": "Piazza",
+      "name": "Diocleziano",
+      "confluences": [
+        "Via Gran Sanbernardo",
+        "Via Mac Mahon",
+        "Via Cenisio",
+        "Via Losanna",
+        "Via Galdino",
+        "Via Cenisio"
       ]
     },
     {
