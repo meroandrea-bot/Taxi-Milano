@@ -194,7 +194,7 @@
                         </button>
                     </div>
 
-                    <!-- SOTTOMENU "PREPARARSI ALL'ESAME" (INGLOBA I VECCHI TASTI) -->
+                    <!-- SOTTOMENU "PREPARARSI ALL'ESAME" -->
                     <div id="home-prep-menu" class="hidden space-y-4 pt-2">
                         <div class="flex items-center justify-between pb-2 border-b border-slate-200">
                             <button onclick="backToHomeMain()" class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs sm:text-sm font-bold transition flex items-center gap-1.5">
@@ -254,10 +254,9 @@
                         <input type="text" id="search-regolamento" onkeyup="renderRegolamenti()" placeholder="Cerca regolamento..." class="px-4 py-2.5 rounded-lg border border-slate-300 text-sm sm:text-base focus:ring-2 focus:ring-amber-500 focus:outline-none w-full sm:w-80">
                     </div>
 
-                    <!-- LETTURA REGOLAMENTO A TUTTA PAGINA (MODALE FULL SCREEN) -->
+                    <!-- LETTURA REGOLAMENTO A TUTTA PAGINA -->
                     <div id="regolamento-detail-view" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-6">
                         <div class="bg-white w-full max-w-5xl h-[95vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-300">
-                            <!-- Header Modale -->
                             <div class="bg-slate-900 text-white px-4 sm:px-6 py-4 flex justify-between items-center shadow">
                                 <h3 id="regolamento-detail-title" class="font-bold text-base sm:text-xl truncate pr-2"></h3>
                                 <div class="flex items-center gap-2.5 flex-shrink-0">
@@ -269,10 +268,7 @@
                                     </button>
                                 </div>
                             </div>
-                            <!-- Corpo Testuale (A tutta altezza scrollabile) -->
-                            <div id="regolamento-content-box" class="flex-1 text-slate-800 text-sm sm:text-base p-4 sm:p-8 overflow-y-auto space-y-4 bg-slate-50 leading-relaxed">
-                                <!-- Testo estratto del documento Word -->
-                            </div>
+                            <div id="regolamento-content-box" class="flex-1 text-slate-800 text-sm sm:text-base p-4 sm:p-8 overflow-y-auto space-y-4 bg-slate-50 leading-relaxed"></div>
                         </div>
                     </div>
 
@@ -304,10 +300,9 @@
                 </div>
             </section>
 
-            <!-- MODALE CONDIVISA PERCORSI / CERCHIE (ELENCO NUMERATO + PASSO PASSO + DOWNLOAD WORD ORIGINALE) -->
+            <!-- MODALE CONDIVISA PERCORSI / CERCHIE -->
             <div id="percorso-detail-view" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-6">
                 <div class="bg-white w-full max-w-5xl h-[95vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-300">
-                    <!-- Header Modale -->
                     <div class="bg-slate-900 text-white px-4 sm:px-6 py-4 flex justify-between items-center shadow">
                         <h3 id="percorso-detail-title" class="font-bold text-base sm:text-xl truncate pr-2"></h3>
                         <div class="flex items-center gap-2.5 flex-shrink-0">
@@ -320,7 +315,6 @@
                         </div>
                     </div>
                     
-                    <!-- Barra comandi interni modale (Toggle Vista + Controlli passo-passo) -->
                     <div class="bg-slate-100 border-b border-slate-200 px-4 sm:px-6 py-2.5 flex flex-wrap justify-between items-center gap-3">
                         <div class="flex items-center gap-2">
                             <button id="btn-toggle-view" onclick="togglePercorsoViewMode()" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-2 shadow-sm">
@@ -338,11 +332,8 @@
                         </div>
                     </div>
 
-                    <!-- Corpo Testuale (A tutta altezza scrollabile) -->
                     <div class="flex-1 text-slate-800 text-sm sm:text-base p-4 sm:p-8 overflow-y-auto bg-slate-50 leading-relaxed">
-                        <!-- Vista Elenco Numerato (con numeri sulla sinistra) -->
                         <div id="percorso-list-view-container" class="space-y-3"></div>
-                        <!-- Vista Passo-Passo Singola Via -->
                         <div id="percorso-single-step-container" class="hidden h-full flex flex-col items-center justify-center text-center p-4"></div>
                     </div>
                 </div>
@@ -454,7 +445,7 @@
                 </div>
             </section>
 
-            <!-- SCHEDA ADMIN (LAYOUT A DUE COLONNE: MENU A SINISTRA + SCHERMATA ATTIVA A DESTRA) -->
+            <!-- SCHEDA ADMIN -->
             <section id="tab-admin" class="hidden space-y-4">
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex justify-between items-center mb-4 flex-wrap gap-3 pb-4 border-b border-slate-200">
@@ -469,10 +460,7 @@
                         </div>
                     </div>
                     
-                    <!-- LAYOUT ADMIN: MENU SINISTRA + CONTENUTO DESTRA -->
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                        
-                        <!-- ELENCO FUNZIONI (COLONNA SINISTRA) -->
                         <div class="lg:col-span-4 bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1.5">
                             <span class="block text-xs font-bold uppercase tracking-wider text-slate-500 px-3 py-1.5">Funzioni Admin</span>
                             
@@ -512,7 +500,6 @@
                             </button>
                         </div>
 
-                        <!-- SCHERMATA ATTIVA (COLONNA DESTRA) -->
                         <div class="lg:col-span-8 bg-slate-50 p-4 sm:p-6 rounded-xl border border-slate-200 min-h-[480px]">
                             
                             <!-- 1. CARICA REGOLAMENTO -->
@@ -627,7 +614,7 @@
                                 </div>
                             </div>
 
-                            <!-- 6. MODIFICA / ELIMINA PIAZZE & INFO CONFLUENZE -->
+                            <!-- 6. MODIFICA / ELIMINA PIAZZE & INFO -->
                             <div id="admin-panel-modificapiazza" class="admin-panel space-y-4 hidden">
                                 <h3 class="font-bold text-base sm:text-lg mb-3 flex items-center text-slate-900"><i class="fa-solid fa-pen-to-square mr-2 text-red-600"></i> Modifica o Elimina Piazze</h3>
                                 <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3.5 shadow-sm">
@@ -663,7 +650,6 @@
                                     <button onclick="deletePiazzaMulti()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition"><i class="fa-solid fa-trash mr-1"></i> Elimina Selezionate</button>
                                 </div>
 
-                                <!-- SEZIONE INFO CONFLUENZE SPOSTATA QUI -->
                                 <h3 class="font-bold text-base sm:text-lg mb-3 mt-6 flex items-center text-slate-900"><i class="fa-solid fa-comment-dots mr-2 text-red-600"></i> Info Confluenze (Destinazioni)</h3>
                                 <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
                                     <div>
@@ -671,7 +657,7 @@
                                         <select id="admin-custom-piazza" onchange="populateAdminStreets()" class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm bg-white font-semibold"></select>
                                     </div>
                                     <div>
-                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Via / Confluenza</label>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Via / Confluenza (La prima via in alto)</label>
                                         <select id="admin-custom-street" onchange="loadCustomStreetText()" class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm bg-white font-semibold"></select>
                                     </div>
                                     <div>
@@ -732,14 +718,12 @@
         let selectedStreetForTap = null;
         let deferredPrompt = null;
 
-        // Stato corrente del documento/percorso/cerchia aperto nella modale
         let currentDocumentSteps = [];
         let currentStepIndex = 0;
         let isSingleStepMode = false;
         let currentActiveDocTitle = "";
         let currentRawDocBuffer = null;
 
-        // Stato Pan & Zoom Esercizi
         let mapScale = 1;
         let mapPanX = 0;
         let mapPanY = 0;
@@ -762,7 +746,6 @@
             document.getElementById("home-main-menu").classList.remove("hidden");
         }
 
-        // Funzione per commutare i pannelli nella sezione Admin (Menu a sinistra)
         function switchAdminSubTab(panelId) {
             const panels = ['regolamenti', 'percorsi', 'cerchie', 'statali', 'aggiungipiazza', 'modificapiazza', 'password'];
             panels.forEach(p => {
@@ -837,7 +820,7 @@
                     deferredPrompt = null;
                 });
             } else {
-                alert("Per installare l'app sullo smartphone:\n\n1. Apri il menu del browser (i tre puntini in alto a destra o in basso).\n2. Seleziona 'Aggiungi a schermata Home' o 'Installa app'.");
+                alert("Per installare l'app sullo smartphone:\n\n1. Apri il menu del browser.\n2. Seleziona 'Aggiungi a schermata Home' o 'Installa app'.");
             }
         }
 
@@ -1981,7 +1964,12 @@
             mapScale = 1;
             mapPanX = 0;
             mapPanY = 0;
+            assignedSlots = {};
+            selectedStreetForTap = null;
             updateMapTransform();
+            renderSlotsAndPool();
+            const feedback = document.getElementById("exercise-feedback");
+            if (feedback) feedback.textContent = "";
         }
 
         function setupMapPanAndZoom() {
@@ -2048,14 +2036,31 @@
             const slotsContainer = document.getElementById("map-slots-container");
             slotsContainer.innerHTML = "";
 
-            const total = currentExPiazza.confluences.length;
+            let confluences = [...currentExPiazza.confluences];
             
-            // Raggio dinamico adattivo in base al numero di riquadri (evita sovrapposizioni e si adatta alla quantità)
+            // Gestione della via in alto indicata dall'admin o prima via dell'elenco
+            let topStreet = confluences[0];
+            if (customDescriptions[currentExPiazza.name]) {
+                const customKeys = Object.keys(customDescriptions[currentExPiazza.name]);
+                const foundCustom = customKeys.find(k => confluences.includes(k));
+                if (foundCustom) {
+                    topStreet = foundCustom;
+                }
+            }
+
+            // Riordina l'array in modo che la via in alto sia posizionata all'indice 0 (in alto, -PI/2) e le successive seguano in senso antiorario
+            const topIdx = confluences.indexOf(topStreet);
+            if (topIdx > 0) {
+                confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
+            }
+
+            const total = confluences.length;
             const baseRadius = window.innerWidth >= 640 ? 175 : 120;
             const dynamicRadius = Math.max(baseRadius, total * 18);
 
-            currentExPiazza.confluences.forEach((_, index) => {
-                const angle = (index / total) * 2 * Math.PI - Math.PI / 2;
+            confluences.forEach((confStreet, index) => {
+                // Posizionamento in senso antiorario partendo dall'alto (-PI/2)
+                const angle = -Math.PI / 2 - (index / total) * 2 * Math.PI;
                 const x = Math.cos(angle) * dynamicRadius;
                 const y = Math.sin(angle) * dynamicRadius;
 
@@ -2117,7 +2122,19 @@
 
         function verifyExercise() {
             let correct = true;
-            currentExPiazza.confluences.forEach((conf, idx) => {
+            let confluences = [...currentExPiazza.confluences];
+            let topStreet = confluences[0];
+            if (customDescriptions[currentExPiazza.name]) {
+                const customKeys = Object.keys(customDescriptions[currentExPiazza.name]);
+                const foundCustom = customKeys.find(k => confluences.includes(k));
+                if (foundCustom) topStreet = foundCustom;
+            }
+            const topIdx = confluences.indexOf(topStreet);
+            if (topIdx > 0) {
+                confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
+            }
+
+            confluences.forEach((conf, idx) => {
                 if(assignedSlots[idx] !== conf) {
                     correct = false;
                 }
@@ -2135,7 +2152,19 @@
 
         function showExerciseSolution() {
             assignedSlots = {};
-            currentExPiazza.confluences.forEach((conf, idx) => {
+            let confluences = [...currentExPiazza.confluences];
+            let topStreet = confluences[0];
+            if (customDescriptions[currentExPiazza.name]) {
+                const customKeys = Object.keys(customDescriptions[currentExPiazza.name]);
+                const foundCustom = customKeys.find(k => confluences.includes(k));
+                if (foundCustom) topStreet = foundCustom;
+            }
+            const topIdx = confluences.indexOf(topStreet);
+            if (topIdx > 0) {
+                confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
+            }
+
+            confluences.forEach((conf, idx) => {
                 assignedSlots[idx] = conf;
             });
             renderSlotsAndPool();
