@@ -2038,7 +2038,7 @@
 
             let confluences = [...currentExPiazza.confluences];
             
-            // Gestione della via in alto indicata dall'admin o prima via dell'elenco
+            // Cerca la via impostata dall'admin nella sezione Info Confluenze per questa piazza
             let topStreet = confluences[0];
             if (customDescriptions[currentExPiazza.name]) {
                 const customKeys = Object.keys(customDescriptions[currentExPiazza.name]);
@@ -2059,7 +2059,6 @@
             const dynamicRadius = Math.max(baseRadius, total * 18);
 
             confluences.forEach((confStreet, index) => {
-                // Posizionamento in senso antiorario partendo dall'alto (-PI/2)
                 const angle = -Math.PI / 2 - (index / total) * 2 * Math.PI;
                 const x = Math.cos(angle) * dynamicRadius;
                 const y = Math.sin(angle) * dynamicRadius;
@@ -2070,7 +2069,12 @@
                 slot.style.top = `calc(50% + ${y}px)`;
                 slot.dataset.slotIndex = index;
 
-                if(assignedSlots[index]) {
+                // SEZIONE RICHIESTA: Se corrisponde al primo slot (in alto, index 0), mostra sempre la via indicata dall'amministratore/configurata come via in alto
+                if (index === 0) {
+                    slot.className = "orbit-slot bg-amber-600 border-2 border-amber-300 rounded-xl p-2 text-center flex items-center justify-center text-white text-[11px] sm:text-xs font-black shadow-xl transition ring-2 ring-amber-400";
+                    slot.innerHTML = `<span class="truncate px-1"><i class="fa-solid fa-thumbtack text-amber-200 mr-1 text-[10px]"></i>${topStreet}</span>`;
+                    slot.title = "Via di riferimento in alto (Fissa)";
+                } else if(assignedSlots[index]) {
                     slot.className = "orbit-slot bg-amber-500 border-2 border-amber-400 rounded-xl p-2 text-center flex items-center justify-center text-white text-[11px] sm:text-xs font-black shadow-lg transition";
                     slot.innerHTML = `<span>${assignedSlots[index]}</span>`;
                 } else {
@@ -2079,6 +2083,7 @@
 
                 slot.onclick = (e) => {
                     e.stopPropagation();
+                    if (index === 0) return; // Il riquadro in alto è fisso e non modificabile dall'utente nell'esercizio
                     if (selectedStreetForTap && selectedStreetForTap.street) {
                         assignedSlots[index] = selectedStreetForTap.street;
                         selectedStreetForTap = null;
@@ -2093,7 +2098,8 @@
             });
 
             let usedStreets = Object.values(assignedSlots);
-            let availableStreets = [...currentExPiazza.confluences].sort(() => Math.random() - 0.5);
+            // Esclude dal pool delle vie da trascinare la via già fissata in alto
+            let availableStreets = confluences.filter(s => s !== topStreet).sort(() => Math.random() - 0.5);
 
             const poolContainer = document.getElementById("source-pool");
             poolContainer.innerHTML = "";
@@ -2135,13 +2141,14 @@
             }
 
             confluences.forEach((conf, idx) => {
+                if (idx === 0) return; // Saltiamo il controllo del riquadro fisso in alto
                 if(assignedSlots[idx] !== conf) {
                     correct = false;
                 }
             });
 
             const feedback = document.getElementById("exercise-feedback");
-            if(correct && Object.keys(assignedSlots).length === currentExPiazza.confluences.length) {
+            if(correct && Object.keys(assignedSlots).length === confluences.length - 1) {
                 feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-emerald-600";
                 feedback.textContent = "🎉 Ottimo! Tutte le confluenze sono posizionate correttamente in senso antiorario!";
             } else {
@@ -2165,7 +2172,9 @@
             }
 
             confluences.forEach((conf, idx) => {
-                assignedSlots[idx] = conf;
+                if (idx !== 0) {
+                    assignedSlots[idx] = conf;
+                }
             });
             renderSlotsAndPool();
             const feedback = document.getElementById("exercise-feedback");
