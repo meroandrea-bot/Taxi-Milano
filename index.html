@@ -152,7 +152,7 @@
             </div>
             <nav class="bg-slate-800 px-2 py-2 flex space-x-1.5 overflow-x-auto scrollbar-none border-t border-slate-700">
                 <button onclick="switchTab('home')" id="btn-home" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-house mr-1"></i> Home</button>
-                <button onclick="switchTab('enciclopedia')" id="btn-enciclopedia" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition">Enciclopedia (<span id="total-count">0</span>)</button>
+                <button onclick="switchTab('enciclopedia')" id="btn-enciclopedia" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition">Confluenze Piazze (<span id="total-count">0</span>)</button>
                 <button onclick="switchTab('percorsi')" id="btn-percorsi" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-route mr-1"></i> Percorsi</button>
                 <button onclick="switchTab('cerchie')" id="btn-cerchie" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-circle-nodes mr-1"></i> Cinque Cerchie</button>
                 <button onclick="switchTab('statali')" id="btn-statali" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-road mr-1"></i> Statali</button>
@@ -161,12 +161,6 @@
                 <button onclick="switchTab('admin')" id="btn-admin" class="hidden px-3.5 py-2 rounded-lg bg-red-600 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-lock-open mr-1"></i> Admin</button>
             </nav>
         </header>
-
-        <!-- BANNER INFORMATIVO -->
-        <div class="bg-amber-100 border-b border-amber-300 text-amber-900 px-3 py-2.5 text-xs sm:text-sm font-bold text-center shadow-inner flex items-center justify-center gap-2">
-            <i class="fa-solid fa-circle-exclamation text-amber-600 text-base flex-shrink-0"></i>
-            <span>Le vie della destinazione di confluenze è in fase di lavorazione, verificare sulle mappe tradizionali</span>
-        </div>
 
         <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 flex flex-col justify-center">
             
@@ -184,7 +178,7 @@
                         <button onclick="showPrepMenu()" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex flex-col items-center text-center group shadow-sm">
                             <i class="fa-solid fa-graduation-cap text-4xl sm:text-5xl text-amber-500 mb-3 group-hover:scale-110 transition"></i>
                             <span class="font-bold text-lg sm:text-xl text-slate-900">Prepararsi all'esame</span>
-                            <span class="text-xs sm:text-sm text-slate-500 mt-1">Enciclopedia, percorsi, cerchie, statali, regolamenti ed esercizi</span>
+                            <span class="text-xs sm:text-sm text-slate-500 mt-1">Confluenze Piazze, percorsi, cerchie, statali, regolamenti ed esercizi</span>
                         </button>
 
                         <button onclick="alert('Sezione Quiz in fase di configurazione con le tue future indicazioni.')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex flex-col items-center text-center group shadow-sm">
@@ -207,7 +201,7 @@
                         <div class="grid grid-cols-2 lg:grid-cols-3 gap-3.5">
                             <button onclick="switchTab('enciclopedia')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
                                 <i class="fa-solid fa-book text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
-                                <span class="font-bold text-sm sm:text-lg text-slate-900">Enciclopedia</span>
+                                <span class="font-bold text-sm sm:text-lg text-slate-900">Confluenze Piazze</span>
                                 <span class="text-xs text-slate-500 mt-1">Indice toponomastico</span>
                             </button>
 
@@ -351,11 +345,11 @@
                 </div>
             </section>
 
-            <!-- SCHEDA ENCICLOPEDIA -->
+            <!-- SCHEDA CONFLUENZE PIAZZE -->
             <section id="tab-enciclopedia" class="hidden space-y-4">
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3.5 gap-3">
-                        <h2 class="text-lg sm:text-2xl font-bold flex items-center"><i class="fa-solid fa-book text-amber-500 mr-2.5"></i> Indice Toponomastico</h2>
+                        <h2 class="text-lg sm:text-2xl font-bold flex items-center"><i class="fa-solid fa-book text-amber-500 mr-2.5"></i> Confluenze Piazze</h2>
                         <button onclick="cycleSortMode()" id="sort-alpha-btn" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs sm:text-sm font-bold border border-slate-300 transition flex items-center shadow-sm">
                             <i class="fa-solid fa-sort mr-1.5 text-amber-600 text-base"></i> Ordine Originale
                         </button>
@@ -2032,13 +2026,14 @@
             };
         }
 
+        let lastVerificationResults = {}; // Traccia lo stato di correttezza dei singoli slot dopo la verifica
+
         function renderSlotsAndPool() {
             const slotsContainer = document.getElementById("map-slots-container");
             slotsContainer.innerHTML = "";
 
             let confluences = [...currentExPiazza.confluences];
             
-            // Cerca la via impostata dall'admin nella sezione Info Confluenze per questa piazza
             let topStreet = confluences[0];
             if (customDescriptions[currentExPiazza.name]) {
                 const customKeys = Object.keys(customDescriptions[currentExPiazza.name]);
@@ -2048,7 +2043,6 @@
                 }
             }
 
-            // Riordina l'array in modo che la via in alto sia posizionata all'indice 0 (in alto, -PI/2) e le successive seguano in senso antiorario
             const topIdx = confluences.indexOf(topStreet);
             if (topIdx > 0) {
                 confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
@@ -2064,18 +2058,32 @@
                 const y = Math.sin(angle) * dynamicRadius;
 
                 const slot = document.createElement("div");
-                slot.className = "orbit-slot bg-slate-800/90 border-2 border-dashed border-amber-500/70 rounded-xl p-2 text-center flex items-center justify-center text-white text-[11px] sm:text-xs font-bold shadow-lg transition";
+                
+                // Gestione dei colori condizionali in base alla verifica
+                let slotClasses = "orbit-slot border-2 rounded-xl p-2 text-center flex items-center justify-center text-white text-[11px] sm:text-xs font-bold shadow-lg transition ";
+                if (index === 0) {
+                    slotClasses += "bg-amber-600 border-amber-300 font-black ring-2 ring-amber-400 shadow-xl";
+                } else if (lastVerificationResults[index] !== undefined) {
+                    if (lastVerificationResults[index]) {
+                        slotClasses += "bg-emerald-600 border-emerald-300 font-black ring-2 ring-emerald-400";
+                    } else {
+                        slotClasses += "bg-red-600 border-red-300 font-black ring-2 ring-red-400";
+                    }
+                } else if (assignedSlots[index]) {
+                    slotClasses += "bg-amber-500 border-amber-400 font-black";
+                } else {
+                    slotClasses += "bg-slate-800/90 border-dashed border-amber-500/70";
+                }
+
+                slot.className = slotClasses;
                 slot.style.left = `calc(50% + ${x}px)`;
                 slot.style.top = `calc(50% + ${y}px)`;
                 slot.dataset.slotIndex = index;
 
-                // SEZIONE RICHIESTA: Se corrisponde al primo slot (in alto, index 0), mostra sempre la via indicata dall'amministratore/configurata come via in alto
                 if (index === 0) {
-                    slot.className = "orbit-slot bg-amber-600 border-2 border-amber-300 rounded-xl p-2 text-center flex items-center justify-center text-white text-[11px] sm:text-xs font-black shadow-xl transition ring-2 ring-amber-400";
                     slot.innerHTML = `<span class="truncate px-1"><i class="fa-solid fa-thumbtack text-amber-200 mr-1 text-[10px]"></i>${topStreet}</span>`;
                     slot.title = "Via di riferimento in alto (Fissa)";
                 } else if(assignedSlots[index]) {
-                    slot.className = "orbit-slot bg-amber-500 border-2 border-amber-400 rounded-xl p-2 text-center flex items-center justify-center text-white text-[11px] sm:text-xs font-black shadow-lg transition";
                     slot.innerHTML = `<span>${assignedSlots[index]}</span>`;
                 } else {
                     slot.innerHTML = `<span class="text-amber-300 opacity-80">Riquadro ${index + 1}</span>`;
@@ -2083,7 +2091,8 @@
 
                 slot.onclick = (e) => {
                     e.stopPropagation();
-                    if (index === 0) return; // Il riquadro in alto è fisso e non modificabile dall'utente nell'esercizio
+                    if (index === 0) return;
+                    lastVerificationResults = {}; // Resetta il feedback visivo al click
                     if (selectedStreetForTap && selectedStreetForTap.street) {
                         assignedSlots[index] = selectedStreetForTap.street;
                         selectedStreetForTap = null;
@@ -2098,7 +2107,6 @@
             });
 
             let usedStreets = Object.values(assignedSlots);
-            // Esclude dal pool delle vie da trascinare la via già fissata in alto
             let availableStreets = confluences.filter(s => s !== topStreet).sort(() => Math.random() - 0.5);
 
             const poolContainer = document.getElementById("source-pool");
@@ -2114,6 +2122,7 @@
                 item.innerHTML = `<span>${street}</span> <i class="fa-solid fa-hand-pointer text-amber-500 opacity-60"></i>`;
                 
                 item.onclick = () => {
+                    lastVerificationResults = {}; // Resetta il feedback visivo al click
                     if (selectedStreetForTap && selectedStreetForTap.street === street) {
                         selectedStreetForTap = null;
                     } else {
@@ -2140,12 +2149,19 @@
                 confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
             }
 
+            lastVerificationResults = {};
+
             confluences.forEach((conf, idx) => {
-                if (idx === 0) return; // Saltiamo il controllo del riquadro fisso in alto
-                if(assignedSlots[idx] !== conf) {
+                if (idx === 0) return;
+                if (assignedSlots[idx] === conf) {
+                    lastVerificationResults[idx] = true;
+                } else {
+                    lastVerificationResults[idx] = false;
                     correct = false;
                 }
             });
+
+            renderSlotsAndPool();
 
             const feedback = document.getElementById("exercise-feedback");
             if(correct && Object.keys(assignedSlots).length === confluences.length - 1) {
@@ -2153,12 +2169,13 @@
                 feedback.textContent = "🎉 Ottimo! Tutte le confluenze sono posizionate correttamente in senso antiorario!";
             } else {
                 feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-red-600";
-                feedback.textContent = "❌ Alcune posizioni non sono corrette o mancano dei riquadri. Riprova!";
+                feedback.textContent = "❌ Alcune posizioni non sono corrette o mancano dei riquadri. Le piazze errate o vuote sono evidenziate in rosso.";
             }
         }
 
         function showExerciseSolution() {
             assignedSlots = {};
+            lastVerificationResults = {};
             let confluences = [...currentExPiazza.confluences];
             let topStreet = confluences[0];
             if (customDescriptions[currentExPiazza.name]) {
