@@ -1938,6 +1938,7 @@
             document.getElementById("exercise-feedback").textContent = "";
 
             assignedSlots = {};
+            lastVerificationResults = {}; // Ripristina il colore normale dei riquadri al cambio piazza
             resetMapTransform();
             renderSlotsAndPool();
         }
@@ -1959,6 +1960,7 @@
             mapPanX = 0;
             mapPanY = 0;
             assignedSlots = {};
+            lastVerificationResults = {}; // Ripristina il colore normale dei riquadri al reset
             selectedStreetForTap = null;
             updateMapTransform();
             renderSlotsAndPool();
@@ -2120,91 +2122,3 @@
                 const isSelected = (selectedStreetForTap && selectedStreetForTap.street === street);
                 item.className = `street-card p-3 rounded-xl border text-xs sm:text-sm font-bold shadow-sm transition flex items-center justify-between ${isSelected ? 'selected-for-tap border-amber-500 bg-amber-50' : 'bg-white border-slate-200 hover:border-amber-400 text-slate-800'}`;
                 item.innerHTML = `<span>${street}</span> <i class="fa-solid fa-hand-pointer text-amber-500 opacity-60"></i>`;
-                
-                item.onclick = () => {
-                    lastVerificationResults = {}; // Resetta il feedback visivo al click
-                    if (selectedStreetForTap && selectedStreetForTap.street === street) {
-                        selectedStreetForTap = null;
-                    } else {
-                        selectedStreetForTap = { street: street };
-                    }
-                    renderSlotsAndPool();
-                };
-
-                poolContainer.appendChild(item);
-            });
-        }
-
-        function verifyExercise() {
-            let correct = true;
-            let confluences = [...currentExPiazza.confluences];
-            let topStreet = confluences[0];
-            if (customDescriptions[currentExPiazza.name]) {
-                const customKeys = Object.keys(customDescriptions[currentExPiazza.name]);
-                const foundCustom = customKeys.find(k => confluences.includes(k));
-                if (foundCustom) topStreet = foundCustom;
-            }
-            const topIdx = confluences.indexOf(topStreet);
-            if (topIdx > 0) {
-                confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
-            }
-
-            lastVerificationResults = {};
-
-            confluences.forEach((conf, idx) => {
-                if (idx === 0) return;
-                if (assignedSlots[idx] === conf) {
-                    lastVerificationResults[idx] = true;
-                } else {
-                    lastVerificationResults[idx] = false;
-                    correct = false;
-                }
-            });
-
-            renderSlotsAndPool();
-
-            const feedback = document.getElementById("exercise-feedback");
-            if(correct && Object.keys(assignedSlots).length === confluences.length - 1) {
-                feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-emerald-600";
-                feedback.textContent = "🎉 Ottimo! Tutte le confluenze sono posizionate correttamente in senso antiorario!";
-            } else {
-                feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-red-600";
-                feedback.textContent = "❌ Alcune posizioni non sono corrette o mancano dei riquadri. Le piazze errate o vuote sono evidenziate in rosso.";
-            }
-        }
-
-        function showExerciseSolution() {
-            assignedSlots = {};
-            lastVerificationResults = {};
-            let confluences = [...currentExPiazza.confluences];
-            let topStreet = confluences[0];
-            if (customDescriptions[currentExPiazza.name]) {
-                const customKeys = Object.keys(customDescriptions[currentExPiazza.name]);
-                const foundCustom = customKeys.find(k => confluences.includes(k));
-                if (foundCustom) topStreet = foundCustom;
-            }
-            const topIdx = confluences.indexOf(topStreet);
-            if (topIdx > 0) {
-                confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
-            }
-
-            confluences.forEach((conf, idx) => {
-                if (idx !== 0) {
-                    assignedSlots[idx] = conf;
-                }
-            });
-            renderSlotsAndPool();
-            const feedback = document.getElementById("exercise-feedback");
-            feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-amber-600";
-            feedback.textContent = "💡 Soluzione caricata sul tabellone.";
-        }
-
-        window.onload = function() {
-            setupDynamicManifest();
-            loadCloudDatabase().then(() => {
-                populateAdminSelect();
-            });
-        };
-    </script>
-</body>
-</html>
