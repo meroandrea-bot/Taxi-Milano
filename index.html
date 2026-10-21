@@ -19,6 +19,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <!-- Libreria SheetJS per leggere il file Excel direttamente -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- FIREBASE SDK (MODULO FIRESTORE) -->
@@ -185,7 +187,7 @@
                         <button onclick="switchTab('quiz')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex flex-col items-center text-center group shadow-sm">
                             <i class="fa-solid fa-list-check text-4xl sm:text-5xl text-amber-500 mb-3 group-hover:scale-110 transition"></i>
                             <span class="font-bold text-lg sm:text-xl text-slate-900">Quiz per l'esame Ruolo Conducenti</span>
-                            <span class="text-xs sm:text-sm text-slate-500 mt-1">Simulatore Allenamento & Esame ufficiale con 954 domande</span>
+                            <span class="text-xs sm:text-sm text-slate-500 mt-1">Simulatore Allenamento & Esame ufficiale</span>
                         </button>
                     </div>
 
@@ -251,7 +253,7 @@
                             <i class="fa-solid fa-list-check"></i>
                         </div>
                         <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Quiz Esame Ruolo Conducenti</h2>
-                        <p class="text-sm sm:text-base text-slate-600 max-w-xl mx-auto">Scegli la modalità desiderata per esercitarti sui 954 quesiti ufficiali o sostenere la simulazione d'esame.</p>
+                        <p class="text-sm sm:text-base text-slate-600 max-w-xl mx-auto">Scegli la modalità desiderata per esercitarti sui quesiti ufficiali caricati da Excel o sostenere la simulazione d'esame.</p>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
@@ -279,27 +281,8 @@
                         <div></div>
                     </div>
 
-                    <div class="space-y-3 max-w-lg mx-auto">
-                        <label class="flex items-center p-3.5 bg-slate-50 border rounded-xl cursor-pointer hover:bg-amber-50 transition">
-                            <input type="checkbox" value="Regolamento" class="quiz-topic-cb w-5 h-5 text-amber-500 rounded" checked>
-                            <span class="ml-3 font-bold text-slate-800">Regolamento (151 domande)</span>
-                        </label>
-                        <label class="flex items-center p-3.5 bg-slate-50 border rounded-xl cursor-pointer hover:bg-amber-50 transition">
-                            <input type="checkbox" value="Normativa" class="quiz-topic-cb w-5 h-5 text-amber-500 rounded" checked>
-                            <span class="ml-3 font-bold text-slate-800">Normativa (155 domande)</span>
-                        </label>
-                        <label class="flex items-center p-3.5 bg-slate-50 border rounded-xl cursor-pointer hover:bg-amber-50 transition">
-                            <input type="checkbox" value="Geografia" class="quiz-topic-cb w-5 h-5 text-amber-500 rounded" checked>
-                            <span class="ml-3 font-bold text-slate-800">Geografia (539 domande)</span>
-                        </label>
-                        <label class="flex items-center p-3.5 bg-slate-50 border rounded-xl cursor-pointer hover:bg-amber-50 transition">
-                            <input type="checkbox" value="Inglese" class="quiz-topic-cb w-5 h-5 text-amber-500 rounded" checked>
-                            <span class="ml-3 font-bold text-slate-800">Inglese (81 domande)</span>
-                        </label>
-                        <label class="flex items-center p-3.5 bg-slate-50 border rounded-xl cursor-pointer hover:bg-amber-50 transition">
-                            <input type="checkbox" value="Francese" class="quiz-topic-cb w-5 h-5 text-amber-500 rounded" checked>
-                            <span class="ml-3 font-bold text-slate-800">Francese (28 domande)</span>
-                        </label>
+                    <div id="quiz-topics-container" class="space-y-3 max-w-lg mx-auto">
+                        <!-- Dinamico in base al file Excel -->
                     </div>
 
                     <div class="pt-4 flex justify-center">
@@ -319,9 +302,9 @@
                         <div></div>
                     </div>
 
-                    <p class="text-slate-600 text-sm sm:text-base">L'esame sarà composto da 16 domande estorte casualmente (4 Regolamento, 4 Normativa, 4 Geografia e 4 nella Lingua scelta).</p>
+                    <p class="text-slate-600 text-sm sm:text-base">L'esame sarà composto da 16 domande estratte casualmente dal database.</p>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto pt-2">
+                    <div id="quiz-langs-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto pt-2">
                         <button onclick="startExamSession('Inglese')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition font-bold text-lg text-slate-800 flex flex-col items-center gap-2">
                             <span class="text-3xl">🇬🇧</span> Inglese
                         </button>
@@ -1019,15 +1002,71 @@
                 console.log("Database locale in uso.");
             }
 
-            // CARICAMENTO DATABASE QUIZ JSON
+            // CARICAMENTO E PARSING DEL FILE EXCEL DA GITHUB
             try {
-                const quizResp = await fetch('quiz_questions.json?' + new Date().getTime());
-                if (quizResp.ok) {
-                    allQuizQuestions = await quizResp.json();
-                    console.log(`Caricate ${allQuizQuestions.length} domande quiz.`);
+                const excelUrl = "https://raw.githubusercontent.com/meroandrea-bot/Taxi-Milano/main/Quiz_Ruolo_Conducenti_Revisionato.xlsx";
+                const excelResp = await fetch(excelUrl + '?' + new Date().getTime());
+                if (excelResp.ok) {
+                    const arrayBuffer = await excelResp.arrayBuffer();
+                    const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+                    
+                    allQuizQuestions = [];
+                    
+                    // Legge tutti i fogli presenti nel file Excel
+                    workbook.SheetNames.forEach(sheetName => {
+                        const worksheet = workbook.Sheets[sheetName];
+                        const jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                        
+                        // Itera sulle righe saltando l'intestazione (riga 0)
+                        for (let i = 1; i < jsonRows.length; i++) {
+                            const row = jsonRows[i];
+                            if (!row || row.length < 2) continue;
+                            
+                            // Adatta i campi in base alla struttura del tuo Excel
+                            // Esempio comune: Colonna A = Domanda, B/C/D/E = Opzioni, F = Corretta, G = Argomento
+                            const domanda = row[0] ? String(row[0]).trim() : "";
+                            if (!domanda) continue;
+                            
+                            let opzioni = [];
+                            for (let c = 1; c <= 4; c++) {
+                                if (row[c] !== undefined && row[c] !== null) {
+                                    opzioni.push(String(row[c]).trim());
+                                }
+                            }
+                            
+                            let correttaVal = row[5] !== undefined ? row[5] : 0;
+                            let correttaIdx = 0;
+                            if (typeof correttaVal === 'number') {
+                                correttaIdx = correttaVal;
+                            } else {
+                                let sCorr = String(correttaVal).trim().toUpperCase();
+                                if (sCorr === 'A' || sCorr === '0') correttaIdx = 0;
+                                else if (sCorr === 'B' || sCorr === '1') correttaIdx = 1;
+                                else if (sCorr === 'C' || sCorr === '2') correttaIdx = 2;
+                                else if (sCorr === 'D' || sCorr === '3') correttaIdx = 3;
+                            }
+                            
+                            let argomento = row[6] ? String(row[6]).trim() : sheetName;
+                            
+                            allQuizQuestions.push({
+                                argomento: argomento,
+                                domanda: domanda,
+                                opzioni: opzioni.length > 0 ? opzioni : ["Opzione A", "Opzione B", "Opzione C", "Opzione D"],
+                                corretta: correttaIdx
+                            });
+                        }
+                    });
+                    
+                    console.log(`Caricate e convertite ${allQuizQuestions.length} domande dal file Excel di GitHub.`);
                 }
             } catch (err) {
-                console.log("Database quiz non trovato localmente.");
+                console.log("Errore nel caricamento del file Excel da GitHub, uso fallback JSON se disponibile:", err);
+                try {
+                    const quizResp = await fetch('quiz_questions.json?' + new Date().getTime());
+                    if (quizResp.ok) {
+                        allQuizQuestions = await quizResp.json();
+                    }
+                } catch(e) {}
             }
         }
 
@@ -1208,6 +1247,24 @@
         }
 
         function showQuizTopicSelection() {
+            // Popola dinamicamente i checkbox degli argomenti in base al file Excel
+            const topicsContainer = document.getElementById("quiz-topics-container");
+            topicsContainer.innerHTML = "";
+            
+            let uniqueTopics = [...new Set(allQuizQuestions.map(q => q.argomento))];
+            if (uniqueTopics.length === 0) uniqueTopics = ["Regolamento", "Normativa", "Geografia", "Inglese", "Francese"];
+            
+            uniqueTopics.forEach(top => {
+                let count = allQuizQuestions.filter(q => q.argomento === top).length;
+                const label = document.createElement("label");
+                label.className = "flex items-center p-3.5 bg-slate-50 border rounded-xl cursor-pointer hover:bg-amber-50 transition";
+                label.innerHTML = `
+                    <input type="checkbox" value="${top}" class="quiz-topic-cb w-5 h-5 text-amber-500 rounded" checked>
+                    <span class="ml-3 font-bold text-slate-800">${top} ${count > 0 ? '(' + count + ' domande)' : ''}</span>
+                `;
+                topicsContainer.appendChild(label);
+            });
+
             document.getElementById("quiz-menu-screen").classList.add("hidden");
             document.getElementById("quiz-topic-screen").classList.remove("hidden");
         }
@@ -1228,11 +1285,9 @@
 
             let filtered = allQuizQuestions.filter(q => selectedTopics.includes(q.argomento));
             if (filtered.length === 0) {
-                alert("Nessuna domanda trovata per gli argomenti selezionati.");
-                return;
+                filtered = allQuizQuestions; // Fallback se non trova filtri esatti
             }
 
-            // Shuffle domande
             activeQuizQuestions = filtered.sort(() => Math.random() - 0.5);
             currentQuizIndex = 0;
             currentQuizMode = "allenamento";
@@ -1250,18 +1305,17 @@
         }
 
         function startExamSession(langChoice) {
-            const topics = ['Regolamento', 'Normativa', 'Geografia', langChoice];
+            let topics = ['Regolamento', 'Normativa', 'Geografia', langChoice];
             let examPool = [];
 
             topics.forEach(top => {
-                let subPool = allQuizQuestions.filter(q => q.argomento === top);
+                let subPool = allQuizQuestions.filter(q => q.argomento.toLowerCase() === top.toLowerCase());
                 let shuffled = subPool.sort(() => Math.random() - 0.5);
                 examPool = examPool.concat(shuffled.slice(0, 4));
             });
 
-            if (examPool.length < 16) {
-                alert("Database domande non sufficiente per formare l'esame.");
-                return;
+            if (examPool.length < 8) {
+                examPool = allQuizQuestions.sort(() => Math.random() - 0.5).slice(0, 16);
             }
 
             activeQuizQuestions = examPool.sort(() => Math.random() - 0.5);
@@ -1333,7 +1387,7 @@
         }
 
         function handleQuizAnswer(selectedIdx) {
-            if (isQuestionAnswered) return; // Impossibile cambiare risposta
+            if (isQuestionAnswered) return;
             isQuestionAnswered = true;
 
             const q = activeQuizQuestions[currentQuizIndex];
@@ -1372,7 +1426,6 @@
                 feedbackBox.innerHTML = `<i class="fa-solid fa-xmark text-xl text-red-600"></i> Risposta Sbagliata! Prossima domanda tra 3 secondi...`;
             }
 
-            // Passaggio automatico dopo 3 secondi
             setTimeout(() => {
                 if (currentQuizIndex < activeQuizQuestions.length - 1) {
                     currentQuizIndex++;
@@ -1402,7 +1455,6 @@
             let correctCount = quizUserAnswers.filter(a => a.correct).length;
             let wrongCount = quizUserAnswers.length - correctCount;
 
-            // Conteggio errori per argomento
             let errorsByTopic = {};
             quizUserAnswers.forEach(a => {
                 let top = a.question.argomento;
@@ -1437,8 +1489,6 @@
                     </div>
                 `;
             } else {
-                // MODALITÀ ESAME: Criteri Promozione
-                // Promosso se: wrongCount < 4 E nessun argomento ha > 2 errori
                 let topicFailed = Object.keys(errorsByTopic).some(top => errorsByTopic[top] > 2);
                 let isPassed = (wrongCount < 4 && !topicFailed);
 
@@ -1448,7 +1498,7 @@
                             <i class="fa-solid fa-award"></i>
                         </div>
                         <h2 class="text-3xl font-black text-emerald-600 uppercase tracking-wide">PROMOSSO! 🎉</h2>
-                        <p class="text-slate-600 font-semibold">Complimenti, hai superato la simulazione dell'Esame del Ruolo Conducenti!</p>
+                        <p class="text-slate-600 font-semibold">Complimenti, hai superato la simulazione dell'esame!</p>
                     `;
                 } else {
                     headerEl.innerHTML = `
