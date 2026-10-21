@@ -1022,7 +1022,6 @@
                         const jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
                         if (jsonRows.length === 0) return;
                         
-                        // Cerca gli indici delle colonne dalla riga di intestazione (riga 0)
                         const headerRow = jsonRows[0].map(h => String(h || "").trim().toLowerCase());
                         
                         let domCol = headerRow.findIndex(h => h.includes("domanda"));
@@ -1032,7 +1031,6 @@
                         let corrCol = headerRow.findIndex(h => h.includes("risposta esatta") || h.includes("esatta") || h === "corretta");
                         let argCol = headerRow.findIndex(h => h.includes("argomento") || h.includes("categoria"));
                         
-                        // Fallback agli indici standard se l'intestazione non viene trovata
                         if (domCol === -1) domCol = 0;
                         if (op1Col === -1) op1Col = 1;
                         if (op2Col === -1) op2Col = 2;
@@ -1047,7 +1045,6 @@
                             const domanda = row[domCol] !== undefined && row[domCol] !== null ? String(row[domCol]).trim() : "";
                             if (!domanda) continue;
                             
-                            // Estrae esattamente le 3 possibilità (opzione 1, 2, 3)
                             let opzioni = [];
                             [op1Col, op2Col, op3Col].forEach(cIdx => {
                                 if (cIdx !== -1 && row[cIdx] !== undefined && row[cIdx] !== null) {
@@ -1057,17 +1054,14 @@
                             });
                             
                             if (opzioni.length === 0) {
-                                // Fallback se le colonne erano diverse
                                 for (let c = 1; c <= 3; c++) {
                                     if (row[c]) opzioni.push(String(row[c]).trim());
                                 }
                             }
 
-                            // Valutazione della risposta esatta dalla colonna dedicata
                             let rispostaEsattaRaw = row[corrCol] !== undefined && row[corrCol] !== null ? String(row[corrCol]).trim() : "";
                             let correttaIdx = 0;
                             
-                            // Controlla se la risposta esatta corrisponde al testo di una delle opzioni o a un indice/lettera
                             let matchIndex = opzioni.findIndex(opt => opt.toLowerCase() === rispostaEsattaRaw.toLowerCase());
                             if (matchIndex !== -1) {
                                 correttaIdx = matchIndex;
@@ -1077,7 +1071,6 @@
                                 else if (upperCorr === 'B' || upperCorr === '2' || upperCorr === '1') correttaIdx = 1;
                                 else if (upperCorr === 'C' || upperCorr === '3' || upperCorr === '2') correttaIdx = 2;
                                 else {
-                                    // Se è un numero di indice diretto
                                     let num = parseInt(rispostaEsattaRaw);
                                     if (!isNaN(num)) correttaIdx = num > 0 ? num - 1 : 0;
                                 }
@@ -1341,17 +1334,22 @@
         }
 
         function startExamSession(langChoice) {
-            let topics = ['Regolamento', 'Normativa', 'Geografia', langChoice];
+            // Estrazione rigorosa: 4 argomenti fissi (Regolamento, Normativa, Geografia, Lingua scelta) con esattamente 4 domande ciascuno
+            let targetTopics = ['Regolamento', 'Normativa', 'Geografia', langChoice];
             let examPool = [];
 
-            topics.forEach(top => {
+            targetTopics.forEach(top => {
                 let subPool = allQuizQuestions.filter(q => q.argomento.toLowerCase() === top.toLowerCase());
                 let shuffled = subPool.sort(() => Math.random() - 0.5);
                 examPool = examPool.concat(shuffled.slice(0, 4));
             });
 
-            if (examPool.length < 8) {
-                examPool = allQuizQuestions.sort(() => Math.random() - 0.5).slice(0, 16);
+            if (examPool.length < 16) {
+                // Fallback nel caso in cui qualche argomento specifico abbia meno di 4 domande nel db
+                let remainingNeeded = 16 - examPool.length;
+                let usedQuestionsSet = new Set(examPool);
+                let otherPool = allQuizQuestions.filter(q => !usedQuestionsSet.has(q)).sort(() => Math.random() - 0.5);
+                examPool = examPool.concat(otherPool.slice(0, remainingNeeded));
             }
 
             activeQuizQuestions = examPool.sort(() => Math.random() - 0.5);
@@ -1546,6 +1544,7 @@
                     `;
                 }
 
+                // Resoconto pulito con i soli errori per argomento senza elencare le singole domande
                 let topicBreakdownHtml = Object.keys(errorsByTopic).map(top => `
                     <div class="flex justify-between text-xs sm:text-sm">
                         <span class="text-slate-600 font-medium">${top}:</span>
@@ -1563,8 +1562,8 @@
                         <span class="${wrongCount >= 4 ? 'text-red-600' : 'text-emerald-600'} font-extrabold">${wrongCount} (Max ammessi: 3)</span>
                     </div>
                     <div class="pt-2">
-                        <span class="block text-xs font-bold uppercase text-slate-500 mb-2">Resoconto Domande Errate per Argomento (Max 2 per argomento):</span>
-                        <div class="space-y-1 bg-white p-3 rounded-lg border border-slate-200">
+                        <span class="block text-xs font-bold uppercase text-slate-500 mb-2">Resoconto Errori per Argomento (Max 2 errori per argomento):</span>
+                        <div class="space-y-1.5 bg-white p-3 rounded-lg border border-slate-200">
                             ${topicBreakdownHtml}
                         </div>
                     </div>
@@ -2642,7 +2641,6 @@
                 slotsContainer.appendChild(slot);
             });
 
-            // MODIFICA RICHIESTA: L'elenco delle vie disponibili rimane fermo/fisso e ordinato inalterato
             let usedStreets = Object.values(assignedSlots);
             let availableStreets = [...confluences.filter(s => s !== topStreet)];
 
