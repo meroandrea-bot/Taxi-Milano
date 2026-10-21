@@ -433,6 +433,7 @@
 
                     <div class="flex flex-wrap gap-2.5">
                         <button onclick="verifyExercise()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-lg transition shadow text-sm sm:text-base flex items-center justify-center"><i class="fa-solid fa-check mr-2 text-base"></i> Verifica</button>
+                        <button onclick="resetExercise()" class="px-5 sm:px-8 bg-slate-700 hover:bg-slate-800 text-white font-bold py-3.5 rounded-lg transition text-sm sm:text-base flex items-center justify-center"><i class="fa-solid fa-rotate-left mr-2 text-base"></i> Reset</button>
                         <button onclick="showExerciseSolution()" class="px-5 sm:px-8 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-3.5 rounded-lg transition text-sm sm:text-base flex items-center justify-center"><i class="fa-solid fa-eye mr-2 text-base"></i> Soluzione</button>
                     </div>
                     <div id="exercise-feedback" class="mt-3 text-center font-bold text-sm sm:text-base"></div>
@@ -683,7 +684,7 @@
                                     <h4 class="font-bold text-sm sm:text-base text-slate-900 flex items-center"><i class="fa-solid fa-cloud-arrow-up mr-2 text-amber-600"></i> Console Utenti Firebase</h4>
                                     <p class="text-xs sm:text-sm text-slate-600">Accedi direttamente a Firestore per inserire o gestire i codici di accesso degli utenti:</p>
                                     <a href="https://console.firebase.google.com/project/scuola-taxi/firestore/databases/-default-/data/~2FCodes~2FAdmin?fb_gclid=Cj0KCQjw5vLVBhCiARIsAD56SFKGXh5hKeivXDmcF-N2nfiYIEgoWuvoRSw9NLwIZ8V5cwV1u21GeQEaAklHEALw_wcB&fb_utm_campaign=Cloud-SS-DR-Firebase-FY26-global-gsem-1713590&fb_utm_content=text-ad&fb_utm_medium=cpc&fb_utm_source=google&fb_utm_term=KW_firebase" target="_blank" class="block w-full text-center bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-lg text-xs sm:text-sm transition shadow">
-                                        <i class="fa-solid fa-external-link-alt mr-1.5"></i> Apri Console Firebase per Nuove Password[cite: 1]
+                                        <i class="fa-solid fa-external-link-alt mr-1.5"></i> Apri Console Firebase per Nuove Password
                                     </a>
                                 </div>
                             </div>
@@ -1938,6 +1939,7 @@
             document.getElementById("exercise-feedback").textContent = "";
 
             assignedSlots = {};
+            lastVerificationResults = {};
             resetMapTransform();
             renderSlotsAndPool();
         }
@@ -1958,9 +1960,14 @@
             mapScale = 1;
             mapPanX = 0;
             mapPanY = 0;
-            assignedSlots = {};
             selectedStreetForTap = null;
             updateMapTransform();
+        }
+
+        function resetExercise() {
+            assignedSlots = {};
+            lastVerificationResults = {};
+            selectedStreetForTap = null;
             renderSlotsAndPool();
             const feedback = document.getElementById("exercise-feedback");
             if (feedback) feedback.textContent = "";
