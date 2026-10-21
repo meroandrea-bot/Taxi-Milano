@@ -105,6 +105,12 @@
             background-color: #fffbeb !important;
             box-shadow: 0 0 0 2px #f59e0b;
         }
+        /* Blocca lo scroll verticale indesiderato durante i quiz su smartphone */
+        #quiz-active-screen {
+            max-height: 85vh;
+            overflow-y: auto;
+            touch-action: pan-y;
+        }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-900 font-sans min-h-screen flex flex-col text-base sm:text-lg">
@@ -1334,7 +1340,6 @@
         }
 
         function startExamSession(langChoice) {
-            // Estrazione rigorosa: 4 argomenti fissi (Regolamento, Normativa, Geografia, Lingua scelta) con esattamente 4 domande ciascuno
             let targetTopics = ['Regolamento', 'Normativa', 'Geografia', langChoice];
             let examPool = [];
 
@@ -1345,7 +1350,6 @@
             });
 
             if (examPool.length < 16) {
-                // Fallback nel caso in cui qualche argomento specifico abbia meno di 4 domande nel db
                 let remainingNeeded = 16 - examPool.length;
                 let usedQuestionsSet = new Set(examPool);
                 let otherPool = allQuizQuestions.filter(q => !usedQuestionsSet.has(q)).sort(() => Math.random() - 0.5);
@@ -1524,7 +1528,7 @@
                 `;
             } else {
                 let topicFailed = Object.keys(errorsByTopic).some(top => errorsByTopic[top] > 2);
-                let isPassed = (wrongCount < 4 && !topicFailed);
+                let isPassed = (wrongCount < 5 && !topicFailed);
 
                 if (isPassed) {
                     headerEl.innerHTML = `
@@ -1544,7 +1548,6 @@
                     `;
                 }
 
-                // Resoconto pulito con i soli errori per argomento senza elencare le singole domande
                 let topicBreakdownHtml = Object.keys(errorsByTopic).map(top => `
                     <div class="flex justify-between text-xs sm:text-sm">
                         <span class="text-slate-600 font-medium">${top}:</span>
@@ -1559,7 +1562,7 @@
                     </div>
                     <div class="flex justify-between font-bold border-b pb-2 text-slate-800">
                         <span>Errori Totali:</span>
-                        <span class="${wrongCount >= 4 ? 'text-red-600' : 'text-emerald-600'} font-extrabold">${wrongCount} (Max ammessi: 3)</span>
+                        <span class="${wrongCount >= 5 ? 'text-red-600' : 'text-emerald-600'} font-extrabold">${wrongCount} (Max ammessi: 4)</span>
                     </div>
                     <div class="pt-2">
                         <span class="block text-xs font-bold uppercase text-slate-500 mb-2">Resoconto Errori per Argomento (Max 2 errori per argomento):</span>
@@ -2618,7 +2621,7 @@
                 if (index === 0) {
                     slot.innerHTML = `<span class="truncate px-1"><i class="fa-solid fa-thumbtack text-amber-200 mr-1 text-[10px]"></i>${topStreet}</span>`;
                     slot.title = "Via di riferimento in alto (Fissa)";
-                } else if(assignedSlots[index]) {
+                } else if(assignedSlots[index] !== undefined) {
                     slot.innerHTML = `<span>${assignedSlots[index]}</span>`;
                 } else {
                     slot.innerHTML = `<span class="text-amber-300 opacity-80">Riquadro ${index + 1}</span>`;
@@ -2628,11 +2631,11 @@
                     e.stopPropagation();
                     if (index === 0) return;
                     lastVerificationResults = {};
-                    if (selectedStreetForTap && selectedStreetForTap.street) {
+                    if (selectedStreetForTap && selectedStreetForTap.uniqueKey) {
                         assignedSlots[index] = selectedStreetForTap.street;
                         selectedStreetForTap = null;
                         renderSlotsAndPool();
-                    } else if (assignedSlots[index]) {
+                    } else if (assignedSlots[index] !== undefined) {
                         delete assignedSlots[index];
                         renderSlotsAndPool();
                     }
@@ -2641,37 +2644,42 @@
                 slotsContainer.appendChild(slot);
             });
 
-            let usedStreets = Object.values(assignedSlots);
-            let availableStreets = [...confluences.filter(s => s !== topStreet)];
+            // Gestione pool con chiavi uniche (indice originale) per gestire vie duplicate in modo indipendente
+            let assignedValues = Object.values(assignedSlots);
+            let availableItems = [];
+            confluences.forEach((street, origIdx) => {
+                if (origIdx === 0) return; // La via in alto è fissa
+                availableItems.push({ street: street, uniqueKey: origIdx });
+            });
 
             const poolContainer = document.getElementById("source-pool");
             poolContainer.innerHTML = "";
-            document.getElementById("pool-count").textContent = availableStreets.length - usedStreets.length;
+            
+            // Filtriamo via gli elementi già assegnati in base alla chiave univoca (origIdx)
+            let remainingItems = availableItems.filter(item => !Object.keys(assignedSlots).map(Number).includes(item.uniqueKey));
+            document.getElementById("pool-count").textContent = remainingItems.length;
 
-            availableStreets.forEach(street => {
-                if (usedStreets.includes(street)) return;
-
-                const item = document.createElement("div");
-                const isSelected = (selectedStreetForTap && selectedStreetForTap.street === street);
-                item.className = `street-card p-3 rounded-xl border text-xs sm:text-sm font-bold shadow-sm transition flex items-center justify-between ${isSelected ? 'selected-for-tap border-amber-500 bg-amber-50' : 'bg-white border-slate-200 hover:border-amber-400 text-slate-800'}`;
-                item.innerHTML = `<span>${street}</span> <i class="fa-solid fa-hand-pointer text-amber-500 opacity-60"></i>`;
+            remainingItems.forEach(item => {
+                const isSelected = (selectedStreetForTap && selectedStreetForTap.uniqueKey === item.uniqueKey);
+                const card = document.createElement("div");
+                card.className = `street-card p-3 rounded-xl border text-xs sm:text-sm font-bold shadow-sm transition flex items-center justify-between ${isSelected ? 'selected-for-tap border-amber-500 bg-amber-50' : 'bg-white border-slate-200 hover:border-amber-400 text-slate-800'}`;
+                card.innerHTML = `<span>${item.street}</span> <i class="fa-solid fa-hand-pointer text-amber-500 opacity-60"></i>`;
                 
-                item.onclick = () => {
+                card.onclick = () => {
                     lastVerificationResults = {};
-                    if (selectedStreetForTap && selectedStreetForTap.street === street) {
+                    if (selectedStreetForTap && selectedStreetForTap.uniqueKey === item.uniqueKey) {
                         selectedStreetForTap = null;
                     } else {
-                        selectedStreetForTap = { street: street };
+                        selectedStreetForTap = { street: item.street, uniqueKey: item.uniqueKey };
                     }
                     renderSlotsAndPool();
                 };
 
-                poolContainer.appendChild(item);
+                poolContainer.appendChild(card);
             });
         }
 
         function verifyExercise() {
-            let correct = true;
             let confluences = [...currentExPiazza.confluences];
             let topStreet = confluences[0];
             if (customDescriptions[currentExPiazza.name]) {
@@ -2685,21 +2693,44 @@
             }
 
             lastVerificationResults = {};
+            let allCorrect = true;
+            let assignedKeys = Object.keys(assignedSlots).map(Number);
 
+            // Verifica se tutti i riquadri necessari sono stati riempiti
+            if (assignedKeys.length < confluences.length - 1) {
+                allCorrect = false;
+            }
+
+            // Per consentire l'intercambiabilità delle vie uguali, creiamo una lista di vie attese disponibili
+            let expectedPool = [];
+            confluences.forEach((conf, idx) => {
+                if (idx !== 0) expectedPool.push(conf);
+            });
+
+            // Controlliamo ogni slot assegnato: se la via inserita corrisponde a una di quelle ancora presenti nel pool atteso, la consideriamo corretta (permettendo lo scambio tra omonime)
             confluences.forEach((conf, idx) => {
                 if (idx === 0) return;
-                if (assignedSlots[idx] === conf) {
-                    lastVerificationResults[idx] = true;
+                let userVal = assignedSlots[idx];
+                if (userVal !== undefined) {
+                    let matchIdx = expectedPool.indexOf(userVal);
+                    if (matchIdx !== -1) {
+                        // Trovata corrispondenza valida, la rimuoviamo dal pool atteso per evitare usi multipli della stessa istanza
+                        expectedPool.splice(matchIdx, 1);
+                        lastVerificationResults[idx] = true;
+                    } else {
+                        lastVerificationResults[idx] = false;
+                        allCorrect = false;
+                    }
                 } else {
                     lastVerificationResults[idx] = false;
-                    correct = false;
+                    allCorrect = false;
                 }
             });
 
             renderSlotsAndPool();
 
             const feedback = document.getElementById("exercise-feedback");
-            if(correct && Object.keys(assignedSlots).length === confluences.length - 1) {
+            if(allCorrect) {
                 feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-emerald-600";
                 feedback.textContent = "🎉 Ottimo! Tutte le confluenze sono posizionate correttamente in senso antiorario!";
             } else {
