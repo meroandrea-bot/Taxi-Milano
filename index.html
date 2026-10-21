@@ -334,12 +334,18 @@
 
                     <p class="text-slate-600 text-sm sm:text-base">L'esame sarà composto da 16 domande estratte casualmente (4 per ciascuno dei 4 argomenti: Regolamento, Normativa, Geografia e Lingua scelta).</p>
 
-                    <div id="quiz-langs-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto pt-2">
-                        <button onclick="startExamSession('Inglese')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition font-bold text-lg text-slate-800 flex flex-col items-center gap-2">
+                    <div id="quiz-langs-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto pt-2">
+                        <button onclick="startExamSession('Inglese')" class="p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition font-bold text-base sm:text-lg text-slate-800 flex flex-col items-center gap-2">
                             <span class="text-3xl">🇬🇧</span> Inglese
                         </button>
-                        <button onclick="startExamSession('Francese')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition font-bold text-lg text-slate-800 flex flex-col items-center gap-2">
+                        <button onclick="startExamSession('Francese')" class="p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition font-bold text-base sm:text-lg text-slate-800 flex flex-col items-center gap-2">
                             <span class="text-3xl">🇫🇷</span> Francese
+                        </button>
+                        <button onclick="startExamSession('Tedesco')" class="p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition font-bold text-base sm:text-lg text-slate-800 flex flex-col items-center gap-2">
+                            <span class="text-3xl">🇩🇪</span> Tedesco
+                        </button>
+                        <button onclick="startExamSession('Spagnolo')" class="p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition font-bold text-base sm:text-lg text-slate-800 flex flex-col items-center gap-2">
+                            <span class="text-3xl">🇪🇸</span> Spagnolo
                         </button>
                     </div>
                 </div>
@@ -1414,7 +1420,7 @@
             topicsContainer.innerHTML = "";
             
             let uniqueTopics = [...new Set(allQuizQuestions.map(q => q.argomento))];
-            if (uniqueTopics.length === 0) uniqueTopics = ["Regolamento", "Normativa", "Geografia", "Inglese", "Francese"];
+            if (uniqueTopics.length === 0) uniqueTopics = ["Regolamento", "Normativa", "Geografia", "Inglese", "Francese", "Tedesco", "Spagnolo"];
             
             uniqueTopics.forEach(top => {
                 let count = allQuizQuestions.filter(q => q.argomento === top).length;
