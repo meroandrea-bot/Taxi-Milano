@@ -302,7 +302,7 @@
                         <div></div>
                     </div>
 
-                    <p class="text-slate-600 text-sm sm:text-base">L'esame sarà composto da 16 domande estratte casualmente dal database.</p>
+                    <p class="text-slate-600 text-sm sm:text-base">L'esame sarà composto da 16 domande estratte casualmente (4 per ciascuno dei 4 argomenti: Regolamento, Normativa, Geografia e Lingua scelta).</p>
 
                     <div id="quiz-langs-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto pt-2">
                         <button onclick="startExamSession('Inglese')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition font-bold text-lg text-slate-800 flex flex-col items-center gap-2">
@@ -1284,7 +1284,6 @@
         }
 
         function showQuizTopicSelection() {
-            // Mostra la selezione degli argomenti anziché avviare direttamente il test
             const topicsContainer = document.getElementById("quiz-topics-container");
             topicsContainer.innerHTML = "";
             
@@ -1564,7 +1563,7 @@
                         <span class="${wrongCount >= 4 ? 'text-red-600' : 'text-emerald-600'} font-extrabold">${wrongCount} (Max ammessi: 3)</span>
                     </div>
                     <div class="pt-2">
-                        <span class="block text-xs font-bold uppercase text-slate-500 mb-2">Errori per Argomento (Max 2 per argomento):</span>
+                        <span class="block text-xs font-bold uppercase text-slate-500 mb-2">Resoconto Domande Errate per Argomento (Max 2 per argomento):</span>
                         <div class="space-y-1 bg-white p-3 rounded-lg border border-slate-200">
                             ${topicBreakdownHtml}
                         </div>
@@ -2643,8 +2642,9 @@
                 slotsContainer.appendChild(slot);
             });
 
+            // MODIFICA RICHIESTA: L'elenco delle vie disponibili rimane fermo/fisso e ordinato inalterato
             let usedStreets = Object.values(assignedSlots);
-            let availableStreets = confluences.filter(s => s !== topStreet).sort(() => Math.random() - 0.5);
+            let availableStreets = [...confluences.filter(s => s !== topStreet)];
 
             const poolContainer = document.getElementById("source-pool");
             poolContainer.innerHTML = "";
