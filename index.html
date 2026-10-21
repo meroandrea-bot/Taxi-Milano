@@ -26,7 +26,7 @@
     <!-- FIREBASE SDK (MODULO FIRESTORE) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, where, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, where, updateDoc, doc, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB9NDTSWiODSZhL0XyQeLL2uzbEYm5yYzA",
@@ -47,6 +47,8 @@
         window.where = where;
         window.updateDoc = updateDoc;
         window.doc = doc;
+        window.addDoc = addDoc;
+        window.deleteDoc = deleteDoc;
     </script>
 
     <style>
@@ -140,6 +142,24 @@
         </div>
     </div>
 
+    <!-- MODALE INVIA SEGNALAZIONE / SUGGERIMENTO -->
+    <div id="segnalazione-modal" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 space-y-4 border border-slate-300">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-200">
+                <h3 class="font-bold text-lg text-slate-900 flex items-center"><i class="fa-solid fa-lightbulb text-amber-500 mr-2"></i> Invia Segnalazione o Suggerimento</h3>
+                <button onclick="closeSegnalazioneModal()" class="text-slate-500 hover:text-slate-800 font-bold text-xl px-2">&times;</button>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-600">Hai trovato un errore in una via o vuoi suggerire un miglioramento? Scrivici qui sotto:</p>
+            <div>
+                <textarea id="segnalazione-text" placeholder="Scrivi qui il tuo messaggio..." class="w-full h-32 p-3 border border-slate-300 rounded-xl text-sm sm:text-base focus:ring-2 focus:ring-amber-500 focus:outline-none resize-none"></textarea>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeSegnalazioneModal()" class="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-sm font-bold transition">Annulla</button>
+                <button onclick="submitSegnalazione()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-sm font-bold transition shadow">Invia Messaggio</button>
+            </div>
+        </div>
+    </div>
+
     <!-- APP PRINCIPALE -->
     <div id="app-container" class="hidden flex flex-col min-h-screen">
         <header class="bg-slate-900 text-white shadow-md sticky top-0 z-40">
@@ -152,6 +172,9 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2 mt-2 sm:mt-0">
+                    <button onclick="openSegnalazioneModal()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-3 py-2 rounded-lg text-sm transition flex items-center gap-1.5 shadow" title="Invia Segnalazione">
+                        <i class="fa-solid fa-lightbulb"></i> <span class="hidden sm:inline">Segnala / Suggerisci</span>
+                    </button>
                     <button id="header-install-btn" onclick="installPWA()" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-2 rounded-lg text-sm transition items-center gap-1.5 shadow">
                         <i class="fa-solid fa-download"></i> Installa
                     </button>
@@ -614,6 +637,11 @@
                                 <i class="fa-solid fa-chevron-right text-xs opacity-75"></i>
                             </button>
 
+                            <button onclick="switchAdminSubTab('segnalazioni')" id="admin-menu-segnalazioni" class="w-full text-left px-4 py-3 rounded-lg font-bold text-xs sm:text-sm transition flex items-center justify-between bg-white hover:bg-slate-100 text-slate-800 border border-slate-200">
+                                <span><i class="fa-solid fa-comments mr-2 text-amber-600"></i> Leggi Segnalazioni</span>
+                                <i class="fa-solid fa-chevron-right text-xs opacity-75"></i>
+                            </button>
+
                             <button onclick="switchAdminSubTab('password')" id="admin-menu-password" class="w-full text-left px-4 py-3 rounded-lg font-bold text-xs sm:text-sm transition flex items-center justify-between bg-white hover:bg-slate-100 text-slate-800 border border-slate-200">
                                 <span><i class="fa-solid fa-key mr-2 text-red-600"></i> Password & Firebase</span>
                                 <i class="fa-solid fa-chevron-right text-xs opacity-75"></i>
@@ -788,7 +816,21 @@
                                 </div>
                             </div>
 
-                            <!-- 7. PASSWORD & FIREBASE -->
+                            <!-- 7. LEGGI SEGNALAZIONI (ADMIN) -->
+                            <div id="admin-panel-segnalazioni" class="admin-panel space-y-4 hidden">
+                                <h3 class="font-bold text-base sm:text-lg mb-3 flex items-center text-slate-900"><i class="fa-solid fa-comments mr-2 text-amber-600"></i> Segnalazioni e Suggerimenti Ricevuti</h3>
+                                <p class="text-xs sm:text-sm text-slate-600 mb-3">Ecco l'elenco dei messaggi inviati dagli utenti:</p>
+                                <div class="flex justify-end mb-2">
+                                    <button onclick="loadAdminSegnalazioni()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+                                        <i class="fa-solid fa-rotate-right"></i> Aggiorna Elenco
+                                    </button>
+                                </div>
+                                <div id="admin-segnalazioni-list" class="space-y-3 max-h-[50vh] overflow-y-auto p-1">
+                                    <p class="text-slate-500 text-sm italic text-center py-6">Clicca su "Aggiorna Elenco" per caricare le segnalazioni.</p>
+                                </div>
+                            </div>
+
+                            <!-- 8. PASSWORD & FIREBASE -->
                             <div id="admin-panel-password" class="admin-panel space-y-4 hidden">
                                 <h3 class="font-bold text-base sm:text-lg mb-3 flex items-center text-slate-900"><i class="fa-solid fa-key mr-2 text-red-600"></i> Password Admin & Gestione Utenti</h3>
                                 <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
@@ -878,7 +920,7 @@
         }
 
         function switchAdminSubTab(panelId) {
-            const panels = ['regolamenti', 'percorsi', 'cerchie', 'statali', 'aggiungipiazza', 'modificapiazza', 'password'];
+            const panels = ['regolamenti', 'percorsi', 'cerchie', 'statali', 'aggiungipiazza', 'modificapiazza', 'segnalazioni', 'password'];
             panels.forEach(p => {
                 const el = document.getElementById(`admin-panel-${p}`);
                 if (el) el.classList.add("hidden");
@@ -893,6 +935,90 @@
             const activeBtn = document.getElementById(`admin-menu-${panelId}`);
             if (activeBtn) {
                 activeBtn.className = "w-full text-left px-4 py-3 rounded-lg font-bold text-xs sm:text-sm transition flex items-center justify-between bg-red-600 text-white shadow-sm";
+            }
+
+            if (panelId === 'segnalazioni') {
+                loadAdminSegnalazioni();
+            }
+        }
+
+        // FUNZIONI PER SEGNALAZIONI UTENTI
+        function openSegnalazioneModal() {
+            document.getElementById("segnalazione-text").value = "";
+            document.getElementById("segnalazione-modal").classList.remove("hidden");
+        }
+
+        function closeSegnalazioneModal() {
+            document.getElementById("segnalazione-modal").classList.add("hidden");
+        }
+
+        async function submitSegnalazione() {
+            const testo = document.getElementById("segnalazione-text").value.trim();
+            if (!testo) {
+                alert("Scrivi un messaggio prima di inviare la segnalazione.");
+                return;
+            }
+            try {
+                await window.addDoc(window.collection(window.db, "segnalazioni"), {
+                    testo: testo,
+                    data: new Date().toLocaleString('it-IT'),
+                    timestamp: Date.now(),
+                    dispositivo: localStorage.getItem("milan_taxi_device_id") || "web_client"
+                });
+                alert("Grazie! Segnalazione inviata con successo.");
+                closeSegnalazioneModal();
+            } catch (e) {
+                console.error("Errore nell'invio della segnalazione:", e);
+                alert("Errore di connessione. Riprova più tardi.");
+            }
+        }
+
+        async function loadAdminSegnalazioni() {
+            const container = document.getElementById("admin-segnalazioni-list");
+            container.innerHTML = `<p class="text-slate-500 text-sm italic text-center py-6"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Caricamento segnalazioni...</p>`;
+            try {
+                const querySnapshot = await window.getDocs(window.collection(window.db, "segnalazioni"));
+                container.innerHTML = "";
+                let list = [];
+                querySnapshot.forEach((docSnap) => {
+                    list.push({ id: docSnap.id, ...docSnap.data() });
+                });
+
+                // Ordina per timestamp decrescente (più recente in alto)
+                list.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+                if (list.length === 0) {
+                    container.innerHTML = `<p class="text-slate-500 text-sm italic text-center py-6">Nessuna segnalazione ricevuta al momento.</p>`;
+                    return;
+                }
+
+                list.forEach(item => {
+                    const card = document.createElement("div");
+                    card.className = "bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col justify-between space-y-2";
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start gap-2">
+                            <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-md"><i class="fa-solid fa-clock mr-1"></i> ${item.data || 'Data non disponibile'}</span>
+                            <button onclick="deleteSegnalazioneAdmin('${item.id}')" class="text-red-500 hover:text-red-700 text-xs font-bold px-2 py-1 rounded bg-red-50 transition" title="Elimina segnalazione"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                        <p class="text-slate-800 text-sm sm:text-base font-semibold leading-relaxed whitespace-pre-wrap">${item.testo}</p>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (e) {
+                console.error("Errore lettura segnalazioni:", e);
+                container.innerHTML = `<p class="text-red-500 text-sm font-bold text-center py-6">Errore nel caricamento delle segnalazioni dal Cloud.</p>`;
+            }
+        }
+
+        async function deleteSegnalazioneAdmin(id) {
+            if (confirm("Vuoi eliminare questa segnalazione?")) {
+                try {
+                    await window.deleteDoc(window.doc(window.db, "segnalazioni", id));
+                    loadAdminSegnalazioni();
+                } catch (e) {
+                    console.error("Errore eliminazione:", e);
+                    alert("Impossibile eliminare la segnalazione.");
+                }
             }
         }
 
