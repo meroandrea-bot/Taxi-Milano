@@ -1007,7 +1007,7 @@
                 console.log("Database locale in uso.");
             }
 
-            // CARICAMENTO E PARSING DEL FILE EXCEL DA GITHUB (MAPPATURA PRECISA COLONNE: domanda, opzione 1, 2, 3, risposta esatta)
+            // CARICAMENTO E PARSING DEL FILE EXCEL DA GITHUB (MAPPATURA PRECISA COLONNE: opzione 1, opzione 2, opzione 3, risposta)
             try {
                 const excelUrl = "https://raw.githubusercontent.com/meroandrea-bot/Taxi-Milano/main/Quiz_Ruolo_Conducenti_Revisionato.xlsx";
                 const excelResp = await fetch(excelUrl + '?' + new Date().getTime());
@@ -1025,10 +1025,10 @@
                         const headerRow = jsonRows[0].map(h => String(h || "").trim().toLowerCase());
                         
                         let domCol = headerRow.findIndex(h => h.includes("domanda"));
-                        let op1Col = headerRow.findIndex(h => h.includes("opzione 1") || h === "opzione1" || h === "b");
-                        let op2Col = headerRow.findIndex(h => h.includes("opzione 2") || h === "opzione2" || h === "c");
-                        let op3Col = headerRow.findIndex(h => h.includes("opzione 3") || h === "opzione3" || h === "d");
-                        let corrCol = headerRow.findIndex(h => h.includes("risposta esatta") || h.includes("esatta") || h === "corretta");
+                        let op1Col = headerRow.findIndex(h => h === "opzione 1" || h === "opzione1");
+                        let op2Col = headerRow.findIndex(h => h === "opzione 2" || h === "opzione2");
+                        let op3Col = headerRow.findIndex(h => h === "opzione 3" || h === "opzione3");
+                        let corrCol = headerRow.findIndex(h => h === "risposta" || h.includes("risposta esatta") || h === "corretta");
                         let argCol = headerRow.findIndex(h => h.includes("argomento") || h.includes("categoria"));
                         
                         if (domCol === -1) domCol = 0;
@@ -1059,19 +1059,19 @@
                                 }
                             }
 
-                            let rispostaEsattaRaw = row[corrCol] !== undefined && row[corrCol] !== null ? String(row[corrCol]).trim() : "";
+                            let rispostaRaw = row[corrCol] !== undefined && row[corrCol] !== null ? String(row[corrCol]).trim() : "";
                             let correttaIdx = 0;
                             
-                            let matchIndex = opzioni.findIndex(opt => opt.toLowerCase() === rispostaEsattaRaw.toLowerCase());
+                            let matchIndex = opzioni.findIndex(opt => opt.toLowerCase() === rispostaRaw.toLowerCase());
                             if (matchIndex !== -1) {
                                 correttaIdx = matchIndex;
                             } else {
-                                let upperCorr = rispostaEsattaRaw.toUpperCase();
+                                let upperCorr = rispostaRaw.toUpperCase();
                                 if (upperCorr === 'A' || upperCorr === '1' || upperCorr === '0') correttaIdx = 0;
                                 else if (upperCorr === 'B' || upperCorr === '2' || upperCorr === '1') correttaIdx = 1;
                                 else if (upperCorr === 'C' || upperCorr === '3' || upperCorr === '2') correttaIdx = 2;
                                 else {
-                                    let num = parseInt(rispostaEsattaRaw);
+                                    let num = parseInt(rispostaRaw);
                                     if (!isNaN(num)) correttaIdx = num > 0 ? num - 1 : 0;
                                 }
                             }
