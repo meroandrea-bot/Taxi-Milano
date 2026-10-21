@@ -1002,7 +1002,7 @@
                 console.log("Database locale in uso.");
             }
 
-            // CARICAMENTO E PARSING DEL FILE EXCEL DA GITHUB
+            // CARICAMENTO E PARSING DEL FILE EXCEL DA GITHUB (MAPPATURA PRECISA COLONNE: domanda, opzione 1, 2, 3, risposta esatta)
             try {
                 const excelUrl = "https://raw.githubusercontent.com/meroandrea-bot/Taxi-Milano/main/Quiz_Ruolo_Conducenti_Revisionato.xlsx";
                 const excelResp = await fetch(excelUrl + '?' + new Date().getTime());
@@ -1012,55 +1012,87 @@
                     
                     allQuizQuestions = [];
                     
-                    // Legge tutti i fogli presenti nel file Excel
                     workbook.SheetNames.forEach(sheetName => {
                         const worksheet = workbook.Sheets[sheetName];
                         const jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                        if (jsonRows.length === 0) return;
                         
-                        // Itera sulle righe saltando l'intestazione (riga 0)
+                        // Cerca gli indici delle colonne dalla riga di intestazione (riga 0)
+                        const headerRow = jsonRows[0].map(h => String(h || "").trim().toLowerCase());
+                        
+                        let domCol = headerRow.findIndex(h => h.includes("domanda"));
+                        let op1Col = headerRow.findIndex(h => h.includes("opzione 1") || h === "opzione1" || h === "b");
+                        let op2Col = headerRow.findIndex(h => h.includes("opzione 2") || h === "opzione2" || h === "c");
+                        let op3Col = headerRow.findIndex(h => h.includes("opzione 3") || h === "opzione3" || h === "d");
+                        let corrCol = headerRow.findIndex(h => h.includes("risposta esatta") || h.includes("esatta") || h === "corretta");
+                        let argCol = headerRow.findIndex(h => h.includes("argomento") || h.includes("categoria"));
+                        
+                        // Fallback agli indici standard se l'intestazione non viene trovata
+                        if (domCol === -1) domCol = 0;
+                        if (op1Col === -1) op1Col = 1;
+                        if (op2Col === -1) op2Col = 2;
+                        if (op3Col === -1) op3Col = 3;
+                        if (corrCol === -1) corrCol = 4;
+                        if (argCol === -1) argCol = 5;
+
                         for (let i = 1; i < jsonRows.length; i++) {
                             const row = jsonRows[i];
-                            if (!row || row.length < 2) continue;
+                            if (!row || row.length === 0) continue;
                             
-                            // Adatta i campi in base alla struttura del tuo Excel
-                            // Esempio comune: Colonna A = Domanda, B/C/D/E = Opzioni, F = Corretta, G = Argomento
-                            const domanda = row[0] ? String(row[0]).trim() : "";
+                            const domanda = row[domCol] !== undefined && row[domCol] !== null ? String(row[domCol]).trim() : "";
                             if (!domanda) continue;
                             
+                            // Estrae esattamente le 3 possibilità (opzione 1, 2, 3)
                             let opzioni = [];
-                            for (let c = 1; c <= 4; c++) {
-                                if (row[c] !== undefined && row[c] !== null) {
-                                    opzioni.push(String(row[c]).trim());
+                            [op1Col, op2Col, op3Col].forEach(cIdx => {
+                                if (cIdx !== -1 && row[cIdx] !== undefined && row[cIdx] !== null) {
+                                    let val = String(row[cIdx]).trim();
+                                    if (val) opzioni.push(val);
+                                }
+                            });
+                            
+                            if (opzioni.length === 0) {
+                                // Fallback se le colonne erano diverse
+                                for (let c = 1; c <= 3; c++) {
+                                    if (row[c]) opzioni.push(String(row[c]).trim());
+                                }
+                            }
+
+                            // Valutazione della risposta esatta dalla colonna dedicata
+                            let rispostaEsattaRaw = row[corrCol] !== undefined && row[corrCol] !== null ? String(row[corrCol]).trim() : "";
+                            let correttaIdx = 0;
+                            
+                            // Controlla se la risposta esatta corrisponde al testo di una delle opzioni o a un indice/lettera
+                            let matchIndex = opzioni.findIndex(opt => opt.toLowerCase() === rispostaEsattaRaw.toLowerCase());
+                            if (matchIndex !== -1) {
+                                correttaIdx = matchIndex;
+                            } else {
+                                let upperCorr = rispostaEsattaRaw.toUpperCase();
+                                if (upperCorr === 'A' || upperCorr === '1' || upperCorr === '0') correttaIdx = 0;
+                                else if (upperCorr === 'B' || upperCorr === '2' || upperCorr === '1') correttaIdx = 1;
+                                else if (upperCorr === 'C' || upperCorr === '3' || upperCorr === '2') correttaIdx = 2;
+                                else {
+                                    // Se è un numero di indice diretto
+                                    let num = parseInt(rispostaEsattaRaw);
+                                    if (!isNaN(num)) correttaIdx = num > 0 ? num - 1 : 0;
                                 }
                             }
                             
-                            let correttaVal = row[5] !== undefined ? row[5] : 0;
-                            let correttaIdx = 0;
-                            if (typeof correttaVal === 'number') {
-                                correttaIdx = correttaVal;
-                            } else {
-                                let sCorr = String(correttaVal).trim().toUpperCase();
-                                if (sCorr === 'A' || sCorr === '0') correttaIdx = 0;
-                                else if (sCorr === 'B' || sCorr === '1') correttaIdx = 1;
-                                else if (sCorr === 'C' || sCorr === '2') correttaIdx = 2;
-                                else if (sCorr === 'D' || sCorr === '3') correttaIdx = 3;
-                            }
-                            
-                            let argomento = row[6] ? String(row[6]).trim() : sheetName;
+                            let argomento = (argCol !== -1 && row[argCol]) ? String(row[argCol]).trim() : sheetName;
                             
                             allQuizQuestions.push({
                                 argomento: argomento,
                                 domanda: domanda,
-                                opzioni: opzioni.length > 0 ? opzioni : ["Opzione A", "Opzione B", "Opzione C", "Opzione D"],
+                                opzioni: opzioni.length > 0 ? opzioni : ["Opzione 1", "Opzione 2", "Opzione 3"],
                                 corretta: correttaIdx
                             });
                         }
                     });
                     
-                    console.log(`Caricate e convertite ${allQuizQuestions.length} domande dal file Excel di GitHub.`);
+                    console.log(`Caricate e convertite ${allQuizQuestions.length} domande dal file Excel.`);
                 }
             } catch (err) {
-                console.log("Errore nel caricamento del file Excel da GitHub, uso fallback JSON se disponibile:", err);
+                console.log("Errore nel caricamento del file Excel, uso fallback JSON:", err);
                 try {
                     const quizResp = await fetch('quiz_questions.json?' + new Date().getTime());
                     if (quizResp.ok) {
@@ -1247,7 +1279,7 @@
         }
 
         function showQuizTopicSelection() {
-            // Popola dinamicamente i checkbox degli argomenti in base al file Excel
+            // Mostra la selezione degli argomenti anziché avviare direttamente il test
             const topicsContainer = document.getElementById("quiz-topics-container");
             topicsContainer.innerHTML = "";
             
@@ -1285,7 +1317,7 @@
 
             let filtered = allQuizQuestions.filter(q => selectedTopics.includes(q.argomento));
             if (filtered.length === 0) {
-                filtered = allQuizQuestions; // Fallback se non trova filtri esatti
+                filtered = allQuizQuestions;
             }
 
             activeQuizQuestions = filtered.sort(() => Math.random() - 0.5);
