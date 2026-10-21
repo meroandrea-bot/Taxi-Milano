@@ -13,7 +13,7 @@
     <!-- ICONA SPECIFICA PER APPLE (IPHONE / IPAD) -->
     <link rel="apple-touch-icon" href="Taxxi_2png.png">
 
-    <title>Esame Ruolo Conducenti Milano - Toponomastica</title>
+    <title>Esame Ruolo Conducenti Milano - Toponomastica & Quiz</title>
     <!-- Manifest dinamico per installazione PWA -->
     <link rel="manifest" id="dynamic-manifest">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -152,6 +152,7 @@
             </div>
             <nav class="bg-slate-800 px-2 py-2 flex space-x-1.5 overflow-x-auto scrollbar-none border-t border-slate-700">
                 <button onclick="switchTab('home')" id="btn-home" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-house mr-1"></i> Home</button>
+                <button onclick="switchTab('quiz')" id="btn-quiz" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-list-check mr-1"></i> Quiz Esame</button>
                 <button onclick="switchTab('enciclopedia')" id="btn-enciclopedia" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition">Confluenze Piazze (<span id="total-count">0</span>)</button>
                 <button onclick="switchTab('percorsi')" id="btn-percorsi" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-route mr-1"></i> Percorsi</button>
                 <button onclick="switchTab('cerchie')" id="btn-cerchie" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-circle-nodes mr-1"></i> Cinque Cerchie</button>
@@ -181,10 +182,10 @@
                             <span class="text-xs sm:text-sm text-slate-500 mt-1">Confluenze Piazze, percorsi, cerchie, statali, regolamenti ed esercizi</span>
                         </button>
 
-                        <button onclick="alert('Sezione Quiz in fase di configurazione con le tue future indicazioni.')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex flex-col items-center text-center group shadow-sm">
+                        <button onclick="switchTab('quiz')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex flex-col items-center text-center group shadow-sm">
                             <i class="fa-solid fa-list-check text-4xl sm:text-5xl text-amber-500 mb-3 group-hover:scale-110 transition"></i>
                             <span class="font-bold text-lg sm:text-xl text-slate-900">Quiz per l'esame Ruolo Conducenti</span>
-                            <span class="text-xs sm:text-sm text-slate-500 mt-1">Mettiti alla prova con i quiz</span>
+                            <span class="text-xs sm:text-sm text-slate-500 mt-1">Simulatore Allenamento & Esame ufficiale con 954 domande</span>
                         </button>
                     </div>
 
@@ -238,6 +239,136 @@
                     </div>
 
                 </div>
+            </section>
+
+            <!-- SCHEDA QUIZ RUOLO CONDUCENTI -->
+            <section id="tab-quiz" class="hidden space-y-4 max-w-4xl mx-auto w-full">
+                
+                <!-- MENU PRINCIPALE QUIZ (ALLENAMENTO O ESAME) -->
+                <div id="quiz-menu-screen" class="bg-white p-6 sm:p-10 rounded-2xl shadow-sm border border-slate-200 text-center space-y-6">
+                    <div class="space-y-2">
+                        <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-3xl shadow-sm">
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Quiz Esame Ruolo Conducenti</h2>
+                        <p class="text-sm sm:text-base text-slate-600 max-w-xl mx-auto">Scegli la modalità desiderata per esercitarti sui 954 quesiti ufficiali o sostenere la simulazione d'esame.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        <button onclick="showQuizTopicSelection()" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex flex-col items-center text-center group shadow-sm">
+                            <i class="fa-solid fa-dumbbell text-4xl sm:text-5xl text-amber-500 mb-3 group-hover:scale-110 transition"></i>
+                            <span class="font-bold text-lg sm:text-xl text-slate-900">Allenamento</span>
+                            <span class="text-xs sm:text-sm text-slate-500 mt-1">Seleziona gli argomenti e verifica subito ogni risposta</span>
+                        </button>
+
+                        <button onclick="showExamLanguageSelection()" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex flex-col items-center text-center group shadow-sm">
+                            <i class="fa-solid fa-file-pen text-4xl sm:text-5xl text-red-500 mb-3 group-hover:scale-110 transition"></i>
+                            <span class="font-bold text-lg sm:text-xl text-slate-900">Esame</span>
+                            <span class="text-xs sm:text-sm text-slate-500 mt-1">16 domande random (4 per argomento), timer 30 minuti</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SELEZIONE ARGOMENTI PER ALLENAMENTO -->
+                <div id="quiz-topic-screen" class="hidden bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                    <div class="flex justify-between items-center pb-4 border-b border-slate-200">
+                        <button onclick="showQuizMenuScreen()" class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs sm:text-sm font-bold transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-arrow-left"></i> Home Quiz
+                        </button>
+                        <h3 class="font-bold text-lg sm:text-xl text-slate-900">Seleziona Argomenti Allenamento</h3>
+                        <div></div>
+                    </div>
+
+                    <div class="space-y-3 max-w-lg mx-auto">
+                        <label class="flex items-center p-3.5 bg-slate-50 border rounded-xl cursor-pointer hover:bg-amber-50 transition">
+                            <input type="checkbox" value="Regolamento" class="quiz-topic-cb w-5 h-5 text-amber-500 rounded" checked>
+                            <span class="ml-3 font-bold text-slate-800">Regolamento (151 domande)</span>
+                        </label>
+                        <label class="flex items-center p-3.5 bg-slate-50 border rounded-xl cursor-pointer hover:bg-amber-50 transition">
+                            <input type="checkbox" value="Normativa" class="quiz-topic-cb w-5 h-5 text-amber-500 rounded" checked>
+                            <span class="ml-3 font-bold text-slate-800">Normativa (155 domande)</span>
+                        </label>
+                        <label class="flex items-center p-3.5 bg-slate-50 border rounded-xl cursor-pointer hover:bg-amber-50 transition">
+                            <input type="checkbox" value="Geografia" class="quiz-topic-cb w-5 h-5 text-amber-500 rounded" checked>
+                            <span class="ml-3 font-bold text-slate-800">Geografia (539 domande)</span>
+                        </label>
+                        <label class="flex items-center p-3.5 bg-slate-50 border rounded-xl cursor-pointer hover:bg-amber-50 transition">
+                            <input type="checkbox" value="Inglese" class="quiz-topic-cb w-5 h-5 text-amber-500 rounded" checked>
+                            <span class="ml-3 font-bold text-slate-800">Inglese (81 domande)</span>
+                        </label>
+                        <label class="flex items-center p-3.5 bg-slate-50 border rounded-xl cursor-pointer hover:bg-amber-50 transition">
+                            <input type="checkbox" value="Francese" class="quiz-topic-cb w-5 h-5 text-amber-500 rounded" checked>
+                            <span class="ml-3 font-bold text-slate-800">Francese (28 domande)</span>
+                        </label>
+                    </div>
+
+                    <div class="pt-4 flex justify-center">
+                        <button onclick="startTrainingSession()" class="px-8 py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-lg transition text-base">
+                            Avvia Allenamento <i class="fa-solid fa-play ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SELEZIONE LINGUA D'ESAME -->
+                <div id="quiz-lang-screen" class="hidden bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6 text-center">
+                    <div class="flex justify-between items-center pb-4 border-b border-slate-200">
+                        <button onclick="showQuizMenuScreen()" class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs sm:text-sm font-bold transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-arrow-left"></i> Home Quiz
+                        </button>
+                        <h3 class="font-bold text-lg sm:text-xl text-slate-900">Seleziona Lingua dell'Esame</h3>
+                        <div></div>
+                    </div>
+
+                    <p class="text-slate-600 text-sm sm:text-base">L'esame sarà composto da 16 domande estorte casualmente (4 Regolamento, 4 Normativa, 4 Geografia e 4 nella Lingua scelta).</p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto pt-2">
+                        <button onclick="startExamSession('Inglese')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition font-bold text-lg text-slate-800 flex flex-col items-center gap-2">
+                            <span class="text-3xl">🇬🇧</span> Inglese
+                        </button>
+                        <button onclick="startExamSession('Francese')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition font-bold text-lg text-slate-800 flex flex-col items-center gap-2">
+                            <span class="text-3xl">🇫🇷</span> Francese
+                        </button>
+                    </div>
+                </div>
+
+                <!-- INTERFACCIA ACTIVE QUIZ (ALLENAMENTO & ESAME) -->
+                <div id="quiz-active-screen" class="hidden bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                    <div class="flex justify-between items-center pb-4 border-b border-slate-200 flex-wrap gap-2">
+                        <button onclick="quitQuizActive()" class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs sm:text-sm font-bold transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-house"></i> Home Quiz
+                        </button>
+                        <div class="flex items-center gap-3">
+                            <span id="quiz-mode-badge" class="px-3 py-1 bg-amber-100 text-amber-900 font-extrabold text-xs rounded-full uppercase">MODE</span>
+                            <span id="quiz-timer-box" class="hidden font-mono font-bold text-red-600 bg-red-50 px-3 py-1 rounded-lg border border-red-200 text-sm"><i class="fa-solid fa-clock mr-1"></i> <span id="quiz-timer-text">30:00</span></span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center text-xs sm:text-sm font-bold text-slate-500">
+                        <span id="quiz-progress-text">Domanda 1 di 10</span>
+                        <span id="quiz-topic-text" class="text-amber-600">Regolamento</span>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 sm:p-6 rounded-xl border border-slate-200 min-h-[100px] flex items-center">
+                        <h3 id="quiz-question-title" class="text-base sm:text-xl font-bold text-slate-900 leading-snug"></h3>
+                    </div>
+
+                    <div id="quiz-options-box" class="space-y-3"></div>
+
+                    <div id="quiz-feedback-box" class="hidden p-4 rounded-xl font-bold text-center text-sm sm:text-base flex items-center justify-center gap-2"></div>
+                </div>
+
+                <!-- RIEPILOGO FINALE QUIZ -->
+                <div id="quiz-summary-screen" class="hidden bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6 text-center">
+                    <div id="quiz-summary-header" class="space-y-2"></div>
+                    <div id="quiz-summary-stats" class="bg-slate-50 p-6 rounded-xl border border-slate-200 text-left space-y-3 max-w-md mx-auto"></div>
+
+                    <div class="flex justify-center gap-3 pt-2">
+                        <button onclick="showQuizMenuScreen()" class="px-6 py-3 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl transition shadow text-sm sm:text-base">
+                            <i class="fa-solid fa-house mr-2"></i> Torna al Menu Quiz
+                        </button>
+                    </div>
+                </div>
+
             </section>
 
             <!-- SCHEDA REGOLAMENTI WORD -->
@@ -727,6 +858,17 @@
         let startDragY = 0;
         let initialPinchDistance = null;
 
+        // VARIABILI PER IL MODULO QUIZ
+        let allQuizQuestions = [];
+        let activeQuizQuestions = [];
+        let currentQuizIndex = 0;
+        let currentQuizMode = ""; // "allenamento" o "esame"
+        let quizTimerInterval = null;
+        let quizTimeSecondsLeft = 1800; // 30 minuti
+        let quizStartTime = 0;
+        let quizUserAnswers = [];
+        let isQuestionAnswered = false;
+
         function naturalSort(a, b) {
             return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
         }
@@ -853,8 +995,6 @@
         ];
 
         let piazzeData = JSON.parse(localStorage.getItem("milan_piazze_data_full")) || defaultPiazze;
-        let poolSortable = null;
-        let slotSortables = [];
 
         async function loadCloudDatabase() {
             try {
@@ -877,6 +1017,17 @@
                 }
             } catch (err) {
                 console.log("Database locale in uso.");
+            }
+
+            // CARICAMENTO DATABASE QUIZ JSON
+            try {
+                const quizResp = await fetch('quiz_questions.json?' + new Date().getTime());
+                if (quizResp.ok) {
+                    allQuizQuestions = await quizResp.json();
+                    console.log(`Caricate ${allQuizQuestions.length} domande quiz.`);
+                }
+            } catch (err) {
+                console.log("Database quiz non trovato localmente.");
             }
         }
 
@@ -1001,7 +1152,9 @@
         }
 
         function switchTab(tab) {
-            ['home', 'enciclopedia', 'percorsi', 'cerchie', 'statali', 'regolamenti', 'esercizio', 'admin'].forEach(t => {
+            if (quizTimerInterval) clearInterval(quizTimerInterval);
+            
+            ['home', 'quiz', 'enciclopedia', 'percorsi', 'cerchie', 'statali', 'regolamenti', 'esercizio', 'admin'].forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
                 if(el) el.classList.add("hidden");
                 const btn = document.getElementById(`btn-${t}`);
@@ -1018,6 +1171,9 @@
                 else activeBtn.classList.add("bg-amber-500");
             }
 
+            if (tab === 'quiz') {
+                showQuizMenuScreen();
+            }
             if(tab === 'esercizio') {
                 loadExercise();
                 setupMapPanAndZoom();
@@ -1038,13 +1194,301 @@
             if(tab === 'statali') { renderStatali(); }
         }
 
-        function handleOutsideClick(e) {
-            const container = document.getElementById("exercise-search-input");
-            const suggestions = document.getElementById("exercise-suggestions");
-            if (container && suggestions && !container.contains(e.target) && !suggestions.contains(e.target)) {
-                suggestions.classList.add("hidden");
+        // ==========================================
+        // LOGICA GESTIONE QUIZ (ALLENAMENTO & ESAME)
+        // ==========================================
+
+        function showQuizMenuScreen() {
+            if (quizTimerInterval) clearInterval(quizTimerInterval);
+            document.getElementById("quiz-menu-screen").classList.remove("hidden");
+            document.getElementById("quiz-topic-screen").classList.add("hidden");
+            document.getElementById("quiz-lang-screen").classList.add("hidden");
+            document.getElementById("quiz-active-screen").classList.add("hidden");
+            document.getElementById("quiz-summary-screen").classList.add("hidden");
+        }
+
+        function showQuizTopicSelection() {
+            document.getElementById("quiz-menu-screen").classList.add("hidden");
+            document.getElementById("quiz-topic-screen").classList.remove("hidden");
+        }
+
+        function showExamLanguageSelection() {
+            document.getElementById("quiz-menu-screen").classList.add("hidden");
+            document.getElementById("quiz-lang-screen").classList.remove("hidden");
+        }
+
+        function startTrainingSession() {
+            const checkboxes = document.querySelectorAll('.quiz-topic-cb:checked');
+            const selectedTopics = Array.from(checkboxes).map(cb => cb.value);
+
+            if (selectedTopics.length === 0) {
+                alert("Seleziona almeno un argomento per l'allenamento!");
+                return;
+            }
+
+            let filtered = allQuizQuestions.filter(q => selectedTopics.includes(q.argomento));
+            if (filtered.length === 0) {
+                alert("Nessuna domanda trovata per gli argomenti selezionati.");
+                return;
+            }
+
+            // Shuffle domande
+            activeQuizQuestions = filtered.sort(() => Math.random() - 0.5);
+            currentQuizIndex = 0;
+            currentQuizMode = "allenamento";
+            quizUserAnswers = [];
+            quizStartTime = Date.now();
+
+            document.getElementById("quiz-mode-badge").textContent = "ALLENAMENTO";
+            document.getElementById("quiz-mode-badge").className = "px-3 py-1 bg-amber-100 text-amber-900 font-extrabold text-xs rounded-full uppercase";
+            document.getElementById("quiz-timer-box").classList.add("hidden");
+
+            document.getElementById("quiz-topic-screen").classList.add("hidden");
+            document.getElementById("quiz-active-screen").classList.remove("hidden");
+
+            renderCurrentQuizQuestion();
+        }
+
+        function startExamSession(langChoice) {
+            const topics = ['Regolamento', 'Normativa', 'Geografia', langChoice];
+            let examPool = [];
+
+            topics.forEach(top => {
+                let subPool = allQuizQuestions.filter(q => q.argomento === top);
+                let shuffled = subPool.sort(() => Math.random() - 0.5);
+                examPool = examPool.concat(shuffled.slice(0, 4));
+            });
+
+            if (examPool.length < 16) {
+                alert("Database domande non sufficiente per formare l'esame.");
+                return;
+            }
+
+            activeQuizQuestions = examPool.sort(() => Math.random() - 0.5);
+            currentQuizIndex = 0;
+            currentQuizMode = "esame";
+            quizUserAnswers = [];
+            quizStartTime = Date.now();
+            quizTimeSecondsLeft = 1800; // 30 min
+
+            document.getElementById("quiz-mode-badge").textContent = `ESAME (${langChoice.toUpperCase()})`;
+            document.getElementById("quiz-mode-badge").className = "px-3 py-1 bg-red-100 text-red-900 font-extrabold text-xs rounded-full uppercase";
+            document.getElementById("quiz-timer-box").classList.remove("hidden");
+
+            startQuizTimer();
+
+            document.getElementById("quiz-lang-screen").classList.add("hidden");
+            document.getElementById("quiz-active-screen").classList.remove("hidden");
+
+            renderCurrentQuizQuestion();
+        }
+
+        function startQuizTimer() {
+            if (quizTimerInterval) clearInterval(quizTimerInterval);
+            updateTimerDisplay();
+            quizTimerInterval = setInterval(() => {
+                quizTimeSecondsLeft--;
+                updateTimerDisplay();
+                if (quizTimeSecondsLeft <= 0) {
+                    clearInterval(quizTimerInterval);
+                    alert("Tempo scaduto per l'esame!");
+                    finishQuizSession();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(quizTimeSecondsLeft / 60);
+            const secs = quizTimeSecondsLeft % 60;
+            const text = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            document.getElementById("quiz-timer-text").textContent = text;
+        }
+
+        function renderCurrentQuizQuestion() {
+            isQuestionAnswered = false;
+            const q = activeQuizQuestions[currentQuizIndex];
+
+            document.getElementById("quiz-progress-text").textContent = `Domanda ${currentQuizIndex + 1} di ${activeQuizQuestions.length}`;
+            document.getElementById("quiz-topic-text").textContent = q.argomento;
+            document.getElementById("quiz-question-title").textContent = q.domanda;
+
+            const feedbackBox = document.getElementById("quiz-feedback-box");
+            feedbackBox.classList.add("hidden");
+
+            const optsBox = document.getElementById("quiz-options-box");
+            optsBox.innerHTML = "";
+
+            q.opzioni.forEach((optText, optIdx) => {
+                const btn = document.createElement("button");
+                btn.className = "w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-amber-400 bg-white hover:bg-amber-50 font-semibold text-slate-800 transition flex items-center justify-between group shadow-sm text-sm sm:text-base";
+                btn.innerHTML = `
+                    <span class="flex-1 pr-2">${optText}</span>
+                    <span class="w-6 h-6 rounded-full border-2 border-slate-300 group-hover:border-amber-500 flex items-center justify-center flex-shrink-0 text-xs font-bold text-slate-400">
+                        ${String.fromCharCode(65 + optIdx)}
+                    </span>
+                `;
+                btn.onclick = () => handleQuizAnswer(optIdx);
+                optsBox.appendChild(btn);
+            });
+        }
+
+        function handleQuizAnswer(selectedIdx) {
+            if (isQuestionAnswered) return; // Impossibile cambiare risposta
+            isQuestionAnswered = true;
+
+            const q = activeQuizQuestions[currentQuizIndex];
+            const isCorrect = (selectedIdx === q.corretta);
+
+            quizUserAnswers.push({
+                question: q,
+                selected: selectedIdx,
+                correct: isCorrect
+            });
+
+            const optsBox = document.getElementById("quiz-options-box");
+            const buttons = optsBox.querySelectorAll("button");
+
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                btn.classList.remove("hover:border-amber-400", "hover:bg-amber-50");
+
+                if (idx === q.corretta) {
+                    btn.className = "w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 font-bold text-emerald-900 transition flex items-center justify-between shadow-sm text-sm sm:text-base";
+                    btn.innerHTML += `<i class="fa-solid fa-circle-check text-emerald-600 text-xl ml-2"></i>`;
+                } else if (idx === selectedIdx && !isCorrect) {
+                    btn.className = "w-full text-left p-4 rounded-xl border-2 border-red-500 bg-red-50 font-bold text-red-900 transition flex items-center justify-between shadow-sm text-sm sm:text-base";
+                    btn.innerHTML += `<i class="fa-solid fa-circle-xmark text-red-600 text-xl ml-2"></i>`;
+                }
+            });
+
+            const feedbackBox = document.getElementById("quiz-feedback-box");
+            feedbackBox.classList.remove("hidden");
+
+            if (isCorrect) {
+                feedbackBox.className = "p-4 rounded-xl font-bold text-center text-sm sm:text-base bg-emerald-100 text-emerald-900 border border-emerald-300 flex items-center justify-center gap-2";
+                feedbackBox.innerHTML = `<i class="fa-solid fa-check text-xl text-emerald-600"></i> Risposta Esatta! Prossima domanda tra 3 secondi...`;
+            } else {
+                feedbackBox.className = "p-4 rounded-xl font-bold text-center text-sm sm:text-base bg-red-100 text-red-900 border border-red-300 flex items-center justify-center gap-2";
+                feedbackBox.innerHTML = `<i class="fa-solid fa-xmark text-xl text-red-600"></i> Risposta Sbagliata! Prossima domanda tra 3 secondi...`;
+            }
+
+            // Passaggio automatico dopo 3 secondi
+            setTimeout(() => {
+                if (currentQuizIndex < activeQuizQuestions.length - 1) {
+                    currentQuizIndex++;
+                    renderCurrentQuizQuestion();
+                } else {
+                    finishQuizSession();
+                }
+            }, 3000);
+        }
+
+        function quitQuizActive() {
+            if (quizTimerInterval) clearInterval(quizTimerInterval);
+            showQuizMenuScreen();
+        }
+
+        function finishQuizSession() {
+            if (quizTimerInterval) clearInterval(quizTimerInterval);
+
+            document.getElementById("quiz-active-screen").classList.add("hidden");
+            document.getElementById("quiz-summary-screen").classList.remove("hidden");
+
+            const timeSpentSeconds = Math.floor((Date.now() - quizStartTime) / 1000);
+            const mins = Math.floor(timeSpentSeconds / 60);
+            const secs = timeSpentSeconds % 60;
+            const timeStr = `${mins} min e ${secs} sec`;
+
+            let correctCount = quizUserAnswers.filter(a => a.correct).length;
+            let wrongCount = quizUserAnswers.length - correctCount;
+
+            // Conteggio errori per argomento
+            let errorsByTopic = {};
+            quizUserAnswers.forEach(a => {
+                let top = a.question.argomento;
+                if (!errorsByTopic[top]) errorsByTopic[top] = 0;
+                if (!a.correct) errorsByTopic[top]++;
+            });
+
+            const headerEl = document.getElementById("quiz-summary-header");
+            const statsEl = document.getElementById("quiz-summary-stats");
+
+            if (currentQuizMode === "allenamento") {
+                headerEl.innerHTML = `
+                    <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Allenamento Completato!</h2>
+                    <p class="text-slate-600 text-sm">Ecco il riepilogo della tua sessione di studio:</p>
+                `;
+
+                statsEl.innerHTML = `
+                    <div class="flex justify-between font-bold border-b pb-2 text-slate-800">
+                        <span>Tempo Impiegato:</span>
+                        <span class="text-amber-600 font-mono">${timeStr}</span>
+                    </div>
+                    <div class="flex justify-between font-bold border-b pb-2 text-slate-800">
+                        <span>Risposte Corrette:</span>
+                        <span class="text-emerald-600 font-extrabold">${correctCount} / ${activeQuizQuestions.length}</span>
+                    </div>
+                    <div class="flex justify-between font-bold text-slate-800">
+                        <span>Risposte Sbagliate:</span>
+                        <span class="text-red-600 font-extrabold">${wrongCount}</span>
+                    </div>
+                `;
+            } else {
+                // MODALITÀ ESAME: Criteri Promozione
+                // Promosso se: wrongCount < 4 E nessun argomento ha > 2 errori
+                let topicFailed = Object.keys(errorsByTopic).some(top => errorsByTopic[top] > 2);
+                let isPassed = (wrongCount < 4 && !topicFailed);
+
+                if (isPassed) {
+                    headerEl.innerHTML = `
+                        <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+                        <h2 class="text-3xl font-black text-emerald-600 uppercase tracking-wide">PROMOSSO! 🎉</h2>
+                        <p class="text-slate-600 font-semibold">Complimenti, hai superato la simulazione dell'Esame del Ruolo Conducenti!</p>
+                    `;
+                } else {
+                    headerEl.innerHTML = `
+                        <div class="w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        <h2 class="text-3xl font-black text-red-600 uppercase tracking-wide">BOCCIATO ❌</h2>
+                        <p class="text-slate-600 font-semibold">Non hai raggiunto i requisiti minimi di idoneità dell'esame.</p>
+                    `;
+                }
+
+                let topicBreakdownHtml = Object.keys(errorsByTopic).map(top => `
+                    <div class="flex justify-between text-xs sm:text-sm">
+                        <span class="text-slate-600 font-medium">${top}:</span>
+                        <span class="font-bold ${errorsByTopic[top] > 2 ? 'text-red-600' : 'text-slate-800'}">${errorsByTopic[top]} errori</span>
+                    </div>
+                `).join('');
+
+                statsEl.innerHTML = `
+                    <div class="flex justify-between font-bold border-b pb-2 text-slate-800">
+                        <span>Tempo Impiegato:</span>
+                        <span class="text-amber-600 font-mono">${timeStr}</span>
+                    </div>
+                    <div class="flex justify-between font-bold border-b pb-2 text-slate-800">
+                        <span>Errori Totali:</span>
+                        <span class="${wrongCount >= 4 ? 'text-red-600' : 'text-emerald-600'} font-extrabold">${wrongCount} (Max ammessi: 3)</span>
+                    </div>
+                    <div class="pt-2">
+                        <span class="block text-xs font-bold uppercase text-slate-500 mb-2">Errori per Argomento (Max 2 per argomento):</span>
+                        <div class="space-y-1 bg-white p-3 rounded-lg border border-slate-200">
+                            ${topicBreakdownHtml}
+                        </div>
+                    </div>
+                `;
             }
         }
+
+        // ==========================================
+        // FUNZIONI PREESISTENTI (NON MODIFICATE)
+        // ==========================================
 
         function cycleSortMode() {
             if (sortMode === 'default') sortMode = 'asc';
@@ -2033,7 +2477,7 @@
             };
         }
 
-        let lastVerificationResults = {}; // Traccia lo stato di correttezza dei singoli slot dopo la verifica
+        let lastVerificationResults = {};
 
         function renderSlotsAndPool() {
             const slotsContainer = document.getElementById("map-slots-container");
@@ -2066,7 +2510,6 @@
 
                 const slot = document.createElement("div");
                 
-                // Gestione dei colori condizionali in base alla verifica
                 let slotClasses = "orbit-slot border-2 rounded-xl p-2 text-center flex items-center justify-center text-white text-[11px] sm:text-xs font-bold shadow-lg transition ";
                 if (index === 0) {
                     slotClasses += "bg-amber-600 border-amber-300 font-black ring-2 ring-amber-400 shadow-xl";
@@ -2099,7 +2542,7 @@
                 slot.onclick = (e) => {
                     e.stopPropagation();
                     if (index === 0) return;
-                    lastVerificationResults = {}; // Resetta il feedback visivo al click
+                    lastVerificationResults = {};
                     if (selectedStreetForTap && selectedStreetForTap.street) {
                         assignedSlots[index] = selectedStreetForTap.street;
                         selectedStreetForTap = null;
@@ -2129,7 +2572,7 @@
                 item.innerHTML = `<span>${street}</span> <i class="fa-solid fa-hand-pointer text-amber-500 opacity-60"></i>`;
                 
                 item.onclick = () => {
-                    lastVerificationResults = {}; // Resetta il feedback visivo al click
+                    lastVerificationResults = {};
                     if (selectedStreetForTap && selectedStreetForTap.street === street) {
                         selectedStreetForTap = null;
                     } else {
