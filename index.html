@@ -107,7 +107,6 @@
             background-color: #fffbeb !important;
             box-shadow: 0 0 0 2px #f59e0b;
         }
-        /* Blocca lo scroll verticale indesiderato durante i quiz su smartphone */
         #quiz-active-screen {
             max-height: 85vh;
             overflow-y: auto;
@@ -1022,7 +1021,6 @@
                     list.push({ id: docSnap.id, ...docSnap.data() });
                 });
 
-                // Ordina per timestamp decrescente (più recente in alto)
                 list.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
                 if (list.length === 0) {
@@ -1177,7 +1175,6 @@
                 console.log("Database locale in uso.");
             }
 
-            // CARICAMENTO E PARSING DEL FILE EXCEL DA GITHUB (MAPPATURA PRECISA COLONNE: opzione 1, opzione 2, opzione 3, risposta)
             try {
                 const excelUrl = "https://raw.githubusercontent.com/meroandrea-bot/Taxi-Milano/main/Quiz_Ruolo_Conducenti_Revisionato.xlsx";
                 const excelResp = await fetch(excelUrl + '?' + new Date().getTime());
@@ -1256,11 +1253,8 @@
                             });
                         }
                     });
-                    
-                    console.log(`Caricate e convertite ${allQuizQuestions.length} domande dal file Excel.`);
                 }
             } catch (err) {
-                console.log("Errore nel caricamento del file Excel, uso fallback JSON:", err);
                 try {
                     const quizResp = await fetch('quiz_questions.json?' + new Date().getTime());
                     if (quizResp.ok) {
@@ -1355,7 +1349,6 @@
                 }
 
             } catch (e) {
-                console.error("Errore di connessione a Firebase:", e);
                 err.textContent = "Errore di connessione al Cloud. Riprova.";
                 err.classList.remove("hidden");
             }
@@ -1433,10 +1426,6 @@
             if(tab === 'regolamenti') { renderRegolamenti(); }
             if(tab === 'statali') { renderStatali(); }
         }
-
-        // ==========================================
-        // LOGICA GESTIONE QUIZ (ALLENAMENTO & ESAME)
-        // ==========================================
 
         function showQuizMenuScreen() {
             if (quizTimerInterval) clearInterval(quizTimerInterval);
@@ -1526,7 +1515,7 @@
             currentQuizMode = "esame";
             quizUserAnswers = [];
             quizStartTime = Date.now();
-            quizTimeSecondsLeft = 1800; // 30 min
+            quizTimeSecondsLeft = 1800;
 
             document.getElementById("quiz-mode-badge").textContent = `ESAME (${langChoice.toUpperCase()})`;
             document.getElementById("quiz-mode-badge").className = "px-3 py-1 bg-red-100 text-red-900 font-extrabold text-xs rounded-full uppercase";
@@ -1738,10 +1727,6 @@
                 `;
             }
         }
-
-        // ==========================================
-        // FUNZIONI PREESISTENTI (NON MODIFICATE)
-        // ==========================================
 
         function cycleSortMode() {
             if (sortMode === 'default') sortMode = 'asc';
@@ -2282,10 +2267,6 @@
             alert("Descrizione statale salvata con successo!");
         }
 
-        // =========================================================================
-        // FUNZIONALITA: NAVIGAZIONE SINGOLA PIAZZA E SINTESI VOCALE (TTS)
-        // =========================================================================
-
         function getProcessedPiazzeList() {
             let processed = [...piazzeData];
             if (sortMode === 'asc') {
@@ -2420,7 +2401,7 @@
         }
 
         // =========================================================================
-        // NUOVE FUNZIONALITA: RICONOSCIMENTO VOCALE NEGLI ESERCIZI (SpeechRecognition)
+        // OTTIMIZZAZIONE RICONOSCIMENTO VOCALE & NORMALIZZAZIONE VIE NEGLI ESERCIZI
         // =========================================================================
 
         function toggleVoiceInputExercise() {
@@ -2440,7 +2421,7 @@
             recognitionInstance = new SpeechRecognition();
             recognitionInstance.lang = 'it-IT';
             recognitionInstance.continuous = true;
-            recognitionInstance.interimResults = true; // Risposta istantanea e più rapida
+            recognitionInstance.interimResults = true; // Risultati intermedi per massima velocità
 
             recognitionInstance.onstart = function() {
                 isListeningExercise = true;
@@ -2477,11 +2458,15 @@
             if (btnMic) btnMic.classList.remove("mic-active");
         }
 
-        function cleanStreetNameForMatch(name) {
-            return name.toLowerCase()
-                .replace(/\b(via|viale|piazza|piazzale|largo|corso|vicolo|galleria)\b/gi, '')
-                .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")
-                .trim();
+        // FUNZIONE DI NORMALIZZAZIONE AVANZATA (Risolve il problema dei prefissi via/viale/corso e punteggiatura)
+        function normaliseStreetName(str) {
+            if (!str) return "";
+            return str
+                .toLowerCase()
+                .trim()
+                .replace(/^(via|viale|corso|piazza|piazzale|largo|vico|vicolo|galleria)\s+/i, "")
+                .replace(/[.,'']/g, "")
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         }
 
         function processSpokenTextExercise(transcript) {
@@ -2499,28 +2484,24 @@
                 confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
             }
 
-            // Separa il testo pronunciato per virgole, 'e', o 'poi'
             let spokenParts = transcript.split(/,| e | poi /i).map(s => s.trim()).filter(s => s.length > 0);
 
             spokenParts.forEach(spokenPhrase => {
-                let cleanSpoken = cleanStreetNameForMatch(spokenPhrase);
+                let cleanSpoken = normaliseStreetName(spokenPhrase);
                 if (!cleanSpoken || cleanSpoken.length < 3) return;
 
                 let bestMatchIndex = -1;
                 let bestMatchScore = 0;
 
                 confluences.forEach((confStreet, slotIdx) => {
-                    if (slotIdx === 0) return; // Riquadro in alto è fisso
+                    if (slotIdx === 0) return; // Il primo riquadro in alto è fisso
 
-                    let cleanConf = cleanStreetNameForMatch(confStreet);
+                    let cleanConf = normaliseStreetName(confStreet);
                     
-                    // Corrispondenza Esatta
                     if (cleanConf === cleanSpoken) {
                         bestMatchIndex = slotIdx;
                         bestMatchScore = 100;
-                    } 
-                    // Corrispondenza Parziale/Contenimento
-                    else if (cleanConf.includes(cleanSpoken) || cleanSpoken.includes(cleanConf)) {
+                    } else if (cleanConf.includes(cleanSpoken) || cleanSpoken.includes(cleanConf)) {
                         let score = Math.min(cleanSpoken.length, cleanConf.length);
                         if (score > bestMatchScore && score >= 3) {
                             bestMatchScore = score;
@@ -2529,7 +2510,6 @@
                     }
                 });
 
-                // Inserimento esatto della sola via pronunciata
                 if (bestMatchIndex !== -1) {
                     let matchedStreet = confluences[bestMatchIndex];
                     let alreadyAssignedSlot = Object.keys(assignedSlots).find(key => assignedSlots[key] === matchedStreet);
@@ -3021,20 +3001,23 @@
                     e.stopPropagation();
                     if (index === 0) return;
                     lastVerificationResults = {};
-                    if (selectedStreetForTap && selectedStreetForTap.uniqueKey) {
+                    
+                    // Modifica per rimuovere correttamente la via dall'array assegnato e ripulire l'elenco
+                    let currentStreetInSlot = assignedSlots[index];
+                    if (currentStreetInSlot) {
+                        delete assignedSlots[index];
+                    }
+                    
+                    if (selectedStreetForTap && selectedStreetForTap.uniqueKey !== undefined) {
                         assignedSlots[index] = selectedStreetForTap.street;
                         selectedStreetForTap = null;
-                        renderSlotsAndPool();
-                    } else if (assignedSlots[index] !== undefined) {
-                        delete assignedSlots[index];
-                        renderSlotsAndPool();
                     }
+                    renderSlotsAndPool();
                 };
 
                 slotsContainer.appendChild(slot);
             });
 
-            // Gestione pool con chiavi uniche e ordinamento casuale (disordinato)
             let availableItems = [];
             confluences.forEach((street, origIdx) => {
                 if (origIdx === 0) return;
@@ -3044,9 +3027,9 @@
             const poolContainer = document.getElementById("source-pool");
             poolContainer.innerHTML = "";
             
-            let remainingItems = availableItems.filter(item => !Object.keys(assignedSlots).map(Number).includes(item.uniqueKey));
+            let assignedValues = Object.values(assignedSlots);
+            let remainingItems = availableItems.filter(item => !assignedValues.includes(item.street));
             
-            // Ordine casuale (disordinato) per la lista delle vie
             remainingItems.sort(() => Math.random() - 0.5);
             
             document.getElementById("pool-count").textContent = remainingItems.length;
