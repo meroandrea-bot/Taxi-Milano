@@ -41,12 +41,14 @@
         const db = getFirestore(app);
 
         window.db = db;
-        window.getDocs = getDocs;
-        window.collection = collection;
-        window.query = query;
-        window.where = where;
-        window.updateDoc = updateDoc;
-        window.deleteDoc = deleteDoc;
+	window.getDocs = getDocs;
+	window.collection = collection;
+	window.query = query;
+	window.where = where;
+	window.updateDoc = updateDoc;
+	window.doc = doc;
+	window.addDoc = addDoc;
+	window.deleteDoc = deleteDoc;
     </script>
 
     <style>
