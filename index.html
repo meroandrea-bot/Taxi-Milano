@@ -187,7 +187,7 @@
                 <button onclick="switchTab('enciclopedia')" id="btn-enciclopedia" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition">Confluenze Piazze (<span id="total-count">0</span>)</button>
                 <button onclick="switchTab('percorsi')" id="btn-percorsi" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-route mr-1"></i> Percorsi</button>
                 <button onclick="switchTab('cerchie')" id="btn-cerchie" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-circle-nodes mr-1"></i> Cinque Cerchie</button>
-                <button onclick="switchTab('statali')" id="btn-statali" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-road mr-1"></i> Strade Statali</button>
+                <button onclick="switchTab('statali')" id="btn-statali" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-road mr-1"></i> Statali</button>
                 <button onclick="switchTab('regolamenti')" id="btn-regolamenti" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-scale-balanced mr-1"></i> Regolamenti</button>
                 <button onclick="switchTab('esercizio')" id="btn-esercizio" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-map-location-dot mr-1"></i> Esercizi</button>
                 <button onclick="switchTab('admin')" id="btn-admin" class="hidden px-3.5 py-2 rounded-lg bg-red-600 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-lock-open mr-1"></i> Admin</button>
@@ -442,29 +442,7 @@
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
                         <h2 class="text-lg sm:text-2xl font-bold flex items-center"><i class="fa-solid fa-circle-nodes text-amber-500 mr-2.5"></i> Le cinque cerchie principali di Milano</h2>
-                        
-                        <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-                            <button id="cerchie-view-toggle-btn" onclick="toggleCerchieViewMode()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs sm:text-sm font-bold transition flex items-center gap-1.5 shadow-sm">
-                                <i class="fa-solid fa-layer-group"></i> <span id="cerchie-view-toggle-txt">Passa a Singola Cerchia</span>
-                            </button>
-                            <input type="text" id="search-cerchia" onkeyup="renderCerchie()" placeholder="Cerca percorso cerchia..." class="px-4 py-2 rounded-lg border border-slate-300 text-sm sm:text-base focus:ring-2 focus:ring-amber-500 focus:outline-none flex-1 sm:w-64">
-                        </div>
-                    </div>
-
-                    <!-- BARRA DI CONTROLLO PER VISTA SINGOLA CERCHIA (PASSO-PASSO) -->
-                    <div id="cerchie-single-controls" class="hidden bg-slate-100 p-3 rounded-xl border border-slate-200 flex flex-wrap justify-between items-center gap-3 mb-3">
-                        <div class="flex items-center gap-2">
-                            <select id="cerchie-select-dropdown" onchange="selectCerchiaFromDropdown(this.value)" class="px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white font-bold text-slate-800 max-w-xs"></select>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="prevCerchiaCard()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1 shadow-sm">
-                                <i class="fa-solid fa-arrow-left"></i> Indietro
-                            </button>
-                            <span id="cerchia-card-indicator" class="text-xs sm:text-sm font-bold text-slate-700 px-2">1 / 1</span>
-                            <button onclick="nextCerchiaCard()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1 shadow-sm">
-                                Avanti <i class="fa-solid fa-arrow-right"></i>
-                            </button>
-                        </div>
+                        <input type="text" id="search-cerchia" onkeyup="renderCerchie()" placeholder="Cerca percorso cerchia..." class="px-4 py-2.5 rounded-lg border border-slate-300 text-sm sm:text-base focus:ring-2 focus:ring-amber-500 focus:outline-none w-full sm:w-80">
                     </div>
 
                     <div id="cerchie-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 max-h-[65vh] overflow-y-auto p-1"></div>
@@ -558,10 +536,6 @@
                         <h2 class="text-lg sm:text-2xl font-bold flex items-center"><i class="fa-solid fa-route text-amber-500 mr-2.5"></i> Esercizi Confluenze</h2>
                         
                         <div class="flex items-center gap-2.5 w-full sm:w-auto">
-                            <button id="btn-voice-input" onclick="toggleVoiceInput()" class="px-3.5 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm">
-                                <i class="fa-solid fa-microphone" id="voice-icon"></i> <span id="voice-btn-text">Compila con la Voce</span>
-                            </button>
-
                             <div class="relative flex-1 sm:w-72">
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
                                     <i class="fa-solid fa-magnifying-glass text-sm"></i>
@@ -573,16 +547,8 @@
                         </div>
                     </div>
                     
-                    <div id="voice-status-banner" class="hidden bg-red-50 border border-red-200 rounded-lg p-3 mb-2 text-xs sm:text-sm font-bold text-red-800 shadow-sm flex items-center justify-between animate-pulse">
-                        <div class="flex items-center gap-2">
-                            <span class="w-3 h-3 bg-red-600 rounded-full animate-ping"></span>
-                            <span>Ascolto vocale attivo... Pronuncia il nome della via in senso antiorario!</span>
-                        </div>
-                        <span id="voice-heard-text" class="text-xs bg-white px-2 py-1 rounded border border-red-300 font-mono text-slate-700">In attesa...</span>
-                    </div>
-
                     <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-3.5 text-xs sm:text-sm font-semibold text-amber-900 shadow-sm">
-                        <i class="fa-solid fa-circle-info mr-1.5 text-amber-600"></i> <strong>Smartphone & PC:</strong> Tocca una via dall'elenco e poi tocca il riquadro vuoto attorno alla piazza per posizionarla! Oppure clicca su "Compila con la Voce" e pronuncia i nomi delle vie.
+                        <i class="fa-solid fa-circle-info mr-1.5 text-amber-600"></i> <strong>Smartphone & PC:</strong> Tocca una via dall'elenco e poi tocca il riquadro vuoto attorno alla piazza per posizionarla! Usa un dito per spostare la mappa e due dita per fare zoom.
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4">
@@ -905,8 +871,7 @@
 
         </main>
     </div>
-
-    <script>
+<script>
         let adminPwd = localStorage.getItem("milan_admin_pwd") || "admin_taxi_2026";
         let customDescriptions = JSON.parse(localStorage.getItem("milan_custom_descriptions")) || {};
         let percorsiData = JSON.parse(localStorage.getItem("milan_percorsi_data")) || [];
@@ -926,14 +891,6 @@
         let isSingleStepMode = false;
         let currentActiveDocTitle = "";
         let currentRawDocBuffer = null;
-
-        // VARIABILI PER LA SCHEDA CERCHIE (MODALITÀ PASSO-PASSO E TTS)
-        let isCerchieSingleMode = false;
-        let currentCerchiaCardIdx = 0;
-
-        // VARIABILI PER COMPILAZIONE VOCALE (SPEECH RECOGNITION)
-        let recognition = null;
-        let isVoiceListening = false;
 
         let mapScale = 1;
         let mapPanX = 0;
@@ -1188,7 +1145,7 @@
                 console.log("Database locale in uso.");
             }
 
-            // CARICAMENTO E PARSING DEL FILE EXCEL DA GITHUB (MAPPATURA PRECISA COLONNE: opzione 1, opzione 2, opzione 3, risposta)
+            // CARICAMENTO E PARSING DEL FILE EXCEL DA GITHUB
             try {
                 const excelUrl = "https://raw.githubusercontent.com/meroandrea-bot/Taxi-Milano/main/Quiz_Ruolo_Conducenti_Revisionato.xlsx";
                 const excelResp = await fetch(excelUrl + '?' + new Date().getTime());
@@ -1379,7 +1336,6 @@
             document.getElementById("login-pwd").value = "";
             document.getElementById("login-error").classList.add("hidden");
             document.getElementById("btn-admin").classList.add("hidden");
-            if (isVoiceListening) stopVoiceInput();
         }
 
         function initApp() {
@@ -1404,7 +1360,6 @@
 
         function switchTab(tab) {
             if (quizTimerInterval) clearInterval(quizTimerInterval);
-            if (isVoiceListening && tab !== 'esercizio') stopVoiceInput();
             
             ['home', 'quiz', 'enciclopedia', 'percorsi', 'cerchie', 'statali', 'regolamenti', 'esercizio', 'admin'].forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
@@ -1752,7 +1707,7 @@
         }
 
         // ==========================================
-        // FUNZIONI PREESISTENTI (NON MODIFICATE)
+        // FUNZIONI PREESISTENTI
         // ==========================================
 
         function cycleSortMode() {
@@ -2002,102 +1957,6 @@
             });
         }
 
-        // LEGGERE AD ALTA VOCE LA CERCHIA (SINTESI VOCALE / TEXT-TO-SPEECH)
-        function speakCerchiaText(event, title, fileData) {
-            event.stopPropagation();
-            if (!('speechSynthesis' in window)) {
-                alert("La sintesi vocale non è supportata dal tuo browser.");
-                return;
-            }
-
-            window.speechSynthesis.cancel(); // Ferma letture precedenti
-
-            if (fileData) {
-                try {
-                    const base64Content = fileData.split(',')[1];
-                    const binaryString = atob(base64Content);
-                    const len = binaryString.length;
-                    const bytes = new Uint8Array(len);
-                    for (let i = 0; i < len; i++) {
-                        bytes[i] = binaryString.charCodeAt(i);
-                    }
-                    mammoth.extractRawText({ arrayBuffer: bytes.buffer })
-                        .then(function(result) {
-                            let text = result.value || title;
-                            let utterance = new SpeechSynthesisUtterance(text);
-                            utterance.lang = 'it-IT';
-                            utterance.rate = 0.95;
-                            window.speechSynthesis.speak(utterance);
-                        })
-                        .catch(function() {
-                            let utterance = new SpeechSynthesisUtterance(title);
-                            utterance.lang = 'it-IT';
-                            window.speechSynthesis.speak(utterance);
-                        });
-                } catch(e) {
-                    let utterance = new SpeechSynthesisUtterance(title);
-                    utterance.lang = 'it-IT';
-                    window.speechSynthesis.speak(utterance);
-                }
-            } else {
-                let utterance = new SpeechSynthesisUtterance(title);
-                utterance.lang = 'it-IT';
-                window.speechSynthesis.speak(utterance);
-            }
-        }
-
-        // NUOVA MODALITÀ DI VISUALIZZAZIONE ED ELENCO DELLE CERCHIE
-        function toggleCerchieViewMode() {
-            isCerchieSingleMode = !isCerchieSingleMode;
-            const btnTxt = document.getElementById("cerchie-view-toggle-txt");
-            const controls = document.getElementById("cerchie-single-controls");
-
-            if (isCerchieSingleMode) {
-                btnTxt.textContent = "Passa ad Elenco Completo";
-                controls.classList.remove("hidden");
-            } else {
-                btnTxt.textContent = "Passa a Singola Cerchia";
-                controls.classList.add("hidden");
-            }
-            renderCerchie();
-        }
-
-        function populateCerchieDropdown(filteredList) {
-            const dropdown = document.getElementById("cerchie-select-dropdown");
-            if (!dropdown) return;
-            dropdown.innerHTML = "";
-            filteredList.forEach((c, idx) => {
-                const opt = document.createElement("option");
-                opt.value = idx;
-                opt.textContent = c.title;
-                dropdown.appendChild(opt);
-            });
-            dropdown.value = currentCerchiaCardIdx;
-        }
-
-        function selectCerchiaFromDropdown(valIndex) {
-            currentCerchiaCardIdx = Number(valIndex);
-            renderCerchie();
-        }
-
-        function prevCerchiaCard() {
-            if (currentCerchiaCardIdx > 0) {
-                currentCerchiaCardIdx--;
-                renderCerchie();
-            }
-        }
-
-        function nextCerchiaCard() {
-            const query = document.getElementById("search-cerchia").value.toLowerCase();
-            let sortedCerchie = [...cerchieData].sort((a, b) => naturalSort(a.title, b.title));
-            let filtered = sortedCerchie.filter(c => c.title.toLowerCase().includes(query));
-
-            if (currentCerchiaCardIdx < filtered.length - 1) {
-                currentCerchiaCardIdx++;
-                renderCerchie();
-            }
-        }
-
         function renderCerchie() {
             const query = document.getElementById("search-cerchia").value.toLowerCase();
             const container = document.getElementById("cerchie-list");
@@ -2111,60 +1970,23 @@
                 return;
             }
 
-            if (isCerchieSingleMode) {
-                if (currentCerchiaCardIdx >= filtered.length) currentCerchiaCardIdx = 0;
-                populateCerchieDropdown(filtered);
-                document.getElementById("cerchia-card-indicator").textContent = `${currentCerchiaCardIdx + 1} / ${filtered.length}`;
-
-                const c = filtered[currentCerchiaCardIdx];
+            filtered.forEach(c => {
                 const card = document.createElement("div");
-                card.className = "bg-white border-2 border-amber-500 rounded-2xl p-6 shadow-md transition flex flex-col justify-between cursor-pointer col-span-full max-w-xl mx-auto w-full group";
+                card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between cursor-pointer group hover:border-amber-500";
                 card.onclick = () => openDocumentDetailFromData(c);
-                
                 card.innerHTML = `
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center space-x-3.5">
-                            <div class="p-3 bg-amber-50 rounded-xl group-hover:bg-amber-100 transition text-amber-600">
-                                <i class="fa-solid fa-circle-nodes text-2xl"></i>
-                            </div>
-                            <div>
-                                <span class="text-xs font-bold text-amber-600 uppercase tracking-wider block">Cerchia ${currentCerchiaCardIdx + 1} di ${filtered.length}</span>
-                                <h3 class="font-extrabold text-lg sm:text-xl text-slate-900 group-hover:text-amber-700 leading-snug">${c.title}</h3>
-                            </div>
+                    <div class="flex items-center space-x-3.5">
+                        <div class="p-3 bg-amber-50 rounded-xl group-hover:bg-amber-100 transition text-amber-600">
+                            <i class="fa-solid fa-circle-nodes text-xl"></i>
                         </div>
-                        <button onclick="speakCerchiaText(event, '${c.title.replace(/'/g, "\\'")}', '${c.fileData || ''}')" class="p-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl shadow transition" title="Ascolta Lettura Vocale">
-                            <i class="fa-solid fa-volume-high text-lg"></i>
-                        </button>
+                        <div>
+                            <h3 class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-amber-700 leading-snug">${c.title}</h3>
+                            <span class="text-xs text-slate-500 font-medium">Clicca per aprire, visualizzare o scaricare</span>
+                        </div>
                     </div>
-                    <p class="text-xs sm:text-sm text-slate-500 font-medium text-center border-t border-slate-100 pt-3">
-                        <i class="fa-solid fa-hand-pointer mr-1 text-amber-500"></i> Clicca per aprire i dettagli passo-passo
-                    </p>
                 `;
                 container.appendChild(card);
-            } else {
-                filtered.forEach(c => {
-                    const card = document.createElement("div");
-                    card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between cursor-pointer group hover:border-amber-500";
-                    card.onclick = () => openDocumentDetailFromData(c);
-                    card.innerHTML = `
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-3.5 pr-2">
-                                <div class="p-3 bg-amber-50 rounded-xl group-hover:bg-amber-100 transition text-amber-600 flex-shrink-0">
-                                    <i class="fa-solid fa-circle-nodes text-xl"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-amber-700 leading-snug">${c.title}</h3>
-                                    <span class="text-xs text-slate-500 font-medium">Clicca per aprire o visualizzare</span>
-                                </div>
-                            </div>
-                            <button onclick="speakCerchiaText(event, '${c.title.replace(/'/g, "\\'")}', '${c.fileData || ''}')" class="p-2.5 bg-amber-100 hover:bg-amber-500 hover:text-white text-amber-800 rounded-lg transition flex-shrink-0" title="Ascolta Lettura Vocale">
-                                <i class="fa-solid fa-volume-high"></i>
-                            </button>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-            }
+            });
         }
 
         async function openDocumentDetailFromData(docObj) {
@@ -2427,8 +2249,11 @@
             alert("Descrizione statale salvata con successo!");
         }
 
+        // ==========================================
+        // RICERCA ENCICLOPEDIA (MODIFICATA PER CORRISPONDENZA PARZIALE / ESATTA DELLE VIE)
+        // ==========================================
         function renderEncyclopedia() {
-            const query = document.getElementById("search-piazza").value.toLowerCase();
+            const query = document.getElementById("search-piazza").value.toLowerCase().trim();
             const container = document.getElementById("encyclopedia-list");
             container.innerHTML = "";
 
@@ -2440,8 +2265,20 @@
             }
 
             let filtered = processed.filter(item => {
+                if (!query) return true;
+
                 const matchName = item.name.toLowerCase().includes(query) || item.type.toLowerCase().includes(query);
-                const matchConfluence = item.confluences.some(c => c.toLowerCase().includes(query));
+                
+                // Controllo di corrispondenza parziale/esatta con l'elenco delle vie della piazza
+                const matchConfluence = item.confluences.some(c => {
+                    const streetLower = c.toLowerCase();
+                    // Corrispondenza esatta
+                    if (streetLower === query) return true;
+                    // Corrispondenza parziale
+                    if (streetLower.includes(query)) return true;
+                    return false;
+                });
+
                 return matchName || matchConfluence;
             });
 
@@ -2786,115 +2623,6 @@
             renderSlotsAndPool();
         }
 
-        // FUNZIONI DI RICONOSCIMENTO VOCALE (SPEECH RECOGNITION) NEGLI ESERCIZI
-        function toggleVoiceInput() {
-            if (isVoiceListening) {
-                stopVoiceInput();
-            } else {
-                startVoiceInput();
-            }
-        }
-
-        function startVoiceInput() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                alert("Il riconoscimento vocale non è supportato dal tuo browser.");
-                return;
-            }
-
-            recognition = new SpeechRecognition();
-            recognition.lang = 'it-IT';
-            recognition.continuous = true;
-            recognition.interimResults = false;
-
-            recognition.onstart = function() {
-                isVoiceListening = true;
-                document.getElementById("voice-status-banner").classList.remove("hidden");
-                document.getElementById("voice-btn-text").textContent = "Pausa Voce";
-                document.getElementById("btn-voice-input").className = "px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm";
-            };
-
-            recognition.onresult = function(event) {
-                const lastResultIndex = event.results.length - 1;
-                const spokenText = event.results[lastResultIndex][0].transcript.trim().toLowerCase();
-                document.getElementById("voice-heard-text").textContent = `Sentito: "${spokenText}"`;
-
-                processSpokenStreet(spokenText);
-            };
-
-            recognition.onerror = function(e) {
-                console.error("Errore vocale:", e.error);
-            };
-
-            recognition.onend = function() {
-                if (isVoiceListening) {
-                    try { recognition.start(); } catch(err) {}
-                }
-            };
-
-            try {
-                recognition.start();
-            } catch(e) {
-                console.error("Avvio vocale non riuscito:", e);
-            }
-        }
-
-        function stopVoiceInput() {
-            isVoiceListening = false;
-            if (recognition) {
-                try { recognition.stop(); } catch(e) {}
-            }
-            document.getElementById("voice-status-banner").classList.add("hidden");
-            document.getElementById("voice-btn-text").textContent = "Compila con la Voce";
-            document.getElementById("btn-voice-input").className = "px-3.5 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm";
-        }
-
-        function processSpokenStreet(spokenText) {
-            if (!currentExPiazza) return;
-
-            let confluences = [...currentExPiazza.confluences];
-            let topStreet = confluences[0];
-            if (customDescriptions[currentExPiazza.name]) {
-                const customKeys = Object.keys(customDescriptions[currentExPiazza.name]);
-                const foundCustom = customKeys.find(k => confluences.includes(k));
-                if (foundCustom) topStreet = foundCustom;
-            }
-
-            const topIdx = confluences.indexOf(topStreet);
-            if (topIdx > 0) {
-                confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
-            }
-
-            // Trova il primo slot vuoto in senso antiorario (escludendo lo slot 0 che è fisso)
-            let targetSlotIndex = -1;
-            for (let i = 1; i < confluences.length; i++) {
-                if (assignedSlots[i] === undefined) {
-                    targetSlotIndex = i;
-                    break;
-                }
-            }
-
-            if (targetSlotIndex === -1) {
-                document.getElementById("voice-heard-text").textContent = "Tutti i riquadri sono già stati compilati!";
-                return;
-            }
-
-            // Cerca la via pronunciata nell'elenco della piazza corrente
-            let matchedStreet = confluences.find(s => spokenText.includes(s.toLowerCase()) || s.toLowerCase().includes(spokenText));
-
-            if (matchedStreet) {
-                assignedSlots[targetSlotIndex] = matchedStreet;
-                lastVerificationResults = {};
-                renderSlotsAndPool();
-            } else {
-                // Inserimento diretto del testo pronunciato se non trova un match esatto
-                let cleanText = spokenText.charAt(0).toUpperCase() + spokenText.slice(1);
-                assignedSlots[targetSlotIndex] = cleanText;
-                lastVerificationResults = {};
-                renderSlotsAndPool();
-            }
-        }
-
         function updateMapTransform() {
             const wrapper = document.getElementById("orbit-container-box");
             if (wrapper) {
@@ -3115,25 +2843,21 @@
             let allCorrect = true;
             let assignedKeys = Object.keys(assignedSlots).map(Number);
 
-            // Verifica se tutti i riquadri necessari sono stati riempiti
             if (assignedKeys.length < confluences.length - 1) {
                 allCorrect = false;
             }
 
-            // Per consentire l'intercambiabilità delle vie uguali, creiamo una lista di vie attese disponibili
             let expectedPool = [];
             confluences.forEach((conf, idx) => {
                 if (idx !== 0) expectedPool.push(conf);
             });
 
-            // Controlliamo ogni slot assegnato: se la via inserita corrisponde a una di quelle ancora presenti nel pool atteso, la consideriamo corretta (permettendo lo scambio tra omonime)
             confluences.forEach((conf, idx) => {
                 if (idx === 0) return;
                 let userVal = assignedSlots[idx];
                 if (userVal !== undefined) {
                     let matchIdx = expectedPool.indexOf(userVal);
                     if (matchIdx !== -1) {
-                        // Trovata corrispondenza valida, la rimuoviamo dal pool atteso per evitare usi multipli della stessa istanza
                         expectedPool.splice(matchIdx, 1);
                         lastVerificationResults[idx] = true;
                     } else {
