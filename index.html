@@ -46,8 +46,6 @@
         window.query = query;
         window.where = where;
         window.updateDoc = updateDoc;
-        window.doc = doc;
-        window.addDoc = addDoc;
         window.deleteDoc = deleteDoc;
     </script>
 
@@ -895,8 +893,7 @@
 
         </main>
     </div>
-
-    <script>
+<script>
         let adminPwd = localStorage.getItem("milan_admin_pwd") || "admin_taxi_2026";
         let customDescriptions = JSON.parse(localStorage.getItem("milan_custom_descriptions")) || {};
         let percorsiData = JSON.parse(localStorage.getItem("milan_percorsi_data")) || [];
@@ -980,7 +977,8 @@
                 loadAdminSegnalazioni();
             }
         }
-// FUNZIONI PER SEGNALAZIONI UTENTI
+
+        // FUNZIONI PER SEGNALAZIONI UTENTI
         function openSegnalazioneModal() {
             document.getElementById("segnalazione-text").value = "";
             document.getElementById("segnalazione-modal").classList.remove("hidden");
@@ -1420,9 +1418,6 @@
             if(tab === 'esercizio') {
                 loadExercise();
                 setupMapPanAndZoom();
-                document.addEventListener("click", handleOutsideClick);
-            } else {
-                document.removeEventListener("click", handleOutsideClick);
             }
             if(tab === 'admin') {
                 populateAdminSelect();
@@ -2286,7 +2281,7 @@
         }
 
         // =========================================================================
-        // NUOVE FUNZIONALITA: NAVIGAZIONE SINGOLA PIAZZA E SINTESI VOCALE (TTS)
+        // FUNZIONALITA: NAVIGAZIONE SINGOLA PIAZZA E SINTESI VOCALE (TTS)
         // =========================================================================
 
         function getProcessedPiazzeList() {
@@ -2316,7 +2311,6 @@
                 return;
             }
 
-            // Mantiene la visualizzazione focalizzata su una singola piazza alla volta
             if (currentPiazzaIndex >= filtered.length) {
                 currentPiazzaIndex = 0;
             }
@@ -2444,7 +2438,7 @@
             recognitionInstance = new SpeechRecognition();
             recognitionInstance.lang = 'it-IT';
             recognitionInstance.continuous = true;
-            recognitionInstance.interimResults = false;
+            recognitionInstance.interimResults = true; // Risposta istantanea e più rapida
 
             recognitionInstance.onstart = function() {
                 isListeningExercise = true;
@@ -2452,16 +2446,14 @@
                 const feedback = document.getElementById("exercise-feedback");
                 if (feedback) {
                     feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-amber-600 animate-pulse";
-                    feedback.textContent = "🎙️ In ascolto... Pronuncia le vie della piazza in sequenza antioraria!";
+                    feedback.textContent = "🎙️ In ascolto... Pronuncia la via per inserirla!";
                 }
             };
 
             recognitionInstance.onresult = function(event) {
                 for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    if (event.results[i].isFinal) {
-                        let transcript = event.results[i][0].transcript;
-                        processSpokenTextExercise(transcript);
-                    }
+                    let transcript = event.results[i][0].transcript;
+                    processSpokenTextExercise(transcript);
                 }
             };
 
@@ -2510,7 +2502,7 @@
 
             spokenParts.forEach(spokenPhrase => {
                 let cleanSpoken = cleanStreetNameForMatch(spokenPhrase);
-                if (!cleanSpoken) return;
+                if (!cleanSpoken || cleanSpoken.length < 3) return;
 
                 let bestMatchIndex = -1;
                 let bestMatchScore = 0;
@@ -2528,39 +2520,41 @@
                     // Corrispondenza Parziale/Contenimento
                     else if (cleanConf.includes(cleanSpoken) || cleanSpoken.includes(cleanConf)) {
                         let score = Math.min(cleanSpoken.length, cleanConf.length);
-                        if (score > bestMatchScore) {
+                        if (score > bestMatchScore && score >= 3) {
                             bestMatchScore = score;
                             bestMatchIndex = slotIdx;
                         }
                     }
                 });
 
-                // Se troviamo una corrispondenza valida, posizioniamo la via nel primo slot vuoto disponibile
+                // Inserimento esatto della sola via pronunciata
                 if (bestMatchIndex !== -1) {
                     let matchedStreet = confluences[bestMatchIndex];
-                    let emptySlotIndex = -1;
-                    
-                    for (let s = 1; s < confluences.length; s++) {
-                        if (assignedSlots[s] === undefined) {
-                            emptySlotIndex = s;
-                            break;
-                        }
-                    }
+                    let alreadyAssignedSlot = Object.keys(assignedSlots).find(key => assignedSlots[key] === matchedStreet);
 
-                    if (emptySlotIndex !== -1) {
-                        assignedSlots[emptySlotIndex] = matchedStreet;
+                    if (!alreadyAssignedSlot) {
+                        let emptySlotIndex = -1;
+                        for (let s = 1; s < confluences.length; s++) {
+                            if (assignedSlots[s] === undefined) {
+                                emptySlotIndex = s;
+                                break;
+                            }
+                        }
+
+                        if (emptySlotIndex !== -1) {
+                            assignedSlots[emptySlotIndex] = matchedStreet;
+                            lastVerificationResults = {};
+                            renderSlotsAndPool();
+
+                            const feedback = document.getElementById("exercise-feedback");
+                            if (feedback) {
+                                feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-emerald-600";
+                                feedback.textContent = `🎙️ Inserita via: "${matchedStreet}"`;
+                            }
+                        }
                     }
                 }
             });
-
-            lastVerificationResults = {};
-            renderSlotsAndPool();
-
-            const feedback = document.getElementById("exercise-feedback");
-            if (feedback) {
-                feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-emerald-600";
-                feedback.textContent = `🎙️ Inserite vie da input vocale: "${transcript}"`;
-            }
         }
 
         function handleStreetClick(piazzaName, streetName, piazzaId) {
@@ -3038,19 +3032,21 @@
                 slotsContainer.appendChild(slot);
             });
 
-            // Gestione pool con chiavi uniche (indice originale) per gestire vie duplicate in modo indipendente
-            let assignedValues = Object.values(assignedSlots);
+            // Gestione pool con chiavi uniche e ordinamento casuale (disordinato)
             let availableItems = [];
             confluences.forEach((street, origIdx) => {
-                if (origIdx === 0) return; // La via in alto è fissa
+                if (origIdx === 0) return;
                 availableItems.push({ street: street, uniqueKey: origIdx });
             });
 
             const poolContainer = document.getElementById("source-pool");
             poolContainer.innerHTML = "";
             
-            // Filtriamo via gli elementi già assegnati in base alla chiave univoca (origIdx)
             let remainingItems = availableItems.filter(item => !Object.keys(assignedSlots).map(Number).includes(item.uniqueKey));
+            
+            // Ordine casuale (disordinato) per la lista delle vie
+            remainingItems.sort(() => Math.random() - 0.5);
+            
             document.getElementById("pool-count").textContent = remainingItems.length;
 
             remainingItems.forEach(item => {
@@ -3090,25 +3086,21 @@
             let allCorrect = true;
             let assignedKeys = Object.keys(assignedSlots).map(Number);
 
-            // Verifica se tutti i riquadri necessari sono stati riempiti
             if (assignedKeys.length < confluences.length - 1) {
                 allCorrect = false;
             }
 
-            // Per consentire l'intercambiabilità delle vie uguali, creiamo una lista di vie attese disponibili
             let expectedPool = [];
             confluences.forEach((conf, idx) => {
                 if (idx !== 0) expectedPool.push(conf);
             });
 
-            // Controlliamo ogni slot assegnato: se la via inserita corrisponde a una di quelle ancora presenti nel pool atteso, la consideriamo corretta (permettendo lo scambio tra omonime)
             confluences.forEach((conf, idx) => {
                 if (idx === 0) return;
                 let userVal = assignedSlots[idx];
                 if (userVal !== undefined) {
                     let matchIdx = expectedPool.indexOf(userVal);
                     if (matchIdx !== -1) {
-                        // Trovata corrispondenza valida, la rimuoviamo dal pool atteso per evitare usi multipli della stessa istanza
                         expectedPool.splice(matchIdx, 1);
                         lastVerificationResults[idx] = true;
                     } else {
