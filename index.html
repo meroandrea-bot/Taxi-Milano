@@ -113,6 +113,15 @@
             overflow-y: auto;
             touch-action: pan-y;
         }
+        @keyframes pulse-red {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.08); opacity: 0.8; }
+        }
+        .mic-active {
+            animation: pulse-red 1.2s infinite;
+            background-color: #ef4444 !important;
+            color: #ffffff !important;
+        }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-900 font-sans min-h-screen flex flex-col text-base sm:text-lg">
@@ -505,12 +514,22 @@
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3.5 gap-3">
                         <h2 class="text-lg sm:text-2xl font-bold flex items-center"><i class="fa-solid fa-book text-amber-500 mr-2.5"></i> Confluenze Piazze</h2>
-                        <button onclick="cycleSortMode()" id="sort-alpha-btn" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs sm:text-sm font-bold border border-slate-300 transition flex items-center shadow-sm">
-                            <i class="fa-solid fa-sort mr-1.5 text-amber-600 text-base"></i> Ordine Originale
-                        </button>
+                        
+                        <!-- PULSANTI NAVIGAZIONE PRECEDENTE / SUCCESSIVO & RIORDINO -->
+                        <div class="flex items-center gap-2 w-full sm:w-auto flex-wrap">
+                            <button onclick="navigatePiazza(-1)" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs sm:text-sm font-bold transition flex items-center shadow-sm">
+                                <i class="fa-solid fa-chevron-left mr-1"></i> Precedente
+                            </button>
+                            <button onclick="navigatePiazza(1)" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs sm:text-sm font-bold transition flex items-center shadow-sm">
+                                Successivo <i class="fa-solid fa-chevron-right ml-1"></i>
+                            </button>
+                            <button onclick="cycleSortMode()" id="sort-alpha-btn" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs sm:text-sm font-bold border border-slate-300 transition flex items-center shadow-sm">
+                                <i class="fa-solid fa-sort mr-1.5 text-amber-600 text-base"></i> Ordine Originale
+                            </button>
+                        </div>
                     </div>
                     
-                    <input type="text" id="search-piazza" onkeyup="renderEncyclopedia()" placeholder="Cerca piazza, piazzale, largo o via..." class="w-full px-4 py-3 rounded-lg border border-slate-300 text-sm sm:text-base focus:ring-2 focus:ring-amber-500 focus:outline-none mb-4 shadow-sm">
+                    <input type="text" id="search-piazza" onkeyup="onSearchPiazzaInput()" placeholder="Cerca piazza, piazzale, largo o via..." class="w-full px-4 py-3 rounded-lg border border-slate-300 text-sm sm:text-base focus:ring-2 focus:ring-amber-500 focus:outline-none mb-4 shadow-sm">
                     
                     <div id="street-destination-info" class="hidden mb-4 p-4 bg-amber-50 border border-amber-300 rounded-xl text-amber-900 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shadow-sm">
                         <div>
@@ -544,11 +563,16 @@
                                 <div id="exercise-suggestions" class="absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-xl max-h-56 overflow-y-auto z-30 hidden"></div>
                             </div>
                             <select id="exercise-select" onchange="loadExercise()" class="px-3 py-2 border rounded-lg text-sm sm:text-base bg-slate-50 font-bold text-slate-800 max-w-[140px] sm:max-w-xs"></select>
+                            
+                            <!-- PULSANTE RICONOSCIMENTO VOCALE NEGLI ESERCIZI -->
+                            <button id="btn-mic-exercise" onclick="toggleVoiceInputExercise()" class="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold text-sm transition flex items-center gap-1.5 shadow" title="Pronuncia le vie in senso antiorario">
+                                <i class="fa-solid fa-microphone"></i> <span class="hidden sm:inline">Vocalizza</span>
+                            </button>
                         </div>
                     </div>
                     
                     <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-3.5 text-xs sm:text-sm font-semibold text-amber-900 shadow-sm">
-                        <i class="fa-solid fa-circle-info mr-1.5 text-amber-600"></i> <strong>Smartphone & PC:</strong> Tocca una via dall'elenco e poi tocca il riquadro vuoto attorno alla piazza per posizionarla! Usa un dito per spostare la mappa e due dita per fare zoom.
+                        <i class="fa-solid fa-circle-info mr-1.5 text-amber-600"></i> <strong>Smartphone & PC:</strong> Tocca una via dall'elenco o usa il microfono per pronunciarle in senso antiorario! Puoi trascinare la mappa o zoomare.
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4">
@@ -581,7 +605,7 @@
                                 <span><i class="fa-solid fa-list text-amber-500 mr-1.5"></i> Vie Disponibili</span>
                                 <span id="pool-count" class="text-xs bg-slate-200 px-2.5 py-0.5 rounded text-slate-800 font-bold">0</span>
                             </div>
-                            <p class="text-xs text-slate-600 mb-2.5 font-medium">Tocca la via e poi il riquadro sulla mappa.</p>
+                            <p class="text-xs text-slate-600 mb-2.5 font-medium">Tocca la via o usa il microfono per riempire le caselle.</p>
                             <div id="source-pool" class="space-y-2 min-h-[240px] sm:min-h-[350px] max-h-[420px] overflow-y-auto p-1.5 bg-white border border-slate-200 rounded-lg"></div>
                         </div>
                     </div>
@@ -871,7 +895,8 @@
 
         </main>
     </div>
-<script>
+
+    <script>
         let adminPwd = localStorage.getItem("milan_admin_pwd") || "admin_taxi_2026";
         let customDescriptions = JSON.parse(localStorage.getItem("milan_custom_descriptions")) || {};
         let percorsiData = JSON.parse(localStorage.getItem("milan_percorsi_data")) || [];
@@ -885,6 +910,14 @@
         let sortMode = 'default';
         let selectedStreetForTap = null;
         let deferredPrompt = null;
+
+        // VARIABILI PER NAVIGAZIONE SINGOLA PIAZZA E SINTESI VOCALE
+        let currentPiazzaIndex = 0;
+        let isSpeakingPiazza = false;
+
+        // VARIABILI PER RICONOSCIMENTO VOCALE NEGLI ESERCIZI
+        let recognitionInstance = null;
+        let isListeningExercise = false;
 
         let currentDocumentSteps = [];
         let currentStepIndex = 0;
@@ -947,8 +980,7 @@
                 loadAdminSegnalazioni();
             }
         }
-
-        // FUNZIONI PER SEGNALAZIONI UTENTI
+// FUNZIONI PER SEGNALAZIONI UTENTI
         function openSegnalazioneModal() {
             document.getElementById("segnalazione-text").value = "";
             document.getElementById("segnalazione-modal").classList.remove("hidden");
@@ -1145,7 +1177,7 @@
                 console.log("Database locale in uso.");
             }
 
-            // CARICAMENTO E PARSING DEL FILE EXCEL DA GITHUB
+            // CARICAMENTO E PARSING DEL FILE EXCEL DA GITHUB (MAPPATURA PRECISA COLONNE: opzione 1, opzione 2, opzione 3, risposta)
             try {
                 const excelUrl = "https://raw.githubusercontent.com/meroandrea-bot/Taxi-Milano/main/Quiz_Ruolo_Conducenti_Revisionato.xlsx";
                 const excelResp = await fetch(excelUrl + '?' + new Date().getTime());
@@ -1336,6 +1368,8 @@
             document.getElementById("login-pwd").value = "";
             document.getElementById("login-error").classList.add("hidden");
             document.getElementById("btn-admin").classList.add("hidden");
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            if (recognitionInstance) recognitionInstance.stop();
         }
 
         function initApp() {
@@ -1360,6 +1394,8 @@
 
         function switchTab(tab) {
             if (quizTimerInterval) clearInterval(quizTimerInterval);
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            if (recognitionInstance) recognitionInstance.stop();
             
             ['home', 'quiz', 'enciclopedia', 'percorsi', 'cerchie', 'statali', 'regolamenti', 'esercizio', 'admin'].forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
@@ -1707,7 +1743,7 @@
         }
 
         // ==========================================
-        // FUNZIONI PREESISTENTI
+        // FUNZIONI PREESISTENTI (NON MODIFICATE)
         // ==========================================
 
         function cycleSortMode() {
@@ -2249,36 +2285,29 @@
             alert("Descrizione statale salvata con successo!");
         }
 
-        // ==========================================
-        // RICERCA ENCICLOPEDIA (MODIFICATA PER CORRISPONDENZA PARZIALE / ESATTA DELLE VIE)
-        // ==========================================
-        function renderEncyclopedia() {
-            const query = document.getElementById("search-piazza").value.toLowerCase().trim();
-            const container = document.getElementById("encyclopedia-list");
-            container.innerHTML = "";
+        // =========================================================================
+        // NUOVE FUNZIONALITA: NAVIGAZIONE SINGOLA PIAZZA E SINTESI VOCALE (TTS)
+        // =========================================================================
 
+        function getProcessedPiazzeList() {
             let processed = [...piazzeData];
             if (sortMode === 'asc') {
                 processed.sort((a, b) => naturalSort(a.name, b.name));
             } else if (sortMode === 'desc') {
                 processed.sort((a, b) => naturalSort(b.name, a.name));
             }
+            return processed;
+        }
 
+        function renderEncyclopedia() {
+            const query = document.getElementById("search-piazza").value.toLowerCase();
+            const container = document.getElementById("encyclopedia-list");
+            container.innerHTML = "";
+
+            let processed = getProcessedPiazzeList();
             let filtered = processed.filter(item => {
-                if (!query) return true;
-
                 const matchName = item.name.toLowerCase().includes(query) || item.type.toLowerCase().includes(query);
-                
-                // Controllo di corrispondenza parziale/esatta con l'elenco delle vie della piazza
-                const matchConfluence = item.confluences.some(c => {
-                    const streetLower = c.toLowerCase();
-                    // Corrispondenza esatta
-                    if (streetLower === query) return true;
-                    // Corrispondenza parziale
-                    if (streetLower.includes(query)) return true;
-                    return false;
-                });
-
+                const matchConfluence = item.confluences.some(c => c.toLowerCase().includes(query));
                 return matchName || matchConfluence;
             });
 
@@ -2287,33 +2316,251 @@
                 return;
             }
 
-            filtered.forEach(item => {
-                const card = document.createElement("div");
-                card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between";
-                
-                let confluencesHtml = item.confluences.map(c => {
-                    const isSelected = (selectedStreetForTap && selectedStreetForTap.piazzaId === item.id && selectedStreetForTap.street === c);
-                    const hasCustom = customDescriptions[item.name] && customDescriptions[item.name][c];
-                    const badgeClass = isSelected ? "border-amber-500 bg-amber-50 text-amber-900 shadow" : "border-slate-200 bg-slate-50 text-slate-800 hover:bg-slate-100";
-                    const dotClass = hasCustom ? "bg-amber-500" : "bg-slate-400";
-                    return `<button onclick="handleStreetClick('${item.name.replace(/'/g, "\\'")}', '${c.replace(/'/g, "\\'")}', ${item.id})" class="text-left px-3 py-1.5 rounded-lg border text-xs sm:text-sm font-semibold transition flex items-center justify-between group ${badgeClass}">
-                        <span class="truncate pr-2">${c}</span>
-                        <span class="w-2 h-2 rounded-full ${dotClass} flex-shrink-0"></span>
-                    </button>`;
-                }).join('');
+            // Mantiene la visualizzazione focalizzata su una singola piazza alla volta
+            if (currentPiazzaIndex >= filtered.length) {
+                currentPiazzaIndex = 0;
+            }
 
-                card.innerHTML = `
-                    <div>
-                        <div class="flex items-center justify-between mb-2.5">
-                            <span class="px-2.5 py-1 bg-amber-100 text-amber-900 rounded-md font-extrabold text-[10px] sm:text-xs uppercase tracking-wider">${item.type}</span>
-                            <span class="text-xs font-bold text-slate-400">${item.confluences.length} confluenze</span>
+            const item = filtered[currentPiazzaIndex];
+            const card = document.createElement("div");
+            card.className = "bg-white border-2 border-amber-500/30 rounded-2xl p-5 shadow-md hover:shadow-lg transition flex flex-col justify-between col-span-full max-w-2xl mx-auto w-full";
+
+            let confluencesHtml = item.confluences.map(c => {
+                const isSelected = (selectedStreetForTap && selectedStreetForTap.piazzaId === item.id && selectedStreetForTap.street === c);
+                const hasCustom = customDescriptions[item.name] && customDescriptions[item.name][c];
+                const badgeClass = isSelected ? "border-amber-500 bg-amber-50 text-amber-900 shadow" : "border-slate-200 bg-slate-50 text-slate-800 hover:bg-slate-100";
+                const dotClass = hasCustom ? "bg-amber-500" : "bg-slate-400";
+                return `<button onclick="handleStreetClick('${item.name.replace(/'/g, "\\'")}', '${c.replace(/'/g, "\\'")}', ${item.id})" class="text-left px-3.5 py-2 rounded-xl border text-sm font-semibold transition flex items-center justify-between group ${badgeClass}">
+                    <span class="truncate pr-2">${c}</span>
+                    <span class="w-2.5 h-2.5 rounded-full ${dotClass} flex-shrink-0"></span>
+                </button>`;
+            }).join('');
+
+            card.innerHTML = `
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="px-3 py-1 bg-amber-100 text-amber-900 rounded-lg font-extrabold text-xs uppercase tracking-wider">${item.type}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md">Piazza ${currentPiazzaIndex + 1} di ${filtered.length}</span>
+                            <button id="btn-tts-piazza" onclick="toggleSpeechPiazza('${item.name.replace(/'/g, "\\'")}', ${JSON.stringify(item.confluences).replace(/"/g, '&quot;')})" class="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow" title="Ascolta confluenze">
+                                <i class="fa-solid fa-volume-high text-sm"></i> <span id="tts-btn-text">Ascolta</span>
+                            </button>
                         </div>
-                        <h3 class="font-black text-lg sm:text-xl text-slate-900 mb-3">${item.name}</h3>
-                        <div class="space-y-1.5 max-h-48 overflow-y-auto p-0.5">${confluencesHtml}</div>
                     </div>
-                `;
-                container.appendChild(card);
+                    <h3 class="font-black text-2xl sm:text-3xl text-slate-900 mb-4">${item.name}</h3>
+                    <div class="space-y-2 max-h-64 overflow-y-auto p-1">${confluencesHtml}</div>
+                </div>
+            `;
+            container.appendChild(card);
+        }
+
+        function navigatePiazza(direction) {
+            const query = document.getElementById("search-piazza").value.toLowerCase();
+            let processed = getProcessedPiazzeList();
+            let filtered = processed.filter(item => {
+                const matchName = item.name.toLowerCase().includes(query) || item.type.toLowerCase().includes(query);
+                const matchConfluence = item.confluences.some(c => c.toLowerCase().includes(query));
+                return matchName || matchConfluence;
             });
+
+            if (filtered.length === 0) return;
+
+            currentPiazzaIndex += direction;
+            if (currentPiazzaIndex < 0) currentPiazzaIndex = filtered.length - 1;
+            if (currentPiazzaIndex >= filtered.length) currentPiazzaIndex = 0;
+
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            isSpeakingPiazza = false;
+            renderEncyclopedia();
+        }
+
+        function onSearchPiazzaInput() {
+            currentPiazzaIndex = 0;
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            isSpeakingPiazza = false;
+            renderEncyclopedia();
+        }
+
+        function toggleSpeechPiazza(piazzaName, confluencesArr) {
+            if (!('speechSynthesis' in window)) {
+                alert("La sintesi vocale non è supportata dal tuo browser.");
+                return;
+            }
+
+            if (isSpeakingPiazza) {
+                window.speechSynthesis.cancel();
+                isSpeakingPiazza = false;
+                const btnText = document.getElementById("tts-btn-text");
+                const btnMic = document.getElementById("btn-tts-piazza");
+                if (btnText) btnText.textContent = "Ascolta";
+                if (btnMic) btnMic.className = "px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow";
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+            
+            let fullText = `${piazzaName}. Confluenze in senso antiorario: ` + confluencesArr.join(", ");
+            let utterance = new SpeechSynthesisUtterance(fullText);
+            utterance.lang = 'it-IT';
+            utterance.rate = 0.95;
+
+            utterance.onstart = function() {
+                isSpeakingPiazza = true;
+                const btnText = document.getElementById("tts-btn-text");
+                const btnMic = document.getElementById("btn-tts-piazza");
+                if (btnText) btnText.textContent = "Interrompi";
+                if (btnMic) btnMic.className = "px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow";
+            };
+
+            utterance.onend = utterance.onerror = function() {
+                isSpeakingPiazza = false;
+                const btnText = document.getElementById("tts-btn-text");
+                const btnMic = document.getElementById("btn-tts-piazza");
+                if (btnText) btnText.textContent = "Ascolta";
+                if (btnMic) btnMic.className = "px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow";
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // =========================================================================
+        // NUOVE FUNZIONALITA: RICONOSCIMENTO VOCALE NEGLI ESERCIZI (SpeechRecognition)
+        // =========================================================================
+
+        function toggleVoiceInputExercise() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Il riconoscimento vocale non è supportato da questo browser. Usa Chrome o Safari.");
+                return;
+            }
+
+            const btnMic = document.getElementById("btn-mic-exercise");
+
+            if (isListeningExercise) {
+                if (recognitionInstance) recognitionInstance.stop();
+                return;
+            }
+
+            recognitionInstance = new SpeechRecognition();
+            recognitionInstance.lang = 'it-IT';
+            recognitionInstance.continuous = true;
+            recognitionInstance.interimResults = false;
+
+            recognitionInstance.onstart = function() {
+                isListeningExercise = true;
+                btnMic.classList.add("mic-active");
+                const feedback = document.getElementById("exercise-feedback");
+                if (feedback) {
+                    feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-amber-600 animate-pulse";
+                    feedback.textContent = "🎙️ In ascolto... Pronuncia le vie della piazza in sequenza antioraria!";
+                }
+            };
+
+            recognitionInstance.onresult = function(event) {
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        let transcript = event.results[i][0].transcript;
+                        processSpokenTextExercise(transcript);
+                    }
+                }
+            };
+
+            recognitionInstance.onerror = function(event) {
+                console.error("Errore riconoscimento vocale:", event.error);
+                stopListeningExerciseUI();
+            };
+
+            recognitionInstance.onend = function() {
+                stopListeningExerciseUI();
+            };
+
+            recognitionInstance.start();
+        }
+
+        function stopListeningExerciseUI() {
+            isListeningExercise = false;
+            const btnMic = document.getElementById("btn-mic-exercise");
+            if (btnMic) btnMic.classList.remove("mic-active");
+        }
+
+        function cleanStreetNameForMatch(name) {
+            return name.toLowerCase()
+                .replace(/\b(via|viale|piazza|piazzale|largo|corso|vicolo|galleria)\b/gi, '')
+                .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")
+                .trim();
+        }
+
+        function processSpokenTextExercise(transcript) {
+            if (!currentExPiazza) return;
+
+            let confluences = [...currentExPiazza.confluences];
+            let topStreet = confluences[0];
+            if (customDescriptions[currentExPiazza.name]) {
+                const customKeys = Object.keys(customDescriptions[currentExPiazza.name]);
+                const foundCustom = customKeys.find(k => confluences.includes(k));
+                if (foundCustom) topStreet = foundCustom;
+            }
+            const topIdx = confluences.indexOf(topStreet);
+            if (topIdx > 0) {
+                confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
+            }
+
+            // Separa il testo pronunciato per virgole, 'e', o 'poi'
+            let spokenParts = transcript.split(/,| e | poi /i).map(s => s.trim()).filter(s => s.length > 0);
+
+            spokenParts.forEach(spokenPhrase => {
+                let cleanSpoken = cleanStreetNameForMatch(spokenPhrase);
+                if (!cleanSpoken) return;
+
+                let bestMatchIndex = -1;
+                let bestMatchScore = 0;
+
+                confluences.forEach((confStreet, slotIdx) => {
+                    if (slotIdx === 0) return; // Riquadro in alto è fisso
+
+                    let cleanConf = cleanStreetNameForMatch(confStreet);
+                    
+                    // Corrispondenza Esatta
+                    if (cleanConf === cleanSpoken) {
+                        bestMatchIndex = slotIdx;
+                        bestMatchScore = 100;
+                    } 
+                    // Corrispondenza Parziale/Contenimento
+                    else if (cleanConf.includes(cleanSpoken) || cleanSpoken.includes(cleanConf)) {
+                        let score = Math.min(cleanSpoken.length, cleanConf.length);
+                        if (score > bestMatchScore) {
+                            bestMatchScore = score;
+                            bestMatchIndex = slotIdx;
+                        }
+                    }
+                });
+
+                // Se troviamo una corrispondenza valida, posizioniamo la via nel primo slot vuoto disponibile
+                if (bestMatchIndex !== -1) {
+                    let matchedStreet = confluences[bestMatchIndex];
+                    let emptySlotIndex = -1;
+                    
+                    for (let s = 1; s < confluences.length; s++) {
+                        if (assignedSlots[s] === undefined) {
+                            emptySlotIndex = s;
+                            break;
+                        }
+                    }
+
+                    if (emptySlotIndex !== -1) {
+                        assignedSlots[emptySlotIndex] = matchedStreet;
+                    }
+                }
+            });
+
+            lastVerificationResults = {};
+            renderSlotsAndPool();
+
+            const feedback = document.getElementById("exercise-feedback");
+            if (feedback) {
+                feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-emerald-600";
+                feedback.textContent = `🎙️ Inserite vie da input vocale: "${transcript}"`;
+            }
         }
 
         function handleStreetClick(piazzaName, streetName, piazzaId) {
@@ -2843,21 +3090,25 @@
             let allCorrect = true;
             let assignedKeys = Object.keys(assignedSlots).map(Number);
 
+            // Verifica se tutti i riquadri necessari sono stati riempiti
             if (assignedKeys.length < confluences.length - 1) {
                 allCorrect = false;
             }
 
+            // Per consentire l'intercambiabilità delle vie uguali, creiamo una lista di vie attese disponibili
             let expectedPool = [];
             confluences.forEach((conf, idx) => {
                 if (idx !== 0) expectedPool.push(conf);
             });
 
+            // Controlliamo ogni slot assegnato: se la via inserita corrisponde a una di quelle ancora presenti nel pool atteso, la consideriamo corretta (permettendo lo scambio tra omonime)
             confluences.forEach((conf, idx) => {
                 if (idx === 0) return;
                 let userVal = assignedSlots[idx];
                 if (userVal !== undefined) {
                     let matchIdx = expectedPool.indexOf(userVal);
                     if (matchIdx !== -1) {
+                        // Trovata corrispondenza valida, la rimuoviamo dal pool atteso per evitare usi multipli della stessa istanza
                         expectedPool.splice(matchIdx, 1);
                         lastVerificationResults[idx] = true;
                     } else {
