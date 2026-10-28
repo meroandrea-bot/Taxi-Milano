@@ -402,8 +402,7 @@
                 </div>
 
             </section>
-
-            <!-- SCHEDA REGOLAMENTI WORD -->
+<!-- SCHEDA REGOLAMENTI WORD -->
             <section id="tab-regolamenti" class="hidden space-y-4">
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
@@ -457,7 +456,7 @@
                 </div>
             </section>
 
-            <!-- MODALE CONDIVISA PERCORSI / CERCHIE -->
+            <!-- MODALE CONDIVISA PERCORSI / CERCHIE (CON PULSANTE ASCOLTA VIE NELL'ELENCO) -->
             <div id="percorso-detail-view" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-6">
                 <div class="bg-white w-full max-w-5xl h-[95vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-300">
                     <div class="bg-slate-900 text-white px-4 sm:px-6 py-4 flex justify-between items-center shadow">
@@ -478,14 +477,20 @@
                                 <i class="fa-solid fa-list-check" id="toggle-view-icon"></i> <span id="toggle-view-text">Modalità Passo-Passo</span>
                             </button>
                         </div>
-                        <div id="percorso-step-controls" class="hidden items-center gap-2">
-                            <button onclick="prevPercorsoStep()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1 shadow-sm">
-                                <i class="fa-solid fa-arrow-left"></i> Indietro
+                        <div class="flex items-center gap-2">
+                            <!-- PULSANTE ASCOLTA VIE (SOLO NELL'ELENCO COMPLETO) -->
+                            <button id="btn-tts-percorso" onclick="toggleSpeechPercorso()" class="px-3.5 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm">
+                                <i class="fa-solid fa-volume-high"></i> <span id="tts-percorso-text">Ascolta Vie</span>
                             </button>
-                            <span id="percorso-step-indicator" class="text-xs sm:text-sm font-bold text-slate-700 px-2">1 / 1</span>
-                            <button onclick="nextPercorsoStep()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1 shadow-sm">
-                                Avanti <i class="fa-solid fa-arrow-right"></i>
-                            </button>
+                            <div id="percorso-step-controls" class="hidden items-center gap-2">
+                                <button onclick="prevPercorsoStep()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1 shadow-sm">
+                                    <i class="fa-solid fa-arrow-left"></i> Indietro
+                                </button>
+                                <span id="percorso-step-indicator" class="text-xs sm:text-sm font-bold text-slate-700 px-2">1 / 1</span>
+                                <button onclick="nextPercorsoStep()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1 shadow-sm">
+                                    Avanti <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -496,15 +501,32 @@
                 </div>
             </div>
 
-            <!-- SCHEDA STRADE STATALI -->
+            <!-- SCHEDA STRADE STATALI (CON MODALITA ELENCO / SINGOLA E PULSANTI AVANTI/INDIETRO) -->
             <section id="tab-statali" class="hidden space-y-4">
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
                         <h2 class="text-lg sm:text-2xl font-bold flex items-center"><i class="fa-solid fa-road text-amber-500 mr-2.5"></i> Strade Statali</h2>
-                        <input type="text" id="search-statale" onkeyup="renderStatali()" placeholder="Cerca strada statale..." class="px-4 py-2.5 rounded-lg border border-slate-300 text-sm sm:text-base focus:ring-2 focus:ring-amber-500 focus:outline-none w-full sm:w-80">
+                        <div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+                            <button onclick="toggleStataliViewMode()" id="btn-toggle-statali-view" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm">
+                                <i class="fa-solid fa-user-large" id="statali-view-icon"></i> <span id="statali-view-text">Visualizzazione Singola</span>
+                            </button>
+                            <input type="text" id="search-statale" onkeyup="renderStatali()" placeholder="Cerca strada statale..." class="px-4 py-2 rounded-lg border border-slate-300 text-sm sm:text-base focus:ring-2 focus:ring-amber-500 focus:outline-none w-48 sm:w-64">
+                        </div>
+                    </div>
+
+                    <!-- CONTROLLI NAVIGAZIONE SINGOLA STATALE -->
+                    <div id="statali-single-controls" class="hidden bg-slate-100 p-3 rounded-xl mb-4 flex justify-between items-center border border-slate-200">
+                        <button onclick="navigateStatale(-1)" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-arrow-left"></i> Precedente
+                        </button>
+                        <span id="statale-step-indicator" class="text-xs sm:text-sm font-bold text-slate-800">1 / 1</span>
+                        <button onclick="navigateStatale(1)" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5">
+                            Successiva <i class="fa-solid fa-arrow-right"></i>
+                        </button>
                     </div>
 
                     <div id="statali-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 max-h-[68vh] overflow-y-auto p-1"></div>
+                    <div id="statali-single-container" class="hidden bg-slate-50 border border-slate-200 rounded-xl p-6 sm:p-10 text-center min-h-[300px] flex flex-col justify-center items-center space-y-4"></div>
                 </div>
             </section>
 
@@ -617,8 +639,7 @@
                     <div id="exercise-feedback" class="mt-3 text-center font-bold text-sm sm:text-base"></div>
                 </div>
             </section>
-
-            <!-- SCHEDA ADMIN -->
+<!-- SCHEDA ADMIN -->
             <section id="tab-admin" class="hidden space-y-4">
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex justify-between items-center mb-4 flex-wrap gap-3 pb-4 border-b border-slate-200">
@@ -741,14 +762,24 @@
                                 </div>
                             </div>
 
-                            <!-- 4. STRADE STATALI -->
+                            <!-- 4. STRADE STATALI (AGGIORNATO CON CARICAMENTO FILE DI TESTO .TXT) -->
                             <div id="admin-panel-statali" class="admin-panel space-y-4 hidden">
                                 <h3 class="font-bold text-base sm:text-lg mb-3 flex items-center text-slate-900"><i class="fa-solid fa-road mr-2 text-red-600"></i> Gestione Strade Statali</h3>
+                                
+                                <!-- CARICAMENTO FILE DI TESTO TXT PER STATALI -->
                                 <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
-                                    <span class="block text-xs sm:text-sm font-bold text-slate-800">Aggiungi Statale</span>
+                                    <span class="block text-xs sm:text-sm font-bold text-slate-800"><i class="fa-solid fa-file-arrow-up text-amber-500 mr-1.5"></i> Carica Elenco da File di Testo (.txt)</span>
+                                    <p class="text-xs text-slate-500">Il file deve contenere il nome della strada (es. SS 9: Via Emilia) seguito eventualmente da due punti o nuova riga e la descrizione.</p>
+                                    <input type="file" id="admin-statali-txt-file" accept=".txt" class="w-full text-xs text-slate-600 file:mr-2 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-700 cursor-pointer">
+                                    <button onclick="uploadStataliTxtFile()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition shadow"><i class="fa-solid fa-upload mr-1"></i> Aggiorna Statali da File TXT</button>
+                                </div>
+
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
+                                    <span class="block text-xs sm:text-sm font-bold text-slate-800">Aggiungi Singola Statale</span>
                                     <input type="text" id="admin-new-statale-name" placeholder="Es. SS 725: Nome" class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm bg-white">
                                     <button onclick="addNewStatale()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Aggiungi</button>
                                 </div>
+
                                 <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
                                     <div>
                                         <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Seleziona Statale (Modifica)</label>
@@ -760,6 +791,7 @@
                                     </div>
                                     <button onclick="saveStataleDescription()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Salva Modifiche</button>
                                 </div>
+
                                 <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2 shadow-sm">
                                     <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Statali (Seleziona multipli)</label>
                                     <input type="text" id="filter-admin-statali" oninput="filterAdminSelect('admin-statali-delete-select', this.value)" placeholder="Cerca statali..." class="w-full px-3.5 py-1.5 mb-2 border rounded text-xs bg-white">
@@ -894,7 +926,9 @@
 
         </main>
     </div>
-<script>
+
+    <!-- LOGICA JAVASCRIPT COMPLETA E AGGIORNATA -->
+    <script>
         let adminPwd = localStorage.getItem("milan_admin_pwd") || "admin_taxi_2026";
         let customDescriptions = JSON.parse(localStorage.getItem("milan_custom_descriptions")) || {};
         let percorsiData = JSON.parse(localStorage.getItem("milan_percorsi_data")) || [];
@@ -909,9 +943,14 @@
         let selectedStreetForTap = null;
         let deferredPrompt = null;
 
+        // VARIABILI PER STATALI (MODALITÀ E NAVEGAZIONE)
+        let isStataliSingleMode = false;
+        let currentStataleIndex = 0;
+
         // VARIABILI PER NAVIGAZIONE SINGOLA PIAZZA E SINTESI VOCALE
         let currentPiazzaIndex = 0;
         let isSpeakingPiazza = false;
+        let isSpeakingPercorso = false;
 
         // VARIABILI PER RICONOSCIMENTO VOCALE NEGLI ESERCIZI
         let recognitionInstance = null;
@@ -935,9 +974,9 @@
         let allQuizQuestions = [];
         let activeQuizQuestions = [];
         let currentQuizIndex = 0;
-        let currentQuizMode = ""; // "allenamento" o "esame"
+        let currentQuizMode = "";
         let quizTimerInterval = null;
-        let quizTimeSecondsLeft = 1800; // 30 minuti
+        let quizTimeSecondsLeft = 1800;
         let quizStartTime = 0;
         let quizUserAnswers = [];
         let isQuestionAnswered = false;
@@ -979,7 +1018,6 @@
             }
         }
 
-        // FUNZIONI PER SEGNALAZIONI UTENTI
         function openSegnalazioneModal() {
             document.getElementById("segnalazione-text").value = "";
             document.getElementById("segnalazione-modal").classList.remove("hidden");
@@ -1181,14 +1219,11 @@
                 if (excelResp.ok) {
                     const arrayBuffer = await excelResp.arrayBuffer();
                     const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-                    
                     allQuizQuestions = [];
-                    
                     workbook.SheetNames.forEach(sheetName => {
                         const worksheet = workbook.Sheets[sheetName];
                         const jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
                         if (jsonRows.length === 0) return;
-                        
                         const headerRow = jsonRows[0].map(h => String(h || "").trim().toLowerCase());
                         
                         let domCol = headerRow.findIndex(h => h.includes("domanda"));
@@ -1208,7 +1243,6 @@
                         for (let i = 1; i < jsonRows.length; i++) {
                             const row = jsonRows[i];
                             if (!row || row.length === 0) continue;
-                            
                             const domanda = row[domCol] !== undefined && row[domCol] !== null ? String(row[domCol]).trim() : "";
                             if (!domanda) continue;
                             
@@ -1228,7 +1262,6 @@
 
                             let rispostaRaw = row[corrCol] !== undefined && row[corrCol] !== null ? String(row[corrCol]).trim() : "";
                             let correttaIdx = 0;
-                            
                             let matchIndex = opzioni.findIndex(opt => opt.toLowerCase() === rispostaRaw.toLowerCase());
                             if (matchIndex !== -1) {
                                 correttaIdx = matchIndex;
@@ -1244,7 +1277,6 @@
                             }
                             
                             let argomento = (argCol !== -1 && row[argCol]) ? String(row[argCol]).trim() : sheetName;
-                            
                             allQuizQuestions.push({
                                 argomento: argomento,
                                 domanda: domanda,
@@ -1257,9 +1289,7 @@
             } catch (err) {
                 try {
                     const quizResp = await fetch('quiz_questions.json?' + new Date().getTime());
-                    if (quizResp.ok) {
-                        allQuizQuestions = await quizResp.json();
-                    }
+                    if (quizResp.ok) allQuizQuestions = await quizResp.json();
                 } catch(e) {}
             }
         }
@@ -1329,25 +1359,18 @@
                 if (!codeData.dispositivoAutorizzato) {
                     await window.updateDoc(codeDocRef, { dispositivoAutorizzato: deviceId });
                     isAdmin = isCodeAdmin;
-                    if (isAdmin) {
-                        document.getElementById("btn-admin").classList.remove("hidden");
-                    } else {
-                        document.getElementById("btn-admin").classList.add("hidden");
-                    }
+                    if (isAdmin) document.getElementById("btn-admin").classList.remove("hidden");
+                    else document.getElementById("btn-admin").classList.add("hidden");
                     initApp();
                 } else if (codeData.dispositivoAutorizzato === deviceId) {
                     isAdmin = isCodeAdmin;
-                    if (isAdmin) {
-                        document.getElementById("btn-admin").classList.remove("hidden");
-                    } else {
-                        document.getElementById("btn-admin").classList.add("hidden");
-                    }
+                    if (isAdmin) document.getElementById("btn-admin").classList.remove("hidden");
+                    else document.getElementById("btn-admin").classList.add("hidden");
                     initApp();
                 } else {
                     err.textContent = "Questo codice è già stato associato a un altro dispositivo.";
                     err.classList.remove("hidden");
                 }
-
             } catch (e) {
                 err.textContent = "Errore di connessione al Cloud. Riprova.";
                 err.classList.remove("hidden");
@@ -1407,24 +1430,19 @@
                 else activeBtn.classList.add("bg-amber-500");
             }
 
-            if (tab === 'quiz') {
-                showQuizMenuScreen();
-            }
-            if(tab === 'esercizio') {
-                loadExercise();
-                setupMapPanAndZoom();
-            }
-            if(tab === 'admin') {
+            if (tab === 'quiz') showQuizMenuScreen();
+            if (tab === 'esercizio') { loadExercise(); setupMapPanAndZoom(); }
+            if (tab === 'admin') {
                 populateAdminSelect();
                 document.getElementById("admin-new-admin-pwd").value = adminPwd;
                 const dispPwd = document.getElementById("admin-current-display-pwd");
                 if (dispPwd) dispPwd.value = adminPwd;
                 switchAdminSubTab('regolamenti');
             }
-            if(tab === 'percorsi') { renderPercorsi(); }
-            if(tab === 'cerchie') { renderCerchie(); }
-            if(tab === 'regolamenti') { renderRegolamenti(); }
-            if(tab === 'statali') { renderStatali(); }
+            if (tab === 'percorsi') renderPercorsi();
+            if (tab === 'cerchie') renderCerchie();
+            if (tab === 'regolamenti') renderRegolamenti();
+            if (tab === 'statali') renderStatali();
         }
 
         function showQuizMenuScreen() {
@@ -1439,7 +1457,6 @@
         function showQuizTopicSelection() {
             const topicsContainer = document.getElementById("quiz-topics-container");
             topicsContainer.innerHTML = "";
-            
             let uniqueTopics = [...new Set(allQuizQuestions.map(q => q.argomento))];
             if (uniqueTopics.length === 0) uniqueTopics = ["Regolamento", "Normativa", "Geografia", "Inglese", "Francese", "Tedesco", "Spagnolo"];
             
@@ -1473,9 +1490,7 @@
             }
 
             let filtered = allQuizQuestions.filter(q => selectedTopics.includes(q.argomento));
-            if (filtered.length === 0) {
-                filtered = allQuizQuestions;
-            }
+            if (filtered.length === 0) filtered = allQuizQuestions;
 
             activeQuizQuestions = filtered.sort(() => Math.random() - 0.5);
             currentQuizIndex = 0;
@@ -2015,6 +2030,10 @@
             detailView.classList.remove("hidden");
             document.body.style.overflow = 'hidden';
 
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            isSpeakingPercorso = false;
+            updateSpeechPercorsoUI();
+
             isSingleStepMode = false;
             currentStepIndex = 0;
             updateViewModeUI();
@@ -2066,6 +2085,59 @@
             } else {
                 currentDocumentSteps = ["Nessun contenuto disponibile per questo elemento di default."];
                 renderDocumentModalContent();
+            }
+        }
+
+        // SINTESI VOCALE VIE DEL PERCORSO / CERCHIA (RICHESTA 2)
+        function toggleSpeechPercorso() {
+            if (!('speechSynthesis' in window)) {
+                alert("La sintesi vocale non è supportata dal tuo browser.");
+                return;
+            }
+
+            if (isSpeakingPercorso) {
+                window.speechSynthesis.cancel();
+                isSpeakingPercorso = false;
+                updateSpeechPercorsoUI();
+                return;
+            }
+
+            if (!currentDocumentSteps || currentDocumentSteps.length === 0) {
+                alert("Nessuna via trovata da leggere.");
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+            
+            let fullText = `${currentActiveDocTitle}. Percorso vie: ` + currentDocumentSteps.join(". ");
+            let utterance = new SpeechSynthesisUtterance(fullText);
+            utterance.lang = 'it-IT';
+            utterance.rate = 0.95;
+
+            utterance.onstart = function() {
+                isSpeakingPercorso = true;
+                updateSpeechPercorsoUI();
+            };
+
+            utterance.onend = utterance.onerror = function() {
+                isSpeakingPercorso = false;
+                updateSpeechPercorsoUI();
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function updateSpeechPercorsoUI() {
+            const btnText = document.getElementById("tts-percorso-text");
+            const btnMic = document.getElementById("btn-tts-percorso");
+            if (!btnText || !btnMic) return;
+
+            if (isSpeakingPercorso) {
+                btnText.textContent = "Interrompi";
+                btnMic.className = "px-3.5 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm";
+            } else {
+                btnText.textContent = "Ascolta Vie";
+                btnMic.className = "px-3.5 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm";
             }
         }
 
@@ -2144,6 +2216,8 @@
         }
 
         function closePercorsoDetail() {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            isSpeakingPercorso = false;
             document.getElementById("percorso-detail-view").classList.add("hidden");
             document.body.style.overflow = 'auto';
         }
@@ -2187,35 +2261,157 @@
             }
         }
 
-        function renderStatali() {
-            const query = document.getElementById("search-statale").value.toLowerCase();
-            const container = document.getElementById("statali-list");
-            container.innerHTML = "";
-
-            let filtered = stataliListDynamic.filter(s => s.toLowerCase().includes(query));
-
-            if(filtered.length === 0) {
-                container.innerHTML = `<p class="text-slate-500 col-span-full text-center py-6 text-sm font-medium">Nessuna strada statale trovata.</p>`;
+        // CARICAMENTO FILE DI TESTO PER STRADE STATALI (RICHIESTA 1)
+        function uploadStataliTxtFile() {
+            const fileInput = document.getElementById("admin-statali-txt-file");
+            if (fileInput.files.length === 0) {
+                alert("Seleziona un file di testo (.txt)!");
                 return;
             }
 
-            filtered.forEach(s => {
-                const desc = stataliDescriptions[s] || "Nessuna descrizione aggiuntiva inserita.";
-                const card = document.createElement("div");
-                card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between";
-                card.innerHTML = `
-                    <div>
-                        <div class="flex items-center space-x-3.5 mb-2.5">
-                            <div class="p-3 bg-amber-50 rounded-xl text-amber-600">
-                                <i class="fa-solid fa-road text-xl"></i>
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lines = text.split('\n');
+
+                let newStataliList = [];
+                let newDescriptions = {};
+                let currentStatale = "";
+                let currentDesc = "";
+
+                lines.forEach(line => {
+                    let trimmed = line.trim();
+                    if (!trimmed) return;
+
+                    if (trimmed.includes(":") || trimmed.toUpperCase().startsWith("SS ")) {
+                        if (currentStatale) {
+                            newStataliList.push(currentStatale);
+                            newDescriptions[currentStatale] = currentDesc.trim();
+                        }
+                        let parts = trimmed.split(':');
+                        if (parts.length > 1) {
+                            currentStatale = parts[0].trim() + ": " + parts[1].trim();
+                            currentDesc = parts.slice(2).join(':').trim();
+                        } else {
+                            currentStatale = trimmed;
+                            currentDesc = "";
+                        }
+                    } else {
+                        if (currentStatale) {
+                            currentDesc += (currentDesc ? " " : "") + trimmed;
+                        }
+                    }
+                });
+
+                if (currentStatale) {
+                    newStataliList.push(currentStatale);
+                    newDescriptions[currentStatale] = currentDesc.trim();
+                }
+
+                if (newStataliList.length > 0) {
+                    stataliListDynamic = newStataliList;
+                    stataliDescriptions = newDescriptions;
+                    stataliListDynamic.sort(naturalSort);
+                    saveData();
+                    renderStatali();
+                    populateAdminSelect();
+                    fileInput.value = "";
+                    alert(`Strade statali aggiornate con successo! Caricate ${newStataliList.length} statali.`);
+                } else {
+                    alert("Impossibile leggere strade statali dal file. Verifica la formattazione.");
+                }
+            };
+
+            reader.readAsText(file);
+        }
+
+        // ALTERNATIVA VISUALIZZAZIONE STRADE STATALI (ELENCO O SINGOLA - RICHIESTA 1)
+        function toggleStataliViewMode() {
+            isStataliSingleMode = !isStataliSingleMode;
+            const btnText = document.getElementById("statali-view-text");
+            const btnIcon = document.getElementById("statali-view-icon");
+            const singleControls = document.getElementById("statali-single-controls");
+            const listContainer = document.getElementById("statali-list");
+            const singleContainer = document.getElementById("statali-single-container");
+
+            if (isStataliSingleMode) {
+                btnText.textContent = "Modalità Elenco";
+                btnIcon.className = "fa-solid fa-list";
+                singleControls.classList.remove("hidden");
+                listContainer.classList.add("hidden");
+                singleContainer.classList.remove("hidden");
+            } else {
+                btnText.textContent = "Visualizzazione Singola";
+                btnIcon.className = "fa-solid fa-user-large";
+                singleControls.classList.add("hidden");
+                listContainer.classList.remove("hidden");
+                singleContainer.classList.add("hidden");
+            }
+            renderStatali();
+        }
+
+        function navigateStatale(direction) {
+            const query = document.getElementById("search-statale").value.toLowerCase();
+            let filtered = stataliListDynamic.filter(s => s.toLowerCase().includes(query));
+
+            if (filtered.length === 0) return;
+
+            currentStataleIndex += direction;
+            if (currentStataleIndex < 0) currentStataleIndex = filtered.length - 1;
+            if (currentStataleIndex >= filtered.length) currentStataleIndex = 0;
+
+            renderStatali();
+        }
+
+        function renderStatali() {
+            const query = document.getElementById("search-statale").value.toLowerCase();
+            const container = document.getElementById("statali-list");
+            const singleContainer = document.getElementById("statali-single-container");
+            const indicator = document.getElementById("statale-step-indicator");
+
+            let filtered = stataliListDynamic.filter(s => s.toLowerCase().includes(query));
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 col-span-full text-center py-6 text-sm font-medium">Nessuna strada statale trovata.</p>`;
+                if (singleContainer) singleContainer.innerHTML = `<p class="text-slate-500 text-center py-6 text-sm font-medium">Nessuna strada statale trovata.</p>`;
+                return;
+            }
+
+            if (currentStataleIndex >= filtered.length) currentStataleIndex = 0;
+
+            if (!isStataliSingleMode) {
+                container.innerHTML = "";
+                filtered.forEach(s => {
+                    const desc = stataliDescriptions[s] || "Nessuna descrizione aggiuntiva inserita.";
+                    const card = document.createElement("div");
+                    card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between";
+                    card.innerHTML = `
+                        <div>
+                            <div class="flex items-center space-x-3.5 mb-2.5">
+                                <div class="p-3 bg-amber-50 rounded-xl text-amber-600">
+                                    <i class="fa-solid fa-road text-xl"></i>
+                                </div>
+                                <h3 class="font-bold text-base sm:text-lg text-slate-900 leading-snug">${s}</h3>
                             </div>
-                            <h3 class="font-bold text-base sm:text-lg text-slate-900 leading-snug">${s}</h3>
+                            <p class="text-xs sm:text-sm text-slate-600 font-medium pl-1 leading-relaxed">${desc}</p>
                         </div>
-                        <p class="text-xs sm:text-sm text-slate-600 font-medium pl-1 leading-relaxed">${desc}</p>
+                    `;
+                    container.appendChild(card);
+                });
+            } else {
+                const s = filtered[currentStataleIndex];
+                const desc = stataliDescriptions[s] || "Nessuna descrizione aggiuntiva inserita.";
+                singleContainer.innerHTML = `
+                    <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-3xl shadow-sm mb-2">
+                        <i class="fa-solid fa-road"></i>
                     </div>
+                    <h3 class="font-black text-2xl sm:text-3xl text-slate-900">${s}</h3>
+                    <p class="text-slate-700 text-base sm:text-lg font-medium leading-relaxed max-w-xl mx-auto bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">${desc}</p>
                 `;
-                container.appendChild(card);
-            });
+                indicator.textContent = `${currentStataleIndex + 1} / ${filtered.length}`;
+            }
         }
 
         function addNewStatale() {
@@ -2294,9 +2490,7 @@
                 return;
             }
 
-            if (currentPiazzaIndex >= filtered.length) {
-                currentPiazzaIndex = 0;
-            }
+            if (currentPiazzaIndex >= filtered.length) currentPiazzaIndex = 0;
 
             const item = filtered[currentPiazzaIndex];
             const card = document.createElement("div");
@@ -2375,7 +2569,6 @@
             }
 
             window.speechSynthesis.cancel();
-            
             let fullText = `${piazzaName}. Confluenze in senso antiorario: ` + confluencesArr.join(", ");
             let utterance = new SpeechSynthesisUtterance(fullText);
             utterance.lang = 'it-IT';
@@ -2400,10 +2593,6 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        // =========================================================================
-        // OTTIMIZZAZIONE RICONOSCIMENTO VOCALE & NORMALIZZAZIONE VIE NEGLI ESERCIZI
-        // =========================================================================
-
         function toggleVoiceInputExercise() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
@@ -2421,7 +2610,7 @@
             recognitionInstance = new SpeechRecognition();
             recognitionInstance.lang = 'it-IT';
             recognitionInstance.continuous = true;
-            recognitionInstance.interimResults = true; // Risultati intermedi per massima velocità
+            recognitionInstance.interimResults = true;
 
             recognitionInstance.onstart = function() {
                 isListeningExercise = true;
@@ -2441,7 +2630,6 @@
             };
 
             recognitionInstance.onerror = function(event) {
-                console.error("Errore riconoscimento vocale:", event.error);
                 stopListeningExerciseUI();
             };
 
@@ -2458,7 +2646,6 @@
             if (btnMic) btnMic.classList.remove("mic-active");
         }
 
-        // FUNZIONE DI NORMALIZZAZIONE AVANZATA (Risolve il problema dei prefissi via/viale/corso e punteggiatura)
         function normaliseStreetName(str) {
             if (!str) return "";
             return str
@@ -2494,10 +2681,8 @@
                 let bestMatchScore = 0;
 
                 confluences.forEach((confStreet, slotIdx) => {
-                    if (slotIdx === 0) return; // Il primo riquadro in alto è fisso
-
+                    if (slotIdx === 0) return;
                     let cleanConf = normaliseStreetName(confStreet);
-                    
                     if (cleanConf === cleanSpoken) {
                         bestMatchIndex = slotIdx;
                         bestMatchScore = 100;
@@ -2686,11 +2871,8 @@
             const query = filterText.toLowerCase();
             Array.from(selectEl.options).forEach(opt => {
                 const txt = opt.textContent.toLowerCase();
-                if (txt.includes(query)) {
-                    opt.style.display = "";
-                } else {
-                    opt.style.display = "none";
-                }
+                if (txt.includes(query)) opt.style.display = "";
+                else opt.style.display = "none";
             });
         }
 
@@ -2743,14 +2925,9 @@
 
             if(!piazza || !street) return;
 
-            if(!customDescriptions[piazza.name]) {
-                customDescriptions[piazza.name] = {};
-            }
-            if(text) {
-                customDescriptions[piazza.name][street] = text;
-            } else {
-                delete customDescriptions[piazza.name][street];
-            }
+            if(!customDescriptions[piazza.name]) customDescriptions[piazza.name] = {};
+            if(text) customDescriptions[piazza.name][street] = text;
+            else delete customDescriptions[piazza.name][street];
 
             saveData();
             alert("Testo collegamento salvato con successo!");
@@ -2848,9 +3025,7 @@
 
         function updateMapTransform() {
             const wrapper = document.getElementById("orbit-container-box");
-            if (wrapper) {
-                wrapper.style.transform = `translate(${mapPanX}px, ${mapPanY}px) scale(${mapScale})`;
-            }
+            if (wrapper) wrapper.style.transform = `translate(${mapPanX}px, ${mapPanY}px) scale(${mapScale})`;
         }
 
         function zoomMap(delta) {
@@ -2893,9 +3068,7 @@
                 updateMapTransform();
             };
 
-            window.onmouseup = () => {
-                isDraggingMap = false;
-            };
+            window.onmouseup = () => { isDraggingMap = false; };
 
             viewport.ontouchstart = (e) => {
                 if (e.touches.length === 1) {
@@ -2947,9 +3120,7 @@
             if (customDescriptions[currentExPiazza.name]) {
                 const customKeys = Object.keys(customDescriptions[currentExPiazza.name]);
                 const foundCustom = customKeys.find(k => confluences.includes(k));
-                if (foundCustom) {
-                    topStreet = foundCustom;
-                }
+                if (foundCustom) topStreet = foundCustom;
             }
 
             const topIdx = confluences.indexOf(topStreet);
@@ -3002,11 +3173,8 @@
                     if (index === 0) return;
                     lastVerificationResults = {};
                     
-                    // Modifica per rimuovere correttamente la via dall'array assegnato e ripulire l'elenco
                     let currentStreetInSlot = assignedSlots[index];
-                    if (currentStreetInSlot) {
-                        delete assignedSlots[index];
-                    }
+                    if (currentStreetInSlot) delete assignedSlots[index];
                     
                     if (selectedStreetForTap && selectedStreetForTap.uniqueKey !== undefined) {
                         assignedSlots[index] = selectedStreetForTap.street;
@@ -3029,7 +3197,6 @@
             
             let assignedValues = Object.values(assignedSlots);
             let remainingItems = availableItems.filter(item => !assignedValues.includes(item.street));
-            
             remainingItems.sort(() => Math.random() - 0.5);
             
             document.getElementById("pool-count").textContent = remainingItems.length;
@@ -3071,9 +3238,7 @@
             let allCorrect = true;
             let assignedKeys = Object.keys(assignedSlots).map(Number);
 
-            if (assignedKeys.length < confluences.length - 1) {
-                allCorrect = false;
-            }
+            if (assignedKeys.length < confluences.length - 1) allCorrect = false;
 
             let expectedPool = [];
             confluences.forEach((conf, idx) => {
@@ -3121,14 +3286,10 @@
                 if (foundCustom) topStreet = foundCustom;
             }
             const topIdx = confluences.indexOf(topStreet);
-            if (topIdx > 0) {
-                confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
-            }
+            if (topIdx > 0) confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
 
             confluences.forEach((conf, idx) => {
-                if (idx !== 0) {
-                    assignedSlots[idx] = conf;
-                }
+                if (idx !== 0) assignedSlots[idx] = conf;
             });
             renderSlotsAndPool();
             const feedback = document.getElementById("exercise-feedback");
