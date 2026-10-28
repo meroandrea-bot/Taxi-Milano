@@ -2264,7 +2264,7 @@
         // CARICAMENTO FILE DI TESTO PER STRADE STATALI (RICHIESTA 1)
         function uploadStataliWordFile() {
     const fileInput = document.getElementById("admin-statali-txt-file");
-    if (fileInput.files.length === 0) {
+    if (!fileInput || fileInput.files.length === 0) {
         alert("Seleziona un file Word (.docx)!");
         return;
     }
@@ -2275,10 +2275,16 @@
     reader.onload = function(e) {
         const arrayBuffer = e.target.result;
 
-        // Utilizza Mammoth per estrarre il testo grezzo dal documento Word
+        // Estraiamo il testo dal file .docx tramite Mammoth
         mammoth.extractRawText({ arrayBuffer: arrayBuffer })
             .then(function(result) {
                 const text = result.value || "";
+                if (!text.trim()) {
+                    alert("Il file Word sembra essere vuoto o privo di testo leggibile.");
+                    return;
+                }
+
+                // Dividiamo il testo per righe
                 const lines = text.split('\n');
 
                 let newStataliList = [];
@@ -2290,11 +2296,13 @@
                     let trimmed = line.trim();
                     if (!trimmed) return;
 
-                    if (trimmed.includes(":") || trimmed.toUpperCase().startsWith("SS ")) {
+                    // Verifica se la riga rappresenta il nome della statale (es. contiene ":" o inizia con "SS")
+                    if (trimmed.includes(":") || /^SS\s*\d+/i.test(trimmed)) {
                         if (currentStatale) {
                             newStataliList.push(currentStatale);
                             newDescriptions[currentStatale] = currentDesc.trim();
                         }
+                        
                         let parts = trimmed.split(':');
                         if (parts.length > 1) {
                             currentStatale = parts[0].trim() + ": " + parts[1].trim();
@@ -2310,6 +2318,7 @@
                     }
                 });
 
+                // Salva l'ultima statale trovata nel file
                 if (currentStatale) {
                     newStataliList.push(currentStatale);
                     newDescriptions[currentStatale] = currentDesc.trim();
@@ -2323,16 +2332,18 @@
                     renderStatali();
                     populateAdminSelect();
                     fileInput.value = "";
-                    alert(`Strade statali aggiornate con successo da Word! Caricate ${newStataliList.length} statali.`);
+                    alert(`Strade statali aggiornate con successo! Caricate ${newStataliList.length} statali.`);
                 } else {
-                    alert("Impossibile leggere strade statali dal documento Word.");
+                    alert("Impossibile riconoscere le strade statali nel file. Assicurati che le righe abbiano il formato 'SS 9: Via Emilia'.");
                 }
             })
             .catch(function(err) {
-                alert("Errore nella lettura del file Word.");
+                console.error("Errore Mammoth:", err);
+                alert("Errore nell'elaborazione del file Word. Verificare che il file sia un .docx valido.");
             });
     };
 
+    // Legge il file come ArrayBuffer (necessario per Mammoth)
     reader.readAsArrayBuffer(file);
 }
 
