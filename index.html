@@ -766,12 +766,12 @@
                             <div id="admin-panel-statali" class="admin-panel space-y-4 hidden">
                                 <h3 class="font-bold text-base sm:text-lg mb-3 flex items-center text-slate-900"><i class="fa-solid fa-road mr-2 text-red-600"></i> Gestione Strade Statali</h3>
                                 
-                                <!-- CARICAMENTO FILE DI TESTO TXT PER STATALI -->
+                                <!-- CARICAMENTO FILE WORD PER STATALI -->
                                 <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
-                                    <span class="block text-xs sm:text-sm font-bold text-slate-800"><i class="fa-solid fa-file-arrow-up text-amber-500 mr-1.5"></i> Carica Elenco da File di Testo (.txt)</span>
+                                    <span class="block text-xs sm:text-sm font-bold text-slate-800"><i class="fa-solid fa-file-arrow-up text-amber-500 mr-1.5"></i> Carica Elenco da File Word (.docx)</span>
                                     <p class="text-xs text-slate-500">Il file deve contenere il nome della strada (es. SS 9: Via Emilia) seguito eventualmente da due punti o nuova riga e la descrizione.</p>
-                                    <input type="file" id="admin-statali-txt-file" accept=".txt" class="w-full text-xs text-slate-600 file:mr-2 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-700 cursor-pointer">
-                                    <button onclick="uploadStataliTxtFile()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition shadow"><i class="fa-solid fa-upload mr-1"></i> Aggiorna Statali da File TXT</button>
+                                    <input type="file" id="admin-statali-txt-file" accept=".docx" class="w-full text-xs text-slate-600 file:mr-2 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-700 cursor-pointer">
+                                    <button onclick="uploadStataliWordFile()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition shadow"><i class="fa-solid fa-upload mr-1"></i> Aggiorna Statali da File Word</button>
                                 </div>
 
                                 <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
@@ -2262,18 +2262,23 @@
         }
 
         // CARICAMENTO FILE DI TESTO PER STRADE STATALI (RICHIESTA 1)
-        function uploadStataliTxtFile() {
-            const fileInput = document.getElementById("admin-statali-txt-file");
-            if (fileInput.files.length === 0) {
-                alert("Seleziona un file di testo (.txt)!");
-                return;
-            }
+        function uploadStataliWordFile() {
+    const fileInput = document.getElementById("admin-statali-txt-file");
+    if (fileInput.files.length === 0) {
+        alert("Seleziona un file Word (.docx)!");
+        return;
+    }
 
-            const file = fileInput.files[0];
-            const reader = new FileReader();
+    const file = fileInput.files[0];
+    const reader = new FileReader();
 
-            reader.onload = function(e) {
-                const text = e.target.result;
+    reader.onload = function(e) {
+        const arrayBuffer = e.target.result;
+
+        // Utilizza Mammoth per estrarre il testo grezzo dal documento Word
+        mammoth.extractRawText({ arrayBuffer: arrayBuffer })
+            .then(function(result) {
+                const text = result.value || "";
                 const lines = text.split('\n');
 
                 let newStataliList = [];
@@ -2318,14 +2323,18 @@
                     renderStatali();
                     populateAdminSelect();
                     fileInput.value = "";
-                    alert(`Strade statali aggiornate con successo! Caricate ${newStataliList.length} statali.`);
+                    alert(`Strade statali aggiornate con successo da Word! Caricate ${newStataliList.length} statali.`);
                 } else {
-                    alert("Impossibile leggere strade statali dal file. Verifica la formattazione.");
+                    alert("Impossibile leggere strade statali dal documento Word.");
                 }
-            };
+            })
+            .catch(function(err) {
+                alert("Errore nella lettura del file Word.");
+            });
+    };
 
-            reader.readAsText(file);
-        }
+    reader.readAsArrayBuffer(file);
+}
 
         // ALTERNATIVA VISUALIZZAZIONE STRADE STATALI (ELENCO O SINGOLA - RICHIESTA 1)
         function toggleStataliViewMode() {
