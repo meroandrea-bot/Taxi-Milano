@@ -2275,18 +2275,17 @@
     reader.onload = function(e) {
         const arrayBuffer = e.target.result;
 
-        // Estraiamo il testo dal file .docx tramite Mammoth
+        // Estrazione pulita con Mammoth
         mammoth.extractRawText({ arrayBuffer: arrayBuffer })
             .then(function(result) {
                 const text = result.value || "";
                 if (!text.trim()) {
-                    alert("Il file Word sembra essere vuoto o privo di testo leggibile.");
+                    alert("Il file Word sembra essere vuoto.");
                     return;
                 }
 
-                // Dividiamo il testo per righe
-                const lines = text.split('\n');
-
+                // Pulisce i ritorni a capo doppi e divide in righe
+                const lines = text.split(/\r?\n/);
                 let newStataliList = [];
                 let newDescriptions = {};
                 let currentStatale = "";
@@ -2296,8 +2295,8 @@
                     let trimmed = line.trim();
                     if (!trimmed) return;
 
-                    // Verifica se la riga rappresenta il nome della statale (es. contiene ":" o inizia con "SS")
-                    if (trimmed.includes(":") || /^SS\s*\d+/i.test(trimmed)) {
+                    // Cerca righe che iniziano con "SS" o contengono i due punti per il nome della statale
+                    if (trimmed.toUpperCase().startsWith("SS") || (trimmed.includes(":") && trimmed.length < 60)) {
                         if (currentStatale) {
                             newStataliList.push(currentStatale);
                             newDescriptions[currentStatale] = currentDesc.trim();
@@ -2312,13 +2311,13 @@
                             currentDesc = "";
                         }
                     } else {
+                        // Se è una riga successiva, fa parte della descrizione
                         if (currentStatale) {
                             currentDesc += (currentDesc ? " " : "") + trimmed;
                         }
                     }
                 });
 
-                // Salva l'ultima statale trovata nel file
                 if (currentStatale) {
                     newStataliList.push(currentStatale);
                     newDescriptions[currentStatale] = currentDesc.trim();
@@ -2334,16 +2333,15 @@
                     fileInput.value = "";
                     alert(`Strade statali aggiornate con successo! Caricate ${newStataliList.length} statali.`);
                 } else {
-                    alert("Impossibile riconoscere le strade statali nel file. Assicurati che le righe abbiano il formato 'SS 9: Via Emilia'.");
+                    alert("Nessuna strada statale riconosciuta. Assicurati che inizino con 'SS' (es. SS 9: Via Emilia).");
                 }
             })
             .catch(function(err) {
                 console.error("Errore Mammoth:", err);
-                alert("Errore nell'elaborazione del file Word. Verificare che il file sia un .docx valido.");
+                alert("Errore nella lettura del file Word. Prova a creare un nuovo documento Word pulito, incolla il testo e risalvalo come .docx.");
             });
     };
 
-    // Legge il file come ArrayBuffer (necessario per Mammoth)
     reader.readAsArrayBuffer(file);
 }
 
