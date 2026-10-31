@@ -53,6 +53,9 @@
     </script>
 
     <style>
+        html, body {
+            overscroll-behavior-y: none;
+        }
         .orbit-container {
             position: relative;
             width: 380px;
@@ -279,8 +282,7 @@
 
                 </div>
             </section>
-
-            <!-- SCHEDA QUIZ RUOLO CONDUCENTI -->
+<!-- SCHEDA QUIZ RUOLO CONDUCENTI -->
             <section id="tab-quiz" class="hidden space-y-4 max-w-4xl mx-auto w-full">
                 
                 <!-- MENU PRINCIPALE QUIZ (ALLENAMENTO O ESAME) -->
@@ -401,7 +403,8 @@
                 </div>
 
             </section>
-<!-- SCHEDA REGOLAMENTI WORD -->
+
+            <!-- SCHEDA REGOLAMENTI WORD -->
             <section id="tab-regolamenti" class="hidden space-y-4">
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
@@ -475,6 +478,9 @@
                             <button id="btn-toggle-view" onclick="togglePercorsoViewMode()" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-2 shadow-sm">
                                 <i class="fa-solid fa-list-check" id="toggle-view-icon"></i> <span id="toggle-view-text">Modalità Passo-Passo</span>
                             </button>
+                            <button id="btn-tts-percorso" onclick="toggleSpeechPercorso()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm" title="Ascolta le vie del percorso">
+                                <i class="fa-solid fa-volume-high text-sm"></i> <span id="tts-percorso-btn-text">Ascolta</span>
+                            </button>
                         </div>
                         <div id="percorso-step-controls" class="hidden items-center gap-2">
                             <button onclick="prevPercorsoStep()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1 shadow-sm">
@@ -544,8 +550,7 @@
                     <div id="encyclopedia-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 max-h-[62vh] overflow-y-auto p-1"></div>
                 </div>
             </section>
-
-            <!-- SCHEDA ESERCIZI -->
+<!-- SCHEDA ESERCIZI -->
             <section id="tab-esercizio" class="hidden space-y-4">
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex justify-between items-center mb-3.5 flex-wrap gap-3">
@@ -911,6 +916,7 @@
         // VARIABILI PER NAVIGAZIONE SINGOLA PIAZZA E SINTESI VOCALE
         let currentPiazzaIndex = 0;
         let isSpeakingPiazza = false;
+        let isSpeakingPercorso = false;
 
         // VARIABILI PER RICONOSCIMENTO VOCALE NEGLI ESERCIZI
         let recognitionInstance = null;
@@ -943,6 +949,29 @@
 
         function naturalSort(a, b) {
             return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+        }
+
+        function stopAllAudioEngine() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+            if (recognitionInstance) {
+                try { recognitionInstance.stop(); } catch(e){}
+                isListeningExercise = false;
+                stopListeningExerciseUI();
+            }
+            isSpeakingPiazza = false;
+            isSpeakingPercorso = false;
+            
+            const btnTextPiazza = document.getElementById("tts-btn-text");
+            const btnMicPiazza = document.getElementById("btn-tts-piazza");
+            if (btnTextPiazza) btnTextPiazza.textContent = "Ascolta";
+            if (btnMicPiazza) btnMicPiazza.className = "px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow";
+
+            const btnTextPercorso = document.getElementById("tts-percorso-btn-text");
+            const btnMicPercorso = document.getElementById("btn-tts-percorso");
+            if (btnTextPercorso) btnTextPercorso.textContent = "Ascolta";
+            if (btnMicPercorso) btnMicPercorso.className = "px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm";
         }
 
         function showPrepMenu() {
@@ -1373,8 +1402,7 @@
             document.getElementById("login-pwd").value = "";
             document.getElementById("login-error").classList.add("hidden");
             document.getElementById("btn-admin").classList.add("hidden");
-            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-            if (recognitionInstance) recognitionInstance.stop();
+            stopAllAudioEngine();
         }
 
         function initApp() {
@@ -1399,8 +1427,7 @@
 
         function switchTab(tab) {
             if (quizTimerInterval) clearInterval(quizTimerInterval);
-            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-            if (recognitionInstance) recognitionInstance.stop();
+            stopAllAudioEngine();
             
             ['home', 'quiz', 'enciclopedia', 'percorsi', 'cerchie', 'statali', 'regolamenti', 'esercizio', 'admin'].forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
@@ -2143,6 +2170,7 @@
         }
 
         async function openDocumentDetailFromData(docObj) {
+            stopAllAudioEngine();
             currentActiveDocTitle = docObj.title;
             document.getElementById("percorso-detail-title").textContent = docObj.title;
             
@@ -2202,6 +2230,45 @@
                 currentDocumentSteps = ["Nessun contenuto disponibile per questo elemento di default."];
                 renderDocumentModalContent();
             }
+        }
+
+        function toggleSpeechPercorso() {
+            if (!('speechSynthesis' in window)) {
+                alert("La sintesi vocale non è supportata dal tuo browser.");
+                return;
+            }
+
+            if (isSpeakingPercorso) {
+                stopAllAudioEngine();
+                return;
+            }
+
+            stopAllAudioEngine();
+
+            if (!currentDocumentSteps || currentDocumentSteps.length === 0) return;
+
+            let fullText = `${currentActiveDocTitle}. ` + currentDocumentSteps.join(", ");
+            let utterance = new SpeechSynthesisUtterance(fullText);
+            utterance.lang = 'it-IT';
+            utterance.rate = 0.95;
+
+            utterance.onstart = function() {
+                isSpeakingPercorso = true;
+                const btnText = document.getElementById("tts-percorso-btn-text");
+                const btnMic = document.getElementById("btn-tts-percorso");
+                if (btnText) btnText.textContent = "Interrompi";
+                if (btnMic) btnMic.className = "px-3.5 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm";
+            };
+
+            utterance.onend = utterance.onerror = function() {
+                isSpeakingPercorso = false;
+                const btnText = document.getElementById("tts-percorso-btn-text");
+                const btnMic = document.getElementById("btn-tts-percorso");
+                if (btnText) btnText.textContent = "Ascolta";
+                if (btnMic) btnMic.className = "px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm";
+            };
+
+            window.speechSynthesis.speak(utterance);
         }
 
         function renderDocumentModalContent() {
@@ -2279,6 +2346,7 @@
         }
 
         function closePercorsoDetail() {
+            stopAllAudioEngine();
             document.getElementById("percorso-detail-view").classList.add("hidden");
             document.body.style.overflow = 'auto';
         }
@@ -2481,15 +2549,13 @@
             if (currentPiazzaIndex < 0) currentPiazzaIndex = filtered.length - 1;
             if (currentPiazzaIndex >= filtered.length) currentPiazzaIndex = 0;
 
-            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-            isSpeakingPiazza = false;
+            stopAllAudioEngine();
             renderEncyclopedia();
         }
 
         function onSearchPiazzaInput() {
             currentPiazzaIndex = 0;
-            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-            isSpeakingPiazza = false;
+            stopAllAudioEngine();
             renderEncyclopedia();
         }
 
@@ -2500,16 +2566,11 @@
             }
 
             if (isSpeakingPiazza) {
-                window.speechSynthesis.cancel();
-                isSpeakingPiazza = false;
-                const btnText = document.getElementById("tts-btn-text");
-                const btnMic = document.getElementById("btn-tts-piazza");
-                if (btnText) btnText.textContent = "Ascolta";
-                if (btnMic) btnMic.className = "px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow";
+                stopAllAudioEngine();
                 return;
             }
 
-            window.speechSynthesis.cancel();
+            stopAllAudioEngine();
             
             let fullText = `${piazzaName}. Confluenze in senso antiorario: ` + confluencesArr.join(", ");
             let utterance = new SpeechSynthesisUtterance(fullText);
@@ -2549,9 +2610,11 @@
             const btnMic = document.getElementById("btn-mic-exercise");
 
             if (isListeningExercise) {
-                if (recognitionInstance) recognitionInstance.stop();
+                stopAllAudioEngine();
                 return;
             }
+
+            stopAllAudioEngine();
 
             recognitionInstance = new SpeechRecognition();
             recognitionInstance.lang = 'it-IT';
