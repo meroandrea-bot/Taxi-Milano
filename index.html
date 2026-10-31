@@ -26,7 +26,7 @@
     <!-- FIREBASE SDK (MODULO FIRESTORE) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, where, updateDoc, doc, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, where, updateDoc, doc, addDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB9NDTSWiODSZhL0XyQeLL2uzbEYm5yYzA",
@@ -41,14 +41,15 @@
         const db = getFirestore(app);
 
         window.db = db;
-	window.getDocs = getDocs;
-	window.collection = collection;
-	window.query = query;
-	window.where = where;
-	window.updateDoc = updateDoc;
-	window.doc = doc;
-	window.addDoc = addDoc;
-	window.deleteDoc = deleteDoc;
+        window.getDocs = getDocs;
+        window.collection = collection;
+        window.query = query;
+        window.where = where;
+        window.updateDoc = updateDoc;
+        window.doc = doc;
+        window.addDoc = addDoc;
+        window.deleteDoc = deleteDoc;
+        window.setDoc = setDoc;
     </script>
 
     <style>
@@ -203,7 +204,7 @@
         </header>
 
         <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 flex flex-col justify-center">
-<!-- SCHEDA HOME PAGE -->
+            <!-- SCHEDA HOME PAGE -->
             <section id="tab-home" class="space-y-4 max-w-4xl mx-auto w-full text-center py-4">
                 <div class="bg-white p-6 sm:p-10 rounded-2xl shadow-sm border border-slate-200 space-y-6">
                     <div class="space-y-3">
@@ -230,7 +231,6 @@
                     <!-- SOTTOMENU "PREPARARSI ALL'ESAME" -->
                     <div id="home-prep-menu" class="hidden space-y-4 pt-2">
                         <div class="flex items-center justify-between pb-2 border-b border-slate-200">
-                            <!-- PULSANTE INDIETRO AGGIORNATO NELLO STILE -->
                             <button onclick="backToHomeMain()" class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs sm:text-sm font-bold transition flex items-center gap-1.5 shadow-sm">
                                 <i class="fa-solid fa-arrow-left"></i> <span>Indietro</span>
                             </button>
@@ -401,8 +401,7 @@
                 </div>
 
             </section>
-
-            <!-- SCHEDA REGOLAMENTI WORD -->
+<!-- SCHEDA REGOLAMENTI WORD -->
             <section id="tab-regolamenti" class="hidden space-y-4">
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
@@ -1245,7 +1244,7 @@
                             
                             let argomento = (argCol !== -1 && row[argCol]) ? String(row[argCol]).trim() : sheetName;
                             
-                            // Assegnazione ID univoco basato sulla domanda per il tracciamento errori
+                            // Generazione ID stabili e deterministici per tracciamento errori
                             let qId = 'q_' + Math.abs(domanda.split('').reduce((acc, char) => ((acc << 5) - acc) + char.charCodeAt(0), 0));
 
                             allQuizQuestions.push({
@@ -1263,9 +1262,10 @@
                     const quizResp = await fetch('quiz_questions.json?' + new Date().getTime());
                     if (quizResp.ok) {
                         allQuizQuestions = await quizResp.json();
-                        // Assicura ID univoci se caricati da json statico
                         allQuizQuestions.forEach((q, idx) => {
-                            if (!q.id) q.id = 'q_' + idx;
+                            if (!q.id) {
+                                q.id = 'q_' + Math.abs((q.domanda || '').split('').reduce((acc, char) => ((acc << 5) - acc) + char.charCodeAt(0), 0));
+                            }
                         });
                     }
                 } catch(e) {}
@@ -1334,7 +1334,7 @@
                 }
 
                 const isCodeAdmin = codeData.isAdmin === true;
-                currentUserId = codeDocRef.id; // Assegnazione ID utente Firebase
+                currentUserId = codeDocRef.id;
 
                 if (!codeData.dispositivoAutorizzato) {
                     await window.updateDoc(codeDocRef, { dispositivoAutorizzato: deviceId });
@@ -1359,7 +1359,6 @@
                 }
 
             } catch (e) {
-                // Fallback locale in assenza di connessione o errore Firebase
                 currentUserId = "local_user_" + inputVal;
                 isAdmin = false;
                 initApp();
@@ -1453,11 +1452,9 @@
                         errorsMap[d.id] = d.data();
                     });
                     return errorsMap;
-                } catch(e) {
-                    // Fallback a localStorage se fallisce Firebase
-                }
+                } catch(e) {}
             }
-            let localKey = `milan_quiz_errors_${currentUserId || 'guest'}</strong>`;
+            let localKey = `milan_quiz_errors_${currentUserId || 'guest'}`;
             try {
                 let stored = localStorage.getItem(localKey);
                 if (stored) errorsMap = JSON.parse(stored);
@@ -1477,25 +1474,23 @@
                         consecutiveCorrect: 0
                     };
                 } else {
-                    errorsMap[qId].consecutiveCorrect = 0; // Reset se sbaglia ancora
+                    errorsMap[qId].consecutiveCorrect = 0;
                 }
             } else {
                 if (errorsMap[qId]) {
                     errorsMap[qId].consecutiveCorrect = (errorsMap[qId].consecutiveCorrect || 0) + 1;
                     if (errorsMap[qId].consecutiveCorrect >= 2) {
-                        delete errorsMap[qId]; // Rimuove se risponde correttamente 2 volte consecutive
+                        delete errorsMap[qId];
                     }
                 }
             }
 
-            // Persistenza su Firebase o localStorage
             if (currentUserId && !currentUserId.startsWith("local_user_") && currentUserId !== "admin_user" && window.db) {
                 try {
                     const errDocRef = window.doc(window.db, `users/${currentUserId}/erroriQuiz`, qId);
                     if (errorsMap[qId]) {
                         await window.updateDoc(errDocRef, errorsMap[qId]).catch(async () => {
-                            // Se non esiste, lo crea con addDoc o setDoc simulato tramite add/update
-                            await window.addDoc(window.collection(window.db, `users/${currentUserId}/erroriQuiz`), errorsMap[qId]).catch(()=>{});
+                            await window.setDoc(errDocRef, errorsMap[qId]).catch(()=>{});
                         });
                     } else {
                         await window.deleteDoc(errDocRef).catch(()=>{});
@@ -1571,7 +1566,7 @@
             document.getElementById("quiz-lang-screen").classList.add("hidden");
             document.getElementById("quiz-active-screen").classList.add("hidden");
             document.getElementById("quiz-summary-screen").classList.add("hidden");
-            updateErroriBadge(); // Aggiorna il badge dinamico ogni volta che si torna al menu quiz
+            updateErroriBadge();
         }
 
         function showQuizTopicSelection() {
@@ -1723,7 +1718,6 @@
             const q = activeQuizQuestions[currentQuizIndex];
             const isCorrect = (selectedIdx === q.corretta);
 
-            // Salvataggio automatico errore o incremento risposte corrette consecutive
             saveErrorToStorage(q, isCorrect);
 
             quizUserAnswers.push({
@@ -2562,7 +2556,7 @@
             recognitionInstance = new SpeechRecognition();
             recognitionInstance.lang = 'it-IT';
             recognitionInstance.continuous = true;
-            recognitionInstance.interimResults = true; // Risultati intermedi per massima velocità
+            recognitionInstance.interimResults = true;
 
             recognitionInstance.onstart = function() {
                 isListeningExercise = true;
@@ -2599,7 +2593,6 @@
             if (btnMic) btnMic.classList.remove("mic-active");
         }
 
-        // FUNZIONE DI NORMALIZZAZIONE AVANZATA (Risolve il problema dei prefissi via/viale/corso e punteggiatura)
         function normaliseStreetName(str) {
             if (!str) return "";
             return str
@@ -2635,7 +2628,7 @@
                 let bestMatchScore = 0;
 
                 confluences.forEach((confStreet, slotIdx) => {
-                    if (slotIdx === 0) return; // Il primo riquadro in alto è fisso
+                    if (slotIdx === 0) return;
 
                     let cleanConf = normaliseStreetName(confStreet);
                     
