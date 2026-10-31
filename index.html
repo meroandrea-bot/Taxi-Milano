@@ -171,7 +171,8 @@
             </div>
         </div>
     </div>
-<!-- APP PRINCIPALE -->
+
+    <!-- APP PRINCIPALE -->
     <div id="app-container" class="hidden flex flex-col min-h-screen">
         <header class="bg-slate-900 text-white shadow-md sticky top-0 z-40">
             <div class="max-w-7xl mx-auto px-3 py-3 flex flex-wrap justify-between items-center">
@@ -499,8 +500,7 @@
                     </div>
                 </div>
             </section>
-
-            <!-- SCHEDA PERCORSI TAXI -->
+<!-- SCHEDA PERCORSI TAXI -->
             <section id="tab-percorsi" class="hidden space-y-4">
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
@@ -615,7 +615,8 @@
                     <div id="encyclopedia-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 max-h-[62vh] overflow-y-auto p-1"></div>
                 </div>
             </section>
-<!-- SCHEDA ESERCIZI -->
+
+            <!-- SCHEDA ESERCIZI -->
             <section id="tab-esercizio" class="hidden space-y-4">
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex justify-between items-center mb-3.5 flex-wrap gap-3">
@@ -684,8 +685,7 @@
                     <div id="exercise-feedback" class="mt-3 text-center font-bold text-sm sm:text-base"></div>
                 </div>
             </section>
-
-            <!-- SCHEDA ADMIN -->
+<!-- SCHEDA ADMIN -->
             <section id="tab-admin" class="hidden space-y-4">
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex justify-between items-center mb-4 flex-wrap gap-3 pb-4 border-b border-slate-200">
@@ -970,7 +970,6 @@
 
         </main>
     </div>
-
 <script>
         // Funzioni IndexedDB per la gestione dei file senza limiti di 5MB
         function openDatabase() {
@@ -981,7 +980,7 @@
                 request.onupgradeneeded = (event) => {
                     const db = event.target.result;
                     if (!db.objectStoreNames.contains("wordFiles")) {
-                        db.createObjectStore("wordFiles", { keyPath: "id", autoIncrement: true });
+                        db.createObjectStore("wordFiles", { keyPath: "id" });
                     }
                 };
             });
@@ -1002,7 +1001,7 @@
             return new Blob([uInt8Array], { type: contentType });
         }
 
-        // Script listener per il tasto di migrazione admin
+        // Script listener per il tasto di migrazione admin corretto per leggere i dati strutturati
         document.addEventListener('DOMContentLoaded', () => {
             const btnMigrate = document.getElementById('btnMigrateFiles');
             if (btnMigrate) {
@@ -1015,28 +1014,55 @@
                         const db = await openDatabase();
                         let migratedCount = 0;
 
-                        for (let i = localStorage.length - 1; i >= 0; i--) {
-                            const key = localStorage.key(i);
-                            const value = localStorage.getItem(key);
+                        // Chiavi strutturate dei file nel localStorage
+                        const storageKeys = [
+                            { key: "milan_regolamenti_data", type: "regolamento" },
+                            { key: "milan_percorsi_data", type: "percorso" },
+                            { key: "milan_cerchie_data", type: "cerchia" }
+                        ];
 
-                            if (key.includes('docx') || key.includes('doc') || (value && value.startsWith('data:'))) {
-                                const blob = dataURLToBlob(value);
+                        for (const item of storageKeys) {
+                            const rawData = localStorage.getItem(item.key);
+                            if (!rawData) continue;
 
-                                await new Promise((resolve, reject) => {
-                                    const transaction = db.transaction("wordFiles", "readwrite");
-                                    const store = transaction.objectStore("wordFiles");
-                                    const record = { name: key, file: blob, uploadDate: new Date() };
-                                    const request = store.add(record);
-                                    request.onsuccess = () => resolve();
-                                    request.onerror = () => reject(request.error);
-                                });
+                            let parsedList = [];
+                            try {
+                                parsedList = JSON.parse(rawData);
+                            } catch (e) {
+                                continue;
+                            }
 
-                                localStorage.removeItem(key);
-                                migratedCount++;
+                            if (!Array.isArray(parsedList)) continue;
+
+                            let modified = false;
+
+                            for (let entry of parsedList) {
+                                if (entry.fileData && typeof entry.fileData === 'string' && entry.fileData.startsWith('data:')) {
+                                    const blob = dataURLToBlob(entry.fileData);
+                                    const recordId = `${item.key}_${entry.id || entry.title}`;
+
+                                    await new Promise((resolve, reject) => {
+                                        const transaction = db.transaction("wordFiles", "readwrite");
+                                        const store = transaction.objectStore("wordFiles");
+                                        const record = { id: recordId, name: entry.fileName || entry.title, file: blob, uploadDate: new Date() };
+                                        const request = store.put(record);
+                                        request.onsuccess = () => resolve();
+                                        request.onerror = () => reject(request.error);
+                                    });
+
+                                    // Rimuoviamo il file pesante dal JSON in localStorage per liberare spazio
+                                    entry.fileData = ""; 
+                                    modified = true;
+                                    migratedCount++;
+                                }
+                            }
+
+                            if (modified) {
+                                localStorage.setItem(item.key, JSON.stringify(parsedList));
                             }
                         }
 
-                        statusDiv.textContent = `✅ Migrazione completata! Spostati ${migratedCount} file in IndexedDB.`;
+                        statusDiv.textContent = `✅ Migrazione completata! Spostati ${migratedCount} file in IndexedDB e memoria alleggerita.`;
                         statusDiv.style.color = "green";
                     } catch (error) {
                         console.error("Errore migrazione:", error);
@@ -2133,7 +2159,7 @@
             });
         }
 
-        function showRegolamentoDetail(id) {
+        async function showRegolamentoDetail(id) {
             const reg = regolamentiData.find(r => r.id === id);
             if (!reg) return;
             document.getElementById("regolamento-detail-title").textContent = reg.title;
@@ -2141,20 +2167,43 @@
             const contentBox = document.getElementById("regolamento-content-box");
             contentBox.innerHTML = `<p class="text-slate-500 italic"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Caricamento documento in corso...</p>`;
 
-            if (reg.fileData) {
+            let fileBlobOrData = reg.fileData;
+            if (!fileBlobOrData) {
                 try {
-                    const base64Content = reg.fileData.split(',')[1];
-                    const binaryString = atob(base64Content);
-                    const len = binaryString.length;
-                    const bytes = new Uint8Array(len);
-                    for (let i = 0; i < len; i++) { bytes[i] = binaryString.charCodeAt(i); }
-                    mammoth.convertToHtml({ arrayBuffer: bytes.buffer })
-                        .then(function(result) {
-                            contentBox.innerHTML = result.value || "<p class='text-slate-500'>Documento vuoto.</p>";
-                        })
-                        .catch(function(err) {
-                            contentBox.innerHTML = "<p class='text-red-500'>Errore durante la lettura del documento Word.</p>";
-                        });
+                    const db = await openDatabase();
+                    fileBlobOrData = await new Promise((resolve) => {
+                        const transaction = db.transaction("wordFiles", "readonly");
+                        const store = transaction.objectStore("wordFiles");
+                        const req = store.get(`milan_regolamenti_data_${reg.id}`);
+                        req.onsuccess = () => resolve(req.result ? req.result.file : null);
+                        req.onerror = () => resolve(null);
+                    });
+                } catch(e) {}
+            }
+
+            if (fileBlobOrData) {
+                try {
+                    let arrayBufferPromise;
+                    if (fileBlobOrData instanceof Blob) {
+                        arrayBufferPromise = fileBlobOrData.arrayBuffer();
+                    } else {
+                        const base64Content = fileBlobOrData.split(',')[1];
+                        const binaryString = atob(base64Content);
+                        const len = binaryString.length;
+                        const bytes = new Uint8Array(len);
+                        for (let i = 0; i < len; i++) { bytes[i] = binaryString.charCodeAt(i); }
+                        arrayBufferPromise = Promise.resolve(bytes.buffer);
+                    }
+
+                    arrayBufferPromise.then(buffer => {
+                        mammoth.convertToHtml({ arrayBuffer: buffer })
+                            .then(function(result) {
+                                contentBox.innerHTML = result.value || "<p class='text-slate-500'>Documento vuoto.</p>";
+                            })
+                            .catch(function(err) {
+                                contentBox.innerHTML = "<p class='text-red-500'>Errore durante la lettura del documento Word.</p>";
+                            });
+                    });
                 } catch (e) {
                     contentBox.innerHTML = "<p class='text-red-500'>Impossibile elaborare il file salvato.</p>";
                 }
@@ -2163,14 +2212,20 @@
             }
 
             const downloadBtn = document.getElementById("regolamento-download-btn");
-            downloadBtn.onclick = () => {
-                if (!reg.fileData) { alert("File originale non disponibile."); return; }
+            downloadBtn.onclick = async () => {
+                let downloadBlob = fileBlobOrData;
+                if (!(downloadBlob instanceof Blob) && typeof downloadBlob === 'string' && downloadBlob.startsWith('data:')) {
+                    downloadBlob = dataURLToBlob(downloadBlob);
+                }
+                if (!downloadBlob) { alert("File originale non disponibile."); return; }
+                const url = URL.createObjectURL(downloadBlob);
                 const a = document.createElement('a');
-                a.href = reg.fileData;
+                a.href = url;
                 a.download = reg.fileName || `${reg.title}.docx`;
                 document.body.appendChild(a);
                 a.click();
                 a.remove();
+                URL.revokeObjectURL(url);
             };
 
             document.getElementById("regolamento-detail-view").classList.remove("hidden");
@@ -2340,42 +2395,66 @@
             const listContainer = document.getElementById("percorso-list-view-container");
             listContainer.innerHTML = `<p class="text-slate-500 italic text-center py-10"><i class="fa-solid fa-spinner fa-spin mr-2 text-amber-500 text-xl"></i> Caricamento file in corso...</p>`;
 
-            if (docObj.fileData) {
-                try {
-                    const base64Content = docObj.fileData.split(',')[1];
-                    const binaryString = atob(base64Content);
-                    const len = binaryString.length;
-                    const bytes = new Uint8Array(len);
-                    for (let i = 0; i < len; i++) { bytes[i] = binaryString.charCodeAt(i); }
-                    currentRawDocBuffer = bytes.buffer;
+            let fileBlobOrData = docObj.fileData;
+            let storageKeyPrefix = percorsiData.includes(docObj) ? "milan_percorsi_data" : "milan_cerchie_data";
 
-                    mammoth.extractRawText({ arrayBuffer: bytes.buffer })
-                        .then(function(result) {
-                            const rawText = result.value || "";
-                            let steps = [];
-                            const lines = rawText.split('\n');
-                            lines.forEach(l => {
-                                const trimmed = l.trim();
-                                if (trimmed) {
-                                    const cleaned = trimmed.replace(/^(\d+[\.\)]\s*|-\s*)/, '');
-                                    if (cleaned) {
-                                        const subParts = cleaned.split(/[,–—-]/).map(p => p.trim()).filter(p => p.length > 0);
-                                        if (subParts.length > 1) {
-                                            subParts.forEach(sp => steps.push(sp));
-                                        } else {
-                                            steps.push(cleaned);
+            if (!fileBlobOrData) {
+                try {
+                    const db = await openDatabase();
+                    fileBlobOrData = await new Promise((resolve) => {
+                        const transaction = db.transaction("wordFiles", "readonly");
+                        const store = transaction.objectStore("wordFiles");
+                        const req = store.get(`${storageKeyPrefix}_${docObj.id || docObj.title}`);
+                        req.onsuccess = () => resolve(req.result ? req.result.file : null);
+                        req.onerror = () => resolve(null);
+                    });
+                } catch(e) {}
+            }
+
+            if (fileBlobOrData) {
+                try {
+                    let arrayBufferPromise;
+                    if (fileBlobOrData instanceof Blob) {
+                        arrayBufferPromise = fileBlobOrData.arrayBuffer();
+                    } else {
+                        const base64Content = fileBlobOrData.split(',')[1];
+                        const binaryString = atob(base64Content);
+                        const len = binaryString.length;
+                        const bytes = new Uint8Array(len);
+                        for (let i = 0; i < len; i++) { bytes[i] = binaryString.charCodeAt(i); }
+                        arrayBufferPromise = Promise.resolve(bytes.buffer);
+                    }
+
+                    arrayBufferPromise.then(buffer => {
+                        currentRawDocBuffer = buffer;
+                        mammoth.extractRawText({ arrayBuffer: buffer })
+                            .then(function(result) {
+                                const rawText = result.value || "";
+                                let steps = [];
+                                const lines = rawText.split('\n');
+                                lines.forEach(l => {
+                                    const trimmed = l.trim();
+                                    if (trimmed) {
+                                        const cleaned = trimmed.replace(/^(\d+[\.\)]\s*|-\s*)/, '');
+                                        if (cleaned) {
+                                            const subParts = cleaned.split(/[,–—-]/).map(p => p.trim()).filter(p => p.length > 0);
+                                            if (subParts.length > 1) {
+                                                subParts.forEach(sp => steps.push(sp));
+                                            } else {
+                                                steps.push(cleaned);
+                                            }
                                         }
                                     }
-                                }
+                                });
+                                
+                                if (steps.length === 0) steps = [rawText];
+                                currentDocumentSteps = steps;
+                                renderDocumentModalContent();
+                            })
+                            .catch(function() {
+                                listContainer.innerHTML = `<p class="text-red-500 text-center py-10 font-bold">Errore di lettura del file Word.</p>`;
                             });
-                            
-                            if (steps.length === 0) steps = [rawText];
-                            currentDocumentSteps = steps;
-                            renderDocumentModalContent();
-                        })
-                        .catch(function() {
-                            listContainer.innerHTML = `<p class="text-red-500 text-center py-10 font-bold">Errore di lettura del file Word.</p>`;
-                        });
+                    });
                 } catch (e) {
                     listContainer.innerHTML = `<p class="text-red-500 text-center py-10 font-bold">Impossibile elaborare il documento.</p>`;
                 }
