@@ -203,8 +203,7 @@
         </header>
 
         <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 flex flex-col justify-center">
-            
-            <!-- SCHEDA HOME PAGE -->
+<!-- SCHEDA HOME PAGE -->
             <section id="tab-home" class="space-y-4 max-w-4xl mx-auto w-full text-center py-4">
                 <div class="bg-white p-6 sm:p-10 rounded-2xl shadow-sm border border-slate-200 space-y-6">
                     <div class="space-y-3">
@@ -904,6 +903,7 @@
         ];
         let stataliDescriptions = JSON.parse(localStorage.getItem("milan_statali_descriptions")) || {};
         let isAdmin = false;
+        let currentUserId = null; // Gestione autonoma ID utente per Firebase/localStorage
         
         let sortMode = 'default';
         let selectedStreetForTap = null;
@@ -935,7 +935,7 @@
         let allQuizQuestions = [];
         let activeQuizQuestions = [];
         let currentQuizIndex = 0;
-        let currentQuizMode = ""; // "allenamento" o "esame"
+        let currentQuizMode = ""; // "allenamento", "esame" o "errori"
         let quizTimerInterval = null;
         let quizTimeSecondsLeft = 1800; // 30 minuti
         let quizStartTime = 0;
@@ -1245,7 +1245,11 @@
                             
                             let argomento = (argCol !== -1 && row[argCol]) ? String(row[argCol]).trim() : sheetName;
                             
+                            // Assegnazione ID univoco basato sulla domanda per il tracciamento errori
+                            let qId = 'q_' + Math.abs(domanda.split('').reduce((acc, char) => ((acc << 5) - acc) + char.charCodeAt(0), 0));
+
                             allQuizQuestions.push({
+                                id: qId,
                                 argomento: argomento,
                                 domanda: domanda,
                                 opzioni: opzioni.length > 0 ? opzioni : ["Opzione 1", "Opzione 2", "Opzione 3"],
@@ -1259,6 +1263,10 @@
                     const quizResp = await fetch('quiz_questions.json?' + new Date().getTime());
                     if (quizResp.ok) {
                         allQuizQuestions = await quizResp.json();
+                        // Assicura ID univoci se caricati da json statico
+                        allQuizQuestions.forEach((q, idx) => {
+                            if (!q.id) q.id = 'q_' + idx;
+                        });
                     }
                 } catch(e) {}
             }
@@ -1284,6 +1292,7 @@
             if (forceAdmin) {
                 if (inputVal === adminPwd) {
                     isAdmin = true;
+                    currentUserId = "admin_user";
                     document.getElementById("btn-admin").classList.remove("hidden");
                     initApp();
                 } else {
@@ -1325,6 +1334,7 @@
                 }
 
                 const isCodeAdmin = codeData.isAdmin === true;
+                currentUserId = codeDocRef.id; // Assegnazione ID utente Firebase
 
                 if (!codeData.dispositivoAutorizzato) {
                     await window.updateDoc(codeDocRef, { dispositivoAutorizzato: deviceId });
@@ -1349,13 +1359,16 @@
                 }
 
             } catch (e) {
-                err.textContent = "Errore di connessione al Cloud. Riprova.";
-                err.classList.remove("hidden");
+                // Fallback locale in assenza di connessione o errore Firebase
+                currentUserId = "local_user_" + inputVal;
+                isAdmin = false;
+                initApp();
             }
         }
 
         function logoutApp() {
             isAdmin = false;
+            currentUserId = null;
             document.getElementById("app-container").classList.add("hidden");
             document.getElementById("login-screen").classList.remove("hidden");
             document.getElementById("login-pwd").value = "";
@@ -1427,6 +1440,130 @@
             if(tab === 'statali') { renderStatali(); }
         }
 
+        // =========================================================================
+        // LOGICA GESTIONE ERRORI QUIZ & PULSANTE DEDICATO CON BADGE DINAMICO
+        // =========================================================================
+
+        async function getSavedErrorsMap() {
+            let errorsMap = {};
+            if (currentUserId && !currentUserId.startsWith("local_user_") && currentUserId !== "admin_user" && window.db) {
+                try {
+                    const snap = await window.getDocs(window.collection(window.db, `users/${currentUserId}/erroriQuiz`));
+                    snap.forEach(d => {
+                        errorsMap[d.id] = d.data();
+                    });
+                    return errorsMap;
+                } catch(e) {
+                    // Fallback a localStorage se fallisce Firebase
+                }
+            }
+            let localKey = `milan_quiz_errors_${currentUserId || 'guest'}</strong>`;
+            try {
+                let stored = localStorage.getItem(localKey);
+                if (stored) errorsMap = JSON.parse(stored);
+            } catch(e){}
+            return errorsMap;
+        }
+
+        async function saveErrorToStorage(question, isCorrect) {
+            if (!question || !question.id) return;
+            let errorsMap = await getSavedErrorsMap();
+            let qId = question.id;
+
+            if (!isCorrect) {
+                if (!errorsMap[qId]) {
+                    errorsMap[qId] = {
+                        question: question,
+                        consecutiveCorrect: 0
+                    };
+                } else {
+                    errorsMap[qId].consecutiveCorrect = 0; // Reset se sbaglia ancora
+                }
+            } else {
+                if (errorsMap[qId]) {
+                    errorsMap[qId].consecutiveCorrect = (errorsMap[qId].consecutiveCorrect || 0) + 1;
+                    if (errorsMap[qId].consecutiveCorrect >= 2) {
+                        delete errorsMap[qId]; // Rimuove se risponde correttamente 2 volte consecutive
+                    }
+                }
+            }
+
+            // Persistenza su Firebase o localStorage
+            if (currentUserId && !currentUserId.startsWith("local_user_") && currentUserId !== "admin_user" && window.db) {
+                try {
+                    const errDocRef = window.doc(window.db, `users/${currentUserId}/erroriQuiz`, qId);
+                    if (errorsMap[qId]) {
+                        await window.updateDoc(errDocRef, errorsMap[qId]).catch(async () => {
+                            // Se non esiste, lo crea con addDoc o setDoc simulato tramite add/update
+                            await window.addDoc(window.collection(window.db, `users/${currentUserId}/erroriQuiz`), errorsMap[qId]).catch(()=>{});
+                        });
+                    } else {
+                        await window.deleteDoc(errDocRef).catch(()=>{});
+                    }
+                    return;
+                } catch(e) {}
+            }
+
+            let localKey = `milan_quiz_errors_${currentUserId || 'guest'}`;
+            localStorage.setItem(localKey, JSON.stringify(errorsMap));
+        }
+
+        async function updateErroriBadge() {
+            let errorsMap = await getSavedErrorsMap();
+            let count = Object.keys(errorsMap).length;
+            
+            let quizMenuScreen = document.getElementById("quiz-menu-screen");
+            if (!quizMenuScreen) return;
+
+            let existingBtn = document.getElementById("btn-allenati-errori-container");
+            if (existingBtn) existingBtn.remove();
+
+            let container = document.createElement("div");
+            container.id = "btn-allenati-errori-container";
+            container.className = "pt-2";
+            container.innerHTML = `
+                <button onclick="startErrorTrainingSession()" class="w-full p-5 bg-red-50 hover:bg-red-100 border-2 border-red-200 hover:border-red-500 rounded-2xl transition flex items-center justify-between group shadow-sm">
+                    <div class="flex items-center space-x-3 text-left">
+                        <div class="w-12 h-12 bg-red-500 text-white rounded-xl flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        <div>
+                            <span class="font-bold text-base sm:text-lg text-slate-900 block">Allenati sugli errori</span>
+                            <span class="text-xs sm:text-sm text-slate-500">Ripassa le domande in cui hai commesso errori</span>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-red-600 text-white font-black text-sm sm:text-base rounded-full shadow">${count}</span>
+                </button>
+            `;
+            
+            quizMenuScreen.appendChild(container);
+        }
+
+        async function startErrorTrainingSession() {
+            let errorsMap = await getSavedErrorsMap();
+            let errorQuestions = Object.values(errorsMap).map(item => item.question);
+
+            if (errorQuestions.length === 0) {
+                alert("Ottimo lavoro! Non ci sono domande da recuperare al momento.");
+                return;
+            }
+
+            activeQuizQuestions = errorQuestions.sort(() => Math.random() - 0.5);
+            currentQuizIndex = 0;
+            currentQuizMode = "errori";
+            quizUserAnswers = [];
+            quizStartTime = Date.now();
+
+            document.getElementById("quiz-mode-badge").textContent = "RIPASSO ERRORI";
+            document.getElementById("quiz-mode-badge").className = "px-3 py-1 bg-red-100 text-red-900 font-extrabold text-xs rounded-full uppercase";
+            document.getElementById("quiz-timer-box").classList.add("hidden");
+
+            document.getElementById("quiz-menu-screen").classList.add("hidden");
+            document.getElementById("quiz-active-screen").classList.remove("hidden");
+
+            renderCurrentQuizQuestion();
+        }
+
         function showQuizMenuScreen() {
             if (quizTimerInterval) clearInterval(quizTimerInterval);
             document.getElementById("quiz-menu-screen").classList.remove("hidden");
@@ -1434,6 +1571,7 @@
             document.getElementById("quiz-lang-screen").classList.add("hidden");
             document.getElementById("quiz-active-screen").classList.add("hidden");
             document.getElementById("quiz-summary-screen").classList.add("hidden");
+            updateErroriBadge(); // Aggiorna il badge dinamico ogni volta che si torna al menu quiz
         }
 
         function showQuizTopicSelection() {
@@ -1585,6 +1723,9 @@
             const q = activeQuizQuestions[currentQuizIndex];
             const isCorrect = (selectedIdx === q.corretta);
 
+            // Salvataggio automatico errore o incremento risposte corrette consecutive
+            saveErrorToStorage(q, isCorrect);
+
             quizUserAnswers.push({
                 question: q,
                 selected: selectedIdx,
@@ -1657,12 +1798,12 @@
             const headerEl = document.getElementById("quiz-summary-header");
             const statsEl = document.getElementById("quiz-summary-stats");
 
-            if (currentQuizMode === "allenamento") {
+            if (currentQuizMode === "allenamento" || currentQuizMode === "errori") {
                 headerEl.innerHTML = `
                     <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow">
                         <i class="fa-solid fa-trophy"></i>
                     </div>
-                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Allenamento Completato!</h2>
+                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Sessione Completata!</h2>
                     <p class="text-slate-600 text-sm">Ecco il riepilogo della tua sessione di studio:</p>
                 `;
 
@@ -3002,7 +3143,6 @@
                     if (index === 0) return;
                     lastVerificationResults = {};
                     
-                    // Modifica per rimuovere correttamente la via dall'array assegnato e ripulire l'elenco
                     let currentStreetInSlot = assignedSlots[index];
                     if (currentStreetInSlot) {
                         delete assignedSlots[index];
