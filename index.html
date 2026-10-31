@@ -200,6 +200,7 @@
                 <button onclick="switchTab('percorsi')" id="btn-percorsi" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-route mr-1"></i> Percorsi</button>
                 <button onclick="switchTab('cerchie')" id="btn-cerchie" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-circle-nodes mr-1"></i> Cinque Cerchie</button>
                 <button onclick="switchTab('statali')" id="btn-statali" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-road mr-1"></i> Statali</button>
+                <button onclick="switchTab('poi')" id="btn-poi" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-location-dot mr-1 text-amber-400"></i> Punti d'interesse</button>
                 <button onclick="switchTab('regolamenti')" id="btn-regolamenti" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-scale-balanced mr-1"></i> Regolamenti</button>
                 <button onclick="switchTab('esercizio')" id="btn-esercizio" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-map-location-dot mr-1"></i> Esercizi</button>
                 <button onclick="switchTab('admin')" id="btn-admin" class="hidden px-3.5 py-2 rounded-lg bg-red-600 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-lock-open mr-1"></i> Admin</button>
@@ -221,7 +222,7 @@
                         <button onclick="showPrepMenu()" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex flex-col items-center text-center group shadow-sm">
                             <i class="fa-solid fa-graduation-cap text-4xl sm:text-5xl text-amber-500 mb-3 group-hover:scale-110 transition"></i>
                             <span class="font-bold text-lg sm:text-xl text-slate-900">Prepararsi all'esame</span>
-                            <span class="text-xs sm:text-sm text-slate-500 mt-1">Confluenze Piazze, percorsi, cerchie, statali, regolamenti ed esercizi</span>
+                            <span class="text-xs sm:text-sm text-slate-500 mt-1">Confluenze Piazze, percorsi, cerchie, statali, punti d'interesse, regolamenti ed esercizi</span>
                         </button>
 
                         <button onclick="switchTab('quiz')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex flex-col items-center text-center group shadow-sm">
@@ -264,6 +265,12 @@
                                 <i class="fa-solid fa-road text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
                                 <span class="font-bold text-sm sm:text-lg text-slate-900">Strade Statali</span>
                                 <span class="text-xs text-slate-500 mt-1">Elenco statali</span>
+                            </button>
+
+                            <button onclick="switchTab('poi')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
+                                <i class="fa-solid fa-location-dot text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
+                                <span class="font-bold text-sm sm:text-lg text-slate-900">Punti d'interesse</span>
+                                <span class="text-xs text-slate-500 mt-1">Strutture, ospedali, monumenti...</span>
                             </button>
 
                             <button onclick="switchTab('regolamenti')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
@@ -434,6 +441,88 @@
                 </div>
             </section>
 
+            <!-- SCHEDA PUNTI D'INTERESSE -->
+            <section id="tab-poi" class="hidden space-y-4">
+                <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3 border-b pb-4">
+                        <h2 class="text-lg sm:text-2xl font-bold flex items-center"><i class="fa-solid fa-location-dot text-amber-500 mr-2.5"></i> Punti d'interesse</h2>
+                        <span class="text-xs sm:text-sm text-slate-500 font-medium">Seleziona una categoria per visualizzare i documenti correlati</span>
+                    </div>
+
+                    <!-- 6 BOTTONI CATEGORIE PUNTI D'INTERESSE -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                        <button onclick="openPoiCategory('Strutture pubbliche')" class="p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex items-center gap-4 group shadow-sm text-left">
+                            <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-xl group-hover:scale-110 transition flex-shrink-0">
+                                <span class="font-black text-sm">SP</span>
+                            </div>
+                            <div>
+                                <span class="font-bold text-base sm:text-lg text-slate-900 block">Strutture pubbliche</span>
+                                <span class="text-xs text-slate-500">Consulta documenti</span>
+                            </div>
+                        </button>
+
+                        <button onclick="openPoiCategory('ospedali')" class="p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex items-center gap-4 group shadow-sm text-left">
+                            <div class="w-12 h-12 bg-red-100 text-red-600 rounded-xl flex items-center justify-center text-xl group-hover:scale-110 transition flex-shrink-0">
+                                <i class="fa-solid fa-hospital"></i>
+                            </div>
+                            <div>
+                                <span class="font-bold text-base sm:text-lg text-slate-900 block">ospedali</span>
+                                <span class="text-xs text-slate-500">Consulta documenti</span>
+                            </div>
+                        </button>
+
+                        <button onclick="openPoiCategory('monumenti')" class="p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex items-center gap-4 group shadow-sm text-left">
+                            <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-xl group-hover:scale-110 transition flex-shrink-0">
+                                <i class="fa-solid fa-landmark"></i>
+                            </div>
+                            <div>
+                                <span class="font-bold text-base sm:text-lg text-slate-900 block">monumenti</span>
+                                <span class="text-xs text-slate-500">Consulta documenti</span>
+                            </div>
+                        </button>
+
+                        <button onclick="openPoiCategory('teatri')" class="p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex items-center gap-4 group shadow-sm text-left">
+                            <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center text-xl group-hover:scale-110 transition flex-shrink-0">
+                                <i class="fa-solid fa-masks-theater"></i>
+                            </div>
+                            <div>
+                                <span class="font-bold text-base sm:text-lg text-slate-900 block">teatri</span>
+                                <span class="text-xs text-slate-500">Consulta documenti</span>
+                            </div>
+                        </button>
+
+                        <button onclick="openPoiCategory('stazioni')" class="p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex items-center gap-4 group shadow-sm text-left">
+                            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-xl group-hover:scale-110 transition flex-shrink-0">
+                                <i class="fa-solid fa-train-subway"></i>
+                            </div>
+                            <div>
+                                <span class="font-bold text-base sm:text-lg text-slate-900 block">stazioni</span>
+                                <span class="text-xs text-slate-500">Consulta documenti</span>
+                            </div>
+                        </button>
+
+                        <button onclick="openPoiCategory('uffici pubblici')" class="p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex items-center gap-4 group shadow-sm text-left">
+                            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-xl group-hover:scale-110 transition flex-shrink-0">
+                                <i class="fa-solid fa-building-columns"></i>
+                            </div>
+                            <div>
+                                <span class="font-bold text-base sm:text-lg text-slate-900 block">uffici pubblici</span>
+                                <span class="text-xs text-slate-500">Consulta documenti</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- CONTENITORE LISTA DOCUMENTI PER LA CATEGORIA SELEZIONATA -->
+                    <div id="poi-category-container" class="hidden space-y-4 pt-2 border-t border-slate-200">
+                        <div class="flex justify-between items-center">
+                            <h3 id="poi-category-title" class="font-bold text-lg text-slate-800 capitalize"></h3>
+                            <button onclick="backToPoiCategories()" class="px-3.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs font-bold transition">Torna alle categorie</button>
+                        </div>
+                        <div id="poi-documents-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 max-h-[50vh] overflow-y-auto p-1"></div>
+                    </div>
+                </div>
+            </section>
+
             <!-- SCHEDA PERCORSI TAXI -->
             <section id="tab-percorsi" class="hidden space-y-4">
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
@@ -458,7 +547,7 @@
                 </div>
             </section>
 
-            <!-- MODALE CONDIVISA PERCORSI / CERCHIE -->
+            <!-- MODALE CONDIVISA PERCORSI / CERCHIE / POI -->
             <div id="percorso-detail-view" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-6">
                 <div class="bg-white w-full max-w-5xl h-[95vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-300">
                     <div class="bg-slate-900 text-white px-4 sm:px-6 py-4 flex justify-between items-center shadow">
@@ -500,17 +589,62 @@
                 </div>
             </div>
 
-            <!-- SCHEDA STRADE STATALI -->
+            <!-- SCHEDA STRADE STATALI (MODIFICATA CON DOPPIA MODALITÀ E CARATTERE LEGGIBILE) -->
             <section id="tab-statali" class="hidden space-y-4">
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
-                        <h2 class="text-lg sm:text-2xl font-bold flex items-center"><i class="fa-solid fa-road text-amber-500 mr-2.5"></i> Strade Statali</h2>
-                        <input type="text" id="search-statale" onkeyup="renderStatali()" placeholder="Cerca strada statale..." class="px-4 py-2.5 rounded-lg border border-slate-300 text-sm sm:text-base focus:ring-2 focus:ring-amber-500 focus:outline-none w-full sm:w-80">
+                        <h2 class="text-xl sm:text-2xl font-bold flex items-center text-slate-900 tracking-wide"><i class="fa-solid fa-road text-amber-500 mr-2.5"></i> Strade Statali</h2>
+                        <div class="flex items-center gap-2.5 w-full sm:w-auto flex-wrap">
+                            <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-300">
+                                <button id="btn-statali-elenco" onclick="setStataliMode('elenco')" class="px-4 py-2 rounded-lg font-bold text-xs sm:text-sm transition bg-amber-500 text-white shadow-sm">Modalità Elenco</button>
+                                <button id="btn-statali-singola" onclick="setStataliMode('singola')" class="px-4 py-2 rounded-lg font-bold text-xs sm:text-sm transition text-slate-700 hover:text-slate-900">Singola Strada</button>
+                            </div>
+                            <input type="text" id="search-statale" onkeyup="renderStatali()" placeholder="Cerca strada statale..." class="px-4 py-2.5 rounded-lg border border-slate-300 text-base sm:text-lg focus:ring-2 focus:ring-amber-500 focus:outline-none w-full sm:w-72 font-medium">
+                        </div>
                     </div>
 
-                    <div id="statali-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 max-h-[68vh] overflow-y-auto p-1"></div>
+                    <!-- CONTENITORE MODALITÀ ELENCO -->
+                    <div id="statali-elenco-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[68vh] overflow-y-auto p-1"></div>
+
+                    <!-- CONTENITORE MODALITÀ SINGOLA STRADA -->
+                    <div id="statali-singola-container" class="hidden flex flex-col items-center justify-center py-6">
+                        <div class="w-full max-w-2xl bg-slate-50 border-2 border-amber-500/40 rounded-2xl p-6 sm:p-8 shadow-md space-y-6">
+                            <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                                <span id="statale-counter-badge" class="px-3 py-1 bg-amber-100 text-amber-900 font-extrabold text-xs rounded-full uppercase">1 / 1</span>
+                                <div class="flex gap-2">
+                                    <button onclick="navigateStatale(-1)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs sm:text-sm font-bold transition flex items-center shadow-sm">
+                                        <i class="fa-solid fa-chevron-left mr-1.5"></i> Precedente
+                                    </button>
+                                    <button onclick="navigateStatale(1)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs sm:text-sm font-bold transition flex items-center shadow-sm">
+                                        Successivo <i class="fa-solid fa-chevron-right ml-1.5"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="text-center space-y-3 cursor-pointer" onclick="openStataleDetailModal()">
+                                <h3 id="statale-single-title" class="text-2xl sm:text-3xl font-black text-slate-900 leading-tight"></h3>
+                                <p id="statale-single-desc" class="text-base sm:text-lg text-slate-700 font-semibold leading-relaxed px-2"></p>
+                            </div>
+                            <div class="text-center pt-2">
+                                <span class="text-xs text-amber-600 font-bold bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-200 inline-block">Clicca sulla scheda per vedere i dettagli completi</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
+
+            <!-- MODALE DETTAGLIO SINGOLA STRADA STATALE -->
+            <div id="statale-detail-modal" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+                <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 space-y-4 border border-slate-300 text-center">
+                    <div class="flex justify-between items-center pb-3 border-b border-slate-200">
+                        <h3 id="statale-modal-title" class="font-black text-xl text-slate-900"></h3>
+                        <button onclick="closeStataleDetailModal()" class="text-slate-500 hover:text-slate-800 font-bold text-2xl px-2">&times;</button>
+                    </div>
+                    <p id="statale-modal-desc" class="text-base sm:text-lg text-slate-700 font-medium leading-relaxed py-4"></p>
+                    <div class="pt-2">
+                        <button onclick="closeStataleDetailModal()" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-base font-bold transition shadow">Chiudi</button>
+                    </div>
+                </div>
+            </div>
 
             <!-- SCHEDA CONFLUENZE PIAZZE -->
             <section id="tab-enciclopedia" class="hidden space-y-4">
@@ -645,6 +779,11 @@
                                 <i class="fa-solid fa-chevron-right text-xs opacity-75"></i>
                             </button>
 
+                            <button onclick="switchAdminSubTab('poi')" id="admin-menu-poi" class="w-full text-left px-4 py-3 rounded-lg font-bold text-xs sm:text-sm transition flex items-center justify-between bg-white hover:bg-slate-100 text-slate-800 border border-slate-200">
+                                <span><i class="fa-solid fa-location-dot mr-2 text-amber-600"></i> Carica Punti d'interesse</span>
+                                <i class="fa-solid fa-chevron-right text-xs opacity-75"></i>
+                            </button>
+
                             <button onclick="switchAdminSubTab('percorsi')" id="admin-menu-percorsi" class="w-full text-left px-4 py-3 rounded-lg font-bold text-xs sm:text-sm transition flex items-center justify-between bg-white hover:bg-slate-100 text-slate-800 border border-slate-200">
                                 <span><i class="fa-solid fa-route mr-2 text-red-600"></i> Carica Percorsi</span>
                                 <i class="fa-solid fa-chevron-right text-xs opacity-75"></i>
@@ -680,8 +819,7 @@
                                 <i class="fa-solid fa-chevron-right text-xs opacity-75"></i>
                             </button>
                         </div>
-
-                        <div class="lg:col-span-8 bg-slate-50 p-4 sm:p-6 rounded-xl border border-slate-200 min-h-[480px]">
+<div class="lg:col-span-8 bg-slate-50 p-4 sm:p-6 rounded-xl border border-slate-200 min-h-[480px]">
                             
                             <!-- 1. CARICA REGOLAMENTO -->
                             <div id="admin-panel-regolamenti" class="admin-panel space-y-4">
@@ -703,6 +841,40 @@
                                     <input type="text" id="filter-admin-regolamenti" oninput="filterAdminSelect('admin-delete-regolamento-select', this.value)" placeholder="Cerca tra i regolamenti..." class="w-full px-3.5 py-2 mb-2 border rounded-lg text-xs sm:text-sm bg-white">
                                     <select id="admin-delete-regolamento-select" multiple class="w-full h-36 px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-3 font-semibold"></select>
                                     <button onclick="deleteRegolamentoMulti()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Elimina Selezionati</button>
+                                </div>
+                            </div>
+
+                            <!-- 1.B CARICA PUNTI D'INTERESSE (NUOVA SEZIONE ADMIN) -->
+                            <div id="admin-panel-poi" class="admin-panel space-y-4 hidden">
+                                <h3 class="font-bold text-base sm:text-lg mb-3 flex items-center text-slate-900"><i class="fa-solid fa-location-dot mr-2 text-amber-600"></i> Gestione Punti d'interesse (.docx)</h3>
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Seleziona Categoria</label>
+                                        <select id="admin-poi-category-select" class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm bg-white font-bold text-slate-800">
+                                            <option value="Strutture pubbliche">Strutture pubbliche</option>
+                                            <option value="ospedali">ospedali</option>
+                                            <option value="monumenti">monumenti</option>
+                                            <option value="teatri">teatri</option>
+                                            <option value="stazioni">stazioni</option>
+                                            <option value="uffici pubblici">uffici pubblici</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Titolo del Documento</label>
+                                        <input type="text" id="admin-poi-title" placeholder="Es. Ospedale Niguarda..." class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm bg-white font-medium">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Seleziona File Word (.docx)</label>
+                                        <input type="file" id="admin-poi-file" accept=".docx" class="w-full text-xs text-slate-600 file:mr-2 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-700 cursor-pointer">
+                                    </div>
+                                    <button onclick="uploadPoiWord()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-lg text-xs sm:text-sm transition shadow">Carica Documento Punto d'Interesse</button>
+                                    <div id="upload-feedback-poi" class="hidden p-3 bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs sm:text-sm font-bold rounded-lg text-center"></div>
+                                </div>
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2 shadow-sm">
+                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Punti d'Interesse (Seleziona multipli)</label>
+                                    <input type="text" id="filter-admin-poi" oninput="filterAdminSelect('admin-delete-poi-select', this.value)" placeholder="Cerca tra i punti d'interesse..." class="w-full px-3.5 py-2 mb-2 border rounded-lg text-xs sm:text-sm bg-white">
+                                    <select id="admin-delete-poi-select" multiple class="w-full h-36 px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-3 font-semibold"></select>
+                                    <button onclick="deletePoiMulti()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Elimina Selezionati</button>
                                 </div>
                             </div>
 
@@ -897,7 +1069,7 @@
 
         </main>
     </div>
-<script>
+    <script>
         let adminPwd = localStorage.getItem("milan_admin_pwd") || "admin_taxi_2026";
         let customDescriptions = JSON.parse(localStorage.getItem("milan_custom_descriptions")) || {};
         let percorsiData = JSON.parse(localStorage.getItem("milan_percorsi_data")) || [];
@@ -905,20 +1077,19 @@
         let regolamentiData = JSON.parse(localStorage.getItem("milan_regolamenti_data")) || [
             { id: 1, title: "Regolamento Servizio Taxi Comune di Milano", fileData: "", fileName: "regolamento.docx" }
         ];
+        let poiData = JSON.parse(localStorage.getItem("milan_poi_data")) || [];
         let stataliDescriptions = JSON.parse(localStorage.getItem("milan_statali_descriptions")) || {};
         let isAdmin = false;
-        let currentUserId = null; // Gestione autonoma ID utente per Firebase/localStorage
+        let currentUserId = null;
         
         let sortMode = 'default';
         let selectedStreetForTap = null;
         let deferredPrompt = null;
 
-        // VARIABILI PER NAVIGAZIONE SINGOLA PIAZZA E SINTESI VOCALE
         let currentPiazzaIndex = 0;
         let isSpeakingPiazza = false;
         let isSpeakingPercorso = false;
 
-        // VARIABILI PER RICONOSCIMENTO VOCALE NEGLI ESERCIZI
         let recognitionInstance = null;
         let isListeningExercise = false;
 
@@ -928,6 +1099,10 @@
         let currentActiveDocTitle = "";
         let currentRawDocBuffer = null;
 
+        // VARIABILI PER STRADE STATALI (MODALITÀ DOPPIA)
+        let stataliMode = 'elenco'; // 'elenco' o 'singola'
+        let currentStataleIndex = 0;
+
         let mapScale = 1;
         let mapPanX = 0;
         let mapPanY = 0;
@@ -936,13 +1111,12 @@
         let startDragY = 0;
         let initialPinchDistance = null;
 
-        // VARIABILI PER IL MODULO QUIZ
         let allQuizQuestions = [];
         let activeQuizQuestions = [];
         let currentQuizIndex = 0;
-        let currentQuizMode = ""; // "allenamento", "esame" o "errori"
+        let currentQuizMode = "";
         let quizTimerInterval = null;
-        let quizTimeSecondsLeft = 1800; // 30 minuti
+        let quizTimeSecondsLeft = 1800;
         let quizStartTime = 0;
         let quizUserAnswers = [];
         let isQuestionAnswered = false;
@@ -985,7 +1159,7 @@
         }
 
         function switchAdminSubTab(panelId) {
-            const panels = ['regolamenti', 'percorsi', 'cerchie', 'statali', 'aggiungipiazza', 'modificapiazza', 'segnalazioni', 'password'];
+            const panels = ['regolamenti', 'poi', 'percorsi', 'cerchie', 'statali', 'aggiungipiazza', 'modificapiazza', 'segnalazioni', 'password'];
             panels.forEach(p => {
                 const el = document.getElementById(`admin-panel-${p}`);
                 if (el) el.classList.add("hidden");
@@ -1007,7 +1181,6 @@
             }
         }
 
-        // FUNZIONI PER SEGNALAZIONI UTENTI
         function openSegnalazioneModal() {
             document.getElementById("segnalazione-text").value = "";
             document.getElementById("segnalazione-modal").classList.remove("hidden");
@@ -1193,6 +1366,7 @@
                         if (data.percorsi) percorsiData = data.percorsi;
                         if (data.cerchie) cerchieData = data.cerchie;
                         if (data.regolamenti) regolamentiData = data.regolamenti;
+                        if (data.poiData) poiData = data.poiData;
                         if (data.stataliDescriptions) stataliDescriptions = data.stataliDescriptions;
                         if (data.stataliList) stataliListDynamic = data.stataliList;
                     }
@@ -1201,103 +1375,6 @@
                 }
             } catch (err) {
                 console.log("Database locale in uso.");
-            }
-
-            try {
-                const excelUrl = "https://raw.githubusercontent.com/meroandrea-bot/Taxi-Milano/main/Quiz_Ruolo_Conducenti_Revisionato.xlsx";
-                const excelResp = await fetch(excelUrl + '?' + new Date().getTime());
-                if (excelResp.ok) {
-                    const arrayBuffer = await excelResp.arrayBuffer();
-                    const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-                    
-                    allQuizQuestions = [];
-                    
-                    workbook.SheetNames.forEach(sheetName => {
-                        const worksheet = workbook.Sheets[sheetName];
-                        const jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-                        if (jsonRows.length === 0) return;
-                        
-                        const headerRow = jsonRows[0].map(h => String(h || "").trim().toLowerCase());
-                        
-                        let domCol = headerRow.findIndex(h => h.includes("domanda"));
-                        let op1Col = headerRow.findIndex(h => h === "opzione 1" || h === "opzione1");
-                        let op2Col = headerRow.findIndex(h => h === "opzione 2" || h === "opzione2");
-                        let op3Col = headerRow.findIndex(h => h === "opzione 3" || h === "opzione3");
-                        let corrCol = headerRow.findIndex(h => h === "risposta" || h.includes("risposta esatta") || h === "corretta");
-                        let argCol = headerRow.findIndex(h => h.includes("argomento") || h.includes("categoria"));
-                        
-                        if (domCol === -1) domCol = 0;
-                        if (op1Col === -1) op1Col = 1;
-                        if (op2Col === -1) op2Col = 2;
-                        if (op3Col === -1) op3Col = 3;
-                        if (corrCol === -1) corrCol = 4;
-                        if (argCol === -1) argCol = 5;
-
-                        for (let i = 1; i < jsonRows.length; i++) {
-                            const row = jsonRows[i];
-                            if (!row || row.length === 0) continue;
-                            
-                            const domanda = row[domCol] !== undefined && row[domCol] !== null ? String(row[domCol]).trim() : "";
-                            if (!domanda) continue;
-                            
-                            let opzioni = [];
-                            [op1Col, op2Col, op3Col].forEach(cIdx => {
-                                if (cIdx !== -1 && row[cIdx] !== undefined && row[cIdx] !== null) {
-                                    let val = String(row[cIdx]).trim();
-                                    if (val) opzioni.push(val);
-                                }
-                            });
-                            
-                            if (opzioni.length === 0) {
-                                for (let c = 1; c <= 3; c++) {
-                                    if (row[c]) opzioni.push(String(row[c]).trim());
-                                }
-                            }
-
-                            let rispostaRaw = row[corrCol] !== undefined && row[corrCol] !== null ? String(row[corrCol]).trim() : "";
-                            let correttaIdx = 0;
-                            
-                            let matchIndex = opzioni.findIndex(opt => opt.toLowerCase() === rispostaRaw.toLowerCase());
-                            if (matchIndex !== -1) {
-                                correttaIdx = matchIndex;
-                            } else {
-                                let upperCorr = rispostaRaw.toUpperCase();
-                                if (upperCorr === 'A' || upperCorr === '1' || upperCorr === '0') correttaIdx = 0;
-                                else if (upperCorr === 'B' || upperCorr === '2' || upperCorr === '1') correttaIdx = 1;
-                                else if (upperCorr === 'C' || upperCorr === '3' || upperCorr === '2') correttaIdx = 2;
-                                else {
-                                    let num = parseInt(rispostaRaw);
-                                    if (!isNaN(num)) correttaIdx = num > 0 ? num - 1 : 0;
-                                }
-                            }
-                            
-                            let argomento = (argCol !== -1 && row[argCol]) ? String(row[argCol]).trim() : sheetName;
-                            
-                            // Generazione ID stabili e deterministici per tracciamento errori
-                            let qId = 'q_' + Math.abs(domanda.split('').reduce((acc, char) => ((acc << 5) - acc) + char.charCodeAt(0), 0));
-
-                            allQuizQuestions.push({
-                                id: qId,
-                                argomento: argomento,
-                                domanda: domanda,
-                                opzioni: opzioni.length > 0 ? opzioni : ["Opzione 1", "Opzione 2", "Opzione 3"],
-                                corretta: correttaIdx
-                            });
-                        }
-                    });
-                }
-            } catch (err) {
-                try {
-                    const quizResp = await fetch('quiz_questions.json?' + new Date().getTime());
-                    if (quizResp.ok) {
-                        allQuizQuestions = await quizResp.json();
-                        allQuizQuestions.forEach((q, idx) => {
-                            if (!q.id) {
-                                q.id = 'q_' + Math.abs((q.domanda || '').split('').reduce((acc, char) => ((acc << 5) - acc) + char.charCodeAt(0), 0));
-                            }
-                        });
-                    }
-                } catch(e) {}
             }
         }
 
@@ -1308,6 +1385,7 @@
             localStorage.setItem("milan_percorsi_data", JSON.stringify(percorsiData));
             localStorage.setItem("milan_cerchie_data", JSON.stringify(cerchieData));
             localStorage.setItem("milan_regolamenti_data", JSON.stringify(regolamentiData));
+            localStorage.setItem("milan_poi_data", JSON.stringify(poiData));
             localStorage.setItem("milan_statali_descriptions", JSON.stringify(stataliDescriptions));
             localStorage.setItem("milan_statali_list", JSON.stringify(stataliListDynamic));
             localStorage.setItem("milan_admin_pwd", adminPwd);
@@ -1429,7 +1507,7 @@
             if (quizTimerInterval) clearInterval(quizTimerInterval);
             stopAllAudioEngine();
             
-            ['home', 'quiz', 'enciclopedia', 'percorsi', 'cerchie', 'statali', 'regolamenti', 'esercizio', 'admin'].forEach(t => {
+            ['home', 'quiz', 'enciclopedia', 'percorsi', 'cerchie', 'statali', 'poi', 'regolamenti', 'esercizio', 'admin'].forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
                 if(el) el.classList.add("hidden");
                 const btn = document.getElementById(`btn-${t}`);
@@ -1446,13 +1524,8 @@
                 else activeBtn.classList.add("bg-amber-500");
             }
 
-            if (tab === 'quiz') {
-                showQuizMenuScreen();
-            }
-            if(tab === 'esercizio') {
-                loadExercise();
-                setupMapPanAndZoom();
-            }
+            if (tab === 'quiz') { showQuizMenuScreen(); }
+            if(tab === 'esercizio') { loadExercise(); setupMapPanAndZoom(); }
             if(tab === 'admin') {
                 populateAdminSelect();
                 document.getElementById("admin-new-admin-pwd").value = adminPwd;
@@ -1464,511 +1537,50 @@
             if(tab === 'cerchie') { renderCerchie(); }
             if(tab === 'regolamenti') { renderRegolamenti(); }
             if(tab === 'statali') { renderStatali(); }
+            if(tab === 'poi') { backToPoiCategories(); }
         }
 
         // =========================================================================
-        // LOGICA GESTIONE ERRORI QUIZ & PULSANTE DEDICATO CON BADGE DINAMICO
+        // LOGICA PUNTI D'INTERESSE (SEZIONE UTENTE & ADMIN)
         // =========================================================================
 
-        async function getSavedErrorsMap() {
-            let errorsMap = {};
-            if (currentUserId && !currentUserId.startsWith("local_user_") && currentUserId !== "admin_user" && window.db) {
-                try {
-                    const snap = await window.getDocs(window.collection(window.db, `users/${currentUserId}/erroriQuiz`));
-                    snap.forEach(d => {
-                        errorsMap[d.id] = d.data();
-                    });
-                    return errorsMap;
-                } catch(e) {}
-            }
-            let localKey = `milan_quiz_errors_${currentUserId || 'guest'}`;
-            try {
-                let stored = localStorage.getItem(localKey);
-                if (stored) errorsMap = JSON.parse(stored);
-            } catch(e){}
-            return errorsMap;
+        let currentPoiCategory = "";
+
+        function openPoiCategory(categoryName) {
+            currentPoiCategory = categoryName;
+            document.getElementById("poi-category-title").textContent = categoryName;
+            document.getElementById("poi-category-container").classList.remove("hidden");
+            renderPoiDocuments();
         }
 
-        async function saveErrorToStorage(question, isCorrect) {
-            if (!question || !question.id) return;
-            let errorsMap = await getSavedErrorsMap();
-            let qId = question.id;
-
-            if (!isCorrect) {
-                if (!errorsMap[qId]) {
-                    errorsMap[qId] = {
-                        question: question,
-                        consecutiveCorrect: 0
-                    };
-                } else {
-                    errorsMap[qId].consecutiveCorrect = 0;
-                }
-            } else {
-                if (errorsMap[qId]) {
-                    errorsMap[qId].consecutiveCorrect = (errorsMap[qId].consecutiveCorrect || 0) + 1;
-                    if (errorsMap[qId].consecutiveCorrect >= 2) {
-                        delete errorsMap[qId];
-                    }
-                }
-            }
-
-            if (currentUserId && !currentUserId.startsWith("local_user_") && currentUserId !== "admin_user" && window.db) {
-                try {
-                    const errDocRef = window.doc(window.db, `users/${currentUserId}/erroriQuiz`, qId);
-                    if (errorsMap[qId]) {
-                        await window.updateDoc(errDocRef, errorsMap[qId]).catch(async () => {
-                            await window.setDoc(errDocRef, errorsMap[qId]).catch(()=>{});
-                        });
-                    } else {
-                        await window.deleteDoc(errDocRef).catch(()=>{});
-                    }
-                    return;
-                } catch(e) {}
-            }
-
-            let localKey = `milan_quiz_errors_${currentUserId || 'guest'}`;
-            localStorage.setItem(localKey, JSON.stringify(errorsMap));
+        function backToPoiCategories() {
+            currentPoiCategory = "";
+            document.getElementById("poi-category-container").classList.add("hidden");
         }
 
-        async function updateErroriBadge() {
-            let errorsMap = await getSavedErrorsMap();
-            let count = Object.keys(errorsMap).length;
-            
-            let quizMenuScreen = document.getElementById("quiz-menu-screen");
-            if (!quizMenuScreen) return;
-
-            let existingBtn = document.getElementById("btn-allenati-errori-container");
-            if (existingBtn) existingBtn.remove();
-
-            let container = document.createElement("div");
-            container.id = "btn-allenati-errori-container";
-            container.className = "pt-2";
-            container.innerHTML = `
-                <button onclick="startErrorTrainingSession()" class="w-full p-5 bg-red-50 hover:bg-red-100 border-2 border-red-200 hover:border-red-500 rounded-2xl transition flex items-center justify-between group shadow-sm">
-                    <div class="flex items-center space-x-3 text-left">
-                        <div class="w-12 h-12 bg-red-500 text-white rounded-xl flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
-                        </div>
-                        <div>
-                            <span class="font-bold text-base sm:text-lg text-slate-900 block">Allenati sugli errori</span>
-                            <span class="text-xs sm:text-sm text-slate-500">Ripassa le domande in cui hai commesso errori</span>
-                        </div>
-                    </div>
-                    <span class="px-3 py-1 bg-red-600 text-white font-black text-sm sm:text-base rounded-full shadow">${count}</span>
-                </button>
-            `;
-            
-            quizMenuScreen.appendChild(container);
-        }
-
-        async function startErrorTrainingSession() {
-            let errorsMap = await getSavedErrorsMap();
-            let errorQuestions = Object.values(errorsMap).map(item => item.question);
-
-            if (errorQuestions.length === 0) {
-                alert("Ottimo lavoro! Non ci sono domande da recuperare al momento.");
-                return;
-            }
-
-            activeQuizQuestions = errorQuestions.sort(() => Math.random() - 0.5);
-            currentQuizIndex = 0;
-            currentQuizMode = "errori";
-            quizUserAnswers = [];
-            quizStartTime = Date.now();
-
-            document.getElementById("quiz-mode-badge").textContent = "RIPASSO ERRORI";
-            document.getElementById("quiz-mode-badge").className = "px-3 py-1 bg-red-100 text-red-900 font-extrabold text-xs rounded-full uppercase";
-            document.getElementById("quiz-timer-box").classList.add("hidden");
-
-            document.getElementById("quiz-menu-screen").classList.add("hidden");
-            document.getElementById("quiz-active-screen").classList.remove("hidden");
-
-            renderCurrentQuizQuestion();
-        }
-
-        function showQuizMenuScreen() {
-            if (quizTimerInterval) clearInterval(quizTimerInterval);
-            document.getElementById("quiz-menu-screen").classList.remove("hidden");
-            document.getElementById("quiz-topic-screen").classList.add("hidden");
-            document.getElementById("quiz-lang-screen").classList.add("hidden");
-            document.getElementById("quiz-active-screen").classList.add("hidden");
-            document.getElementById("quiz-summary-screen").classList.add("hidden");
-            updateErroriBadge();
-        }
-
-        function showQuizTopicSelection() {
-            const topicsContainer = document.getElementById("quiz-topics-container");
-            topicsContainer.innerHTML = "";
-            
-            let uniqueTopics = [...new Set(allQuizQuestions.map(q => q.argomento))];
-            if (uniqueTopics.length === 0) uniqueTopics = ["Regolamento", "Normativa", "Geografia", "Inglese", "Francese", "Tedesco", "Spagnolo"];
-            
-            uniqueTopics.forEach(top => {
-                let count = allQuizQuestions.filter(q => q.argomento === top).length;
-                const label = document.createElement("label");
-                label.className = "flex items-center p-3.5 bg-slate-50 border rounded-xl cursor-pointer hover:bg-amber-50 transition";
-                label.innerHTML = `
-                    <input type="checkbox" value="${top}" class="quiz-topic-cb w-5 h-5 text-amber-500 rounded" checked>
-                    <span class="ml-3 font-bold text-slate-800">${top} ${count > 0 ? '(' + count + ' domande)' : ''}</span>
-                `;
-                topicsContainer.appendChild(label);
-            });
-
-            document.getElementById("quiz-menu-screen").classList.add("hidden");
-            document.getElementById("quiz-topic-screen").classList.remove("hidden");
-        }
-
-        function showExamLanguageSelection() {
-            document.getElementById("quiz-menu-screen").classList.add("hidden");
-            document.getElementById("quiz-lang-screen").classList.remove("hidden");
-        }
-
-        function startTrainingSession() {
-            const checkboxes = document.querySelectorAll('.quiz-topic-cb:checked');
-            const selectedTopics = Array.from(checkboxes).map(cb => cb.value);
-
-            if (selectedTopics.length === 0) {
-                alert("Seleziona almeno un argomento per l'allenamento!");
-                return;
-            }
-
-            let filtered = allQuizQuestions.filter(q => selectedTopics.includes(q.argomento));
-            if (filtered.length === 0) {
-                filtered = allQuizQuestions;
-            }
-
-            activeQuizQuestions = filtered.sort(() => Math.random() - 0.5);
-            currentQuizIndex = 0;
-            currentQuizMode = "allenamento";
-            quizUserAnswers = [];
-            quizStartTime = Date.now();
-
-            document.getElementById("quiz-mode-badge").textContent = "ALLENAMENTO";
-            document.getElementById("quiz-mode-badge").className = "px-3 py-1 bg-amber-100 text-amber-900 font-extrabold text-xs rounded-full uppercase";
-            document.getElementById("quiz-timer-box").classList.add("hidden");
-
-            document.getElementById("quiz-topic-screen").classList.add("hidden");
-            document.getElementById("quiz-active-screen").classList.remove("hidden");
-
-            renderCurrentQuizQuestion();
-        }
-
-        function startExamSession(langChoice) {
-            let targetTopics = ['Regolamento', 'Normativa', 'Geografia', langChoice];
-            let examPool = [];
-
-            targetTopics.forEach(top => {
-                let subPool = allQuizQuestions.filter(q => q.argomento.toLowerCase() === top.toLowerCase());
-                let shuffled = subPool.sort(() => Math.random() - 0.5);
-                examPool = examPool.concat(shuffled.slice(0, 4));
-            });
-
-            if (examPool.length < 16) {
-                let remainingNeeded = 16 - examPool.length;
-                let usedQuestionsSet = new Set(examPool);
-                let otherPool = allQuizQuestions.filter(q => !usedQuestionsSet.has(q)).sort(() => Math.random() - 0.5);
-                examPool = examPool.concat(otherPool.slice(0, remainingNeeded));
-            }
-
-            activeQuizQuestions = examPool.sort(() => Math.random() - 0.5);
-            currentQuizIndex = 0;
-            currentQuizMode = "esame";
-            quizUserAnswers = [];
-            quizStartTime = Date.now();
-            quizTimeSecondsLeft = 1800;
-
-            document.getElementById("quiz-mode-badge").textContent = `ESAME (${langChoice.toUpperCase()})`;
-            document.getElementById("quiz-mode-badge").className = "px-3 py-1 bg-red-100 text-red-900 font-extrabold text-xs rounded-full uppercase";
-            document.getElementById("quiz-timer-box").classList.remove("hidden");
-
-            startQuizTimer();
-
-            document.getElementById("quiz-lang-screen").classList.add("hidden");
-            document.getElementById("quiz-active-screen").classList.remove("hidden");
-
-            renderCurrentQuizQuestion();
-        }
-
-        function startQuizTimer() {
-            if (quizTimerInterval) clearInterval(quizTimerInterval);
-            updateTimerDisplay();
-            quizTimerInterval = setInterval(() => {
-                quizTimeSecondsLeft--;
-                updateTimerDisplay();
-                if (quizTimeSecondsLeft <= 0) {
-                    clearInterval(quizTimerInterval);
-                    alert("Tempo scaduto per l'esame!");
-                    finishQuizSession();
-                }
-            }, 1000);
-        }
-
-        function updateTimerDisplay() {
-            const mins = Math.floor(quizTimeSecondsLeft / 60);
-            const secs = quizTimeSecondsLeft % 60;
-            const text = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-            document.getElementById("quiz-timer-text").textContent = text;
-        }
-
-        function renderCurrentQuizQuestion() {
-            isQuestionAnswered = false;
-            const q = activeQuizQuestions[currentQuizIndex];
-
-            document.getElementById("quiz-progress-text").textContent = `Domanda ${currentQuizIndex + 1} di ${activeQuizQuestions.length}`;
-            document.getElementById("quiz-topic-text").textContent = q.argomento;
-            document.getElementById("quiz-question-title").textContent = q.domanda;
-
-            const feedbackBox = document.getElementById("quiz-feedback-box");
-            feedbackBox.classList.add("hidden");
-
-            const optsBox = document.getElementById("quiz-options-box");
-            optsBox.innerHTML = "";
-
-            q.opzioni.forEach((optText, optIdx) => {
-                const btn = document.createElement("button");
-                btn.className = "w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-amber-400 bg-white hover:bg-amber-50 font-semibold text-slate-800 transition flex items-center justify-between group shadow-sm text-sm sm:text-base";
-                btn.innerHTML = `
-                    <span class="flex-1 pr-2">${optText}</span>
-                    <span class="w-6 h-6 rounded-full border-2 border-slate-300 group-hover:border-amber-500 flex items-center justify-center flex-shrink-0 text-xs font-bold text-slate-400">
-                        ${String.fromCharCode(65 + optIdx)}
-                    </span>
-                `;
-                btn.onclick = () => handleQuizAnswer(optIdx);
-                optsBox.appendChild(btn);
-            });
-        }
-
-        function handleQuizAnswer(selectedIdx) {
-            if (isQuestionAnswered) return;
-            isQuestionAnswered = true;
-
-            const q = activeQuizQuestions[currentQuizIndex];
-            const isCorrect = (selectedIdx === q.corretta);
-
-            saveErrorToStorage(q, isCorrect);
-
-            quizUserAnswers.push({
-                question: q,
-                selected: selectedIdx,
-                correct: isCorrect
-            });
-
-            const optsBox = document.getElementById("quiz-options-box");
-            const buttons = optsBox.querySelectorAll("button");
-
-            buttons.forEach((btn, idx) => {
-                btn.disabled = true;
-                btn.classList.remove("hover:border-amber-400", "hover:bg-amber-50");
-
-                if (idx === q.corretta) {
-                    btn.className = "w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 font-bold text-emerald-900 transition flex items-center justify-between shadow-sm text-sm sm:text-base";
-                    btn.innerHTML += `<i class="fa-solid fa-circle-check text-emerald-600 text-xl ml-2"></i>`;
-                } else if (idx === selectedIdx && !isCorrect) {
-                    btn.className = "w-full text-left p-4 rounded-xl border-2 border-red-500 bg-red-50 font-bold text-red-900 transition flex items-center justify-between shadow-sm text-sm sm:text-base";
-                    btn.innerHTML += `<i class="fa-solid fa-circle-xmark text-red-600 text-xl ml-2"></i>`;
-                }
-            });
-
-            const feedbackBox = document.getElementById("quiz-feedback-box");
-            feedbackBox.classList.remove("hidden");
-
-            if (isCorrect) {
-                feedbackBox.className = "p-4 rounded-xl font-bold text-center text-sm sm:text-base bg-emerald-100 text-emerald-900 border border-emerald-300 flex items-center justify-center gap-2";
-                feedbackBox.innerHTML = `<i class="fa-solid fa-check text-xl text-emerald-600"></i> Risposta Esatta! Prossima domanda tra 3 secondi...`;
-            } else {
-                feedbackBox.className = "p-4 rounded-xl font-bold text-center text-sm sm:text-base bg-red-100 text-red-900 border border-red-300 flex items-center justify-center gap-2";
-                feedbackBox.innerHTML = `<i class="fa-solid fa-xmark text-xl text-red-600"></i> Risposta Sbagliata! Prossima domanda tra 3 secondi...`;
-            }
-
-            setTimeout(() => {
-                if (currentQuizIndex < activeQuizQuestions.length - 1) {
-                    currentQuizIndex++;
-                    renderCurrentQuizQuestion();
-                } else {
-                    finishQuizSession();
-                }
-            }, 3000);
-        }
-
-        function quitQuizActive() {
-            if (quizTimerInterval) clearInterval(quizTimerInterval);
-            showQuizMenuScreen();
-        }
-
-        function finishQuizSession() {
-            if (quizTimerInterval) clearInterval(quizTimerInterval);
-
-            document.getElementById("quiz-active-screen").classList.add("hidden");
-            document.getElementById("quiz-summary-screen").classList.remove("hidden");
-
-            const timeSpentSeconds = Math.floor((Date.now() - quizStartTime) / 1000);
-            const mins = Math.floor(timeSpentSeconds / 60);
-            const secs = timeSpentSeconds % 60;
-            const timeStr = `${mins} min e ${secs} sec`;
-
-            let correctCount = quizUserAnswers.filter(a => a.correct).length;
-            let wrongCount = quizUserAnswers.length - correctCount;
-
-            let errorsByTopic = {};
-            quizUserAnswers.forEach(a => {
-                let top = a.question.argomento;
-                if (!errorsByTopic[top]) errorsByTopic[top] = 0;
-                if (!a.correct) errorsByTopic[top]++;
-            });
-
-            const headerEl = document.getElementById("quiz-summary-header");
-            const statsEl = document.getElementById("quiz-summary-stats");
-
-            if (currentQuizMode === "allenamento" || currentQuizMode === "errori") {
-                headerEl.innerHTML = `
-                    <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow">
-                        <i class="fa-solid fa-trophy"></i>
-                    </div>
-                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Sessione Completata!</h2>
-                    <p class="text-slate-600 text-sm">Ecco il riepilogo della tua sessione di studio:</p>
-                `;
-
-                statsEl.innerHTML = `
-                    <div class="flex justify-between font-bold border-b pb-2 text-slate-800">
-                        <span>Tempo Impiegato:</span>
-                        <span class="text-amber-600 font-mono">${timeStr}</span>
-                    </div>
-                    <div class="flex justify-between font-bold border-b pb-2 text-slate-800">
-                        <span>Risposte Corrette:</span>
-                        <span class="text-emerald-600 font-extrabold">${correctCount} / ${activeQuizQuestions.length}</span>
-                    </div>
-                    <div class="flex justify-between font-bold text-slate-800">
-                        <span>Risposte Sbagliate:</span>
-                        <span class="text-red-600 font-extrabold">${wrongCount}</span>
-                    </div>
-                `;
-            } else {
-                let topicFailed = Object.keys(errorsByTopic).some(top => errorsByTopic[top] > 2);
-                let isPassed = (wrongCount < 5 && !topicFailed);
-
-                if (isPassed) {
-                    headerEl.innerHTML = `
-                        <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow">
-                            <i class="fa-solid fa-award"></i>
-                        </div>
-                        <h2 class="text-3xl font-black text-emerald-600 uppercase tracking-wide">PROMOSSO! 🎉</h2>
-                        <p class="text-slate-600 font-semibold">Complimenti, hai superato la simulazione dell'esame!</p>
-                    `;
-                } else {
-                    headerEl.innerHTML = `
-                        <div class="w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
-                        </div>
-                        <h2 class="text-3xl font-black text-red-600 uppercase tracking-wide">BOCCIATO ❌</h2>
-                        <p class="text-slate-600 font-semibold">Non hai raggiunto i requisiti minimi di idoneità dell'esame.</p>
-                    `;
-                }
-
-                let topicBreakdownHtml = Object.keys(errorsByTopic).map(top => `
-                    <div class="flex justify-between text-xs sm:text-sm">
-                        <span class="text-slate-600 font-medium">${top}:</span>
-                        <span class="font-bold ${errorsByTopic[top] > 2 ? 'text-red-600' : 'text-slate-800'}">${errorsByTopic[top]} errori</span>
-                    </div>
-                `).join('');
-
-                statsEl.innerHTML = `
-                    <div class="flex justify-between font-bold border-b pb-2 text-slate-800">
-                        <span>Tempo Impiegato:</span>
-                        <span class="text-amber-600 font-mono">${timeStr}</span>
-                    </div>
-                    <div class="flex justify-between font-bold border-b pb-2 text-slate-800">
-                        <span>Errori Totali:</span>
-                        <span class="${wrongCount >= 5 ? 'text-red-600' : 'text-emerald-600'} font-extrabold">${wrongCount} (Max ammessi: 4)</span>
-                    </div>
-                    <div class="pt-2">
-                        <span class="block text-xs font-bold uppercase text-slate-500 mb-2">Resoconto Errori per Argomento (Max 2 errori per argomento):</span>
-                        <div class="space-y-1.5 bg-white p-3 rounded-lg border border-slate-200">
-                            ${topicBreakdownHtml}
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        function cycleSortMode() {
-            if (sortMode === 'default') sortMode = 'asc';
-            else if (sortMode === 'asc') sortMode = 'desc';
-            else sortMode = 'default';
-            updateSortButtonUI();
-            renderEncyclopedia();
-        }
-
-        function updateSortButtonUI() {
-            const btn = document.getElementById("sort-alpha-btn");
-            if (!btn) return;
-            if (sortMode === 'default') {
-                btn.className = "px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs sm:text-sm font-bold border border-slate-300 transition flex items-center shadow-sm";
-                btn.innerHTML = `<i class="fa-solid fa-sort mr-1.5 text-amber-600 text-base"></i> Ordine Originale`;
-            } else if (sortMode === 'asc') {
-                btn.className = "px-3.5 py-2 bg-amber-500 text-white rounded-lg text-xs sm:text-sm font-bold transition flex items-center shadow";
-                btn.innerHTML = `<i class="fa-solid fa-arrow-down-a-z mr-1.5 text-base"></i> A - Z`;
-            } else {
-                btn.className = "px-3.5 py-2 bg-amber-600 text-white rounded-lg text-xs sm:text-sm font-bold transition flex items-center shadow";
-                btn.innerHTML = `<i class="fa-solid fa-arrow-up-a-z mr-1.5 text-base"></i> Z - A`;
-            }
-        }
-
-        async function uploadRegolamentoWord() {
-            const titleInput = document.getElementById("admin-regolamento-title");
-            const fileInput = document.getElementById("admin-regolamento-file");
-            const title = titleInput.value.trim();
-            const feedbackEl = document.getElementById("upload-feedback-regolamento");
-
-            if (!title) { alert("Inserisci il titolo del regolamento!"); return; }
-            if (fileInput.files.length === 0) { alert("Seleziona un file Word (.docx)!"); return; }
-
-            const file = fileInput.files[0];
-            const reader = new FileReader();
-            
-            reader.onload = function(event) {
-                const base64Data = event.target.result;
-                regolamentiData.push({ id: Date.now(), title: title, fileData: base64Data, fileName: file.name });
-                regolamentiData.sort((a, b) => naturalSort(a.title, b.title));
-                saveData();
-                titleInput.value = "";
-                fileInput.value = "";
-                renderRegolamenti();
-                populateAdminSelect();
-                
-                feedbackEl.textContent = `✓ Regolamento "${title}" caricato con successo all'interno dell'app!`;
-                feedbackEl.classList.remove("hidden");
-                setTimeout(() => { feedbackEl.classList.add("hidden"); }, 4000);
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function renderRegolamenti() {
-            const query = document.getElementById("search-regolamento").value.toLowerCase();
-            const container = document.getElementById("regolamenti-list");
+        function renderPoiDocuments() {
+            const container = document.getElementById("poi-documents-list");
             container.innerHTML = "";
 
-            let sortedRegolamenti = [...regolamentiData].sort((a, b) => naturalSort(a.title, b.title));
-            let filtered = sortedRegolamenti.filter(r => r.title.toLowerCase().includes(query));
+            let categoryDocs = poiData.filter(d => d.category === currentPoiCategory);
 
-            if(filtered.length === 0) {
-                container.innerHTML = `<p class="text-slate-500 col-span-full text-center py-6 text-sm font-medium">Nessun regolamento trovato.</p>`;
+            if (categoryDocs.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 col-span-full text-center py-6 text-sm font-medium">Nessun documento caricato per questa categoria.</p>`;
                 return;
             }
 
-            filtered.forEach(r => {
+            categoryDocs.forEach(item => {
                 const card = document.createElement("div");
-                card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between group hover:border-amber-500 cursor-pointer";
-                card.onclick = () => showRegolamentoDetail(r.id);
+                card.className = "bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md transition flex flex-col justify-between group hover:border-amber-500 cursor-pointer";
+                card.onclick = () => showRegolamentoDetailFromData(item);
                 card.innerHTML = `
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center space-x-3.5">
-                            <div class="p-3 bg-amber-50 rounded-xl group-hover:bg-amber-100 transition text-amber-600">
-                                <i class="fa-solid fa-file-word text-xl text-blue-600"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-amber-700 leading-snug">${r.title}</h3>
-                                <span class="text-xs text-slate-500 font-medium">Clicca per leggere o scaricare</span>
-                            </div>
+                    <div class="flex items-center space-x-3.5">
+                        <div class="p-3 bg-amber-50 rounded-xl group-hover:bg-amber-100 transition text-amber-600">
+                            <i class="fa-solid fa-file-word text-xl text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-amber-700 leading-snug">${item.title}</h3>
+                            <span class="text-xs text-slate-500 font-medium">Clicca per leggere o scaricare</span>
                         </div>
                     </div>
                 `;
@@ -1976,17 +1588,58 @@
             });
         }
 
-        function showRegolamentoDetail(id) {
-            const reg = regolamentiData.find(r => r.id === id);
-            if (!reg) return;
-            document.getElementById("regolamento-detail-title").textContent = reg.title;
+        async function uploadPoiWord() {
+            const catSelect = document.getElementById("admin-poi-category-select");
+            const titleInput = document.getElementById("admin-poi-title");
+            const fileInput = document.getElementById("admin-poi-file");
+            const category = catSelect.value;
+            const title = titleInput.value.trim();
+            const feedbackEl = document.getElementById("upload-feedback-poi");
+
+            if (!title) { alert("Inserisci il titolo del documento!"); return; }
+            if (fileInput.files.length === 0) { alert("Seleziona un file Word (.docx)!"); return; }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
             
+            reader.onload = function(event) {
+                const base64Data = event.target.result;
+                poiData.push({ id: Date.now(), category: category, title: title, fileData: base64Data, fileName: file.name });
+                poiData.sort((a, b) => naturalSort(a.title, b.title));
+                saveData();
+                titleInput.value = "";
+                fileInput.value = "";
+                populateAdminSelect();
+                
+                feedbackEl.textContent = `✓ Documento "${title}" caricato con successo nella categoria "${category}"!`;
+                feedbackEl.classList.remove("hidden");
+                setTimeout(() => { feedbackEl.classList.add("hidden"); }, 4000);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function deletePoiMulti() {
+            const select = document.getElementById("admin-delete-poi-select");
+            const selectedOptions = Array.from(select.selectedOptions);
+            if (selectedOptions.length === 0) { alert("Seleziona almeno un punto d'interesse da eliminare."); return; }
+            if (confirm(`Vuoi eliminare ${selectedOptions.length} elementi selezionati?`)) {
+                const idsToDelete = selectedOptions.map(opt => Number(opt.value));
+                poiData = poiData.filter(r => !idsToDelete.includes(r.id));
+                saveData();
+                populateAdminSelect();
+                if (currentPoiCategory) renderPoiDocuments();
+                alert("Punti d'interesse eliminati con successo.");
+            }
+        }
+
+        function showRegolamentoDetailFromData(item) {
+            document.getElementById("regolamento-detail-title").textContent = item.title;
             const contentBox = document.getElementById("regolamento-content-box");
             contentBox.innerHTML = `<p class="text-slate-500 italic"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Caricamento documento in corso...</p>`;
 
-            if (reg.fileData) {
+            if (item.fileData) {
                 try {
-                    const base64Content = reg.fileData.split(',')[1];
+                    const base64Content = item.fileData.split(',')[1];
                     const binaryString = atob(base64Content);
                     const len = binaryString.length;
                     const bytes = new Uint8Array(len);
@@ -2004,15 +1657,15 @@
                     contentBox.innerHTML = "<p class='text-red-500'>Impossibile elaborare il file salvato.</p>";
                 }
             } else {
-                contentBox.innerHTML = "<p class='text-slate-500'>Nessun testo disponibile per questo elemento di default.</p>";
+                contentBox.innerHTML = "<p class='text-slate-500'>Nessun testo disponibile per questo elemento.</p>";
             }
 
             const downloadBtn = document.getElementById("regolamento-download-btn");
             downloadBtn.onclick = () => {
-                if (!reg.fileData) { alert("File originale non disponibile."); return; }
+                if (!item.fileData) { alert("File originale non disponibile."); return; }
                 const a = document.createElement('a');
-                a.href = reg.fileData;
-                a.download = reg.fileName || `${reg.title}.docx`;
+                a.href = item.fileData;
+                a.download = item.fileName || `${item.title}.docx`;
                 document.body.appendChild(a);
                 a.click();
                 a.remove();
@@ -2022,403 +1675,116 @@
             document.body.style.overflow = 'hidden';
         }
 
-        function closeRegolamentoDetail() {
-            document.getElementById("regolamento-detail-view").classList.add("hidden");
-            document.body.style.overflow = 'auto';
-        }
+        // =========================================================================
+        // LOGICA STRADE STATALI (MODALITÀ DOPPIA & NAVIGAZIONE)
+        // =========================================================================
 
-        function deleteRegolamentoMulti() {
-            const select = document.getElementById("admin-delete-regolamento-select");
-            const selectedOptions = Array.from(select.selectedOptions);
-            if (selectedOptions.length === 0) { alert("Seleziona almeno un regolamento da eliminare."); return; }
-            if (confirm(`Vuoi eliminare ${selectedOptions.length} regolamenti selezionati?`)) {
-                const idsToDelete = selectedOptions.map(opt => Number(opt.value));
-                regolamentiData = regolamentiData.filter(r => !idsToDelete.includes(r.id));
-                saveData();
-                renderRegolamenti();
-                populateAdminSelect();
-                alert("Regolamenti eliminati con successo.");
-            }
-        }
+        function setStataliMode(mode) {
+            stataliMode = mode;
+            const btnElenco = document.getElementById("btn-statali-elenco");
+            const btnSingola = document.getElementById("btn-statali-singola");
+            const containerElenco = document.getElementById("statali-elenco-container");
+            const containerSingola = document.getElementById("statali-singola-container");
 
-        async function uploadPercorsiWordMulti() {
-            const fileInput = document.getElementById("admin-percorso-file");
-            const feedbackEl = document.getElementById("upload-feedback-percorsi");
-            if (fileInput.files.length === 0) { alert("Seleziona almeno un file Word (.docx)!"); return; }
-
-            const files = Array.from(fileInput.files);
-            let loadedCount = 0;
-
-            for (const file of files) {
-                let title = file.name.replace(/\.[^/.]+$/, "");
-                await new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        percorsiData.push({ id: Date.now() + Math.random(), title: title, fileData: event.target.result, fileName: file.name });
-                        loadedCount++;
-                        resolve();
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
-
-            percorsiData.sort((a, b) => naturalSort(a.title, b.title));
-            saveData();
-            fileInput.value = "";
-            renderPercorsi();
-            populateAdminSelect();
-            
-            feedbackEl.textContent = `✓ Caricamento completato! Aggiunti ${loadedCount} percorsi con successo all'interno dell'app.`;
-            feedbackEl.classList.remove("hidden");
-            setTimeout(() => { feedbackEl.classList.add("hidden"); }, 4000);
-        }
-
-        async function uploadCerchieWordMulti() {
-            const fileInput = document.getElementById("admin-cerchia-file");
-            const feedbackEl = document.getElementById("upload-feedback-cerchie");
-            if (fileInput.files.length === 0) { alert("Seleziona almeno un file Word (.docx)!"); return; }
-
-            const files = Array.from(fileInput.files);
-            let loadedCount = 0;
-
-            for (const file of files) {
-                let title = file.name.replace(/\.[^/.]+$/, "");
-                await new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        cerchieData.push({ id: Date.now() + Math.random(), title: title, fileData: event.target.result, fileName: file.name });
-                        loadedCount++;
-                        resolve();
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
-
-            cerchieData.sort((a, b) => naturalSort(a.title, b.title));
-            saveData();
-            fileInput.value = "";
-            renderCerchie();
-            populateAdminSelect();
-            
-            feedbackEl.textContent = `✓ Caricamento completato! Aggiunte ${loadedCount} cerchie con successo all'interno dell'app.`;
-            feedbackEl.classList.remove("hidden");
-            setTimeout(() => { feedbackEl.classList.add("hidden"); }, 4000);
-        }
-
-        function renderPercorsi() {
-            const query = document.getElementById("search-percorso").value.toLowerCase();
-            const container = document.getElementById("percorsi-list");
-            container.innerHTML = "";
-
-            let sortedPercorsi = [...percorsiData].sort((a, b) => naturalSort(a.title, b.title));
-            let filtered = sortedPercorsi.filter(p => p.title.toLowerCase().includes(query));
-
-            if(filtered.length === 0) {
-                container.innerHTML = `<p class="text-slate-500 col-span-full text-center py-6 text-sm font-medium">Nessun percorso taxi trovato.</p>`;
-                return;
-            }
-
-            filtered.forEach(p => {
-                const card = document.createElement("div");
-                card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between cursor-pointer group hover:border-amber-500";
-                card.onclick = () => openDocumentDetailFromData(p);
-                card.innerHTML = `
-                    <div class="flex items-center space-x-3.5">
-                        <div class="p-3 bg-amber-50 rounded-xl group-hover:bg-amber-100 transition text-amber-600">
-                            <i class="fa-solid fa-route text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-amber-700 leading-snug">${p.title}</h3>
-                            <span class="text-xs text-slate-500 font-medium">Clicca per aprire, visualizzare o scaricare</span>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function renderCerchie() {
-            const query = document.getElementById("search-cerchia").value.toLowerCase();
-            const container = document.getElementById("cerchie-list");
-            container.innerHTML = "";
-
-            let sortedCerchie = [...cerchieData].sort((a, b) => naturalSort(a.title, b.title));
-            let filtered = sortedCerchie.filter(c => c.title.toLowerCase().includes(query));
-
-            if(filtered.length === 0) {
-                container.innerHTML = `<p class="text-slate-500 col-span-full text-center py-6 text-sm font-medium">Nessun percorso cerchia trovato.</p>`;
-                return;
-            }
-
-            filtered.forEach(c => {
-                const card = document.createElement("div");
-                card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between cursor-pointer group hover:border-amber-500";
-                card.onclick = () => openDocumentDetailFromData(c);
-                card.innerHTML = `
-                    <div class="flex items-center space-x-3.5">
-                        <div class="p-3 bg-amber-50 rounded-xl group-hover:bg-amber-100 transition text-amber-600">
-                            <i class="fa-solid fa-circle-nodes text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-amber-700 leading-snug">${c.title}</h3>
-                            <span class="text-xs text-slate-500 font-medium">Clicca per aprire, visualizzare o scaricare</span>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        async function openDocumentDetailFromData(docObj) {
-            stopAllAudioEngine();
-            currentActiveDocTitle = docObj.title;
-            document.getElementById("percorso-detail-title").textContent = docObj.title;
-            
-            const detailView = document.getElementById("percorso-detail-view");
-            detailView.classList.remove("hidden");
-            document.body.style.overflow = 'hidden';
-
-            isSingleStepMode = false;
-            currentStepIndex = 0;
-            updateViewModeUI();
-
-            const listContainer = document.getElementById("percorso-list-view-container");
-            listContainer.innerHTML = `<p class="text-slate-500 italic text-center py-10"><i class="fa-solid fa-spinner fa-spin mr-2 text-amber-500 text-xl"></i> Caricamento file in corso...</p>`;
-
-            if (docObj.fileData) {
-                try {
-                    const base64Content = docObj.fileData.split(',')[1];
-                    const binaryString = atob(base64Content);
-                    const len = binaryString.length;
-                    const bytes = new Uint8Array(len);
-                    for (let i = 0; i < len; i++) {
-                        bytes[i] = binaryString.charCodeAt(i);
-                    }
-                    currentRawDocBuffer = bytes.buffer;
-
-                    mammoth.extractRawText({ arrayBuffer: bytes.buffer })
-                        .then(function(result) {
-                            const rawText = result.value || "";
-                            let steps = [];
-                            const lines = rawText.split('\n');
-                            lines.forEach(l => {
-                                const trimmed = l.trim();
-                                if (trimmed) {
-                                    const cleaned = trimmed.replace(/^(\d+[\.\)]\s*|-\s*)/, '');
-                                    if (cleaned) {
-                                        const subParts = cleaned.split(/[,–—-]/).map(p => p.trim()).filter(p => p.length > 0);
-                                        if (subParts.length > 1) {
-                                            subParts.forEach(sp => steps.push(sp));
-                                        } else {
-                                            steps.push(cleaned);
-                                        }
-                                    }
-                                }
-                            });
-                            
-                            if (steps.length === 0) steps = [rawText];
-                            currentDocumentSteps = steps;
-                            renderDocumentModalContent();
-                        })
-                        .catch(function() {
-                            listContainer.innerHTML = `<p class="text-red-500 text-center py-10 font-bold">Errore di lettura del file Word.</p>`;
-                        });
-                } catch (e) {
-                    listContainer.innerHTML = `<p class="text-red-500 text-center py-10 font-bold">Impossibile elaborare il documento.</p>`;
-                }
+            if (mode === 'elenco') {
+                btnElenco.className = "px-4 py-2 rounded-lg font-bold text-xs sm:text-sm transition bg-amber-500 text-white shadow-sm";
+                btnSingola.className = "px-4 py-2 rounded-lg font-bold text-xs sm:text-sm transition text-slate-700 hover:text-slate-900";
+                containerElenco.classList.remove("hidden");
+                containerSingola.classList.add("hidden");
             } else {
-                currentDocumentSteps = ["Nessun contenuto disponibile per questo elemento di default."];
-                renderDocumentModalContent();
+                btnSingola.className = "px-4 py-2 rounded-lg font-bold text-xs sm:text-sm transition bg-amber-500 text-white shadow-sm";
+                btnElenco.className = "px-4 py-2 rounded-lg font-bold text-xs sm:text-sm transition text-slate-700 hover:text-slate-900";
+                containerElenco.classList.add("hidden");
+                containerSingola.classList.remove("hidden");
+                renderSingleStataleCard();
             }
         }
 
-        function toggleSpeechPercorso() {
-            if (!('speechSynthesis' in window)) {
-                alert("La sintesi vocale non è supportata dal tuo browser.");
-                return;
-            }
-
-            if (isSpeakingPercorso) {
-                stopAllAudioEngine();
-                return;
-            }
-
-            stopAllAudioEngine();
-
-            if (!currentDocumentSteps || currentDocumentSteps.length === 0) return;
-
-            let fullText = `${currentActiveDocTitle}. ` + currentDocumentSteps.join(", ");
-            let utterance = new SpeechSynthesisUtterance(fullText);
-            utterance.lang = 'it-IT';
-            utterance.rate = 0.95;
-
-            utterance.onstart = function() {
-                isSpeakingPercorso = true;
-                const btnText = document.getElementById("tts-percorso-btn-text");
-                const btnMic = document.getElementById("btn-tts-percorso");
-                if (btnText) btnText.textContent = "Interrompi";
-                if (btnMic) btnMic.className = "px-3.5 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm";
-            };
-
-            utterance.onend = utterance.onerror = function() {
-                isSpeakingPercorso = false;
-                const btnText = document.getElementById("tts-percorso-btn-text");
-                const btnMic = document.getElementById("btn-tts-percorso");
-                if (btnText) btnText.textContent = "Ascolta";
-                if (btnMic) btnMic.className = "px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm";
-            };
-
-            window.speechSynthesis.speak(utterance);
-        }
-
-        function renderDocumentModalContent() {
-            const listContainer = document.getElementById("percorso-list-view-container");
-            const stepContainer = document.getElementById("percorso-single-step-container");
-            const indicator = document.getElementById("percorso-step-indicator");
-
-            if (!isSingleStepMode) {
-                listContainer.classList.remove("hidden");
-                stepContainer.classList.add("hidden");
-                listContainer.innerHTML = "";
-
-                currentDocumentSteps.forEach((step, idx) => {
-                    const item = document.createElement("div");
-                    item.className = "flex items-start bg-white border border-slate-200 rounded-xl p-3.5 shadow-sm";
-                    item.innerHTML = `
-                        <span class="flex-shrink-0 w-8 h-8 bg-amber-500 text-white font-black rounded-lg flex items-center justify-center text-sm mr-3.5 shadow-sm">${idx + 1}</span>
-                        <p class="text-slate-800 text-sm sm:text-base font-semibold leading-relaxed my-auto">${step}</p>
-                    `;
-                    listContainer.appendChild(item);
-                });
-            } else {
-                listContainer.classList.add("hidden");
-                stepContainer.classList.remove("hidden");
-
-                if (currentDocumentSteps.length > 0) {
-                    const currentText = currentDocumentSteps[currentStepIndex];
-                    stepContainer.innerHTML = `
-                        <div class="max-w-2xl w-full bg-white border border-slate-200 rounded-2xl p-6 sm:p-10 shadow-md flex flex-col items-center justify-center my-auto space-y-6">
-                            <span class="px-4 py-1.5 bg-amber-100 text-amber-900 rounded-full font-black text-xs sm:text-sm tracking-wider uppercase">Tappa ${currentStepIndex + 1} di ${currentDocumentSteps.length}</span>
-                            <h4 class="text-lg sm:text-2xl font-bold text-slate-900 leading-snug">${currentText}</h4>
-                        </div>
-                    `;
-                    indicator.textContent = `${currentStepIndex + 1} / ${currentDocumentSteps.length}`;
-                }
-            }
-        }
-
-        function togglePercorsoViewMode() {
-            isSingleStepMode = !isSingleStepMode;
-            updateViewModeUI();
-            renderDocumentModalContent();
-        }
-
-        function updateViewModeUI() {
-            const btnText = document.getElementById("toggle-view-text");
-            const btnIcon = document.getElementById("toggle-view-icon");
-            const controls = document.getElementById("percorso-step-controls");
-
-            if (isSingleStepMode) {
-                btnText.textContent = "Vista Elenco Completo";
-                btnIcon.className = "fa-solid fa-list";
-                controls.classList.remove("hidden");
-                controls.classList.add("flex");
-            } else {
-                btnText.textContent = "Modalità Passo-Passo";
-                btnIcon.className = "fa-solid fa-list-check";
-                controls.classList.remove("flex");
-                controls.classList.add("hidden");
-            }
-        }
-
-        function nextPercorsoStep() {
-            if (currentStepIndex < currentDocumentSteps.length - 1) {
-                currentStepIndex++;
-                renderDocumentModalContent();
-            }
-        }
-
-        function prevPercorsoStep() {
-            if (currentStepIndex > 0) {
-                currentStepIndex--;
-                renderDocumentModalContent();
-            }
-        }
-
-        function closePercorsoDetail() {
-            stopAllAudioEngine();
-            document.getElementById("percorso-detail-view").classList.add("hidden");
-            document.body.style.overflow = 'auto';
-        }
-
-        function downloadOriginalWordFile() {
-            const found = percorsiData.concat(cerchieData).find(x => x.title === currentActiveDocTitle);
-            if (!found || !found.fileData) { alert("File originale non disponibile per il download."); return; }
-            const a = document.createElement('a');
-            a.href = found.fileData;
-            a.download = found.fileName || `${currentActiveDocTitle}.docx`;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-        }
-
-        function deletePercorsoMulti() {
-            const select = document.getElementById("admin-delete-percorso-select");
-            const selectedOptions = Array.from(select.selectedOptions);
-            if (selectedOptions.length === 0) { alert("Seleziona almeno un percorso da eliminare."); return; }
-            if (confirm(`Vuoi eliminare ${selectedOptions.length} percorsi selezionati?`)) {
-                const titlesToDelete = selectedOptions.map(opt => opt.value);
-                percorsiData = percorsiData.filter(p => !titlesToDelete.includes(p.title));
-                saveData();
-                renderPercorsi();
-                populateAdminSelect();
-                alert("Percorsi eliminati con successo.");
-            }
-        }
-
-        function deleteCerchiaMulti() {
-            const select = document.getElementById("admin-delete-cerchia-select");
-            const selectedOptions = Array.from(select.selectedOptions);
-            if (selectedOptions.length === 0) { alert("Seleziona almeno una cerchia da eliminare."); return; }
-            if (confirm(`Vuoi eliminare ${selectedOptions.length} cerchie selezionate?`)) {
-                const titlesToDelete = selectedOptions.map(opt => opt.value);
-                cerchieData = cerchieData.filter(c => !titlesToDelete.includes(c.title));
-                saveData();
-                renderCerchie();
-                populateAdminSelect();
-                alert("Cerchie eliminate con successo.");
-            }
+        function getFilteredStataliList() {
+            const query = document.getElementById("search-statale").value.toLowerCase();
+            return stataliListDynamic.filter(s => s.toLowerCase().includes(query));
         }
 
         function renderStatali() {
-            const query = document.getElementById("search-statale").value.toLowerCase();
-            const container = document.getElementById("statali-list");
-            container.innerHTML = "";
+            if (stataliMode === 'elenco') {
+                const container = document.getElementById("statali-elenco-container");
+                container.innerHTML = "";
+                let filtered = getFilteredStataliList();
 
-            let filtered = stataliListDynamic.filter(s => s.toLowerCase().includes(query));
+                if (filtered.length === 0) {
+                    container.innerHTML = `<p class="text-slate-500 col-span-full text-center py-6 text-sm font-medium">Nessuna strada statale trovata.</p>`;
+                    return;
+                }
 
-            if(filtered.length === 0) {
-                container.innerHTML = `<p class="text-slate-500 col-span-full text-center py-6 text-sm font-medium">Nessuna strada statale trovata.</p>`;
+                filtered.forEach(s => {
+                    const desc = stataliDescriptions[s] || "Nessuna descrizione aggiuntiva inserita.";
+                    const card = document.createElement("div");
+                    card.className = "bg-white border-2 border-slate-200 hover:border-amber-500 rounded-xl p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between cursor-pointer";
+                    card.onclick = () => {
+                        currentStataleIndex = stataliListDynamic.indexOf(s);
+                        openStataleDetailModal();
+                    };
+                    card.innerHTML = `
+                        <div>
+                            <div class="flex items-center space-x-3.5 mb-3">
+                                <div class="p-3 bg-amber-100 rounded-xl text-amber-700 flex-shrink-0">
+                                    <i class="fa-solid fa-road text-2xl"></i>
+                                </div>
+                                <h3 class="font-black text-lg sm:text-xl text-slate-900 leading-snug">${s}</h3>
+                            </div>
+                            <p class="text-sm sm:text-base text-slate-700 font-semibold leading-relaxed pl-1">${desc}</p>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } else {
+                renderSingleStataleCard();
+            }
+        }
+
+        function renderSingleStataleCard() {
+            let filtered = getFilteredStataliList();
+            if (filtered.length === 0) {
+                document.getElementById("statale-single-title").textContent = "Nessuna Statale Trovata";
+                document.getElementById("statale-single-desc").textContent = "Prova a modificare i termini della ricerca.";
+                document.getElementById("statale-counter-badge").textContent = "0 / 0";
                 return;
             }
 
-            filtered.forEach(s => {
-                const desc = stataliDescriptions[s] || "Nessuna descrizione aggiuntiva inserita.";
-                const card = document.createElement("div");
-                card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between";
-                card.innerHTML = `
-                    <div>
-                        <div class="flex items-center space-x-3.5 mb-2.5">
-                            <div class="p-3 bg-amber-50 rounded-xl text-amber-600">
-                                <i class="fa-solid fa-road text-xl"></i>
-                            </div>
-                            <h3 class="font-bold text-base sm:text-lg text-slate-900 leading-snug">${s}</h3>
-                        </div>
-                        <p class="text-xs sm:text-sm text-slate-600 font-medium pl-1 leading-relaxed">${desc}</p>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
+            if (currentStataleIndex >= filtered.length) currentStataleIndex = 0;
+            if (currentStataleIndex < 0) currentStataleIndex = filtered.length - 1;
+
+            const stataleName = filtered[currentStataleIndex];
+            const desc = stataliDescriptions[stataleName] || "Nessuna descrizione aggiuntiva inserita.";
+
+            document.getElementById("statale-single-title").textContent = stataleName;
+            document.getElementById("statale-single-desc").textContent = desc;
+            document.getElementById("statale-counter-badge").textContent = `${currentStataleIndex + 1} / ${filtered.length}`;
+        }
+
+        function navigateStatale(direction) {
+            let filtered = getFilteredStataliList();
+            if (filtered.length === 0) return;
+            currentStataleIndex += direction;
+            if (currentStataleIndex < 0) currentStataleIndex = filtered.length - 1;
+            if (currentStataleIndex >= filtered.length) currentStataleIndex = 0;
+            renderSingleStataleCard();
+        }
+
+        function openStataleDetailModal() {
+            let filtered = getFilteredStataliList();
+            if (filtered.length === 0) return;
+            const stataleName = filtered[currentStataleIndex] || stataliListDynamic[currentStataleIndex];
+            if (!stataleName) return;
+
+            const desc = stataliDescriptions[stataleName] || "Nessuna descrizione aggiuntiva inserita.";
+            document.getElementById("statale-modal-title").textContent = stataleName;
+            document.getElementById("statale-modal-desc").textContent = desc;
+            document.getElementById("statale-detail-modal").classList.remove("hidden");
+        }
+
+        function closeStataleDetailModal() {
+            document.getElementById("statale-detail-modal").classList.add("hidden");
         }
 
         function addNewStatale() {
@@ -2470,360 +1836,6 @@
             alert("Descrizione statale salvata con successo!");
         }
 
-        function getProcessedPiazzeList() {
-            let processed = [...piazzeData];
-            if (sortMode === 'asc') {
-                processed.sort((a, b) => naturalSort(a.name, b.name));
-            } else if (sortMode === 'desc') {
-                processed.sort((a, b) => naturalSort(b.name, a.name));
-            }
-            return processed;
-        }
-
-        function renderEncyclopedia() {
-            const query = document.getElementById("search-piazza").value.toLowerCase();
-            const container = document.getElementById("encyclopedia-list");
-            container.innerHTML = "";
-
-            let processed = getProcessedPiazzeList();
-            let filtered = processed.filter(item => {
-                const matchName = item.name.toLowerCase().includes(query) || item.type.toLowerCase().includes(query);
-                const matchConfluence = item.confluences.some(c => c.toLowerCase().includes(query));
-                return matchName || matchConfluence;
-            });
-
-            if (filtered.length === 0) {
-                container.innerHTML = `<p class="text-slate-500 col-span-full text-center py-6 text-sm font-medium">Nessun elemento toponomastico trovato.</p>`;
-                return;
-            }
-
-            if (currentPiazzaIndex >= filtered.length) {
-                currentPiazzaIndex = 0;
-            }
-
-            const item = filtered[currentPiazzaIndex];
-            const card = document.createElement("div");
-            card.className = "bg-white border-2 border-amber-500/30 rounded-2xl p-5 shadow-md hover:shadow-lg transition flex flex-col justify-between col-span-full max-w-2xl mx-auto w-full";
-
-            let confluencesHtml = item.confluences.map(c => {
-                const isSelected = (selectedStreetForTap && selectedStreetForTap.piazzaId === item.id && selectedStreetForTap.street === c);
-                const hasCustom = customDescriptions[item.name] && customDescriptions[item.name][c];
-                const badgeClass = isSelected ? "border-amber-500 bg-amber-50 text-amber-900 shadow" : "border-slate-200 bg-slate-50 text-slate-800 hover:bg-slate-100";
-                const dotClass = hasCustom ? "bg-amber-500" : "bg-slate-400";
-                return `<button onclick="handleStreetClick('${item.name.replace(/'/g, "\\'")}', '${c.replace(/'/g, "\\'")}', ${item.id})" class="text-left px-3.5 py-2 rounded-xl border text-sm font-semibold transition flex items-center justify-between group ${badgeClass}">
-                    <span class="truncate pr-2">${c}</span>
-                    <span class="w-2.5 h-2.5 rounded-full ${dotClass} flex-shrink-0"></span>
-                </button>`;
-            }).join('');
-
-            card.innerHTML = `
-                <div>
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="px-3 py-1 bg-amber-100 text-amber-900 rounded-lg font-extrabold text-xs uppercase tracking-wider">${item.type}</span>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md">Piazza ${currentPiazzaIndex + 1} di ${filtered.length}</span>
-                            <button id="btn-tts-piazza" onclick="toggleSpeechPiazza('${item.name.replace(/'/g, "\\'")}', ${JSON.stringify(item.confluences).replace(/"/g, '&quot;')})" class="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow" title="Ascolta confluenze">
-                                <i class="fa-solid fa-volume-high text-sm"></i> <span id="tts-btn-text">Ascolta</span>
-                            </button>
-                        </div>
-                    </div>
-                    <h3 class="font-black text-2xl sm:text-3xl text-slate-900 mb-4">${item.name}</h3>
-                    <div class="space-y-2 max-h-64 overflow-y-auto p-1">${confluencesHtml}</div>
-                </div>
-            `;
-            container.appendChild(card);
-        }
-
-        function navigatePiazza(direction) {
-            const query = document.getElementById("search-piazza").value.toLowerCase();
-            let processed = getProcessedPiazzeList();
-            let filtered = processed.filter(item => {
-                const matchName = item.name.toLowerCase().includes(query) || item.type.toLowerCase().includes(query);
-                const matchConfluence = item.confluences.some(c => c.toLowerCase().includes(query));
-                return matchName || matchConfluence;
-            });
-
-            if (filtered.length === 0) return;
-
-            currentPiazzaIndex += direction;
-            if (currentPiazzaIndex < 0) currentPiazzaIndex = filtered.length - 1;
-            if (currentPiazzaIndex >= filtered.length) currentPiazzaIndex = 0;
-
-            stopAllAudioEngine();
-            renderEncyclopedia();
-        }
-
-        function onSearchPiazzaInput() {
-            currentPiazzaIndex = 0;
-            stopAllAudioEngine();
-            renderEncyclopedia();
-        }
-
-        function toggleSpeechPiazza(piazzaName, confluencesArr) {
-            if (!('speechSynthesis' in window)) {
-                alert("La sintesi vocale non è supportata dal tuo browser.");
-                return;
-            }
-
-            if (isSpeakingPiazza) {
-                stopAllAudioEngine();
-                return;
-            }
-
-            stopAllAudioEngine();
-            
-            let fullText = `${piazzaName}. Confluenze in senso antiorario: ` + confluencesArr.join(", ");
-            let utterance = new SpeechSynthesisUtterance(fullText);
-            utterance.lang = 'it-IT';
-            utterance.rate = 0.95;
-
-            utterance.onstart = function() {
-                isSpeakingPiazza = true;
-                const btnText = document.getElementById("tts-btn-text");
-                const btnMic = document.getElementById("btn-tts-piazza");
-                if (btnText) btnText.textContent = "Interrompi";
-                if (btnMic) btnMic.className = "px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow";
-            };
-
-            utterance.onend = utterance.onerror = function() {
-                isSpeakingPiazza = false;
-                const btnText = document.getElementById("tts-btn-text");
-                const btnMic = document.getElementById("btn-tts-piazza");
-                if (btnText) btnText.textContent = "Ascolta";
-                if (btnMic) btnMic.className = "px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow";
-            };
-
-            window.speechSynthesis.speak(utterance);
-        }
-
-        // =========================================================================
-        // OTTIMIZZAZIONE RICONOSCIMENTO VOCALE & NORMALIZZAZIONE VIE NEGLI ESERCIZI
-        // =========================================================================
-
-        function toggleVoiceInputExercise() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                alert("Il riconoscimento vocale non è supportato da questo browser. Usa Chrome o Safari.");
-                return;
-            }
-
-            const btnMic = document.getElementById("btn-mic-exercise");
-
-            if (isListeningExercise) {
-                stopAllAudioEngine();
-                return;
-            }
-
-            stopAllAudioEngine();
-
-            recognitionInstance = new SpeechRecognition();
-            recognitionInstance.lang = 'it-IT';
-            recognitionInstance.continuous = true;
-            recognitionInstance.interimResults = true;
-
-            recognitionInstance.onstart = function() {
-                isListeningExercise = true;
-                btnMic.classList.add("mic-active");
-                const feedback = document.getElementById("exercise-feedback");
-                if (feedback) {
-                    feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-amber-600 animate-pulse";
-                    feedback.textContent = "🎙️ In ascolto... Pronuncia la via per inserirla!";
-                }
-            };
-
-            recognitionInstance.onresult = function(event) {
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    let transcript = event.results[i][0].transcript;
-                    processSpokenTextExercise(transcript);
-                }
-            };
-
-            recognitionInstance.onerror = function(event) {
-                console.error("Errore riconoscimento vocale:", event.error);
-                stopListeningExerciseUI();
-            };
-
-            recognitionInstance.onend = function() {
-                stopListeningExerciseUI();
-            };
-
-            recognitionInstance.start();
-        }
-
-        function stopListeningExerciseUI() {
-            isListeningExercise = false;
-            const btnMic = document.getElementById("btn-mic-exercise");
-            if (btnMic) btnMic.classList.remove("mic-active");
-        }
-
-        function normaliseStreetName(str) {
-            if (!str) return "";
-            return str
-                .toLowerCase()
-                .trim()
-                .replace(/^(via|viale|corso|piazza|piazzale|largo|vico|vicolo|galleria)\s+/i, "")
-                .replace(/[.,'']/g, "")
-                .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        }
-
-        function processSpokenTextExercise(transcript) {
-            if (!currentExPiazza) return;
-
-            let confluences = [...currentExPiazza.confluences];
-            let topStreet = confluences[0];
-            if (customDescriptions[currentExPiazza.name]) {
-                const customKeys = Object.keys(customDescriptions[currentExPiazza.name]);
-                const foundCustom = customKeys.find(k => confluences.includes(k));
-                if (foundCustom) topStreet = foundCustom;
-            }
-            const topIdx = confluences.indexOf(topStreet);
-            if (topIdx > 0) {
-                confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
-            }
-
-            let spokenParts = transcript.split(/,| e | poi /i).map(s => s.trim()).filter(s => s.length > 0);
-
-            spokenParts.forEach(spokenPhrase => {
-                let cleanSpoken = normaliseStreetName(spokenPhrase);
-                if (!cleanSpoken || cleanSpoken.length < 3) return;
-
-                let bestMatchIndex = -1;
-                let bestMatchScore = 0;
-
-                confluences.forEach((confStreet, slotIdx) => {
-                    if (slotIdx === 0) return;
-
-                    let cleanConf = normaliseStreetName(confStreet);
-                    
-                    if (cleanConf === cleanSpoken) {
-                        bestMatchIndex = slotIdx;
-                        bestMatchScore = 100;
-                    } else if (cleanConf.includes(cleanSpoken) || cleanSpoken.includes(cleanConf)) {
-                        let score = Math.min(cleanSpoken.length, cleanConf.length);
-                        if (score > bestMatchScore && score >= 3) {
-                            bestMatchScore = score;
-                            bestMatchIndex = slotIdx;
-                        }
-                    }
-                });
-
-                if (bestMatchIndex !== -1) {
-                    let matchedStreet = confluences[bestMatchIndex];
-                    let alreadyAssignedSlot = Object.keys(assignedSlots).find(key => assignedSlots[key] === matchedStreet);
-
-                    if (!alreadyAssignedSlot) {
-                        let emptySlotIndex = -1;
-                        for (let s = 1; s < confluences.length; s++) {
-                            if (assignedSlots[s] === undefined) {
-                                emptySlotIndex = s;
-                                break;
-                            }
-                        }
-
-                        if (emptySlotIndex !== -1) {
-                            assignedSlots[emptySlotIndex] = matchedStreet;
-                            lastVerificationResults = {};
-                            renderSlotsAndPool();
-
-                            const feedback = document.getElementById("exercise-feedback");
-                            if (feedback) {
-                                feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-emerald-600";
-                                feedback.textContent = `🎙️ Inserita via: "${matchedStreet}"`;
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function handleStreetClick(piazzaName, streetName, piazzaId) {
-            selectedStreetForTap = { piazzaId: piazzaId, street: streetName };
-            renderEncyclopedia();
-
-            const infoBox = document.getElementById("street-destination-info");
-            const destText = document.getElementById("street-dest-text");
-            const mapLink = document.getElementById("street-map-link");
-
-            const customText = (customDescriptions[piazzaName] && customDescriptions[piazzaName][streetName]) || "Nessuna nota specifica inserita. Collegamento standard tra la via e la piazza.";
-            destText.textContent = `${streetName} (${piazzaName}): ${customText}`;
-            mapLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(streetName + ", Milano")}`;
-            infoBox.classList.remove("hidden");
-        }
-
-        function closeStreetInfo() {
-            selectedStreetForTap = null;
-            document.getElementById("street-destination-info").classList.add("hidden");
-            renderEncyclopedia();
-        }
-
-        function addNewPiazza() {
-            const type = document.getElementById("new-piazza-type").value;
-            const name = document.getElementById("new-piazza-name").value.trim();
-            const confluencesRaw = document.getElementById("new-piazza-confluences").value.trim();
-
-            if(!name || !confluencesRaw) { alert("Compila tutti i campi!"); return; }
-
-            const confluences = confluencesRaw.split(',').map(s => s.trim()).filter(s => s.length > 0);
-            const newId = piazzeData.length > 0 ? Math.max(...piazzeData.map(p => p.id)) + 1 : 1;
-
-            piazzeData.push({ id: newId, type: type, name: name, confluences: confluences });
-            piazzeData.sort((a, b) => naturalSort(a.name, b.name));
-            saveData();
-
-            document.getElementById("new-piazza-name").value = "";
-            document.getElementById("new-piazza-confluences").value = "";
-            populateAdminSelect();
-            renderEncyclopedia();
-            alert("Elemento aggiunto con successo!");
-        }
-
-        function loadAdminPiazzaData() {
-            const select = document.getElementById("admin-piazza-select");
-            const id = Number(select.value);
-            const piazza = piazzeData.find(p => p.id === id);
-            if(!piazza) return;
-
-            document.getElementById("edit-piazza-type").value = piazza.type;
-            document.getElementById("edit-piazza-name").value = piazza.name;
-            document.getElementById("edit-piazza-confluences").value = piazza.confluences.join(', ');
-        }
-
-        function updatePiazza() {
-            const select = document.getElementById("admin-piazza-select");
-            const id = Number(select.value);
-            const piazza = piazzeData.find(p => p.id === id);
-            if(!piazza) { alert("Seleziona una piazza valida."); return; }
-
-            const type = document.getElementById("edit-piazza-type").value;
-            const name = document.getElementById("edit-piazza-name").value.trim();
-            const confluencesRaw = document.getElementById("edit-piazza-confluences").value.trim();
-
-            if(!name || !confluencesRaw) { alert("Compila tutti i campi!"); return; }
-
-            piazza.type = type;
-            piazza.name = name;
-            piazza.confluences = confluencesRaw.split(',').map(s => s.trim()).filter(s => s.length > 0);
-
-            saveData();
-            populateAdminSelect();
-            renderEncyclopedia();
-            alert("Modifiche salvate con successo!");
-        }
-
-        function deletePiazzaMulti() {
-            const select = document.getElementById("admin-piazze-delete-select");
-            const selectedOptions = Array.from(select.selectedOptions);
-            if(selectedOptions.length === 0) { alert("Seleziona almeno una piazza da eliminare."); return; }
-            if(confirm(`Vuoi eliminare ${selectedOptions.length} piazze selezionate?`)) {
-                const idsToDelete = selectedOptions.map(opt => Number(opt.value));
-                piazzeData = piazzeData.filter(p => !idsToDelete.includes(p.id));
-                saveData();
-                populateAdminSelect();
-                renderEncyclopedia();
-                alert("Piazze eliminate con successo!");
-            }
-        }
-
         function populateAdminSelect() {
             const piazzeSelects = ['admin-piazza-select', 'admin-custom-piazza'];
             piazzeSelects.forEach(id => {
@@ -2853,8 +1865,9 @@
 
             const multiSelects = [
                 { id: 'admin-delete-regolamento-select', data: regolamentiData, getVal: x => x.id, getTxt: x => x.title },
+                { id: 'admin-delete-poi-select', data: poiData, getVal: x => x.id, getTxt: x => `[${x.category}] ${x.title}` },
                 { id: 'admin-delete-percorso-select', data: percorsiData, getVal: x => x.title, getTxt: x => x.title },
-                { id: 'admin-delete-cerchia-select', data: cerchieData, getVal: x => x.title, getTxt: x => x.title },
+                { id: 'admin-delete-cerchie-select', data: cerchieData, getVal: x => x.title, getTxt: x => x.title },
                 { id: 'admin-statali-delete-select', data: stataliListDynamic, getVal: x => x, getTxt: x => x },
                 { id: 'admin-piazze-delete-select', data: piazzeData, getVal: x => x.id, getTxt: x => `${x.type} ${x.name}` }
             ];
@@ -2875,461 +1888,6 @@
             populateAdminStreets();
             const dispPwd = document.getElementById("admin-current-display-pwd");
             if (dispPwd) dispPwd.value = adminPwd;
-        }
-
-        function filterAdminSelect(selectId, filterText) {
-            const selectEl = document.getElementById(selectId);
-            if (!selectEl) return;
-            const query = filterText.toLowerCase();
-            Array.from(selectEl.options).forEach(opt => {
-                const txt = opt.textContent.toLowerCase();
-                if (txt.includes(query)) {
-                    opt.style.display = "";
-                } else {
-                    opt.style.display = "none";
-                }
-            });
-        }
-
-        function populateAdminStreets() {
-            const piazzaSel = document.getElementById("admin-custom-piazza");
-            const streetSel = document.getElementById("admin-custom-street");
-            if(!piazzaSel || !streetSel) return;
-
-            const piazzaId = Number(piazzaSel.value);
-            const piazza = piazzeData.find(p => p.id === piazzaId);
-            streetSel.innerHTML = "";
-            if(piazza) {
-                piazza.confluences.forEach(c => {
-                    const opt = document.createElement("option");
-                    opt.value = c;
-                    opt.textContent = c;
-                    streetSel.appendChild(opt);
-                });
-                loadCustomStreetText();
-            }
-        }
-
-        function loadCustomStreetText() {
-            const piazzaSel = document.getElementById("admin-custom-piazza");
-            const streetSel = document.getElementById("admin-custom-street");
-            const textArea = document.getElementById("admin-custom-text");
-            if(!piazzaSel || !streetSel || !textArea) return;
-
-            const piazzaId = Number(piazzaSel.value);
-            const piazza = piazzeData.find(p => p.id === piazzaId);
-            const street = streetSel.value;
-
-            if(piazza && customDescriptions[piazza.name] && customDescriptions[piazza.name][street]) {
-                textArea.value = customDescriptions[piazza.name][street];
-            } else {
-                textArea.value = "";
-            }
-        }
-
-        function saveCustomStreetDescription() {
-            const piazzaSel = document.getElementById("admin-custom-piazza");
-            const streetSel = document.getElementById("admin-custom-street");
-            const textArea = document.getElementById("admin-custom-text");
-            if(!piazzaSel || !streetSel || !textArea) return;
-
-            const piazzaId = Number(piazzaSel.value);
-            const piazza = piazzeData.find(p => p.id === piazzaId);
-            const street = streetSel.value;
-            const text = textArea.value.trim();
-
-            if(!piazza || !street) return;
-
-            if(!customDescriptions[piazza.name]) {
-                customDescriptions[piazza.name] = {};
-            }
-            if(text) {
-                customDescriptions[piazza.name][street] = text;
-            } else {
-                delete customDescriptions[piazza.name][street];
-            }
-
-            saveData();
-            alert("Testo collegamento salvato con successo!");
-        }
-
-        function updateAdminPassword() {
-            const input = document.getElementById("admin-new-admin-pwd");
-            const val = input.value.trim();
-            if(!val) { alert("Inserisci una password valida!"); return; }
-            adminPwd = val;
-            saveData();
-            const dispPwd = document.getElementById("admin-current-display-pwd");
-            if (dispPwd) dispPwd.value = adminPwd;
-            alert("Password admin aggiornata con successo!");
-        }
-
-        function exportJSON() {
-            const exportObj = {
-                piazze: piazzeData,
-                customDescriptions: customDescriptions,
-                percorsi: percorsiData,
-                cerchie: cerchieData,
-                regolamenti: regolamentiData,
-                stataliDescriptions: stataliDescriptions,
-                stataliList: stataliListDynamic
-            };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, 2));
-            const dlAnchor = document.createElement('a');
-            dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", "milano_taxi_db_backup.json");
-            document.body.appendChild(dlAnchor);
-            dlAnchor.click();
-            dlAnchor.remove();
-        }
-
-        let currentExIndex = 0;
-        let currentExPiazza = null;
-        let assignedSlots = {};
-
-        function populateExerciseSelect() {
-            const select = document.getElementById("exercise-select");
-            select.innerHTML = "";
-            piazzeData.forEach((p, idx) => {
-                const opt = document.createElement("option");
-                opt.value = idx;
-                opt.textContent = `${p.type} ${p.name}`;
-                select.appendChild(opt);
-            });
-        }
-
-        function filterExerciseDropdown() {
-            const query = document.getElementById("exercise-search-input").value.toLowerCase();
-            const suggestions = document.getElementById("exercise-suggestions");
-            suggestions.innerHTML = "";
-
-            if (!query) {
-                suggestions.classList.add("hidden");
-                return;
-            }
-
-            const matches = piazzeData.map((p, idx) => ({ ...p, originalIndex: idx })).filter(p => p.name.toLowerCase().includes(query) || p.type.toLowerCase().includes(query));
-
-            if (matches.length === 0) {
-                suggestions.classList.add("hidden");
-                return;
-            }
-
-            matches.forEach(m => {
-                const div = document.createElement("div");
-                div.className = "px-3.5 py-2 hover:bg-amber-50 cursor-pointer text-xs sm:text-sm font-semibold border-b border-slate-100 last:border-0";
-                div.textContent = `${m.type} ${m.name}`;
-                div.onclick = () => {
-                    document.getElementById("exercise-select").value = m.originalIndex;
-                    suggestions.classList.add("hidden");
-                    document.getElementById("exercise-search-input").value = "";
-                    loadExercise();
-                };
-                suggestions.appendChild(div);
-            });
-            suggestions.classList.remove("hidden");
-        }
-
-        function loadExercise() {
-            const selectIndex = document.getElementById("exercise-select").value;
-            currentExPiazza = piazzeData[selectIndex];
-            document.getElementById("ex-square-type").textContent = currentExPiazza.type;
-            document.getElementById("ex-square-title").textContent = currentExPiazza.name;
-            document.getElementById("exercise-feedback").textContent = "";
-
-            assignedSlots = {};
-            lastVerificationResults = {};
-            resetMapTransform();
-            renderSlotsAndPool();
-        }
-
-        function updateMapTransform() {
-            const wrapper = document.getElementById("orbit-container-box");
-            if (wrapper) {
-                wrapper.style.transform = `translate(${mapPanX}px, ${mapPanY}px) scale(${mapScale})`;
-            }
-        }
-
-        function zoomMap(delta) {
-            mapScale = Math.min(Math.max(0.5, mapScale + delta), 3.0);
-            updateMapTransform();
-        }
-
-        function resetMapTransform() {
-            mapScale = 1;
-            mapPanX = 0;
-            mapPanY = 0;
-            selectedStreetForTap = null;
-            updateMapTransform();
-        }
-
-        function resetExercise() {
-            assignedSlots = {};
-            lastVerificationResults = {};
-            selectedStreetForTap = null;
-            renderSlotsAndPool();
-            const feedback = document.getElementById("exercise-feedback");
-            if (feedback) feedback.textContent = "";
-        }
-
-        function setupMapPanAndZoom() {
-            const viewport = document.getElementById("map-viewport");
-            if (!viewport) return;
-
-            viewport.onmousedown = (e) => {
-                if (e.target.closest('.orbit-slot') || e.target.closest('.orbit-center')) return;
-                isDraggingMap = true;
-                startDragX = e.clientX - mapPanX;
-                startDragY = e.clientY - mapPanY;
-            };
-
-            window.onmousemove = (e) => {
-                if (!isDraggingMap) return;
-                mapPanX = e.clientX - startDragX;
-                mapPanY = e.clientY - startDragY;
-                updateMapTransform();
-            };
-
-            window.onmouseup = () => {
-                isDraggingMap = false;
-            };
-
-            viewport.ontouchstart = (e) => {
-                if (e.touches.length === 1) {
-                    if (e.target.closest('.orbit-slot') || e.target.closest('.orbit-center')) return;
-                    isDraggingMap = true;
-                    startDragX = e.touches[0].clientX - mapPanX;
-                    startDragY = e.touches[0].clientY - mapPanY;
-                    initialPinchDistance = null;
-                } else if (e.touches.length === 2) {
-                    isDraggingMap = false;
-                    initialPinchDistance = Math.hypot(
-                        e.touches[0].clientX - e.touches[1].clientX,
-                        e.touches[0].clientY - e.touches[1].clientY
-                    );
-                }
-            };
-
-            viewport.ontouchmove = (e) => {
-                if (e.touches.length === 1 && isDraggingMap) {
-                    mapPanX = e.touches[0].clientX - startDragX;
-                    mapPanY = e.touches[0].clientY - startDragY;
-                    updateMapTransform();
-                } else if (e.touches.length === 2 && initialPinchDistance) {
-                    const currentDistance = Math.hypot(
-                        e.touches[0].clientX - e.touches[1].clientX,
-                        e.touches[0].clientY - e.touches[1].clientY
-                    );
-                    const factor = currentDistance / initialPinchDistance;
-                    mapScale = Math.min(Math.max(0.5, mapScale * (factor > 1 ? 1.03 : 0.97)), 3.0);
-                    updateMapTransform();
-                }
-            };
-
-            viewport.ontouchend = (e) => {
-                if (e.touches.length < 2) initialPinchDistance = null;
-                if (e.touches.length === 0) isDraggingMap = false;
-            };
-        }
-
-        let lastVerificationResults = {};
-
-        function renderSlotsAndPool() {
-            const slotsContainer = document.getElementById("map-slots-container");
-            slotsContainer.innerHTML = "";
-
-            let confluences = [...currentExPiazza.confluences];
-            
-            let topStreet = confluences[0];
-            if (customDescriptions[currentExPiazza.name]) {
-                const customKeys = Object.keys(customDescriptions[currentExPiazza.name]);
-                const foundCustom = customKeys.find(k => confluences.includes(k));
-                if (foundCustom) {
-                    topStreet = foundCustom;
-                }
-            }
-
-            const topIdx = confluences.indexOf(topStreet);
-            if (topIdx > 0) {
-                confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
-            }
-
-            const total = confluences.length;
-            const baseRadius = window.innerWidth >= 640 ? 175 : 120;
-            const dynamicRadius = Math.max(baseRadius, total * 18);
-
-            confluences.forEach((confStreet, index) => {
-                const angle = -Math.PI / 2 - (index / total) * 2 * Math.PI;
-                const x = Math.cos(angle) * dynamicRadius;
-                const y = Math.sin(angle) * dynamicRadius;
-
-                const slot = document.createElement("div");
-                
-                let slotClasses = "orbit-slot border-2 rounded-xl p-2 text-center flex items-center justify-center text-white text-[11px] sm:text-xs font-bold shadow-lg transition ";
-                if (index === 0) {
-                    slotClasses += "bg-amber-600 border-amber-300 font-black ring-2 ring-amber-400 shadow-xl";
-                } else if (lastVerificationResults[index] !== undefined) {
-                    if (lastVerificationResults[index]) {
-                        slotClasses += "bg-emerald-600 border-emerald-300 font-black ring-2 ring-emerald-400";
-                    } else {
-                        slotClasses += "bg-red-600 border-red-300 font-black ring-2 ring-red-400";
-                    }
-                } else if (assignedSlots[index]) {
-                    slotClasses += "bg-amber-500 border-amber-400 font-black";
-                } else {
-                    slotClasses += "bg-slate-800/90 border-dashed border-amber-500/70";
-                }
-
-                slot.className = slotClasses;
-                slot.style.left = `calc(50% + ${x}px)`;
-                slot.style.top = `calc(50% + ${y}px)`;
-                slot.dataset.slotIndex = index;
-
-                if (index === 0) {
-                    slot.innerHTML = `<span class="truncate px-1"><i class="fa-solid fa-thumbtack text-amber-200 mr-1 text-[10px]"></i>${topStreet}</span>`;
-                    slot.title = "Via di riferimento in alto (Fissa)";
-                } else if(assignedSlots[index] !== undefined) {
-                    slot.innerHTML = `<span>${assignedSlots[index]}</span>`;
-                } else {
-                    slot.innerHTML = `<span class="text-amber-300 opacity-80">Riquadro ${index + 1}</span>`;
-                }
-
-                slot.onclick = (e) => {
-                    e.stopPropagation();
-                    if (index === 0) return;
-                    lastVerificationResults = {};
-                    
-                    let currentStreetInSlot = assignedSlots[index];
-                    if (currentStreetInSlot) {
-                        delete assignedSlots[index];
-                    }
-                    
-                    if (selectedStreetForTap && selectedStreetForTap.uniqueKey !== undefined) {
-                        assignedSlots[index] = selectedStreetForTap.street;
-                        selectedStreetForTap = null;
-                    }
-                    renderSlotsAndPool();
-                };
-
-                slotsContainer.appendChild(slot);
-            });
-
-            let availableItems = [];
-            confluences.forEach((street, origIdx) => {
-                if (origIdx === 0) return;
-                availableItems.push({ street: street, uniqueKey: origIdx });
-            });
-
-            const poolContainer = document.getElementById("source-pool");
-            poolContainer.innerHTML = "";
-            
-            let assignedValues = Object.values(assignedSlots);
-            let remainingItems = availableItems.filter(item => !assignedValues.includes(item.street));
-            
-            remainingItems.sort(() => Math.random() - 0.5);
-            
-            document.getElementById("pool-count").textContent = remainingItems.length;
-
-            remainingItems.forEach(item => {
-                const isSelected = (selectedStreetForTap && selectedStreetForTap.uniqueKey === item.uniqueKey);
-                const card = document.createElement("div");
-                card.className = `street-card p-3 rounded-xl border text-xs sm:text-sm font-bold shadow-sm transition flex items-center justify-between ${isSelected ? 'selected-for-tap border-amber-500 bg-amber-50' : 'bg-white border-slate-200 hover:border-amber-400 text-slate-800'}`;
-                card.innerHTML = `<span>${item.street}</span> <i class="fa-solid fa-hand-pointer text-amber-500 opacity-60"></i>`;
-                
-                card.onclick = () => {
-                    lastVerificationResults = {};
-                    if (selectedStreetForTap && selectedStreetForTap.uniqueKey === item.uniqueKey) {
-                        selectedStreetForTap = null;
-                    } else {
-                        selectedStreetForTap = { street: item.street, uniqueKey: item.uniqueKey };
-                    }
-                    renderSlotsAndPool();
-                };
-
-                poolContainer.appendChild(card);
-            });
-        }
-
-        function verifyExercise() {
-            let confluences = [...currentExPiazza.confluences];
-            let topStreet = confluences[0];
-            if (customDescriptions[currentExPiazza.name]) {
-                const customKeys = Object.keys(customDescriptions[currentExPiazza.name]);
-                const foundCustom = customKeys.find(k => confluences.includes(k));
-                if (foundCustom) topStreet = foundCustom;
-            }
-            const topIdx = confluences.indexOf(topStreet);
-            if (topIdx > 0) {
-                confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
-            }
-
-            lastVerificationResults = {};
-            let allCorrect = true;
-            let assignedKeys = Object.keys(assignedSlots).map(Number);
-
-            if (assignedKeys.length < confluences.length - 1) {
-                allCorrect = false;
-            }
-
-            let expectedPool = [];
-            confluences.forEach((conf, idx) => {
-                if (idx !== 0) expectedPool.push(conf);
-            });
-
-            confluences.forEach((conf, idx) => {
-                if (idx === 0) return;
-                let userVal = assignedSlots[idx];
-                if (userVal !== undefined) {
-                    let matchIdx = expectedPool.indexOf(userVal);
-                    if (matchIdx !== -1) {
-                        expectedPool.splice(matchIdx, 1);
-                        lastVerificationResults[idx] = true;
-                    } else {
-                        lastVerificationResults[idx] = false;
-                        allCorrect = false;
-                    }
-                } else {
-                    lastVerificationResults[idx] = false;
-                    allCorrect = false;
-                }
-            });
-
-            renderSlotsAndPool();
-
-            const feedback = document.getElementById("exercise-feedback");
-            if(allCorrect) {
-                feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-emerald-600";
-                feedback.textContent = "🎉 Ottimo! Tutte le confluenze sono posizionate correttamente in senso antiorario!";
-            } else {
-                feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-red-600";
-                feedback.textContent = "❌ Alcune posizioni non sono corrette o mancano dei riquadri. Le piazze errate o vuote sono evidenziate in rosso.";
-            }
-        }
-
-        function showExerciseSolution() {
-            assignedSlots = {};
-            lastVerificationResults = {};
-            let confluences = [...currentExPiazza.confluences];
-            let topStreet = confluences[0];
-            if (customDescriptions[currentExPiazza.name]) {
-                const customKeys = Object.keys(customDescriptions[currentExPiazza.name]);
-                const foundCustom = customKeys.find(k => confluences.includes(k));
-                if (foundCustom) topStreet = foundCustom;
-            }
-            const topIdx = confluences.indexOf(topStreet);
-            if (topIdx > 0) {
-                confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
-            }
-
-            confluences.forEach((conf, idx) => {
-                if (idx !== 0) {
-                    assignedSlots[idx] = conf;
-                }
-            });
-            renderSlotsAndPool();
-            const feedback = document.getElementById("exercise-feedback");
-            feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-amber-600";
-            feedback.textContent = "💡 Soluzione caricata sul tabellone.";
         }
 
         window.onload = function() {
