@@ -750,6 +750,15 @@
                             <!-- 1. CARICA REGOLAMENTO -->
                             <div id="admin-panel-regolamenti" class="admin-panel space-y-4">
                                 <h3 class="font-bold text-base sm:text-lg mb-3 flex items-center text-slate-900"><i class="fa-solid fa-file-word mr-2 text-blue-600"></i> Gestione Regolamenti (.docx)</h3>
+                                
+                                <!-- BOX PULSANTE MIGRAZIONE INDEXEDDB -->
+                                <div class="bg-amber-50 border border-amber-300 p-4 rounded-xl space-y-2 mb-4 shadow-sm">
+                                    <h4 class="font-bold text-sm text-amber-900"><i class="fa-solid fa-database mr-1"></i> Ottimizzazione Memoria Locale</h4>
+                                    <p class="text-xs text-amber-800">Sposta i vecchi file salvati nel localStorage verso IndexedDB per liberare spazio e superare il limite dei 5MB.</p>
+                                    <button id="btnMigrateFiles" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-4 py-2 rounded-lg text-xs transition shadow">📂 Migra File a IndexedDB</button>
+                                    <div id="migrationStatus" class="text-xs font-bold mt-1"></div>
+                                </div>
+
                                 <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
                                     <div>
                                         <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Titolo Regolamento</label>
@@ -963,6 +972,81 @@
     </div>
 
 <script>
+        // Funzioni IndexedDB per la gestione dei file senza limiti di 5MB
+        function openDatabase() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open("TaxiAppFilesDB", 1);
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve(request.result);
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains("wordFiles")) {
+                        db.createObjectStore("wordFiles", { keyPath: "id", autoIncrement: true });
+                    }
+                };
+            });
+        }
+
+        function dataURLToBlob(dataURL) {
+            if (!dataURL.startsWith('data:')) {
+                return new Blob([dataURL], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+            }
+            const parts = dataURL.split(';base64,');
+            const contentType = parts[0].split(':')[1];
+            const raw = window.atob(parts[1]);
+            const rawLength = raw.length;
+            const uInt8Array = new Uint8Array(rawLength);
+            for (let i = 0; i < rawLength; ++i) {
+                uInt8Array[i] = raw.charCodeAt(i);
+            }
+            return new Blob([uInt8Array], { type: contentType });
+        }
+
+        // Script listener per il tasto di migrazione admin
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnMigrate = document.getElementById('btnMigrateFiles');
+            if (btnMigrate) {
+                btnMigrate.addEventListener('click', async () => {
+                    const statusDiv = document.getElementById('migrationStatus');
+                    statusDiv.textContent = "⏳ Migrazione in corso...";
+                    statusDiv.style.color = "orange";
+
+                    try {
+                        const db = await openDatabase();
+                        let migratedCount = 0;
+
+                        for (let i = localStorage.length - 1; i >= 0; i--) {
+                            const key = localStorage.key(i);
+                            const value = localStorage.getItem(key);
+
+                            if (key.includes('docx') || key.includes('doc') || (value && value.startsWith('data:'))) {
+                                const blob = dataURLToBlob(value);
+
+                                await new Promise((resolve, reject) => {
+                                    const transaction = db.transaction("wordFiles", "readwrite");
+                                    const store = transaction.objectStore("wordFiles");
+                                    const record = { name: key, file: blob, uploadDate: new Date() };
+                                    const request = store.add(record);
+                                    request.onsuccess = () => resolve();
+                                    request.onerror = () => reject(request.error);
+                                });
+
+                                localStorage.removeItem(key);
+                                migratedCount++;
+                            }
+                        }
+
+                        statusDiv.textContent = `✅ Migrazione completata! Spostati ${migratedCount} file in IndexedDB.`;
+                        statusDiv.style.color = "green";
+                    } catch (error) {
+                        console.error("Errore migrazione:", error);
+                        statusDiv.textContent = "❌ Errore durante la migrazione. Controlla la console.";
+                        statusDiv.style.color = "red";
+                    }
+                });
+            }
+        });
+
         let adminPwd = localStorage.getItem("milan_admin_pwd") || "admin_taxi_2026";
         let customDescriptions = JSON.parse(localStorage.getItem("milan_custom_descriptions")) || {};
         let percorsiData = JSON.parse(localStorage.getItem("milan_percorsi_data")) || [];
@@ -1520,10 +1604,6 @@
             if (tab === 'statali') { renderStatali(); }
         }
 
-        // =========================================================================
-        // LOGICA DEDICATA PER I 6 TASTI DEI PUNTI D'INTERESSE (LETTURA DIRETTA DA GITHUB E DOWNLOAD)
-        // =========================================================================
-
         async function openPoiCategoryDirect(categoryName) {
             const fileName = categoryName.toLowerCase() + ".docx";
             document.getElementById("poi-detail-title").textContent = categoryName;
@@ -1552,7 +1632,7 @@
                 const result = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
                 contentBox.innerHTML = result.value || "<p class='text-slate-500'>Documento vuoto.</p>";
             } catch (err) {
-                contentBox.innerHTML = `<p class='text-red-500 font-bold'>Impossibile trovare o caricare il file <code class="bg-slate-100 px-1 py-0.5 rounded">${fileName}</code> nella cartella principale del repository GitHub. Assicurati che il nome corrisponda esattamente in minuscolo.</p>`;
+                contentBox.innerHTML = `<p class='text-red-500 font-bold'>Impossibile trovare o caricare il file <code class="bg-slate-100 px-1 py-0.5 rounded">${fileName}</code> nella cartella principale del repository GitHub.</p>`;
             }
         }
 
@@ -1560,10 +1640,6 @@
             document.getElementById("poi-detail-view").classList.add("hidden");
             document.body.style.overflow = 'auto';
         }
-
-        // =========================================================================
-        // GESTIONE QUIZ & ERRORI
-        // =========================================================================
 
         async function getSavedErrorsMap() {
             let errorsMap = {};
