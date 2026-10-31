@@ -171,8 +171,7 @@
             </div>
         </div>
     </div>
-
-    <!-- APP PRINCIPALE -->
+<!-- APP PRINCIPALE -->
     <div id="app-container" class="hidden flex flex-col min-h-screen">
         <header class="bg-slate-900 text-white shadow-md sticky top-0 z-40">
             <div class="max-w-7xl mx-auto px-3 py-3 flex flex-wrap justify-between items-center">
@@ -201,6 +200,7 @@
                 <button onclick="switchTab('cerchie')" id="btn-cerchie" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-circle-nodes mr-1"></i> Cinque Cerchie</button>
                 <button onclick="switchTab('statali')" id="btn-statali" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-road mr-1"></i> Statali</button>
                 <button onclick="switchTab('regolamenti')" id="btn-regolamenti" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-scale-balanced mr-1"></i> Regolamenti</button>
+                <button onclick="switchTab('punti-interesse')" id="btn-punti-interesse" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-map-pin mr-1"></i> Punti d'Interesse</button>
                 <button onclick="switchTab('esercizio')" id="btn-esercizio" class="px-3.5 py-2 rounded-lg bg-slate-700 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-map-location-dot mr-1"></i> Esercizi</button>
                 <button onclick="switchTab('admin')" id="btn-admin" class="hidden px-3.5 py-2 rounded-lg bg-red-600 font-bold text-xs sm:text-sm whitespace-nowrap transition"><i class="fa-solid fa-lock-open mr-1"></i> Admin</button>
             </nav>
@@ -221,7 +221,7 @@
                         <button onclick="showPrepMenu()" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex flex-col items-center text-center group shadow-sm">
                             <i class="fa-solid fa-graduation-cap text-4xl sm:text-5xl text-amber-500 mb-3 group-hover:scale-110 transition"></i>
                             <span class="font-bold text-lg sm:text-xl text-slate-900">Prepararsi all'esame</span>
-                            <span class="text-xs sm:text-sm text-slate-500 mt-1">Confluenze Piazze, percorsi, cerchie, statali, regolamenti ed esercizi</span>
+                            <span class="text-xs sm:text-sm text-slate-500 mt-1">Confluenze Piazze, percorsi, cerchie, statali, regolamenti, punti d'interesse ed esercizi</span>
                         </button>
 
                         <button onclick="switchTab('quiz')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex flex-col items-center text-center group shadow-sm">
@@ -270,6 +270,12 @@
                                 <i class="fa-solid fa-scale-balanced text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
                                 <span class="font-bold text-sm sm:text-lg text-slate-900">Regolamenti</span>
                                 <span class="text-xs text-slate-500 mt-1">Documenti Word</span>
+                            </button>
+
+                            <button onclick="switchTab('punti-interesse')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
+                                <i class="fa-solid fa-map-pin text-3xl sm:text-4xl text-amber-500 mb-2.5 group-hover:scale-110 transition"></i>
+                                <span class="font-bold text-sm sm:text-lg text-slate-900">Punti d'Interesse</span>
+                                <span class="text-xs text-slate-500 mt-1">Stazioni, Monumenti e altro</span>
                             </button>
                             
                             <button onclick="switchTab('esercizio')" class="p-4 sm:p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl transition flex flex-col items-center text-center group shadow-sm">
@@ -320,9 +326,7 @@
                         <div></div>
                     </div>
 
-                    <div id="quiz-topics-container" class="space-y-3 max-w-lg mx-auto">
-                        <!-- Dinamico in base al file Excel -->
-                    </div>
+                    <div id="quiz-topics-container" class="space-y-3 max-w-lg mx-auto"></div>
 
                     <div class="pt-4 flex justify-center">
                         <button onclick="startTrainingSession()" class="px-8 py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-lg transition text-base">
@@ -359,7 +363,7 @@
                     </div>
                 </div>
 
-                <!-- INTERFACCIA ACTIVE QUIZ (ALLENAMENTO & ESAME) -->
+                <!-- INTERFACCIA ACTIVE QUIZ -->
                 <div id="quiz-active-screen" class="hidden bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
                     <div class="flex justify-between items-center pb-4 border-b border-slate-200 flex-wrap gap-2">
                         <button onclick="quitQuizActive()" class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs sm:text-sm font-bold transition flex items-center gap-1.5">
@@ -371,7 +375,6 @@
                         </div>
                     </div>
 
-                    <!-- INFORMAZIONI IN ALTO A DESTRA -->
                     <div class="flex justify-between items-center flex-wrap gap-2">
                         <div></div>
                         <div class="flex items-center gap-3 text-xs sm:text-sm font-bold">
@@ -380,13 +383,11 @@
                         </div>
                     </div>
 
-                    <!-- RIQUADRO GRANDE GRIGIO CON LA DOMANDA IN GRANDE -->
                     <div class="bg-slate-50 p-6 sm:p-8 rounded-2xl border-2 border-slate-200 min-h-[140px] flex items-center justify-center text-center shadow-inner">
                         <h3 id="quiz-question-title" class="text-lg sm:text-2xl font-black text-slate-900 leading-snug"></h3>
                     </div>
 
                     <div id="quiz-options-box" class="space-y-3 pt-2"></div>
-
                     <div id="quiz-feedback-box" class="hidden p-4 rounded-xl font-bold text-center text-sm sm:text-base flex items-center justify-center gap-2"></div>
                 </div>
 
@@ -401,7 +402,6 @@
                         </button>
                     </div>
                 </div>
-
             </section>
 
             <!-- SCHEDA REGOLAMENTI WORD -->
@@ -412,7 +412,6 @@
                         <input type="text" id="search-regolamento" onkeyup="renderRegolamenti()" placeholder="Cerca regolamento..." class="px-4 py-2.5 rounded-lg border border-slate-300 text-sm sm:text-base focus:ring-2 focus:ring-amber-500 focus:outline-none w-full sm:w-80">
                     </div>
 
-                    <!-- LETTURA REGOLAMENTO A TUTTA PAGINA -->
                     <div id="regolamento-detail-view" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-6">
                         <div class="bg-white w-full max-w-5xl h-[95vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-300">
                             <div class="bg-slate-900 text-white px-4 sm:px-6 py-4 flex justify-between items-center shadow">
@@ -431,6 +430,73 @@
                     </div>
 
                     <div id="regolamenti-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 max-h-[65vh] overflow-y-auto p-1"></div>
+                </div>
+            </section>
+
+            <!-- NUOVA SCHEDA PUNTI D'INTERESSE (6 TASTI CON LETTURA DA GITHUB E DOWNLOAD) -->
+            <section id="tab-punti-interesse" class="hidden space-y-4">
+                <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
+                        <h2 class="text-lg sm:text-2xl font-bold flex items-center"><i class="fa-solid fa-map-pin text-amber-500 mr-2.5"></i> Punti d'Interesse di Milano</h2>
+                        <p class="text-xs sm:text-sm text-slate-500">Seleziona una categoria per leggere direttamente il documento da GitHub e scaricarlo.</p>
+                    </div>
+
+                    <!-- Visualizzatore a schermo intero per i Punti d'Interesse -->
+                    <div id="poi-detail-view" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-2 sm:p-6">
+                        <div class="bg-white w-full max-w-5xl h-[95vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-300">
+                            <div class="bg-slate-900 text-white px-4 sm:px-6 py-4 flex justify-between items-center shadow">
+                                <h3 id="poi-detail-title" class="font-bold text-base sm:text-xl truncate pr-2"></h3>
+                                <div class="flex items-center gap-2.5 flex-shrink-0">
+                                    <button id="poi-download-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3.5 py-2 rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow">
+                                        <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Scarica Word</span>
+                                    </button>
+                                    <button onclick="closePoiDetail()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold px-3.5 py-2 rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5">
+                                        <i class="fa-solid fa-xmark text-base"></i> Chiudi
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="poi-content-box" class="flex-1 text-slate-800 text-sm sm:text-base p-4 sm:p-8 overflow-y-auto space-y-4 bg-slate-50 leading-relaxed"></div>
+                        </div>
+                    </div>
+
+                    <!-- Griglia dei 6 Tasti Richiesti -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <button onclick="openPoiCategoryDirect('Stazioni')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex flex-col items-center text-center group shadow-sm">
+                            <i class="fa-solid fa-train text-4xl text-amber-500 mb-3 group-hover:scale-110 transition"></i>
+                            <span class="font-bold text-lg text-slate-900">Stazioni</span>
+                            <span class="text-xs text-slate-500 mt-1">Leggi stazioni.docx</span>
+                        </button>
+
+                        <button onclick="openPoiCategoryDirect('Monumenti')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex flex-col items-center text-center group shadow-sm">
+                            <i class="fa-solid fa-landmark text-4xl text-amber-500 mb-3 group-hover:scale-110 transition"></i>
+                            <span class="font-bold text-lg text-slate-900">Monumenti</span>
+                            <span class="text-xs text-slate-500 mt-1">Leggi monumenti.docx</span>
+                        </button>
+
+                        <button onclick="openPoiCategoryDirect('Ospedali')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex flex-col items-center text-center group shadow-sm">
+                            <i class="fa-solid fa-hospital text-4xl text-amber-500 mb-3 group-hover:scale-110 transition"></i>
+                            <span class="font-bold text-lg text-slate-900">Ospedali</span>
+                            <span class="text-xs text-slate-500 mt-1">Leggi ospedali.docx</span>
+                        </button>
+
+                        <button onclick="openPoiCategoryDirect('Teatri')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex flex-col items-center text-center group shadow-sm">
+                            <i class="fa-solid fa-masks-theater text-4xl text-amber-500 mb-3 group-hover:scale-110 transition"></i>
+                            <span class="font-bold text-lg text-slate-900">Teatri</span>
+                            <span class="text-xs text-slate-500 mt-1">Leggi teatri.docx</span>
+                        </button>
+
+                        <button onclick="openPoiCategoryDirect('Strutture pubbliche')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex flex-col items-center text-center group shadow-sm">
+                            <i class="fa-solid fa-building-columns text-4xl text-amber-500 mb-3 group-hover:scale-110 transition"></i>
+                            <span class="font-bold text-lg text-slate-900">Strutture pubbliche</span>
+                            <span class="text-xs text-slate-500 mt-1">Leggi strutture pubbliche.docx</span>
+                        </button>
+
+                        <button onclick="openPoiCategoryDirect('Uffici pubblici')" class="p-6 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex flex-col items-center text-center group shadow-sm">
+                            <i class="fa-solid fa-briefcase text-4xl text-amber-500 mb-3 group-hover:scale-110 transition"></i>
+                            <span class="font-bold text-lg text-slate-900">Uffici pubblici</span>
+                            <span class="text-xs text-slate-500 mt-1">Leggi uffici pubblici.docx</span>
+                        </button>
+                    </div>
                 </div>
             </section>
 
@@ -518,7 +584,6 @@
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3.5 gap-3">
                         <h2 class="text-lg sm:text-2xl font-bold flex items-center"><i class="fa-solid fa-book text-amber-500 mr-2.5"></i> Confluenze Piazze</h2>
                         
-                        <!-- PULSANTI NAVIGAZIONE PRECEDENTE / SUCCESSIVO & RIORDINO -->
                         <div class="flex items-center gap-2 w-full sm:w-auto flex-wrap">
                             <button onclick="navigatePiazza(-1)" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs sm:text-sm font-bold transition flex items-center shadow-sm">
                                 <i class="fa-solid fa-chevron-left mr-1"></i> Precedente
@@ -566,7 +631,6 @@
                             </div>
                             <select id="exercise-select" onchange="loadExercise()" class="px-3 py-2 border rounded-lg text-sm sm:text-base bg-slate-50 font-bold text-slate-800 max-w-[140px] sm:max-w-xs"></select>
                             
-                            <!-- PULSANTE RICONOSCIMENTO VOCALE NEGLI ESERCIZI -->
                             <button id="btn-mic-exercise" onclick="toggleVoiceInputExercise()" class="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold text-sm transition flex items-center gap-1.5 shadow" title="Pronuncia le vie in senso antiorario">
                                 <i class="fa-solid fa-microphone"></i> <span class="hidden sm:inline">Vocalizza</span>
                             </button>
@@ -849,7 +913,7 @@
                                 </div>
                             </div>
 
-                            <!-- 7. LEGGI SEGNALAZIONI (ADMIN) -->
+                            <!-- 7. LEGGI SEGNALAZIONI -->
                             <div id="admin-panel-segnalazioni" class="admin-panel space-y-4 hidden">
                                 <h3 class="font-bold text-base sm:text-lg mb-3 flex items-center text-slate-900"><i class="fa-solid fa-comments mr-2 text-amber-600"></i> Segnalazioni e Suggerimenti Ricevuti</h3>
                                 <p class="text-xs sm:text-sm text-slate-600 mb-3">Ecco l'elenco dei messaggi inviati dagli utenti:</p>
@@ -883,7 +947,7 @@
                                 <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm mt-4">
                                     <h4 class="font-bold text-sm sm:text-base text-slate-900 flex items-center"><i class="fa-solid fa-cloud-arrow-up mr-2 text-amber-600"></i> Console Utenti Firebase</h4>
                                     <p class="text-xs sm:text-sm text-slate-600">Accedi direttamente a Firestore per inserire o gestire i codici di accesso degli utenti:</p>
-                                    <a href="https://console.firebase.google.com/project/scuola-taxi/firestore/databases/-default-/data/~2FCodes~2FAdmin?fb_gclid=Cj0KCQjw5vLVBhCiARIsAD56SFKGXh5hKeivXDmcF-N2nfiYIEgoWuvoRSw9NLwIZ8V5cwV1u21GeQEaAklHEALw_wcB&fb_utm_campaign=Cloud-SS-DR-Firebase-FY26-global-gsem-1713590&fb_utm_content=text-ad&fb_utm_medium=cpc&fb_utm_source=google&fb_utm_term=KW_firebase" target="_blank" class="block w-full text-center bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-lg text-xs sm:text-sm transition shadow">
+                                    <a href="https://console.firebase.google.com/project/scuola-taxi/firestore/databases/-default-/data/~2FCodes~2FAdmin" target="_blank" class="block w-full text-center bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-lg text-xs sm:text-sm transition shadow">
                                         <i class="fa-solid fa-external-link-alt mr-1.5"></i> Apri Console Firebase per Nuove Password
                                     </a>
                                 </div>
@@ -897,6 +961,7 @@
 
         </main>
     </div>
+
 <script>
         let adminPwd = localStorage.getItem("milan_admin_pwd") || "admin_taxi_2026";
         let customDescriptions = JSON.parse(localStorage.getItem("milan_custom_descriptions")) || {};
@@ -907,18 +972,16 @@
         ];
         let stataliDescriptions = JSON.parse(localStorage.getItem("milan_statali_descriptions")) || {};
         let isAdmin = false;
-        let currentUserId = null; // Gestione autonoma ID utente per Firebase/localStorage
+        let currentUserId = null;
         
         let sortMode = 'default';
         let selectedStreetForTap = null;
         let deferredPrompt = null;
 
-        // VARIABILI PER NAVIGAZIONE SINGOLA PIAZZA E SINTESI VOCALE
         let currentPiazzaIndex = 0;
         let isSpeakingPiazza = false;
         let isSpeakingPercorso = false;
 
-        // VARIABILI PER RICONOSCIMENTO VOCALE NEGLI ESERCIZI
         let recognitionInstance = null;
         let isListeningExercise = false;
 
@@ -936,13 +999,12 @@
         let startDragY = 0;
         let initialPinchDistance = null;
 
-        // VARIABILI PER IL MODULO QUIZ
         let allQuizQuestions = [];
         let activeQuizQuestions = [];
         let currentQuizIndex = 0;
-        let currentQuizMode = ""; // "allenamento", "esame" o "errori"
+        let currentQuizMode = ""; 
         let quizTimerInterval = null;
-        let quizTimeSecondsLeft = 1800; // 30 minuti
+        let quizTimeSecondsLeft = 1800;
         let quizStartTime = 0;
         let quizUserAnswers = [];
         let isQuestionAnswered = false;
@@ -1007,7 +1069,6 @@
             }
         }
 
-        // FUNZIONI PER SEGNALAZIONI UTENTI
         function openSegnalazioneModal() {
             document.getElementById("segnalazione-text").value = "";
             document.getElementById("segnalazione-modal").classList.remove("hidden");
@@ -1272,8 +1333,6 @@
                             }
                             
                             let argomento = (argCol !== -1 && row[argCol]) ? String(row[argCol]).trim() : sheetName;
-                            
-                            // Generazione ID stabili e deterministici per tracciamento errori
                             let qId = 'q_' + Math.abs(domanda.split('').reduce((acc, char) => ((acc << 5) - acc) + char.charCodeAt(0), 0));
 
                             allQuizQuestions.push({
@@ -1429,7 +1488,7 @@
             if (quizTimerInterval) clearInterval(quizTimerInterval);
             stopAllAudioEngine();
             
-            ['home', 'quiz', 'enciclopedia', 'percorsi', 'cerchie', 'statali', 'regolamenti', 'esercizio', 'admin'].forEach(t => {
+            ['home', 'quiz', 'enciclopedia', 'percorsi', 'cerchie', 'statali', 'regolamenti', 'punti-interesse', 'esercizio', 'admin'].forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
                 if(el) el.classList.add("hidden");
                 const btn = document.getElementById(`btn-${t}`);
@@ -1446,28 +1505,64 @@
                 else activeBtn.classList.add("bg-amber-500");
             }
 
-            if (tab === 'quiz') {
-                showQuizMenuScreen();
-            }
-            if(tab === 'esercizio') {
-                loadExercise();
-                setupMapPanAndZoom();
-            }
-            if(tab === 'admin') {
+            if (tab === 'quiz') { showQuizMenuScreen(); }
+            if (tab === 'esercizio') { loadExercise(); setupMapPanAndZoom(); }
+            if (tab === 'admin') {
                 populateAdminSelect();
                 document.getElementById("admin-new-admin-pwd").value = adminPwd;
                 const dispPwd = document.getElementById("admin-current-display-pwd");
                 if (dispPwd) dispPwd.value = adminPwd;
                 switchAdminSubTab('regolamenti');
             }
-            if(tab === 'percorsi') { renderPercorsi(); }
-            if(tab === 'cerchie') { renderCerchie(); }
-            if(tab === 'regolamenti') { renderRegolamenti(); }
-            if(tab === 'statali') { renderStatali(); }
+            if (tab === 'percorsi') { renderPercorsi(); }
+            if (tab === 'cerchie') { renderCerchie(); }
+            if (tab === 'regolamenti') { renderRegolamenti(); }
+            if (tab === 'statali') { renderStatali(); }
         }
 
         // =========================================================================
-        // LOGICA GESTIONE ERRORI QUIZ & PULSANTE DEDICATO CON BADGE DINAMICO
+        // LOGICA DEDICATA PER I 6 TASTI DEI PUNTI D'INTERESSE (LETTURA DIRETTA DA GITHUB E DOWNLOAD)
+        // =========================================================================
+
+        async function openPoiCategoryDirect(categoryName) {
+            const fileName = categoryName.toLowerCase() + ".docx";
+            document.getElementById("poi-detail-title").textContent = categoryName;
+            const contentBox = document.getElementById("poi-content-box");
+            contentBox.innerHTML = `<p class="text-slate-500 italic"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Caricamento documento in corso da GitHub...</p>`;
+
+            const downloadBtn = document.getElementById("poi-download-btn");
+            downloadBtn.onclick = () => {
+                const a = document.createElement('a');
+                a.href = fileName;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            };
+
+            document.getElementById("poi-detail-view").classList.remove("hidden");
+            document.body.style.overflow = 'hidden';
+
+            try {
+                const response = await fetch(fileName + '?' + new Date().getTime());
+                if (!response.ok) {
+                    throw new Error("File non trovato su GitHub");
+                }
+                const arrayBuffer = await response.arrayBuffer();
+                const result = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
+                contentBox.innerHTML = result.value || "<p class='text-slate-500'>Documento vuoto.</p>";
+            } catch (err) {
+                contentBox.innerHTML = `<p class='text-red-500 font-bold'>Impossibile trovare o caricare il file <code class="bg-slate-100 px-1 py-0.5 rounded">${fileName}</code> nella cartella principale del repository GitHub. Assicurati che il nome corrisponda esattamente in minuscolo.</p>`;
+            }
+        }
+
+        function closePoiDetail() {
+            document.getElementById("poi-detail-view").classList.add("hidden");
+            document.body.style.overflow = 'auto';
+        }
+
+        // =========================================================================
+        // GESTIONE QUIZ & ERRORI
         // =========================================================================
 
         async function getSavedErrorsMap() {
@@ -1475,9 +1570,7 @@
             if (currentUserId && !currentUserId.startsWith("local_user_") && currentUserId !== "admin_user" && window.db) {
                 try {
                     const snap = await window.getDocs(window.collection(window.db, `users/${currentUserId}/erroriQuiz`));
-                    snap.forEach(d => {
-                        errorsMap[d.id] = d.data();
-                    });
+                    snap.forEach(d => { errorsMap[d.id] = d.data(); });
                     return errorsMap;
                 } catch(e) {}
             }
@@ -1496,19 +1589,14 @@
 
             if (!isCorrect) {
                 if (!errorsMap[qId]) {
-                    errorsMap[qId] = {
-                        question: question,
-                        consecutiveCorrect: 0
-                    };
+                    errorsMap[qId] = { question: question, consecutiveCorrect: 0 };
                 } else {
                     errorsMap[qId].consecutiveCorrect = 0;
                 }
             } else {
                 if (errorsMap[qId]) {
                     errorsMap[qId].consecutiveCorrect = (errorsMap[qId].consecutiveCorrect || 0) + 1;
-                    if (errorsMap[qId].consecutiveCorrect >= 2) {
-                        delete errorsMap[qId];
-                    }
+                    if (errorsMap[qId].consecutiveCorrect >= 2) { delete errorsMap[qId]; }
                 }
             }
 
@@ -1557,7 +1645,6 @@
                     <span class="px-3 py-1 bg-red-600 text-white font-black text-sm sm:text-base rounded-full shadow">${count}</span>
                 </button>
             `;
-            
             quizMenuScreen.appendChild(container);
         }
 
@@ -1633,9 +1720,7 @@
             }
 
             let filtered = allQuizQuestions.filter(q => selectedTopics.includes(q.argomento));
-            if (filtered.length === 0) {
-                filtered = allQuizQuestions;
-            }
+            if (filtered.length === 0) { filtered = allQuizQuestions; }
 
             activeQuizQuestions = filtered.sort(() => Math.random() - 0.5);
             currentQuizIndex = 0;
@@ -1747,11 +1832,7 @@
 
             saveErrorToStorage(q, isCorrect);
 
-            quizUserAnswers.push({
-                question: q,
-                selected: selectedIdx,
-                correct: isCorrect
-            });
+            quizUserAnswers.push({ question: q, selected: selectedIdx, correct: isCorrect });
 
             const optsBox = document.getElementById("quiz-options-box");
             const buttons = optsBox.querySelectorAll("button");
@@ -1990,9 +2071,7 @@
                     const binaryString = atob(base64Content);
                     const len = binaryString.length;
                     const bytes = new Uint8Array(len);
-                    for (let i = 0; i < len; i++) {
-                        bytes[i] = binaryString.charCodeAt(i);
-                    }
+                    for (let i = 0; i < len; i++) { bytes[i] = binaryString.charCodeAt(i); }
                     mammoth.convertToHtml({ arrayBuffer: bytes.buffer })
                         .then(function(result) {
                             contentBox.innerHTML = result.value || "<p class='text-slate-500'>Documento vuoto.</p>";
@@ -2191,9 +2270,7 @@
                     const binaryString = atob(base64Content);
                     const len = binaryString.length;
                     const bytes = new Uint8Array(len);
-                    for (let i = 0; i < len; i++) {
-                        bytes[i] = binaryString.charCodeAt(i);
-                    }
+                    for (let i = 0; i < len; i++) { bytes[i] = binaryString.charCodeAt(i); }
                     currentRawDocBuffer = bytes.buffer;
 
                     mammoth.extractRawText({ arrayBuffer: bytes.buffer })
@@ -2497,9 +2574,7 @@
                 return;
             }
 
-            if (currentPiazzaIndex >= filtered.length) {
-                currentPiazzaIndex = 0;
-            }
+            if (currentPiazzaIndex >= filtered.length) { currentPiazzaIndex = 0; }
 
             const item = filtered[currentPiazzaIndex];
             const card = document.createElement("div");
@@ -2595,10 +2670,6 @@
 
             window.speechSynthesis.speak(utterance);
         }
-
-        // =========================================================================
-        // OTTIMIZZAZIONE RICONOSCIMENTO VOCALE & NORMALIZZAZIONE VIE NEGLI ESERCIZI
-        // =========================================================================
 
         function toggleVoiceInputExercise() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -2883,11 +2954,8 @@
             const query = filterText.toLowerCase();
             Array.from(selectEl.options).forEach(opt => {
                 const txt = opt.textContent.toLowerCase();
-                if (txt.includes(query)) {
-                    opt.style.display = "";
-                } else {
-                    opt.style.display = "none";
-                }
+                if (txt.includes(query)) { opt.style.display = ""; }
+                else { opt.style.display = "none"; }
             });
         }
 
@@ -2940,9 +3008,7 @@
 
             if(!piazza || !street) return;
 
-            if(!customDescriptions[piazza.name]) {
-                customDescriptions[piazza.name] = {};
-            }
+            if(!customDescriptions[piazza.name]) { customDescriptions[piazza.name] = {}; }
             if(text) {
                 customDescriptions[piazza.name][street] = text;
             } else {
@@ -3090,9 +3156,7 @@
                 updateMapTransform();
             };
 
-            window.onmouseup = () => {
-                isDraggingMap = false;
-            };
+            window.onmouseup = () => { isDraggingMap = false; };
 
             viewport.ontouchstart = (e) => {
                 if (e.touches.length === 1) {
@@ -3144,9 +3208,7 @@
             if (customDescriptions[currentExPiazza.name]) {
                 const customKeys = Object.keys(customDescriptions[currentExPiazza.name]);
                 const foundCustom = customKeys.find(k => confluences.includes(k));
-                if (foundCustom) {
-                    topStreet = foundCustom;
-                }
+                if (foundCustom) { topStreet = foundCustom; }
             }
 
             const topIdx = confluences.indexOf(topStreet);
@@ -3200,9 +3262,7 @@
                     lastVerificationResults = {};
                     
                     let currentStreetInSlot = assignedSlots[index];
-                    if (currentStreetInSlot) {
-                        delete assignedSlots[index];
-                    }
+                    if (currentStreetInSlot) { delete assignedSlots[index]; }
                     
                     if (selectedStreetForTap && selectedStreetForTap.uniqueKey !== undefined) {
                         assignedSlots[index] = selectedStreetForTap.street;
@@ -3225,7 +3285,6 @@
             
             let assignedValues = Object.values(assignedSlots);
             let remainingItems = availableItems.filter(item => !assignedValues.includes(item.street));
-            
             remainingItems.sort(() => Math.random() - 0.5);
             
             document.getElementById("pool-count").textContent = remainingItems.length;
@@ -3267,9 +3326,7 @@
             let allCorrect = true;
             let assignedKeys = Object.keys(assignedSlots).map(Number);
 
-            if (assignedKeys.length < confluences.length - 1) {
-                allCorrect = false;
-            }
+            if (assignedKeys.length < confluences.length - 1) { allCorrect = false; }
 
             let expectedPool = [];
             confluences.forEach((conf, idx) => {
@@ -3322,9 +3379,7 @@
             }
 
             confluences.forEach((conf, idx) => {
-                if (idx !== 0) {
-                    assignedSlots[idx] = conf;
-                }
+                if (idx !== 0) { assignedSlots[idx] = conf; }
             });
             renderSlotsAndPool();
             const feedback = document.getElementById("exercise-feedback");
