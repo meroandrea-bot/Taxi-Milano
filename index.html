@@ -1089,7 +1089,7 @@
 
             try {
                 if (window.db) {
-                    const q = window.query(window.collection(window.db, "Codes"), window.where("code", "==", pwdInput));
+                    const q = window.query(window.collection(window.db, "Codes"), window.where("codice", "==", pwdInput));
                     const querySnapshot = await window.getDocs(q);
 
                     if (!querySnapshot.empty) {
