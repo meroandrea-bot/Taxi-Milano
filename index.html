@@ -441,7 +441,7 @@
                 </div>
             </section>
 
-            <!-- SCHEDA PUNTI D'INTERESSE (AGGIORNATA CON APERTURA DIRETTA DA GITHUB) -->
+            <!-- SCHEDA PUNTI D'INTERESSE (AGGIORNATA CON APERTURA DIRETTA DOCUMENTO) -->
             <section id="tab-poi" class="hidden space-y-4">
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3 border-b pb-4">
@@ -449,7 +449,7 @@
                         <span class="text-xs sm:text-sm text-slate-500 font-medium">Clicca su una categoria per aprire direttamente il documento associato</span>
                     </div>
 
-                    <!-- 6 BOTTONI CATEGORIE PUNTI D'INTERESSE CON APERTURA DIRETTA DA GITHUB -->
+                    <!-- 6 BOTTONI CATEGORIE PUNTI D'INTERESSE CON APERTURA DIRETTA -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-2">
                         <button onclick="openPoiCategoryDirect('Strutture pubbliche')" class="p-5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-2xl transition flex items-center gap-4 group shadow-sm text-left">
                             <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-xl group-hover:scale-110 transition flex-shrink-0">
@@ -839,9 +839,33 @@
                             <div id="admin-panel-poi" class="admin-panel space-y-4 hidden">
                                 <h3 class="font-bold text-base sm:text-lg mb-3 flex items-center text-slate-900"><i class="fa-solid fa-location-dot mr-2 text-amber-600"></i> Gestione Punti d'interesse (.docx)</h3>
                                 <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 shadow-sm">
-                                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                                        Per caricare i punti d'interesse tramite GitHub, carica il file Word direttamente nella cartella principale del tuo repository nominandolo con la categoria esatta in minuscolo (es. <code class="bg-slate-100 text-amber-700 font-bold px-1.5 py-0.5 rounded">stazioni.docx</code>, <code class="bg-slate-100 text-amber-700 font-bold px-1.5 py-0.5 rounded">monumenti.docx</code>, <code class="bg-slate-100 text-amber-700 font-bold px-1.5 py-0.5 rounded">ospedali.docx</code>, <code class="bg-slate-100 text-amber-700 font-bold px-1.5 py-0.5 rounded">teatri.docx</code>, <code class="bg-slate-100 text-amber-700 font-bold px-1.5 py-0.5 rounded">strutture pubbliche.docx</code>, <code class="bg-slate-100 text-amber-700 font-bold px-1.5 py-0.5 rounded">uffici pubblici.docx</code>).
-                                    </p>
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Seleziona Categoria</label>
+                                        <select id="admin-poi-category-select" class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm bg-white font-bold text-slate-800">
+                                            <option value="Strutture pubbliche">Strutture pubbliche</option>
+                                            <option value="ospedali">ospedali</option>
+                                            <option value="monumenti">monumenti</option>
+                                            <option value="teatri">teatri</option>
+                                            <option value="stazioni">stazioni</option>
+                                            <option value="uffici pubblici">uffici pubblici</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Titolo del Documento</label>
+                                        <input type="text" id="admin-poi-title" placeholder="Es. Elenco Stazioni..." class="w-full px-3.5 py-2.5 border rounded-lg text-xs sm:text-sm bg-white font-medium">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Seleziona File Word (.docx)</label>
+                                        <input type="file" id="admin-poi-file" accept=".docx" class="w-full text-xs text-slate-600 file:mr-2 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-700 cursor-pointer">
+                                    </div>
+                                    <button onclick="uploadPoiWord()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-lg text-xs sm:text-sm transition shadow">Carica Documento Punto d'Interesse</button>
+                                    <div id="upload-feedback-poi" class="hidden p-3 bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs sm:text-sm font-bold rounded-lg text-center"></div>
+                                </div>
+                                <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-2 shadow-sm">
+                                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1">Elimina Punti d'Interesse (Seleziona multipli)</label>
+                                    <input type="text" id="filter-admin-poi" oninput="filterAdminSelect('admin-delete-poi-select', this.value)" placeholder="Cerca tra i punti d'interesse..." class="w-full px-3.5 py-2 mb-2 border rounded-lg text-xs sm:text-sm bg-white">
+                                    <select id="admin-delete-poi-select" multiple class="w-full h-36 px-3 py-2 border rounded-lg text-xs sm:text-sm bg-white mb-3 font-semibold"></select>
+                                    <button onclick="deletePoiMulti()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Elimina Selezionati</button>
                                 </div>
                             </div>
 
@@ -1044,7 +1068,7 @@
         let regolamentiData = JSON.parse(localStorage.getItem("milan_regolamenti_data")) || [
             { id: 1, title: "Regolamento Servizio Taxi Comune di Milano", fileData: "", fileName: "regolamento.docx" }
         ];
-        let poiData = [];
+        let poiData = JSON.parse(localStorage.getItem("milan_poi_data")) || [];
         let stataliDescriptions = JSON.parse(localStorage.getItem("milan_statali_descriptions")) || {};
         let isAdmin = false;
         let currentUserId = null;
@@ -1333,6 +1357,7 @@
                         if (data.percorsi) percorsiData = data.percorsi;
                         if (data.cerchie) cerchieData = data.cerchie;
                         if (data.regolamenti) regolamentiData = data.regolamenti;
+                        if (data.poiData) poiData = data.poiData;
                         if (data.stataliDescriptions) stataliDescriptions = data.stataliDescriptions;
                         if (data.stataliList) stataliListDynamic = data.stataliList;
                     }
@@ -1351,6 +1376,7 @@
             localStorage.setItem("milan_percorsi_data", JSON.stringify(percorsiData));
             localStorage.setItem("milan_cerchie_data", JSON.stringify(cerchieData));
             localStorage.setItem("milan_regolamenti_data", JSON.stringify(regolamentiData));
+            localStorage.setItem("milan_poi_data", JSON.stringify(poiData));
             localStorage.setItem("milan_statali_descriptions", JSON.stringify(stataliDescriptions));
             localStorage.setItem("milan_statali_list", JSON.stringify(stataliListDynamic));
             localStorage.setItem("milan_admin_pwd", adminPwd);
@@ -1505,38 +1531,58 @@
         }
 
         // =========================================================================
-        // LOGICA PUNTI D'INTERESSE (LETTURA DIRETTA DA GITHUB)
+        // LOGICA PUNTI D'INTERESSE (APERTURA DIRETTA DOCUMENTO SENZA LISTE INTERMEDIE)
         // =========================================================================
 
-        async function openPoiCategoryDirect(categoryName) {
-            const fileName = categoryName.toLowerCase() + ".docx";
-            document.getElementById("regolamento-detail-title").textContent = categoryName;
-            const contentBox = document.getElementById("regolamento-content-box");
-            contentBox.innerHTML = `<p class="text-slate-500 italic"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Caricamento documento in corso da GitHub...</p>`;
+        function openPoiCategoryDirect(categoryName) {
+            const docItem = poiData.find(d => d.category.toLowerCase() === categoryName.toLowerCase());
+            if (docItem) {
+                showRegolamentoDetailFromData(docItem);
+            } else {
+                alert(`Nessun documento caricato per la categoria "${categoryName}". Caricalo dalla sezione Admin!`);
+            }
+        }
 
-            const downloadBtn = document.getElementById("regolamento-download-btn");
-            downloadBtn.onclick = () => {
-                const a = document.createElement('a');
-                a.href = fileName;
-                a.download = fileName;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
+        async function uploadPoiWord() {
+            const catSelect = document.getElementById("admin-poi-category-select");
+            const titleInput = document.getElementById("admin-poi-title");
+            const fileInput = document.getElementById("admin-poi-file");
+            const category = catSelect.value;
+            const title = titleInput.value.trim();
+            const feedbackEl = document.getElementById("upload-feedback-poi");
+
+            if (!title) { alert("Inserisci il titolo del documento!"); return; }
+            if (fileInput.files.length === 0) { alert("Seleziona un file Word (.docx)!"); return; }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(event) {
+                const base64Data = event.target.result;
+                poiData = poiData.filter(d => d.category.toLowerCase() !== category.toLowerCase());
+                poiData.push({ id: Date.now(), category: category, title: title, fileData: base64Data, fileName: file.name });
+                saveData();
+                titleInput.value = "";
+                fileInput.value = "";
+                populateAdminSelect();
+                
+                feedbackEl.textContent = `✓ Documento "${title}" caricato con successo per la categoria "${category}"!`;
+                feedbackEl.classList.remove("hidden");
+                setTimeout(() => { feedbackEl.classList.add("hidden"); }, 4000);
             };
+            reader.readAsDataURL(file);
+        }
 
-            document.getElementById("regolamento-detail-view").classList.remove("hidden");
-            document.body.style.overflow = 'hidden';
-
-            try {
-                const response = await fetch(fileName + '?' + new Date().getTime());
-                if (!response.ok) {
-                    throw new Error("File non trovato su GitHub");
-                }
-                const arrayBuffer = await response.arrayBuffer();
-                const result = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
-                contentBox.innerHTML = result.value || "<p class='text-slate-500'>Documento vuoto.</p>";
-            } catch (err) {
-                contentBox.innerHTML = `<p class='text-red-500 font-bold'>Impossibile trovare o caricare il file <code class="bg-slate-100 px-1 py-0.5 rounded">${fileName}</code> su GitHub. Assicurati di averlo caricato nella cartella principale del repository.</p>`;
+        function deletePoiMulti() {
+            const select = document.getElementById("admin-delete-poi-select");
+            const selectedOptions = Array.from(select.selectedOptions);
+            if (selectedOptions.length === 0) { alert("Seleziona almeno un punto d'interesse da eliminare."); return; }
+            if (confirm(`Vuoi eliminare ${selectedOptions.length} elementi selezionati?`)) {
+                const idsToDelete = selectedOptions.map(opt => Number(opt.value));
+                poiData = poiData.filter(r => !idsToDelete.includes(r.id));
+                saveData();
+                populateAdminSelect();
+                alert("Punti d'interesse eliminati con successo.");
             }
         }
 
@@ -1778,6 +1824,7 @@
 
             const multiSelects = [
                 { id: 'admin-delete-regolamento-select', data: regolamentiData, getVal: x => x.id, getTxt: x => x.title },
+                { id: 'admin-delete-poi-select', data: poiData, getVal: x => x.id, getTxt: x => `[${x.category}] ${x.title}` },
                 { id: 'admin-delete-percorso-select', data: percorsiData, getVal: x => x.title, getTxt: x => x.title },
                 { id: 'admin-delete-cerchie-select', data: cerchieData, getVal: x => x.title, getTxt: x => x.title },
                 { id: 'admin-statali-delete-select', data: stataliListDynamic, getVal: x => x, getTxt: x => x },
