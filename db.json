@@ -148,6 +148,19 @@
       ]
     },
     {
+      "id": 1790626227800,
+      "type": "Piazza",
+      "name": "Aspari",
+      "confluences": [
+        "Via Vanvitelli",
+        "Via Tiepolo",
+        "Via Andrea del Sarto",
+        "Via Vanvitelli",
+        "Via Tiepolo",
+        "Via Andrea del Sarto"
+      ]
+    },
+    {
       "id": 21,
       "type": "Piazza",
       "name": "Aspromonte",
@@ -653,6 +666,7 @@
         "Via Spagnoletto",
         "Via Magnasco",
         "Via di Credi",
+        "Via Ravizza",
         "Via Domenichino",
         "Via Volpedo"
       ]
@@ -732,15 +746,26 @@
     },
     {
       "id": 1790626227791,
-      "type": "Piazza",
-      "name": "Diocleziano",
+      "type": "Largo",
+      "name": "Domodossola",
       "confluences": [
-        "Via Gran Sanbernardo",
-        "Via Mac Mahon",
-        "Via Cenisio",
-        "Via Losanna",
-        "Via Galdino",
-        "Via Cenisio"
+        "Via Domodossola",
+        "Via Duilio",
+        "Via Boezio"
+      ]
+    },
+    {
+      "id": 1790626227792,
+      "type": "Piazzale",
+      "name": "Duca d'Aosta",
+      "confluences": [
+        "Piazza Luigi di Savoia",
+        "Piazza 4 novembre",
+        "Via Galvani",
+        "Via Pirelli",
+        "Via Pisani",
+        "Via Torriani",
+        "Via Vitruvio"
       ]
     },
     {
@@ -762,6 +787,120 @@
         "Via Santa Radegonda",
         "Via San Raffaele",
         "Via Ugo Foscolo"
+      ]
+    },
+    {
+      "id": 1790626227793,
+      "type": "Piazza",
+      "name": "Durante",
+      "confluences": [
+        "Via Leoncavallo",
+        "Via Predabissi",
+        "Via Stazio",
+        "Via Marco d'Alviano",
+        "Via Andrea Costa",
+        "Viale Lombardia",
+        "Via Catalani",
+        "Via Casoretto"
+      ]
+    },
+    {
+      "id": 1790626227794,
+      "type": "Piazza",
+      "name": "Duse",
+      "confluences": [
+        "Via Salvini",
+        "Via Cossa",
+        "Via Vitali",
+        "Via Baretti"
+      ]
+    },
+    {
+      "id": 1790626227795,
+      "type": "Piazza",
+      "name": "Edison",
+      "confluences": [
+        "Via Cordusio",
+        "Via della Posta",
+        "Via Bocchetto",
+        "Via Moneta"
+      ]
+    },
+    {
+      "id": 1790626227796,
+      "type": "Piazza",
+      "name": "Emilia",
+      "confluences": [
+        "Viale Piceno",
+        "Via Poma",
+        "Corso 22 Marzo",
+        "Viale Umbria",
+        "Corso 22 Marzo"
+      ]
+    },
+    {
+      "id": 1790626227797,
+      "type": "Piazza",
+      "name": "Erba",
+      "confluences": [
+        "Via Pinturicchio",
+        "Via Plinio",
+        "Via Pascoli",
+        "Via Vanvitelli",
+        "Via Plinio",
+        "Via Pascoli"
+      ]
+    },
+    {
+      "id": 1790626227798,
+      "type": "Piazzale",
+      "name": "Ferrara",
+      "confluences": [
+        "Via Mincio",
+        "Via Comacchio",
+        "Via Pomposa",
+        "Via del Panigarola",
+        "Via Mompiani",
+        "Via Polesine"
+      ]
+    },
+    {
+      "id": 1790626227799,
+      "type": "Piazza",
+      "name": "Ferravilla",
+      "confluences": [
+        "Viale Romagna",
+        "Via Apollo d'oro",
+        "Via Tiepolo",
+        "Via Carnaghi",
+        "Via Gallina",
+        "Viale Romagna",
+        "Via Beato Angelico"
+      ]
+    },
+    {
+      "id": 1790626227802,
+      "type": "Piazza",
+      "name": "Fidia",
+      "confluences": [
+        "Via Cola Montano",
+        "Via Rosso",
+        "Via Porro Lambertenghi",
+        "Via Ugo Bassi",
+        "Via Cola Montano",
+        "Via Porro Lambertenghi",
+        "Via Ugo Bassi"
+      ]
+    },
+    {
+      "id": 1790626227803,
+      "type": "Piazza",
+      "name": "Filangeri",
+      "confluences": [
+        "Via degli Olivetani",
+        "Via degli Olivetani",
+        "Via Azario",
+        "Via Bosso"
       ]
     },
     {
@@ -890,6 +1029,20 @@
         "Corso di Porta Romana",
         "Via Albricci",
         "Via Gonzaga"
+      ]
+    },
+    {
+      "id": 1790626227801,
+      "type": "Piazza",
+      "name": "Novelli",
+      "confluences": [
+        "Via Verrocchio",
+        "Via Gaio",
+        "Via Gustavo Modena",
+        "Via Ceradini",
+        "Via Sidoli",
+        "Via Carnaghi",
+        "Via Andrea del Sarto"
       ]
     },
     {
