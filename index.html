@@ -3512,18 +3512,6 @@
             }
         }
 
-            renderSlotsAndPool();
-
-            const feedback = document.getElementById("exercise-feedback");
-            if(allCorrect) {
-                feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-emerald-600";
-                feedback.textContent = "🎉 Ottimo! Tutte le confluenze sono posizionate correttamente in senso antiorario!";
-            } else {
-                feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-red-600";
-                feedback.textContent = "❌ Alcune posizioni non sono corrette o mancano dei riquadri. Le piazze errate o vuote sono evidenziate in rosso.";
-            }
-        }
-
         function showExerciseSolution() {
             assignedSlots = {};
             lastVerificationResults = {};
