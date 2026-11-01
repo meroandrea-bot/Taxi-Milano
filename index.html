@@ -770,7 +770,7 @@
             isSpeakingPercorso = false;
         }
 
-        // FUNZIONE DI LOGIN ORIGINALE E RIPRISTINATA AL 100%
+        // FUNZIONE DI LOGIN RIGOROSA (SENZA FALLBACK DI ACCESSO LIBERO)
         async function handleLogin(forceAdmin) {
             const inputVal = document.getElementById("login-pwd").value.trim();
             const err = document.getElementById("login-error");
@@ -814,8 +814,9 @@
                     codeData = docSnap.data();
                 });
 
+                // Se il codice non esiste o non è attivo su Firebase, blocca l'accesso
                 if (!codeData || codeData.attivo !== true) {
-                    err.textContent = "Codice inesistente o disattivato.";
+                    err.textContent = "Codice inesistente, errato o non attivo.";
                     err.classList.remove("hidden");
                     return;
                 }
@@ -823,7 +824,9 @@
                 const isCodeAdmin = codeData.isAdmin === true;
                 currentUserId = codeDocRef.id;
 
+                // Gestione rigida dell'associazione del dispositivo
                 if (!codeData.dispositivoAutorizzato) {
+                    // Prima volta che viene usato: associa a questo dispositivo
                     await window.updateDoc(codeDocRef, { dispositivoAutorizzato: deviceId });
                     isAdmin = isCodeAdmin;
                     if (isAdmin) {
@@ -833,6 +836,7 @@
                     }
                     initApp();
                 } else if (codeData.dispositivoAutorizzato === deviceId) {
+                    // Già associato a questo dispositivo: accesso consentito
                     isAdmin = isCodeAdmin;
                     if (isAdmin) {
                         document.getElementById("btn-admin").classList.remove("hidden");
@@ -841,22 +845,16 @@
                     }
                     initApp();
                 } else {
+                    // Già associato a un ALTRO dispositivo: blocco totale
                     err.textContent = "Questo codice è già stato associato a un altro dispositivo.";
                     err.classList.remove("hidden");
                 }
 
             } catch (e) {
-                // Fallback locale sicuro nel caso in cui Firebase non sia raggiungibile offline
-                if (inputVal === adminPwd) {
-                    isAdmin = true;
-                    currentUserId = "admin_user";
-                    document.getElementById("btn-admin").classList.remove("hidden");
-                    initApp();
-                } else {
-                    currentUserId = "local_user_" + inputVal;
-                    isAdmin = false;
-                    initApp();
-                }
+                // In caso di errore di connessione a Firebase, non fa entrare con password a caso, ma avvisa l'utente
+                console.error("Errore di autenticazione Cloud:", e);
+                err.textContent = "Impossibile verificare il codice online. Controlla la connessione.";
+                err.classList.remove("hidden");
             }
         }
 
