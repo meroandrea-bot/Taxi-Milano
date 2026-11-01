@@ -1506,6 +1506,13 @@
                 return;
             }
 
+            // Verifica che Firebase sia pronto prima di interrogare il database
+            if (!window.db || !window.collection || !window.getDocs) {
+                err.textContent = "Connessione a Firebase in corso... Riprova tra un secondo.";
+                err.classList.remove("hidden");
+                return;
+            }
+
             try {
                 let deviceId = localStorage.getItem("milan_taxi_device_id");
                 if (!deviceId) {
