@@ -1502,7 +1502,7 @@
 
             if (!inputVal) {
                 err.textContent = "Inserisci un codice valido.";
-                err.classList.add("hidden");
+                err.classList.remove("hidden");
                 return;
             }
 
@@ -1526,7 +1526,7 @@
                 });
 
                 if (!codeData || codeData.attivo !== true) {
-                    err.textContent = "Codice inesistente o disattivato.";
+                    err.textContent = "Codice inesistente o non attivo.";
                     err.classList.remove("hidden");
                     return;
                 }
@@ -1557,9 +1557,9 @@
                 }
 
             } catch (e) {
-                currentUserId = "local_user_" + inputVal;
-                isAdmin = false;
-                initApp();
+                console.error("Errore di accesso Cloud:", e);
+                err.textContent = "Impossibile verificare il codice online. Controlla la connessione.";
+                err.classList.remove("hidden");
             }
         }
 
