@@ -904,6 +904,106 @@
       ]
     },
     {
+      "id": 1790626227804,
+      "type": "Piazza",
+      "name": "Firenze",
+      "confluences": [
+        "Via Bartolini",
+        "Via Plana",
+        "Viale Certosa",
+        "Viale Teodorico",
+        "Via Ruggero di Lauria",
+        "Corso Sempione",
+        "Via Piero della Francesca",
+        "Via Cenisio",
+        "Via Caracciolo"
+      ]
+    },
+    {
+      "id": 1790626227805,
+      "type": "Piazza",
+      "name": "Fontana",
+      "confluences": [
+        "Via Pattari",
+        "Via Martini",
+        "Via San Clemente",
+        "Via Verziere",
+        "Via Beccaria"
+      ]
+    },
+    {
+      "id": 1790626227806,
+      "type": "Piazza",
+      "name": "Frattini",
+      "confluences": [
+        "Via Bartolomeo d'Alviano",
+        "Via Via Barzilai",
+        "Via Lorenteggio",
+        "Via bellini",
+        "Via Lorenteggio"
+      ]
+    },
+    {
+      "id": 1790626227807,
+      "type": "Piazza",
+      "name": "Fusina",
+      "confluences": [
+        "Via Aselli",
+        "Via Canaletto",
+        "Viale Argonne"
+      ]
+    },
+    {
+      "id": 1790626227808,
+      "type": "Piazzale",
+      "name": "Gambara",
+      "confluences": [
+        "Via Antonello da Messina",
+        "Via Palma",
+        "Via Anguissola",
+        "Via Fornari",
+        "Via Trivulzio"
+      ]
+    },
+    {
+      "id": 1790626227809,
+      "type": "Largo",
+      "name": "Gemito",
+      "confluences": [
+        "Via Olivari",
+        "Via Casoretto",
+        "Via Carpi",
+        "Via Monte Nevoso",
+        "Via Pordenone"
+      ]
+    },
+    {
+      "id": 1790626227810,
+      "type": "Piazza",
+      "name": "Gerusalemme",
+      "confluences": [
+        "Via Fratelli Induno",
+        "Via Fauchè",
+        "Via Poliziano",
+        "Via Chizzolini",
+        "Via Mussi",
+        "Via Mantegna",
+        "Via Monviso"
+      ]
+    },
+    {
+      "id": 1790626227811,
+      "type": "Piazza",
+      "name": "Ghirlandaio",
+      "confluences": [
+        "Via Ranzoni",
+        "Via Rubens",
+        "Via Bezzi",
+        "Via Parmigianino",
+        "Via Correggio"
+      ]
+    },
+    {
       "id": 1790462746247,
       "type": "Piazza",
       "name": "Giovine Italia",
