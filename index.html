@@ -802,6 +802,7 @@
                     localStorage.setItem("milan_taxi_device_id", deviceId);
                 }
 
+                // Esegue la query su Firestore sulla collezione "codes"
                 const codesRef = window.collection(window.db, "codes");
                 const q = window.query(codesRef, window.where("codice", "==", inputVal));
                 const querySnapshot = await window.getDocs(q);
@@ -814,9 +815,8 @@
                     codeData = docSnap.data();
                 });
 
-                // Se il codice non esiste o non è attivo su Firebase, blocca l'accesso
                 if (!codeData || codeData.attivo !== true) {
-                    err.textContent = "Codice inesistente, errato o non attivo.";
+                    err.textContent = "Codice errato o non attivo.";
                     err.classList.remove("hidden");
                     return;
                 }
@@ -824,9 +824,8 @@
                 const isCodeAdmin = codeData.isAdmin === true;
                 currentUserId = codeDocRef.id;
 
-                // Gestione rigida dell'associazione del dispositivo
+                // Controllo e associazione univoca del dispositivo
                 if (!codeData.dispositivoAutorizzato) {
-                    // Prima volta che viene usato: associa a questo dispositivo
                     await window.updateDoc(codeDocRef, { dispositivoAutorizzato: deviceId });
                     isAdmin = isCodeAdmin;
                     if (isAdmin) {
@@ -836,7 +835,6 @@
                     }
                     initApp();
                 } else if (codeData.dispositivoAutorizzato === deviceId) {
-                    // Già associato a questo dispositivo: accesso consentito
                     isAdmin = isCodeAdmin;
                     if (isAdmin) {
                         document.getElementById("btn-admin").classList.remove("hidden");
@@ -845,15 +843,13 @@
                     }
                     initApp();
                 } else {
-                    // Già associato a un ALTRO dispositivo: blocco totale
                     err.textContent = "Questo codice è già stato associato a un altro dispositivo.";
                     err.classList.remove("hidden");
                 }
 
-            } catch (e) {
-                // In caso di errore di connessione a Firebase, non fa entrare con password a caso, ma avvisa l'utente
-                console.error("Errore di autenticazione Cloud:", e);
-                err.textContent = "Impossibile verificare il codice online. Controlla la connessione.";
+            } catch (error) {
+                console.error("Errore di login:", error);
+                err.textContent = "Errore di connessione al database. Riprova.";
                 err.classList.remove("hidden");
             }
         }
