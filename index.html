@@ -3486,32 +3486,31 @@
 
             lastVerificationResults = {};
             let allCorrect = true;
-            let assignedKeys = Object.keys(assignedSlots).map(Number);
 
-            if (assignedKeys.length < confluences.length - 1) { allCorrect = false; }
+            // Verifica rigorosa in base alla posizione sequenziale antioraria (indice per indice)
+            confluences.forEach((confStreet, idx) => {
+                if (idx === 0) return; // La via in alto (indice 0) è il perno fisso
 
-            let expectedPool = [];
-            confluences.forEach((conf, idx) => {
-                if (idx !== 0) expectedPool.push(conf);
-            });
-
-            confluences.forEach((conf, idx) => {
-                if (idx === 0) return;
                 let userVal = assignedSlots[idx];
-                if (userVal !== undefined) {
-                    let matchIdx = expectedPool.indexOf(userVal);
-                    if (matchIdx !== -1) {
-                        expectedPool.splice(matchIdx, 1);
-                        lastVerificationResults[idx] = true;
-                    } else {
-                        lastVerificationResults[idx] = false;
-                        allCorrect = false;
-                    }
+                if (userVal !== undefined && userVal === confStreet) {
+                    lastVerificationResults[idx] = true;
                 } else {
                     lastVerificationResults[idx] = false;
                     allCorrect = false;
                 }
             });
+
+            renderSlotsAndPool();
+
+            const feedback = document.getElementById("exercise-feedback");
+            if (allCorrect) {
+                feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-emerald-600";
+                feedback.textContent = "🎉 Ottimo! Tutte le confluenze sono posizionate correttamente in senso antiorario!";
+            } else {
+                feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-red-600";
+                feedback.textContent = "❌ Alcune posizioni non rispettano la sequenza antioraria. I riquadri errati o vuoti sono evidenziati in rosso.";
+            }
+        }
 
             renderSlotsAndPool();
 
