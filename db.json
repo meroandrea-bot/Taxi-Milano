@@ -1004,6 +1004,18 @@
       ]
     },
     {
+      "id": 1790626227812,
+      "type": "Piazza",
+      "name": "Giovanni XXIII",
+      "confluences": [
+        "Via Massena",
+        "Via Vincenzo Monti",
+        "Via Cavalleria",
+        "Via Vincenzo Monti",
+        "Via Sangiorgio"
+      ]
+    },
+    {
       "id": 1790462746247,
       "type": "Piazza",
       "name": "Giovine Italia",
@@ -1015,6 +1027,35 @@
         "Via fratelli Ruffini",
         "Via Boccaccio",
         "Via Aurelio Saffi"
+      ]
+    },
+    {
+      "id": 1790626227813,
+      "type": "Piazza",
+      "name": "Giovine Italia",
+      "confluences": [
+        "Via Sebeto",
+        "Via Mascheroni",
+        "Via Boccaccio",
+        "Via Saffi",
+        "Via Ruffini",
+        "Via Boccaccio",
+        "Via Saffi"
+      ]
+    },
+    {
+      "id": 1790626227814,
+      "type": "Piazza",
+      "name": "Gobetti",
+      "confluences": [
+        "Via Monte Nevoso",
+        "Via Carpi",
+        "Via Porpora",
+        "Via Vallazze",
+        "Via Astolfo",
+        "Via Bottesini",
+        "Via Viminale",
+        "Via Salieri"
       ]
     },
     {
