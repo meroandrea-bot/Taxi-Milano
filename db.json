@@ -1086,6 +1086,44 @@
       ]
     },
     {
+      "id": 1790626227815,
+      "type": "Piazza",
+      "name": "Grandi",
+      "confluences": [
+        "Via Compagnoni",
+        "Via Piolti de Bianchi",
+        "Corso 22 Marzo",
+        "Via Dossi",
+        "Via Rezzonico",
+        "Corso 22 Marzo"
+      ]
+    },
+    {
+      "id": 1790626227816,
+      "type": "Piazza",
+      "name": "Insubria",
+      "confluences": [
+        "Via Ciceri Visconti",
+        "Via Pistrucci",
+        "Via Ennio",
+        "Via Val Strona",
+        "Via Sebino",
+        "Via Faa di Bruno",
+        "Via degli Etruschi"
+      ]
+    },
+    {
+      "id": 1790626227817,
+      "type": "Largo",
+      "name": "Jo Ponti",
+      "confluences": [
+        "Via Santa Rita da Cascia",
+        "Via Walter Tobagi",
+        "Via Santa Rita da Cascia",
+        "Via Ettore Ponti"
+      ]
+    },
+    {
       "id": 20,
       "type": "Largo",
       "name": "La Foppa",
@@ -1097,6 +1135,61 @@
         "Via Statuto",
         "Via della Moscova",
         "Corso Garibaldi"
+      ]
+    },
+    {
+      "id": 1790626227819,
+      "type": "Piazzale",
+      "name": "Lagosta",
+      "confluences": [
+        "Viale Zara",
+        "Via Trau",
+        "Via Perasto",
+        "Via Garigliano",
+        "Via Volturno",
+        "Via Pola"
+      ]
+    },
+    {
+      "id": 1790626227820,
+      "type": "Piazzale",
+      "name": "Lavater",
+      "confluences": [
+        "Via Morgagni",
+        "Via Jan",
+        "Via Omboni",
+        "Via Cadamosto",
+        "Via Pancaldo",
+        "Via Ramazzini",
+        "Via Stoppani"
+      ]
+    },
+    {
+      "id": 1790626227821,
+      "type": "Piazza",
+      "name": "Lega Lombarda",
+      "confluences": [
+        "Piazzale Biancamano",
+        "Bastioni porta Volta",
+        "Via Bramante",
+        "Via Maggi",
+        "Via Elvezia",
+        "Via Legnano",
+        "Via Tenaglia"
+      ]
+    },
+    {
+      "id": 1790626227818,
+      "type": "Piazza",
+      "name": "Leonardo da Vinci",
+      "confluences": [
+        "Via Ampere",
+        "Via Villani",
+        "Via Spinoza",
+        "Via Pascoli",
+        "Via Colombo",
+        "Via Celoria",
+        "Via Bonardi"
       ]
     },
     {
@@ -1131,6 +1224,19 @@
       ]
     },
     {
+      "id": 1790626227822,
+      "type": "Piazzale",
+      "name": "Lugano",
+      "confluences": [
+        "Via Varchi",
+        "Via Colico",
+        "Cavalcavia Bacula",
+        "Viale Bodio",
+        "Via Scalvini",
+        "Via Arrivabene"
+      ]
+    },
+    {
       "id": 19,
       "type": "Piazzale",
       "name": "Maciachini",
@@ -1146,6 +1252,47 @@
       ]
     },
     {
+      "id": 1790626227824,
+      "type": "Piazza",
+      "name": "Maggi",
+      "confluences": [
+        "Via Spezia",
+        "Viale Famagosta",
+        "Via del Mare",
+        "Cavalcavia schiavoni/Viale Cermenate"
+      ]
+    },
+    {
+      "id": 1790626227825,
+      "type": "Piazza",
+      "name": "Maria Adelaide di Savoia",
+      "confluences": [
+        "Via Eustachi",
+        "Viale Regina Giovanna",
+        "Via Nino Bixio",
+        "Via Castel Morrone",
+        "Via Giustiniano",
+        "Via degli Scipioni"
+      ]
+    },
+    {
+      "id": 1790626227826,
+      "type": "Piazzale",
+      "name": "Martini",
+      "confluences": [
+        "Via Cervignano",
+        "Via Via Vertoiba",
+        "Via Arconati",
+        "Via Marco Greppi",
+        "Via Strigelli",
+        "Via Oltrocchi",
+        "Via Ciceri Visconti",
+        "Via Calvairate",
+        "Via Sanfelice",
+        "Via Caposile"
+      ]
+    },
+    {
       "id": 39,
       "type": "Piazza",
       "name": "Meda",
@@ -1156,6 +1303,33 @@
         "Via Hoepli",
         "Via San Paolo",
         "Corso Matteotti"
+      ]
+    },
+    {
+      "id": 1790626227827,
+      "type": "Piazzale",
+      "name": "Medaglie d'oro",
+      "confluences": [
+        "Viale Caldara",
+        "Corso di porta Romana",
+        "Viale Filippetti",
+        "Viale Sabotino",
+        "Via Crema",
+        "Corso Lodi",
+        "Via Muratori",
+        "Viale Monte Nero"
+      ]
+    },
+    {
+      "id": 1790626227828,
+      "type": "Piazza",
+      "name": "Miani",
+      "confluences": [
+        "Via Biella",
+        "Via Santa rita da Cascia",
+        "Viale Faenza",
+        "Via Voltri",
+        "Viale Famagosta"
       ]
     },
     {
@@ -1173,6 +1347,20 @@
       ]
     },
     {
+      "id": 1790626227829,
+      "type": "Piazza",
+      "name": "Napoli",
+      "confluences": [
+        "Viale Misurata",
+        "Via Vespri Siciliani",
+        "Via Giambellino",
+        "Viale Troja",
+        "Via Solari",
+        "Via Cola di Rienzo",
+        "Via Washington"
+      ]
+    },
+    {
       "id": 1790626227801,
       "type": "Piazza",
       "name": "Novelli",
@@ -1184,6 +1372,94 @@
         "Via Sidoli",
         "Via Carnaghi",
         "Via Andrea del Sarto"
+      ]
+    },
+    {
+      "id": 1790626227830,
+      "type": "Piazza",
+      "name": "Oberdan",
+      "confluences": [
+        "Corso Buenos Aires",
+        "Via Tadino",
+        "Viale Vittorio Veneto",
+        "Bastioni di Porta Venezia",
+        "Viale Majno",
+        "Viale Piave",
+        "Via Mascagni",
+        "Via Malpighi",
+        "Via Spallanzani"
+      ]
+    },
+    {
+      "id": 1790626227831,
+      "type": "Piazza",
+      "name": "Ohm",
+      "confluences": [
+        "Cavalcavia don Milani",
+        "Via Richard",
+        "Via Cottolengo",
+        "Via Santa Rita da Cascia",
+        "Via Watt",
+        "Via Morimondo",
+        "Via Richard"
+      ]
+    },
+    {
+      "id": 1790626227832,
+      "type": "Piazza",
+      "name": "Ospedale Maggiore",
+      "confluences": [
+        "Via Donatelli",
+        "Via benefattori dell'ospedale",
+        "Via Ca Granda"
+      ]
+    },
+    {
+      "id": 1790626227833,
+      "type": "Piazza",
+      "name": "Otto Novembre",
+      "confluences": [
+        "Via Ramazzini",
+        "Viale Regina Giovanna",
+        "Via Frisi",
+        "Via Lambro",
+        "Via Pisacane",
+        "Via Rosolino Pilo",
+        "Viale Regina Giovanna",
+        "Via Maiocchi"
+      ]
+    },
+    {
+      "id": 1790626227834,
+      "type": "Piazza",
+      "name": "Pasolini",
+      "confluences": [
+        "Via Farini",
+        "Via Menabrea",
+        "Via Farini",
+        "Via Menabrea"
+      ]
+    },
+    {
+      "id": 1790626227835,
+      "type": "Piazza",
+      "name": "Perrucchetti",
+      "confluences": [
+        "Via Chinotto",
+        "Via chinotto",
+        "Via Gulli",
+        "Via Mille Lire"
+      ]
+    },
+    {
+      "id": 1790626227836,
+      "type": "Piazza",
+      "name": "Piccoli Martiri",
+      "confluences": [
+        "Via Ponte Vecchio",
+        "Via Pozzi",
+        "Via Dolomiti",
+        "Via Bertelli"
       ]
     },
     {
@@ -1201,6 +1477,108 @@
         "Via Elba",
         "Via Monferrato",
         "Corso Vercelli"
+      ]
+    },
+    {
+      "id": 1790626227837,
+      "type": "Piazza",
+      "name": "Piola",
+      "confluences": [
+        "Viale Lombardia",
+        "Via Gran Sasso",
+        "Via Donatello",
+        "Via Noè",
+        "Viale Romagna",
+        "Via Spinoza",
+        "Via Pacini"
+      ]
+    },
+    {
+      "id": 1790626227838,
+      "type": "Piazza",
+      "name": "Po",
+      "confluences": [
+        "Via Elba",
+        "Via Serao",
+        "Via Caboto",
+        "Via Boni",
+        "Via Ischia",
+        "Via Sant'Eusebio",
+        "Via Verga",
+        "Via Salutati",
+        "Via Cimarosa"
+      ]
+    },
+    {
+      "id": 1790626227839,
+      "type": "Piazza",
+      "name": "Prealpi",
+      "confluences": [
+        "Via de Predis",
+        "Via Jacopino da Tradate",
+        "Via Besozzo",
+        "Via Panicale",
+        "Via Monte Generoso",
+        "Via Grigna",
+        "Via Artieri",
+        "Via Campo dei Fiori"
+      ]
+    },
+    {
+      "id": 1790626227840,
+      "type": "Piazza",
+      "name": "Principessa Clotilde",
+      "confluences": [
+        "Via Vespucci",
+        "Viale Monte grappa",
+        "Bastioni di Porta Nuova",
+        "Via Castelfidardo",
+        "Corso di porta Nuova",
+        "Viale Monte Santo"
+      ]
+    },
+    {
+      "id": 1790626227841,
+      "type": "Piazza",
+      "name": "Quattro Novembre",
+      "confluences": [
+        "Via Filzi",
+        "Via Tarra",
+        "Via Filzi",
+        "Via Sammartini"
+      ]
+    },
+    {
+      "id": 1790626227842,
+      "type": "Largo",
+      "name": "Quinto Alpini",
+      "confluences": [
+        "Via Vincenzo Monti",
+        "Via Mario Pagano",
+        "Via Lodovico Ariosto",
+        "Via Torquato Tasso",
+        "Via Vincenzo Monti",
+        "Via Revere"
+      ]
+    },
+    {
+      "id": 1790626227843,
+      "type": "Piazza",
+      "name": "Repubblica",
+      "confluences": [
+        "Via Vittor Pisani",
+        "Via Ferdinando di Savoia",
+        "Via Cartesio",
+        "Via Marco Polo",
+        "Viale Monte Santo",
+        "Via Parini",
+        "Via Turati",
+        "Via Tarchetti",
+        "Via città di fiume",
+        "Viale Vittorio Veneto",
+        "Via Panfilo Castaldi",
+        "Via Finocchiaro Aprile",
+        "Viale Tunisia"
       ]
     },
     {
