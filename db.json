@@ -672,6 +672,17 @@
       ]
     },
     {
+      "id": 1790626227848,
+      "type": "Piazza",
+      "name": "del Rosario",
+      "confluences": [
+        "Via Bergognone",
+        "Via Solari",
+        "Via Bergognone",
+        "Via Solari"
+      ]
+    },
+    {
       "id": 7,
       "type": "Piazza",
       "name": "della Repubblica",
@@ -951,6 +962,19 @@
         "Via Aselli",
         "Via Canaletto",
         "Viale Argonne"
+      ]
+    },
+    {
+      "id": 1790626227847,
+      "type": "Piazzale",
+      "name": "Gabrio Rosa",
+      "confluences": [
+        "Via Martini",
+        "Via Mompiani",
+        "Via dei Cinquecento",
+        "Viale Omero Via Montemartini",
+        "Via Barzoni",
+        "Via Avezzana"
       ]
     },
     {
@@ -1564,21 +1588,17 @@
     {
       "id": 1790626227843,
       "type": "Piazza",
-      "name": "Repubblica",
+      "name": "Resistenza Partigiana",
       "confluences": [
-        "Via Vittor Pisani",
-        "Via Ferdinando di Savoia",
-        "Via Cartesio",
-        "Via Marco Polo",
-        "Viale Monte Santo",
-        "Via Parini",
-        "Via Turati",
-        "Via Tarchetti",
-        "Via città di fiume",
-        "Viale Vittorio Veneto",
-        "Via Panfilo Castaldi",
-        "Via Finocchiaro Aprile",
-        "Viale Tunisia"
+        "Via Cesare Correnti",
+        "Via Camminadella",
+        "Via de Amicis",
+        "Via San Vincenzo",
+        "Corso Genova",
+        "Via Conca del naviglio",
+        "Via de Amicis",
+        "Via dei Fabbri",
+        "Via Mora"
       ]
     },
     {
@@ -1595,6 +1615,58 @@
       ]
     },
     {
+      "id": 1790626227844,
+      "type": "Largo",
+      "name": "Rio de Janeiro",
+      "confluences": [
+        "Viale Romagna",
+        "Via Plinio",
+        "Via Juvara",
+        "Via del Sarto",
+        "Viale Romagna",
+        "Via moretto da Brescia",
+        "Via Botticelli",
+        "Via Mangiagalli"
+      ]
+    },
+    {
+      "id": 1790626227845,
+      "type": "Piazza",
+      "name": "Risorgimento",
+      "confluences": [
+        "Via Pisacane",
+        "Via Poerio",
+        "Corso Concordia",
+        "Via Calvi",
+        "Via Fiamma",
+        "Corso Indipendenza"
+      ]
+    },
+    {
+      "id": 1790626227846,
+      "type": "Largo",
+      "name": "Rodari",
+      "confluences": [
+        "Via Cardinal mezzo Fanti",
+        "Viale Corsica",
+        "Via de Andreis",
+        "Viale Corsica"
+      ]
+    },
+    {
+      "id": 1790626227853,
+      "type": "Piazza",
+      "name": "Salgari",
+      "confluences": [
+        "Via Sebino",
+        "Via Tito Livio",
+        "Via Caroncini",
+        "Via Cadolini",
+        "Via Venosa",
+        "Via Carabelli"
+      ]
+    },
+    {
       "id": 4,
       "type": "Piazza",
       "name": "San Babila",
@@ -1608,6 +1680,47 @@
         "Via Durini",
         "Via Borgogna",
         "Corso Monforte"
+      ]
+    },
+    {
+      "id": 1790626227849,
+      "type": "Piazza",
+      "name": "San Gioachimo",
+      "confluences": [
+        "Via Fabio Filzi",
+        "Via Fara",
+        "Via Viviani",
+        "Via della Liberazione",
+        "Via Galileo Galilei",
+        "Via Ferdinando di Savoia",
+        "Via Locatelli"
+      ]
+    },
+    {
+      "id": 1790626227852,
+      "type": "Piazza",
+      "name": "San Materno",
+      "confluences": [
+        "Via Mancinelli",
+        "Via Lambrate",
+        "Via Casoretto",
+        "Via Ampere",
+        "Via Accademia",
+        "Via Casoretto"
+      ]
+    },
+    {
+      "id": 1790626227850,
+      "type": "Piazza",
+      "name": "Sant'Agostino",
+      "confluences": [
+        "Via Olona",
+        "Via Prisco",
+        "Via Numa Pompilio",
+        "Viale Papiniano",
+        "Via Modestino",
+        "Viale Papiniano",
+        "Via Cesare da Sesto"
       ]
     },
     {
@@ -1632,6 +1745,19 @@
       ]
     },
     {
+      "id": 1790626227851,
+      "type": "Piazza",
+      "name": "Santa Maria del Suffragio",
+      "confluences": [
+        "Via Bonvesin de la Riva",
+        "Via Fiamma",
+        "Corso 22 Marzo",
+        "Via Morosini",
+        "Via Foldi",
+        "Corso 22 Marzo"
+      ]
+    },
+    {
       "id": 34,
       "type": "Piazza",
       "name": "Santo Stefano",
@@ -1641,6 +1767,46 @@
         "Via Festa del Perdono",
         "Via Laghetto",
         "Via San Bernardino"
+      ]
+    },
+    {
+      "id": 1790626227854,
+      "type": "Piazzale",
+      "name": "Segesta",
+      "confluences": [
+        "Via Coppi",
+        "Via Ottoboni",
+        "Via Stratico",
+        "Via Paravia",
+        "Via Mar Jonio",
+        "Via Albertinelli",
+        "Via Monreale",
+        "Via Gavirate",
+        "Via Laveno"
+      ]
+    },
+    {
+      "id": 1790626227855,
+      "type": "Piazza",
+      "name": "Segrino",
+      "confluences": [
+        "Via Lario",
+        "Via Revel",
+        "Via Alserio",
+        "Via Ugo Bassi",
+        "Via Borsieri",
+        "Via Trau"
+      ]
+    },
+    {
+      "id": 1790626227856,
+      "type": "Piazza",
+      "name": "Sei Febbraio",
+      "confluences": [
+        "Viale Boezio",
+        "Viale Cassiodoro",
+        "Via Vincenzo Monti",
+        "Via Ferrucci"
       ]
     },
     {
@@ -1657,6 +1823,55 @@
       ]
     },
     {
+      "id": 1790626227857,
+      "type": "Piazza",
+      "name": "Sempione",
+      "confluences": [
+        "Via Cagnola",
+        "Corso Sempione",
+        "Via San Giorgio",
+        "Via Mario Pagano",
+        "Via Bertani"
+      ]
+    },
+    {
+      "id": 1790626227858,
+      "type": "Piazzale",
+      "name": "Siena",
+      "confluences": [
+        "Viale Aretusa",
+        "Via Gulli",
+        "Viale Pisa",
+        "Via Palma",
+        "Via Pisanello"
+      ]
+    },
+    {
+      "id": 1790626227859,
+      "type": "Piazza",
+      "name": "Sire Raul",
+      "confluences": [
+        "Via Clitumno",
+        "Via Leoncavallo",
+        "Via Teodosio",
+        "Via Olivari",
+        "Via Palmanova"
+      ]
+    },
+    {
+      "id": 1790626227860,
+      "type": "Piazza",
+      "name": "Stuparich",
+      "confluences": [
+        "Viale Renato Serra",
+        "Via Salmoiraghi",
+        "Via Cremosano",
+        "Viale Elia",
+        "Via Albani",
+        "Via Algardi"
+      ]
+    },
+    {
       "id": 45,
       "type": "Piazzale",
       "name": "Susa",
@@ -1670,6 +1885,54 @@
         "Via del'Ongaro",
         "Viale Argonne",
         "Via Giovanni da Milano"
+      ]
+    },
+    {
+      "id": 1790626227861,
+      "type": "Largo",
+      "name": "Tel Aviv",
+      "confluences": [
+        "Via Bengasi",
+        "Via Atene",
+        "Via Anacreonte",
+        "Via Cesana",
+        "Via Oropa",
+        "Via Derna"
+      ]
+    },
+    {
+      "id": 1790626227862,
+      "type": "Piazza",
+      "name": "Tirana",
+      "confluences": [
+        "Via Inganni",
+        "Via Gonin",
+        "Via Giambellino",
+        "Via Segneri"
+      ]
+    },
+    {
+      "id": 1790626227863,
+      "type": "Piazza",
+      "name": "Trento",
+      "confluences": [
+        "Viale Isonzo",
+        "Via Adige",
+        "Via Crema",
+        "Via Palladio",
+        "Viale Isonzo"
+      ]
+    },
+    {
+      "id": 1790626227864,
+      "type": "Largo",
+      "name": "Treves",
+      "confluences": [
+        "Via Solferino",
+        "Via Statuto",
+        "Via Palermo",
+        "Via Solferino",
+        "Via Balzan"
       ]
     },
     {
@@ -1695,6 +1958,52 @@
         "Via Pordenone",
         "Via Ronchi",
         "Via Feltre"
+      ]
+    },
+    {
+      "id": 1790626227865,
+      "type": "Piazza",
+      "name": "Umanitaria",
+      "confluences": [
+        "Via Daverio",
+        "Via Fanti"
+      ]
+    },
+    {
+      "id": 1790626227866,
+      "type": "Piazza",
+      "name": "Velasca",
+      "confluences": [
+        "Via Larga",
+        "Via Albricci",
+        "Corso di porta Romana",
+        "Via Pantano"
+      ]
+    },
+    {
+      "id": 1790626227867,
+      "type": "Piazza",
+      "name": "Vesuvio",
+      "confluences": [
+        "Via San'Eusebio",
+        "Via Egadi",
+        "Via Stromboli",
+        "Via California",
+        "Via Caprera",
+        "Via Lipari"
+      ]
+    },
+    {
+      "id": 1790626227868,
+      "type": "Piazza",
+      "name": "Virgilio",
+      "confluences": [
+        "Via Metastasio",
+        "Via Vincenzo Monti",
+        "Via Boccaccio",
+        "Via Caradosso",
+        "Via Vincenzo Monti",
+        "Via Boccaccio"
       ]
     },
     {
@@ -1724,6 +2033,18 @@
         "Via Col di Lana",
         "Via Gian Galeazzo",
         "Via Sambuco"
+      ]
+    },
+    {
+      "id": 1790626227869,
+      "type": "Piazzale",
+      "name": "Zavattari",
+      "confluences": [
+        "Viale Migliara",
+        "Via Monreale",
+        "Via Vodice",
+        "Viale Murillo",
+        "Via Tempesta"
       ]
     }
   ],
