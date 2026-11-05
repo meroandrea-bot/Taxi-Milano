@@ -1483,2099 +1483,2065 @@
         }
 
         async function handleLogin(forceAdmin) {
-        const inputVal = document.getElementById("login-pwd").value.trim();
-        const err = document.getElementById("login-error");
-        err.classList.add("hidden");
+            const inputVal = document.getElementById("login-pwd").value.trim();
+            const err = document.getElementById("login-error");
+            err.classList.add("hidden");
 
-        if (forceAdmin) {
-            if (inputVal === adminPwd) {
-                isAdmin = true;
-                currentUserId = "admin_user";
-                localStorage.setItem("milan_taxi_logged", "true");
-                localStorage.setItem("milan_taxi_is_admin", "true");
-                document.getElementById("btn-admin").classList.remove("hidden");
-                initApp();
-            } else {
-                err.textContent = "Password Admin errata.";
-                err.classList.remove("hidden");
-            }
-            return;
-        }
-
-        if (!inputVal) {
-            err.textContent = "Inserisci un codice valido.";
-            err.classList.remove("hidden");
-            return;
-        }
-
-        // Verifica che Firebase sia pronto prima di interrogare il database
-        if (!window.db || !window.collection || !window.getDocs) {
-            err.textContent = "Connessione a Firebase in corso... Riprova tra un secondo.";
-            err.classList.remove("hidden");
-            return;
-        }
-
-        try {
-            let deviceId = localStorage.getItem("milan_taxi_device_id");
-            if (!deviceId) {
-                deviceId = 'dev_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
-                localStorage.setItem("milan_taxi_device_id", deviceId);
+            if (forceAdmin) {
+                if (inputVal === adminPwd) {
+                    isAdmin = true;
+                    currentUserId = "admin_user";
+                    document.getElementById("btn-admin").classList.remove("hidden");
+                    initApp();
+                } else {
+                    err.textContent = "Password Admin errata.";
+                    err.classList.remove("hidden");
+                }
+                return;
             }
 
-            const codesRef = window.collection(window.db, "codes");
-            const q = window.query(codesRef, window.where("codice", "==", inputVal));
-            const querySnapshot = await window.getDocs(q);
-
-            let codeDocRef = null;
-            let codeData = null;
-
-            querySnapshot.forEach((docSnap) => {
-                codeDocRef = docSnap.ref;
-                codeData = docSnap.data();
-            });
-
-            if (!codeData || codeData.attivo !== true) {
-                err.textContent = "Codice inesistente o non attivo.";
+            if (!inputVal) {
+                err.textContent = "Inserisci un codice valido.";
                 err.classList.remove("hidden");
                 return;
             }
 
-            const isCodeAdmin = codeData.isAdmin === true;
-            currentUserId = codeDocRef.id;
-
-            if (!codeData.dispositivoAutorizzato) {
-                await window.updateDoc(codeDocRef, { dispositivoAutorizzato: deviceId });
-            } else if (codeData.dispositivoAutorizzato !== deviceId) {
-                err.textContent = "Questo codice è già stato associato a un altro dispositivo.";
+            // Verifica che Firebase sia pronto prima di interrogare il database
+            if (!window.db || !window.collection || !window.getDocs) {
+                err.textContent = "Connessione a Firebase in corso... Riprova tra un secondo.";
                 err.classList.remove("hidden");
                 return;
             }
 
-            // SALVIAMO LA SESSIONE IN LOCALSTORAGE PER EVITARE LETTURE MULTIPLE SU FIREBASE
-            isAdmin = isCodeAdmin;
-            localStorage.setItem("milan_taxi_logged", "true");
-            localStorage.setItem("milan_taxi_is_admin", isAdmin ? "true" : "false");
-            localStorage.setItem("milan_taxi_user_id", currentUserId);
+            try {
+                let deviceId = localStorage.getItem("milan_taxi_device_id");
+                if (!deviceId) {
+                    deviceId = 'dev_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+                    localStorage.setItem("milan_taxi_device_id", deviceId);
+                }
 
-            if (isAdmin) {
-                document.getElementById("btn-admin").classList.remove("hidden");
-            } else {
-                document.getElementById("btn-admin").classList.add("hidden");
+                const codesRef = window.collection(window.db, "codes");
+                const q = window.query(codesRef, window.where("codice", "==", inputVal));
+                const querySnapshot = await window.getDocs(q);
+
+                let codeDocRef = null;
+                let codeData = null;
+
+                querySnapshot.forEach((docSnap) => {
+                    codeDocRef = docSnap.ref;
+                    codeData = docSnap.data();
+                });
+
+                if (!codeData || codeData.attivo !== true) {
+                    err.textContent = "Codice inesistente o non attivo.";
+                    err.classList.remove("hidden");
+                    return;
+                }
+
+                const isCodeAdmin = codeData.isAdmin === true;
+                currentUserId = codeDocRef.id;
+
+                if (!codeData.dispositivoAutorizzato) {
+                    await window.updateDoc(codeDocRef, { dispositivoAutorizzato: deviceId });
+                    isAdmin = isCodeAdmin;
+                    if (isAdmin) {
+                        document.getElementById("btn-admin").classList.remove("hidden");
+                    } else {
+                        document.getElementById("btn-admin").classList.add("hidden");
+                    }
+                    initApp();
+                } else if (codeData.dispositivoAutorizzato === deviceId) {
+                    isAdmin = isCodeAdmin;
+                    if (isAdmin) {
+                        document.getElementById("btn-admin").classList.remove("hidden");
+                    } else {
+                        document.getElementById("btn-admin").classList.add("hidden");
+                    }
+                    initApp();
+                } else {
+                    err.textContent = "Questo codice è già stato associato a un altro dispositivo.";
+                    err.classList.remove("hidden");
+                }
+
+            } catch (e) {
+                console.error("Errore di accesso Cloud:", e);
+                err.textContent = "Impossibile verificare il codice online. Controlla la connessione.";
+                err.classList.remove("hidden");
             }
-            initApp();
-
-        } catch (e) {
-            console.error("Errore di accesso Cloud:", e);
-            err.textContent = "Impossibile verificare il codice online. Controlla la connessione.";
-            err.classList.remove("hidden");
-        }
-    }
-
-    function enterApp() {
-        stopAllAudioEngine();
-        document.getElementById("login-screen").classList.add("hidden");
-        document.getElementById("app-container").classList.remove("hidden");
-        
-        if (isAdmin) {
-            document.getElementById("btn-admin").classList.remove("hidden");
-            const adminCurr = document.getElementById("admin-current-display-pwd");
-            if (adminCurr) adminCurr.value = adminPwd;
-            populateAdminSelects();
-        } else {
-            document.getElementById("btn-admin").classList.add("hidden");
         }
 
-        switchTab('home');
-        initData();
-    }
-
-    function logoutApp() {
-        stopAllAudioEngine();
-        localStorage.removeItem("milan_taxi_logged");
-        localStorage.removeItem("milan_taxi_is_admin");
-        document.getElementById("app-container").classList.add("hidden");
-        document.getElementById("login-screen").classList.remove("hidden");
-        if (document.getElementById("login-pwd")) {
+        function logoutApp() {
+            isAdmin = false;
+            currentUserId = null;
+            document.getElementById("app-container").classList.add("hidden");
+            document.getElementById("login-screen").classList.remove("hidden");
             document.getElementById("login-pwd").value = "";
+            document.getElementById("login-error").classList.add("hidden");
+            document.getElementById("btn-admin").classList.add("hidden");
+            stopAllAudioEngine();
         }
-    }
 
-    function goHome() {
-        switchTab('home');
-    }
+        function initApp() {
+            document.getElementById("login-screen").classList.add("hidden");
+            document.getElementById("app-container").classList.remove("hidden");
+            document.getElementById("total-count").textContent = piazzeData.length;
+            document.getElementById("header-total-badge").textContent = `Elementi: ${piazzeData.length}`;
+            renderEncyclopedia();
+            renderPercorsi();
+            renderCerchie();
+            renderRegolamenti();
+            renderStatali();
+            populateExerciseSelect();
+            populateAdminSelect();
+            switchTab('home');
+        }
 
-    function switchTab(tabId) {
-        stopAllAudioEngine();
-        const tabs = ['home', 'quiz', 'enciclopedia', 'percorsi', 'cerchie', 'statali', 'regolamenti', 'punti-interesse', 'esercizio', 'admin'];
-        tabs.forEach(t => {
-            const section = document.getElementById(`tab-${t}`);
-            if (section) section.classList.add("hidden");
-            const btn = document.getElementById(`btn-${t}`);
-            if (btn) {
-                btn.className = "px-3.5 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 font-bold text-xs sm:text-sm whitespace-nowrap transition";
+        function goHome() {
+            backToHomeMain();
+            switchTab('home');
+        }
+
+        function switchTab(tab) {
+            if (quizTimerInterval) clearInterval(quizTimerInterval);
+            stopAllAudioEngine();
+            
+            ['home', 'quiz', 'enciclopedia', 'percorsi', 'cerchie', 'statali', 'regolamenti', 'punti-interesse', 'esercizio', 'admin'].forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                if(el) el.classList.add("hidden");
+                const btn = document.getElementById(`btn-${t}`);
+                if (btn) {
+                    btn.classList.remove("bg-amber-500", "bg-red-600");
+                    btn.classList.add("bg-slate-700");
+                }
+            });
+            document.getElementById(`tab-${tab}`).classList.remove("hidden");
+            const activeBtn = document.getElementById(`btn-${tab}`);
+            if (activeBtn) {
+                activeBtn.classList.remove("bg-slate-700");
+                if(tab === 'admin') activeBtn.classList.add("bg-red-600");
+                else activeBtn.classList.add("bg-amber-500");
             }
-        });
 
-        const activeSection = document.getElementById(`tab-${tabId}`);
-        if (activeSection) activeSection.classList.remove("hidden");
-        const activeBtn = document.getElementById(`btn-${tabId}`);
-        if (activeBtn) {
-            if (tabId === 'admin') {
-                activeBtn.className = "px-3.5 py-2 rounded-lg bg-red-600 text-white font-bold text-xs sm:text-sm whitespace-nowrap transition shadow";
+            if (tab === 'quiz') { showQuizMenuScreen(); }
+            if (tab === 'esercizio') { loadExercise(); setupMapPanAndZoom(); }
+            if (tab === 'admin') {
+                populateAdminSelect();
+                document.getElementById("admin-new-admin-pwd").value = adminPwd;
+                const dispPwd = document.getElementById("admin-current-display-pwd");
+                if (dispPwd) dispPwd.value = adminPwd;
+                switchAdminSubTab('regolamenti');
+            }
+            if (tab === 'percorsi') { renderPercorsi(); }
+            if (tab === 'cerchie') { renderCerchie(); }
+            if (tab === 'regolamenti') { renderRegolamenti(); }
+            if (tab === 'statali') { renderStatali(); }
+        }
+
+        async function openPoiCategoryDirect(categoryName) {
+            const fileName = categoryName.toLowerCase() + ".docx";
+            document.getElementById("poi-detail-title").textContent = categoryName;
+            const contentBox = document.getElementById("poi-content-box");
+            contentBox.innerHTML = `<p class="text-slate-500 italic"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Caricamento documento in corso da GitHub...</p>`;
+
+            const downloadBtn = document.getElementById("poi-download-btn");
+            downloadBtn.onclick = () => {
+                const a = document.createElement('a');
+                a.href = fileName;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            };
+
+            document.getElementById("poi-detail-view").classList.remove("hidden");
+            document.body.style.overflow = 'hidden';
+
+            try {
+                const response = await fetch(fileName + '?' + new Date().getTime());
+                if (!response.ok) {
+                    throw new Error("File non trovato su GitHub");
+                }
+                const arrayBuffer = await response.arrayBuffer();
+                const result = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
+                contentBox.innerHTML = result.value || "<p class='text-slate-500'>Documento vuoto.</p>";
+            } catch (err) {
+                contentBox.innerHTML = `<p class='text-red-500 font-bold'>Impossibile trovare o caricare il file <code class="bg-slate-100 px-1 py-0.5 rounded">${fileName}</code> nella cartella principale del repository GitHub.</p>`;
+            }
+        }
+
+        function closePoiDetail() {
+            document.getElementById("poi-detail-view").classList.add("hidden");
+            document.body.style.overflow = 'auto';
+        }
+
+        async function getSavedErrorsMap() {
+            let errorsMap = {};
+            if (currentUserId && !currentUserId.startsWith("local_user_") && currentUserId !== "admin_user" && window.db) {
+                try {
+                    const snap = await window.getDocs(window.collection(window.db, `users/${currentUserId}/erroriQuiz`));
+                    snap.forEach(d => { errorsMap[d.id] = d.data(); });
+                    return errorsMap;
+                } catch(e) {}
+            }
+            let localKey = `milan_quiz_errors_${currentUserId || 'guest'}`;
+            try {
+                let stored = localStorage.getItem(localKey);
+                if (stored) errorsMap = JSON.parse(stored);
+            } catch(e){}
+            return errorsMap;
+        }
+
+        async function saveErrorToStorage(question, isCorrect) {
+            if (!question || !question.id) return;
+            let errorsMap = await getSavedErrorsMap();
+            let qId = question.id;
+
+            if (!isCorrect) {
+                if (!errorsMap[qId]) {
+                    errorsMap[qId] = { question: question, consecutiveCorrect: 0 };
+                } else {
+                    errorsMap[qId].consecutiveCorrect = 0;
+                }
             } else {
-                activeBtn.className = "px-3.5 py-2 rounded-lg bg-amber-500 text-white font-bold text-xs sm:text-sm whitespace-nowrap transition shadow";
+                if (errorsMap[qId]) {
+                    errorsMap[qId].consecutiveCorrect = (errorsMap[qId].consecutiveCorrect || 0) + 1;
+                    if (errorsMap[qId].consecutiveCorrect >= 2) { delete errorsMap[qId]; }
+                }
             }
+
+            if (currentUserId && !currentUserId.startsWith("local_user_") && currentUserId !== "admin_user" && window.db) {
+                try {
+                    const errDocRef = window.doc(window.db, `users/${currentUserId}/erroriQuiz`, qId);
+                    if (errorsMap[qId]) {
+                        await window.updateDoc(errDocRef, errorsMap[qId]).catch(async () => {
+                            await window.setDoc(errDocRef, errorsMap[qId]).catch(()=>{});
+                        });
+                    } else {
+                        await window.deleteDoc(errDocRef).catch(()=>{});
+                    }
+                    return;
+                } catch(e) {}
+            }
+
+            let localKey = `milan_quiz_errors_${currentUserId || 'guest'}`;
+            localStorage.setItem(localKey, JSON.stringify(errorsMap));
         }
 
-        if (tabId === 'enciclopedia') renderEnciclopedia();
-        if (tabId === 'percorsi') renderPercorsi();
-        if (tabId === 'cerchie') renderCerchie();
-        if (tabId === 'statali') renderStatali();
-        if (tabId === 'regolamenti') renderRegolamenti();
-        if (tabId === 'esercizio') initExercise();
-        if (tabId === 'quiz') showQuizMenuScreen();
-    }
+        async function updateErroriBadge() {
+            let errorsMap = await getSavedErrorsMap();
+            let count = Object.keys(errorsMap).length;
+            
+            let quizMenuScreen = document.getElementById("quiz-menu-screen");
+            if (!quizMenuScreen) return;
 
-    async function initData() {
-        await loadCloudDatabase();
-        document.getElementById("total-count").textContent = piazzeData.length;
-        document.getElementById("header-total-badge").textContent = `${piazzeData.length} Piazze in DB`;
-        setupDynamicManifest();
-        
-        if (!localStorage.getItem("milan_taxi_device_id")) {
-            localStorage.setItem("milan_taxi_device_id", 'dev_' + Math.random().toString(36).substring(2, 9));
+            let existingBtn = document.getElementById("btn-allenati-errori-container");
+            if (existingBtn) existingBtn.remove();
+
+            let container = document.createElement("div");
+            container.id = "btn-allenati-errori-container";
+            container.className = "pt-2";
+            container.innerHTML = `
+                <button onclick="startErrorTrainingSession()" class="w-full p-5 bg-red-50 hover:bg-red-100 border-2 border-red-200 hover:border-red-500 rounded-2xl transition flex items-center justify-between group shadow-sm">
+                    <div class="flex items-center space-x-3 text-left">
+                        <div class="w-12 h-12 bg-red-500 text-white rounded-xl flex items-center justify-center text-xl shadow-sm group-hover:scale-110 transition">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        <div>
+                            <span class="font-bold text-base sm:text-lg text-slate-900 block">Allenati sugli errori</span>
+                            <span class="text-xs sm:text-sm text-slate-500">Ripassa le domande in cui hai commesso errori</span>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-red-600 text-white font-black text-sm sm:text-base rounded-full shadow">${count}</span>
+                </button>
+            `;
+            quizMenuScreen.appendChild(container);
         }
-    }
 
-    function cycleSortMode() {
-        const btn = document.getElementById("sort-alpha-btn");
-        if (sortMode === 'default') {
-            sortMode = 'alpha';
-            btn.innerHTML = `<i class="fa-solid id-sort-alpha-down mr-1.5 text-amber-600 text-base"></i> Ordine Alfabetico`;
-        } else if (sortMode === 'alpha') {
-            sortMode = 'type';
-            btn.innerHTML = `<i class="fa-solid fa-filter mr-1.5 text-amber-600 text-base"></i> Ordine per Tipo`;
-        } else {
-            sortMode = 'default';
-            btn.innerHTML = `<i class="fa-solid fa-sort mr-1.5 text-amber-600 text-base"></i> Ordine Originale`;
+        async function startErrorTrainingSession() {
+            let errorsMap = await getSavedErrorsMap();
+            let errorQuestions = Object.values(errorsMap).map(item => item.question);
+
+            if (errorQuestions.length === 0) {
+                alert("Ottimo lavoro! Non ci sono domande da recuperare al momento.");
+                return;
+            }
+
+            activeQuizQuestions = errorQuestions.sort(() => Math.random() - 0.5);
+            currentQuizIndex = 0;
+            currentQuizMode = "errori";
+            quizUserAnswers = [];
+            quizStartTime = Date.now();
+
+            document.getElementById("quiz-mode-badge").textContent = "RIPASSO ERRORI";
+            document.getElementById("quiz-mode-badge").className = "px-3 py-1 bg-red-100 text-red-900 font-extrabold text-xs rounded-full uppercase";
+            document.getElementById("quiz-timer-box").classList.add("hidden");
+
+            document.getElementById("quiz-menu-screen").classList.add("hidden");
+            document.getElementById("quiz-active-screen").classList.remove("hidden");
+
+            renderCurrentQuizQuestion();
         }
-        renderEnciclopedia();
-    }
 
-    function navigatePiazza(direction) {
-        currentPiazzaIndex += direction;
-        if (currentPiazzaIndex < 0) currentPiazzaIndex = piazzeData.length - 1;
-        if (currentPiazzaIndex >= piazzeData.length) currentPiazzaIndex = 0;
-        
-        const searchInput = document.getElementById("search-piazza");
-        if (searchInput) searchInput.value = "";
-        
-        renderEnciclopedia();
-        
-        const cards = document.querySelectorAll('#encyclopedia-list > div');
-        if (cards[currentPiazzaIndex]) {
-            cards[currentPiazzaIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
-            cards[currentPiazzaIndex].classList.add('ring-4', 'ring-amber-500');
-            setTimeout(() => {
-                cards[currentPiazzaIndex].classList.remove('ring-4', 'ring-amber-500');
-            }, 1200);
+        function showQuizMenuScreen() {
+            if (quizTimerInterval) clearInterval(quizTimerInterval);
+            document.getElementById("quiz-menu-screen").classList.remove("hidden");
+            document.getElementById("quiz-topic-screen").classList.add("hidden");
+            document.getElementById("quiz-lang-screen").classList.add("hidden");
+            document.getElementById("quiz-active-screen").classList.add("hidden");
+            document.getElementById("quiz-summary-screen").classList.add("hidden");
+            updateErroriBadge();
         }
-    }
 
-    function onSearchPiazzaInput() {
-        renderEnciclopedia();
-    }
+        function showQuizTopicSelection() {
+            const topicsContainer = document.getElementById("quiz-topics-container");
+            topicsContainer.innerHTML = "";
+            
+            let uniqueTopics = [...new Set(allQuizQuestions.map(q => q.argomento))];
+            if (uniqueTopics.length === 0) uniqueTopics = ["Regolamento", "Normativa", "Geografia", "Inglese", "Francese", "Tedesco", "Spagnolo"];
+            
+            uniqueTopics.forEach(top => {
+                let count = allQuizQuestions.filter(q => q.argomento === top).length;
+                const label = document.createElement("label");
+                label.className = "flex items-center p-3.5 bg-slate-50 border rounded-xl cursor-pointer hover:bg-amber-50 transition";
+                label.innerHTML = `
+                    <input type="checkbox" value="${top}" class="quiz-topic-cb w-5 h-5 text-amber-500 rounded" checked>
+                    <span class="ml-3 font-bold text-slate-800">${top} ${count > 0 ? '(' + count + ' domande)' : ''}</span>
+                `;
+                topicsContainer.appendChild(label);
+            });
 
-    function renderEnciclopedia() {
-        const container = document.getElementById("encyclopedia-list");
-        const queryVal = (document.getElementById("search-piazza").value || "").toLowerCase().trim();
-        container.innerHTML = "";
+            document.getElementById("quiz-menu-screen").classList.add("hidden");
+            document.getElementById("quiz-topic-screen").classList.remove("hidden");
+        }
 
-        let displayList = [...piazzeData];
+        function showExamLanguageSelection() {
+            document.getElementById("quiz-menu-screen").classList.add("hidden");
+            document.getElementById("quiz-lang-screen").classList.remove("hidden");
+        }
 
-        if (sortMode === 'alpha') {
-            displayList.sort((a, b) => naturalSort(`${a.type} ${a.name}`, `${b.type} ${b.name}`));
-        } else if (sortMode === 'type') {
-            displayList.sort((a, b) => {
-                if (a.type !== b.type) return a.type.localeCompare(b.type);
-                return naturalSort(a.name, b.name);
+        function startTrainingSession() {
+            const checkboxes = document.querySelectorAll('.quiz-topic-cb:checked');
+            const selectedTopics = Array.from(checkboxes).map(cb => cb.value);
+
+            if (selectedTopics.length === 0) {
+                alert("Seleziona almeno un argomento per l'allenamento!");
+                return;
+            }
+
+            let filtered = allQuizQuestions.filter(q => selectedTopics.includes(q.argomento));
+            if (filtered.length === 0) { filtered = allQuizQuestions; }
+
+            activeQuizQuestions = filtered.sort(() => Math.random() - 0.5);
+            currentQuizIndex = 0;
+            currentQuizMode = "allenamento";
+            quizUserAnswers = [];
+            quizStartTime = Date.now();
+
+            document.getElementById("quiz-mode-badge").textContent = "ALLENAMENTO";
+            document.getElementById("quiz-mode-badge").className = "px-3 py-1 bg-amber-100 text-amber-900 font-extrabold text-xs rounded-full uppercase";
+            document.getElementById("quiz-timer-box").classList.add("hidden");
+
+            document.getElementById("quiz-topic-screen").classList.add("hidden");
+            document.getElementById("quiz-active-screen").classList.remove("hidden");
+
+            renderCurrentQuizQuestion();
+        }
+
+        function startExamSession(langChoice) {
+            let targetTopics = ['Regolamento', 'Normativa', 'Geografia', langChoice];
+            let examPool = [];
+
+            targetTopics.forEach(top => {
+                let subPool = allQuizQuestions.filter(q => q.argomento.toLowerCase() === top.toLowerCase());
+                let shuffled = subPool.sort(() => Math.random() - 0.5);
+                examPool = examPool.concat(shuffled.slice(0, 4));
+            });
+
+            if (examPool.length < 16) {
+                let remainingNeeded = 16 - examPool.length;
+                let usedQuestionsSet = new Set(examPool);
+                let otherPool = allQuizQuestions.filter(q => !usedQuestionsSet.has(q)).sort(() => Math.random() - 0.5);
+                examPool = examPool.concat(otherPool.slice(0, remainingNeeded));
+            }
+
+            activeQuizQuestions = examPool.sort(() => Math.random() - 0.5);
+            currentQuizIndex = 0;
+            currentQuizMode = "esame";
+            quizUserAnswers = [];
+            quizStartTime = Date.now();
+            quizTimeSecondsLeft = 1800;
+
+            document.getElementById("quiz-mode-badge").textContent = `ESAME (${langChoice.toUpperCase()})`;
+            document.getElementById("quiz-mode-badge").className = "px-3 py-1 bg-red-100 text-red-900 font-extrabold text-xs rounded-full uppercase";
+            document.getElementById("quiz-timer-box").classList.remove("hidden");
+
+            startQuizTimer();
+
+            document.getElementById("quiz-lang-screen").classList.add("hidden");
+            document.getElementById("quiz-active-screen").classList.remove("hidden");
+
+            renderCurrentQuizQuestion();
+        }
+
+        function startQuizTimer() {
+            if (quizTimerInterval) clearInterval(quizTimerInterval);
+            updateTimerDisplay();
+            quizTimerInterval = setInterval(() => {
+                quizTimeSecondsLeft--;
+                updateTimerDisplay();
+                if (quizTimeSecondsLeft <= 0) {
+                    clearInterval(quizTimerInterval);
+                    alert("Tempo scaduto per l'esame!");
+                    finishQuizSession();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(quizTimeSecondsLeft / 60);
+            const secs = quizTimeSecondsLeft % 60;
+            const text = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            document.getElementById("quiz-timer-text").textContent = text;
+        }
+
+        function renderCurrentQuizQuestion() {
+            isQuestionAnswered = false;
+            const q = activeQuizQuestions[currentQuizIndex];
+
+            document.getElementById("quiz-progress-text").textContent = `Domanda ${currentQuizIndex + 1} di ${activeQuizQuestions.length}`;
+            document.getElementById("quiz-topic-text").textContent = q.argomento;
+            document.getElementById("quiz-question-title").textContent = q.domanda;
+
+            const feedbackBox = document.getElementById("quiz-feedback-box");
+            feedbackBox.classList.add("hidden");
+
+            const optsBox = document.getElementById("quiz-options-box");
+            optsBox.innerHTML = "";
+
+            q.opzioni.forEach((optText, optIdx) => {
+                const btn = document.createElement("button");
+                btn.className = "w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-amber-400 bg-white hover:bg-amber-50 font-semibold text-slate-800 transition flex items-center justify-between group shadow-sm text-sm sm:text-base";
+                btn.innerHTML = `
+                    <span class="flex-1 pr-2">${optText}</span>
+                    <span class="w-6 h-6 rounded-full border-2 border-slate-300 group-hover:border-amber-500 flex items-center justify-center flex-shrink-0 text-xs font-bold text-slate-400">
+                        ${String.fromCharCode(65 + optIdx)}
+                    </span>
+                `;
+                btn.onclick = () => handleQuizAnswer(optIdx);
+                optsBox.appendChild(btn);
             });
         }
 
-        let filtered = displayList.filter(item => {
-            const fullName = `${item.type} ${item.name}`.toLowerCase();
-            const confluencesStr = (item.confluences || []).join(" ").toLowerCase();
-            return fullName.includes(queryVal) || confluencesStr.includes(queryVal);
-        });
+        function handleQuizAnswer(selectedIdx) {
+            if (isQuestionAnswered) return;
+            isQuestionAnswered = true;
 
-        if (filtered.length === 0) {
-            container.innerHTML = `<p class="col-span-full text-center text-slate-500 py-8 font-semibold">Nessun risultato trovato per "${queryVal}".</p>`;
-            return;
+            const q = activeQuizQuestions[currentQuizIndex];
+            const isCorrect = (selectedIdx === q.corretta);
+
+            saveErrorToStorage(q, isCorrect);
+
+            quizUserAnswers.push({ question: q, selected: selectedIdx, correct: isCorrect });
+
+            const optsBox = document.getElementById("quiz-options-box");
+            const buttons = optsBox.querySelectorAll("button");
+
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                btn.classList.remove("hover:border-amber-400", "hover:bg-amber-50");
+
+                if (idx === q.corretta) {
+                    btn.className = "w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 font-bold text-emerald-900 transition flex items-center justify-between shadow-sm text-sm sm:text-base";
+                    btn.innerHTML += `<i class="fa-solid fa-circle-check text-emerald-600 text-xl ml-2"></i>`;
+                } else if (idx === selectedIdx && !isCorrect) {
+                    btn.className = "w-full text-left p-4 rounded-xl border-2 border-red-500 bg-red-50 font-bold text-red-900 transition flex items-center justify-between shadow-sm text-sm sm:text-base";
+                    btn.innerHTML += `<i class="fa-solid fa-circle-xmark text-red-600 text-xl ml-2"></i>`;
+                }
+            });
+
+            const feedbackBox = document.getElementById("quiz-feedback-box");
+            feedbackBox.classList.remove("hidden");
+
+            if (isCorrect) {
+                feedbackBox.className = "p-4 rounded-xl font-bold text-center text-sm sm:text-base bg-emerald-100 text-emerald-900 border border-emerald-300 flex items-center justify-center gap-2";
+                feedbackBox.innerHTML = `<i class="fa-solid fa-check text-xl text-emerald-600"></i> Risposta Esatta! Prossima domanda tra 3 secondi...`;
+            } else {
+                feedbackBox.className = "p-4 rounded-xl font-bold text-center text-sm sm:text-base bg-red-100 text-red-900 border border-red-300 flex items-center justify-center gap-2";
+                feedbackBox.innerHTML = `<i class="fa-solid fa-xmark text-xl text-red-600"></i> Risposta Sbagliata! Prossima domanda tra 3 secondi...`;
+            }
+
+            setTimeout(() => {
+                if (currentQuizIndex < activeQuizQuestions.length - 1) {
+                    currentQuizIndex++;
+                    renderCurrentQuizQuestion();
+                } else {
+                    finishQuizSession();
+                }
+            }, 3000);
         }
 
-        filtered.forEach((item, idx) => {
-            const originalIndex = piazzeData.findIndex(p => p.id === item.id);
-            const card = document.createElement("div");
-            card.className = "bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-3 relative";
-            
-            let htmlConfluences = "";
-            (item.confluences || []).forEach((cName, cIdx) => {
-                let badgeColor = cIdx === 0 ? "bg-amber-100 text-amber-900 border-amber-300 font-extrabold shadow-sm" : "bg-slate-100 text-slate-800 border-slate-200";
-                htmlConfluences += `
-                    <div onclick="showStreetDestinationInfo('${item.name.replace(/'/g, "\\'")}', '${cName.replace(/'/g, "\\'")}')" class="px-2.5 py-1.5 rounded-lg border text-xs sm:text-sm font-semibold cursor-pointer hover:bg-amber-50 transition flex items-center justify-between ${badgeColor}">
-                        <span><span class="text-slate-400 font-mono text-xs mr-1.5">${cIdx + 1}.</span> ${cName}</span>
-                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-amber-600 opacity-75"></i>
+        function quitQuizActive() {
+            if (quizTimerInterval) clearInterval(quizTimerInterval);
+            showQuizMenuScreen();
+        }
+
+        function finishQuizSession() {
+            if (quizTimerInterval) clearInterval(quizTimerInterval);
+
+            document.getElementById("quiz-active-screen").classList.add("hidden");
+            document.getElementById("quiz-summary-screen").classList.remove("hidden");
+
+            const timeSpentSeconds = Math.floor((Date.now() - quizStartTime) / 1000);
+            const mins = Math.floor(timeSpentSeconds / 60);
+            const secs = timeSpentSeconds % 60;
+            const timeStr = `${mins} min e ${secs} sec`;
+
+            let correctCount = quizUserAnswers.filter(a => a.correct).length;
+            let wrongCount = quizUserAnswers.length - correctCount;
+
+            let errorsByTopic = {};
+            quizUserAnswers.forEach(a => {
+                let top = a.question.argomento;
+                if (!errorsByTopic[top]) errorsByTopic[top] = 0;
+                if (!a.correct) errorsByTopic[top]++;
+            });
+
+            const headerEl = document.getElementById("quiz-summary-header");
+            const statsEl = document.getElementById("quiz-summary-stats");
+
+            if (currentQuizMode === "allenamento" || currentQuizMode === "errori") {
+                headerEl.innerHTML = `
+                    <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Sessione Completata!</h2>
+                    <p class="text-slate-600 text-sm">Ecco il riepilogo della tua sessione di studio:</p>
+                `;
+
+                statsEl.innerHTML = `
+                    <div class="flex justify-between font-bold border-b pb-2 text-slate-800">
+                        <span>Tempo Impiegato:</span>
+                        <span class="text-amber-600 font-mono">${timeStr}</span>
+                    </div>
+                    <div class="flex justify-between font-bold border-b pb-2 text-slate-800">
+                        <span>Risposte Corrette:</span>
+                        <span class="text-emerald-600 font-extrabold">${correctCount} / ${activeQuizQuestions.length}</span>
+                    </div>
+                    <div class="flex justify-between font-bold text-slate-800">
+                        <span>Risposte Sbagliate:</span>
+                        <span class="text-red-600 font-extrabold">${wrongCount}</span>
                     </div>
                 `;
+            } else {
+                let topicFailed = Object.keys(errorsByTopic).some(top => errorsByTopic[top] > 2);
+                let isPassed = (wrongCount < 5 && !topicFailed);
+
+                if (isPassed) {
+                    headerEl.innerHTML = `
+                        <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+                        <h2 class="text-3xl font-black text-emerald-600 uppercase tracking-wide">PROMOSSO! 🎉</h2>
+                        <p class="text-slate-600 font-semibold">Complimenti, hai superato la simulazione dell'esame!</p>
+                    `;
+                } else {
+                    headerEl.innerHTML = `
+                        <div class="w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        <h2 class="text-3xl font-black text-red-600 uppercase tracking-wide">BOCCIATO ❌</h2>
+                        <p class="text-slate-600 font-semibold">Non hai raggiunto i requisiti minimi di idoneità dell'esame.</p>
+                    `;
+                }
+
+                let topicBreakdownHtml = Object.keys(errorsByTopic).map(top => `
+                    <div class="flex justify-between text-xs sm:text-sm">
+                        <span class="text-slate-600 font-medium">${top}:</span>
+                        <span class="font-bold ${errorsByTopic[top] > 2 ? 'text-red-600' : 'text-slate-800'}">${errorsByTopic[top]} errori</span>
+                    </div>
+                `).join('');
+
+                statsEl.innerHTML = `
+                    <div class="flex justify-between font-bold border-b pb-2 text-slate-800">
+                        <span>Tempo Impiegato:</span>
+                        <span class="text-amber-600 font-mono">${timeStr}</span>
+                    </div>
+                    <div class="flex justify-between font-bold border-b pb-2 text-slate-800">
+                        <span>Errori Totali:</span>
+                        <span class="${wrongCount >= 5 ? 'text-red-600' : 'text-emerald-600'} font-extrabold">${wrongCount} (Max ammessi: 4)</span>
+                    </div>
+                    <div class="pt-2">
+                        <span class="block text-xs font-bold uppercase text-slate-500 mb-2">Resoconto Errori per Argomento (Max 2 errori per argomento):</span>
+                        <div class="space-y-1.5 bg-white p-3 rounded-lg border border-slate-200">
+                            ${topicBreakdownHtml}
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function cycleSortMode() {
+            if (sortMode === 'default') sortMode = 'asc';
+            else if (sortMode === 'asc') sortMode = 'desc';
+            else sortMode = 'default';
+            updateSortButtonUI();
+            renderEncyclopedia();
+        }
+
+        function updateSortButtonUI() {
+            const btn = document.getElementById("sort-alpha-btn");
+            if (!btn) return;
+            if (sortMode === 'default') {
+                btn.className = "px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs sm:text-sm font-bold border border-slate-300 transition flex items-center shadow-sm";
+                btn.innerHTML = `<i class="fa-solid fa-sort mr-1.5 text-amber-600 text-base"></i> Ordine Originale`;
+            } else if (sortMode === 'asc') {
+                btn.className = "px-3.5 py-2 bg-amber-500 text-white rounded-lg text-xs sm:text-sm font-bold transition flex items-center shadow";
+                btn.innerHTML = `<i class="fa-solid fa-arrow-down-a-z mr-1.5 text-base"></i> A - Z`;
+            } else {
+                btn.className = "px-3.5 py-2 bg-amber-600 text-white rounded-lg text-xs sm:text-sm font-bold transition flex items-center shadow";
+                btn.innerHTML = `<i class="fa-solid fa-arrow-up-a-z mr-1.5 text-base"></i> Z - A`;
+            }
+        }
+
+        async function uploadRegolamentoWord() {
+            const titleInput = document.getElementById("admin-regolamento-title");
+            const fileInput = document.getElementById("admin-regolamento-file");
+            const title = titleInput.value.trim();
+            const feedbackEl = document.getElementById("upload-feedback-regolamento");
+
+            if (!title) { alert("Inserisci il titolo del regolamento!"); return; }
+            if (fileInput.files.length === 0) { alert("Seleziona un file Word (.docx)!"); return; }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(event) {
+                const base64Data = event.target.result;
+                regolamentiData.push({ id: Date.now(), title: title, fileData: base64Data, fileName: file.name });
+                regolamentiData.sort((a, b) => naturalSort(a.title, b.title));
+                saveData();
+                titleInput.value = "";
+                fileInput.value = "";
+                renderRegolamenti();
+                populateAdminSelect();
+                
+                feedbackEl.textContent = `✓ Regolamento "${title}" caricato con successo all'interno dell'app!`;
+                feedbackEl.classList.remove("hidden");
+                setTimeout(() => { feedbackEl.classList.add("hidden"); }, 4000);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderRegolamenti() {
+            const query = document.getElementById("search-regolamento").value.toLowerCase();
+            const container = document.getElementById("regolamenti-list");
+            container.innerHTML = "";
+
+            let sortedRegolamenti = [...regolamentiData].sort((a, b) => naturalSort(a.title, b.title));
+            let filtered = sortedRegolamenti.filter(r => r.title.toLowerCase().includes(query));
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 col-span-full text-center py-6 text-sm font-medium">Nessun regolamento trovato.</p>`;
+                return;
+            }
+
+            filtered.forEach(r => {
+                const card = document.createElement("div");
+                card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between group hover:border-amber-500 cursor-pointer";
+                card.onclick = () => showRegolamentoDetail(r.id);
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center space-x-3.5">
+                            <div class="p-3 bg-amber-50 rounded-xl group-hover:bg-amber-100 transition text-amber-600">
+                                <i class="fa-solid fa-file-word text-xl text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-amber-700 leading-snug">${r.title}</h3>
+                                <span class="text-xs text-slate-500 font-medium">Clicca per leggere o scaricare</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
             });
+        }
+
+        async function showRegolamentoDetail(id) {
+            const reg = regolamentiData.find(r => r.id === id);
+            if (!reg) return;
+            document.getElementById("regolamento-detail-title").textContent = reg.title;
+            
+            const contentBox = document.getElementById("regolamento-content-box");
+            contentBox.innerHTML = `<p class="text-slate-500 italic"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Caricamento documento in corso...</p>`;
+
+            let fileBlobOrData = reg.fileData;
+            if (!fileBlobOrData) {
+                try {
+                    const db = await openDatabase();
+                    fileBlobOrData = await new Promise((resolve) => {
+                        const transaction = db.transaction("wordFiles", "readonly");
+                        const store = transaction.objectStore("wordFiles");
+                        const req = store.get(`milan_regolamenti_data_${reg.id}`);
+                        req.onsuccess = () => resolve(req.result ? req.result.file : null);
+                        req.onerror = () => resolve(null);
+                    });
+                } catch(e) {}
+            }
+
+            if (fileBlobOrData) {
+                try {
+                    let arrayBufferPromise;
+                    if (fileBlobOrData instanceof Blob) {
+                        arrayBufferPromise = fileBlobOrData.arrayBuffer();
+                    } else {
+                        const base64Content = fileBlobOrData.split(',')[1];
+                        const binaryString = atob(base64Content);
+                        const len = binaryString.length;
+                        const bytes = new Uint8Array(len);
+                        for (let i = 0; i < len; i++) { bytes[i] = binaryString.charCodeAt(i); }
+                        arrayBufferPromise = Promise.resolve(bytes.buffer);
+                    }
+
+                    arrayBufferPromise.then(buffer => {
+                        mammoth.convertToHtml({ arrayBuffer: buffer })
+                            .then(function(result) {
+                                contentBox.innerHTML = result.value || "<p class='text-slate-500'>Documento vuoto.</p>";
+                            })
+                            .catch(function(err) {
+                                contentBox.innerHTML = "<p class='text-red-500'>Errore durante la lettura del documento Word.</p>";
+                            });
+                    });
+                } catch (e) {
+                    contentBox.innerHTML = "<p class='text-red-500'>Impossibile elaborare il file salvato.</p>";
+                }
+            } else {
+                contentBox.innerHTML = "<p class='text-slate-500'>Nessun testo disponibile per questo elemento di default.</p>";
+            }
+
+            const downloadBtn = document.getElementById("regolamento-download-btn");
+            downloadBtn.onclick = async () => {
+                let downloadBlob = fileBlobOrData;
+                if (!(downloadBlob instanceof Blob) && typeof downloadBlob === 'string' && downloadBlob.startsWith('data:')) {
+                    downloadBlob = dataURLToBlob(downloadBlob);
+                }
+                if (!downloadBlob) { alert("File originale non disponibile."); return; }
+                const url = URL.createObjectURL(downloadBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = reg.fileName || `${reg.title}.docx`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+            };
+
+            document.getElementById("regolamento-detail-view").classList.remove("hidden");
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeRegolamentoDetail() {
+            document.getElementById("regolamento-detail-view").classList.add("hidden");
+            document.body.style.overflow = 'auto';
+        }
+
+        function deleteRegolamentoMulti() {
+            const select = document.getElementById("admin-delete-regolamento-select");
+            const selectedOptions = Array.from(select.selectedOptions);
+            if (selectedOptions.length === 0) { alert("Seleziona almeno un regolamento da eliminare."); return; }
+            if (confirm(`Vuoi eliminare ${selectedOptions.length} regolamenti selezionati?`)) {
+                const idsToDelete = selectedOptions.map(opt => Number(opt.value));
+                regolamentiData = regolamentiData.filter(r => !idsToDelete.includes(r.id));
+                saveData();
+                renderRegolamenti();
+                populateAdminSelect();
+                alert("Regolamenti eliminati con successo.");
+            }
+        }
+
+        async function uploadPercorsiWordMulti() {
+            const fileInput = document.getElementById("admin-percorso-file");
+            const feedbackEl = document.getElementById("upload-feedback-percorsi");
+            if (fileInput.files.length === 0) { alert("Seleziona almeno un file Word (.docx)!"); return; }
+
+            const files = Array.from(fileInput.files);
+            let loadedCount = 0;
+
+            for (const file of files) {
+                let title = file.name.replace(/\.[^/.]+$/, "");
+                await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        percorsiData.push({ id: Date.now() + Math.random(), title: title, fileData: event.target.result, fileName: file.name });
+                        loadedCount++;
+                        resolve();
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            percorsiData.sort((a, b) => naturalSort(a.title, b.title));
+            saveData();
+            fileInput.value = "";
+            renderPercorsi();
+            populateAdminSelect();
+            
+            feedbackEl.textContent = `✓ Caricamento completato! Aggiunti ${loadedCount} percorsi con successo all'interno dell'app.`;
+            feedbackEl.classList.remove("hidden");
+            setTimeout(() => { feedbackEl.classList.add("hidden"); }, 4000);
+        }
+
+        async function uploadCerchieWordMulti() {
+            const fileInput = document.getElementById("admin-cerchia-file");
+            const feedbackEl = document.getElementById("upload-feedback-cerchie");
+            if (fileInput.files.length === 0) { alert("Seleziona almeno un file Word (.docx)!"); return; }
+
+            const files = Array.from(fileInput.files);
+            let loadedCount = 0;
+
+            for (const file of files) {
+                let title = file.name.replace(/\.[^/.]+$/, "");
+                await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        cerchieData.push({ id: Date.now() + Math.random(), title: title, fileData: event.target.result, fileName: file.name });
+                        loadedCount++;
+                        resolve();
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            cerchieData.sort((a, b) => naturalSort(a.title, b.title));
+            saveData();
+            fileInput.value = "";
+            renderCerchie();
+            populateAdminSelect();
+            
+            feedbackEl.textContent = `✓ Caricamento completato! Aggiunte ${loadedCount} cerchie con successo all'interno dell'app.`;
+            feedbackEl.classList.remove("hidden");
+            setTimeout(() => { feedbackEl.classList.add("hidden"); }, 4000);
+        }
+
+        function renderPercorsi() {
+            const query = document.getElementById("search-percorso").value.toLowerCase();
+            const container = document.getElementById("percorsi-list");
+            container.innerHTML = "";
+
+            let sortedPercorsi = [...percorsiData].sort((a, b) => naturalSort(a.title, b.title));
+            let filtered = sortedPercorsi.filter(p => p.title.toLowerCase().includes(query));
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 col-span-full text-center py-6 text-sm font-medium">Nessun percorso taxi trovato.</p>`;
+                return;
+            }
+
+            filtered.forEach(p => {
+                const card = document.createElement("div");
+                card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between cursor-pointer group hover:border-amber-500";
+                card.onclick = () => openDocumentDetailFromData(p);
+                card.innerHTML = `
+                    <div class="flex items-center space-x-3.5">
+                        <div class="p-3 bg-amber-50 rounded-xl group-hover:bg-amber-100 transition text-amber-600">
+                            <i class="fa-solid fa-route text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-amber-700 leading-snug">${p.title}</h3>
+                            <span class="text-xs text-slate-500 font-medium">Clicca per aprire, visualizzare o scaricare</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderCerchie() {
+            const query = document.getElementById("search-cerchia").value.toLowerCase();
+            const container = document.getElementById("cerchie-list");
+            container.innerHTML = "";
+
+            let sortedCerchie = [...cerchieData].sort((a, b) => naturalSort(a.title, b.title));
+            let filtered = sortedCerchie.filter(c => c.title.toLowerCase().includes(query));
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 col-span-full text-center py-6 text-sm font-medium">Nessun percorso cerchia trovato.</p>`;
+                return;
+            }
+
+            filtered.forEach(c => {
+                const card = document.createElement("div");
+                card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between cursor-pointer group hover:border-amber-500";
+                card.onclick = () => openDocumentDetailFromData(c);
+                card.innerHTML = `
+                    <div class="flex items-center space-x-3.5">
+                        <div class="p-3 bg-amber-50 rounded-xl group-hover:bg-amber-100 transition text-amber-600">
+                            <i class="fa-solid fa-circle-nodes text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-base sm:text-lg text-slate-900 group-hover:text-amber-700 leading-snug">${c.title}</h3>
+                            <span class="text-xs text-slate-500 font-medium">Clicca per aprire, visualizzare o scaricare</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        async function openDocumentDetailFromData(docObj) {
+            stopAllAudioEngine();
+            currentActiveDocTitle = docObj.title;
+            document.getElementById("percorso-detail-title").textContent = docObj.title;
+            
+            const detailView = document.getElementById("percorso-detail-view");
+            detailView.classList.remove("hidden");
+            document.body.style.overflow = 'hidden';
+
+            isSingleStepMode = false;
+            currentStepIndex = 0;
+            updateViewModeUI();
+
+            const listContainer = document.getElementById("percorso-list-view-container");
+            listContainer.innerHTML = `<p class="text-slate-500 italic text-center py-10"><i class="fa-solid fa-spinner fa-spin mr-2 text-amber-500 text-xl"></i> Caricamento file in corso...</p>`;
+
+            let fileBlobOrData = docObj.fileData;
+            let storageKeyPrefix = percorsiData.includes(docObj) ? "milan_percorsi_data" : "milan_cerchie_data";
+
+            if (!fileBlobOrData) {
+                try {
+                    const db = await openDatabase();
+                    fileBlobOrData = await new Promise((resolve) => {
+                        const transaction = db.transaction("wordFiles", "readonly");
+                        const store = transaction.objectStore("wordFiles");
+                        const req = store.get(`${storageKeyPrefix}_${docObj.id || docObj.title}`);
+                        req.onsuccess = () => resolve(req.result ? req.result.file : null);
+                        req.onerror = () => resolve(null);
+                    });
+                } catch(e) {}
+            }
+
+            if (fileBlobOrData) {
+                try {
+                    let arrayBufferPromise;
+                    if (fileBlobOrData instanceof Blob) {
+                        arrayBufferPromise = fileBlobOrData.arrayBuffer();
+                    } else {
+                        const base64Content = fileBlobOrData.split(',')[1];
+                        const binaryString = atob(base64Content);
+                        const len = binaryString.length;
+                        const bytes = new Uint8Array(len);
+                        for (let i = 0; i < len; i++) { bytes[i] = binaryString.charCodeAt(i); }
+                        arrayBufferPromise = Promise.resolve(bytes.buffer);
+                    }
+
+                    arrayBufferPromise.then(buffer => {
+                        currentRawDocBuffer = buffer;
+                        mammoth.extractRawText({ arrayBuffer: buffer })
+                            .then(function(result) {
+                                const rawText = result.value || "";
+                                let steps = [];
+                                const lines = rawText.split('\n');
+                                lines.forEach(l => {
+                                    const trimmed = l.trim();
+                                    if (trimmed) {
+                                        const cleaned = trimmed.replace(/^(\d+[\.\)]\s*|-\s*)/, '');
+                                        if (cleaned) {
+                                            const subParts = cleaned.split(/[,–—-]/).map(p => p.trim()).filter(p => p.length > 0);
+                                            if (subParts.length > 1) {
+                                                subParts.forEach(sp => steps.push(sp));
+                                            } else {
+                                                steps.push(cleaned);
+                                            }
+                                        }
+                                    }
+                                });
+                                
+                                if (steps.length === 0) steps = [rawText];
+                                currentDocumentSteps = steps;
+                                renderDocumentModalContent();
+                            })
+                            .catch(function() {
+                                listContainer.innerHTML = `<p class="text-red-500 text-center py-10 font-bold">Errore di lettura del file Word.</p>`;
+                            });
+                    });
+                } catch (e) {
+                    listContainer.innerHTML = `<p class="text-red-500 text-center py-10 font-bold">Impossibile elaborare il documento.</p>`;
+                }
+            } else {
+                currentDocumentSteps = ["Nessun contenuto disponibile per questo elemento di default."];
+                renderDocumentModalContent();
+            }
+        }
+
+        function toggleSpeechPercorso() {
+            if (!('speechSynthesis' in window)) {
+                alert("La sintesi vocale non è supportata dal tuo browser.");
+                return;
+            }
+
+            if (isSpeakingPercorso) {
+                stopAllAudioEngine();
+                return;
+            }
+
+            stopAllAudioEngine();
+
+            if (!currentDocumentSteps || currentDocumentSteps.length === 0) return;
+
+            let fullText = `${currentActiveDocTitle}. ` + currentDocumentSteps.join(", ");
+            let utterance = new SpeechSynthesisUtterance(fullText);
+            utterance.lang = 'it-IT';
+            utterance.rate = 0.95;
+
+            utterance.onstart = function() {
+                isSpeakingPercorso = true;
+                const btnText = document.getElementById("tts-percorso-btn-text");
+                const btnMic = document.getElementById("btn-tts-percorso");
+                if (btnText) btnText.textContent = "Interrompi";
+                if (btnMic) btnMic.className = "px-3.5 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm";
+            };
+
+            utterance.onend = utterance.onerror = function() {
+                isSpeakingPercorso = false;
+                const btnText = document.getElementById("tts-percorso-btn-text");
+                const btnMic = document.getElementById("btn-tts-percorso");
+                if (btnText) btnText.textContent = "Ascolta";
+                if (btnMic) btnMic.className = "px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm";
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function renderDocumentModalContent() {
+            const listContainer = document.getElementById("percorso-list-view-container");
+            const stepContainer = document.getElementById("percorso-single-step-container");
+            const indicator = document.getElementById("percorso-step-indicator");
+
+            if (!isSingleStepMode) {
+                listContainer.classList.remove("hidden");
+                stepContainer.classList.add("hidden");
+                listContainer.innerHTML = "";
+
+                currentDocumentSteps.forEach((step, idx) => {
+                    const item = document.createElement("div");
+                    item.className = "flex items-start bg-white border border-slate-200 rounded-xl p-3.5 shadow-sm";
+                    item.innerHTML = `
+                        <span class="flex-shrink-0 w-8 h-8 bg-amber-500 text-white font-black rounded-lg flex items-center justify-center text-sm mr-3.5 shadow-sm">${idx + 1}</span>
+                        <p class="text-slate-800 text-sm sm:text-base font-semibold leading-relaxed my-auto">${step}</p>
+                    `;
+                    listContainer.appendChild(item);
+                });
+            } else {
+                listContainer.classList.add("hidden");
+                stepContainer.classList.remove("hidden");
+
+                if (currentDocumentSteps.length > 0) {
+                    const currentText = currentDocumentSteps[currentStepIndex];
+                    stepContainer.innerHTML = `
+                        <div class="max-w-2xl w-full bg-white border border-slate-200 rounded-2xl p-6 sm:p-10 shadow-md flex flex-col items-center justify-center my-auto space-y-6">
+                            <span class="px-4 py-1.5 bg-amber-100 text-amber-900 rounded-full font-black text-xs sm:text-sm tracking-wider uppercase">Tappa ${currentStepIndex + 1} di ${currentDocumentSteps.length}</span>
+                            <h4 class="text-lg sm:text-2xl font-bold text-slate-900 leading-snug">${currentText}</h4>
+                        </div>
+                    `;
+                    indicator.textContent = `${currentStepIndex + 1} / ${currentDocumentSteps.length}`;
+                }
+            }
+        }
+
+        function togglePercorsoViewMode() {
+            isSingleStepMode = !isSingleStepMode;
+            updateViewModeUI();
+            renderDocumentModalContent();
+        }
+
+        function updateViewModeUI() {
+            const btnText = document.getElementById("toggle-view-text");
+            const btnIcon = document.getElementById("toggle-view-icon");
+            const controls = document.getElementById("percorso-step-controls");
+
+            if (isSingleStepMode) {
+                btnText.textContent = "Vista Elenco Completo";
+                btnIcon.className = "fa-solid fa-list";
+                controls.classList.remove("hidden");
+                controls.classList.add("flex");
+            } else {
+                btnText.textContent = "Modalità Passo-Passo";
+                btnIcon.className = "fa-solid fa-list-check";
+                controls.classList.remove("flex");
+                controls.classList.add("hidden");
+            }
+        }
+
+        function nextPercorsoStep() {
+            if (currentStepIndex < currentDocumentSteps.length - 1) {
+                currentStepIndex++;
+                renderDocumentModalContent();
+            }
+        }
+
+        function prevPercorsoStep() {
+            if (currentStepIndex > 0) {
+                currentStepIndex--;
+                renderDocumentModalContent();
+            }
+        }
+
+        function closePercorsoDetail() {
+            stopAllAudioEngine();
+            document.getElementById("percorso-detail-view").classList.add("hidden");
+            document.body.style.overflow = 'auto';
+        }
+
+        function downloadOriginalWordFile() {
+            const found = percorsiData.concat(cerchieData).find(x => x.title === currentActiveDocTitle);
+            if (!found || !found.fileData) { alert("File originale non disponibile per il download."); return; }
+            const a = document.createElement('a');
+            a.href = found.fileData;
+            a.download = found.fileName || `${currentActiveDocTitle}.docx`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        }
+
+        function deletePercorsoMulti() {
+            const select = document.getElementById("admin-delete-percorso-select");
+            const selectedOptions = Array.from(select.selectedOptions);
+            if (selectedOptions.length === 0) { alert("Seleziona almeno un percorso da eliminare."); return; }
+            if (confirm(`Vuoi eliminare ${selectedOptions.length} percorsi selezionati?`)) {
+                const titlesToDelete = selectedOptions.map(opt => opt.value);
+                percorsiData = percorsiData.filter(p => !titlesToDelete.includes(p.title));
+                saveData();
+                renderPercorsi();
+                populateAdminSelect();
+                alert("Percorsi eliminati con successo.");
+            }
+        }
+
+        function deleteCerchiaMulti() {
+            const select = document.getElementById("admin-delete-cerchia-select");
+            const selectedOptions = Array.from(select.selectedOptions);
+            if (selectedOptions.length === 0) { alert("Seleziona almeno una cerchia da eliminare."); return; }
+            if (confirm(`Vuoi eliminare ${selectedOptions.length} cerchie selezionate?`)) {
+                const titlesToDelete = selectedOptions.map(opt => opt.value);
+                cerchieData = cerchieData.filter(c => !titlesToDelete.includes(c.title));
+                saveData();
+                renderCerchie();
+                populateAdminSelect();
+                alert("Cerchie eliminate con successo.");
+            }
+        }
+
+        function renderStatali() {
+            const query = document.getElementById("search-statale").value.toLowerCase();
+            const container = document.getElementById("statali-list");
+            container.innerHTML = "";
+
+            let filtered = stataliListDynamic.filter(s => s.toLowerCase().includes(query));
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 col-span-full text-center py-6 text-sm font-medium">Nessuna strada statale trovata.</p>`;
+                return;
+            }
+
+            filtered.forEach(s => {
+                const desc = stataliDescriptions[s] || "Nessuna descrizione aggiuntiva inserita.";
+                const card = document.createElement("div");
+                card.className = "bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm hover:shadow-md transition flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center space-x-3.5 mb-2.5">
+                            <div class="p-3 bg-amber-50 rounded-xl text-amber-600">
+                                <i class="fa-solid fa-road text-xl"></i>
+                            </div>
+                            <h3 class="font-bold text-base sm:text-lg text-slate-900 leading-snug">${s}</h3>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-600 font-medium pl-1 leading-relaxed">${desc}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function addNewStatale() {
+            const input = document.getElementById("admin-new-statale-name");
+            const val = input.value.trim();
+            if(!val) { alert("Inserisci il nome della strada statale!"); return; }
+            if(!stataliListDynamic.includes(val)) {
+                stataliListDynamic.push(val);
+                stataliListDynamic.sort(naturalSort);
+                saveData();
+                input.value = "";
+                renderStatali();
+                populateAdminSelect();
+                alert("Strada statale aggiunta con successo!");
+            } else {
+                alert("Questa strada statale è già presente.");
+            }
+        }
+
+        function deleteStataleMulti() {
+            const select = document.getElementById("admin-statali-delete-select");
+            const selectedOptions = Array.from(select.selectedOptions);
+            if(selectedOptions.length === 0) { alert("Seleziona almeno una statale da eliminare."); return; }
+            if(confirm(`Vuoi eliminare ${selectedOptions.length} strade statali selezionate?`)) {
+                const valsToDelete = selectedOptions.map(opt => opt.value);
+                stataliListDynamic = stataliListDynamic.filter(s => !valsToDelete.includes(s));
+                saveData();
+                renderStatali();
+                populateAdminSelect();
+                alert("Strade statali eliminate con successo!");
+            }
+        }
+
+        function loadAdminStataleData() {
+            const select = document.getElementById("admin-statale-select");
+            const descArea = document.getElementById("admin-statale-desc");
+            const val = select.value;
+            descArea.value = stataliDescriptions[val] || "";
+        }
+
+        function saveStataleDescription() {
+            const select = document.getElementById("admin-statale-select");
+            const descArea = document.getElementById("admin-statale-desc");
+            const val = select.value;
+            if(!val) return;
+            stataliDescriptions[val] = descArea.value.trim();
+            saveData();
+            renderStatali();
+            alert("Descrizione statale salvata con successo!");
+        }
+
+        function getProcessedPiazzeList() {
+            let processed = [...piazzeData];
+            if (sortMode === 'asc') {
+                processed.sort((a, b) => naturalSort(a.name, b.name));
+            } else if (sortMode === 'desc') {
+                processed.sort((a, b) => naturalSort(b.name, a.name));
+            }
+            return processed;
+        }
+
+        function renderEncyclopedia() {
+            const query = document.getElementById("search-piazza").value.toLowerCase();
+            const container = document.getElementById("encyclopedia-list");
+            container.innerHTML = "";
+
+            let processed = getProcessedPiazzeList();
+            let filtered = processed.filter(item => {
+                const matchName = item.name.toLowerCase().includes(query) || item.type.toLowerCase().includes(query);
+                const matchConfluence = item.confluences.some(c => c.toLowerCase().includes(query));
+                return matchName || matchConfluence;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 col-span-full text-center py-6 text-sm font-medium">Nessun elemento toponomastico trovato.</p>`;
+                return;
+            }
+
+            if (currentPiazzaIndex >= filtered.length) { currentPiazzaIndex = 0; }
+
+            const item = filtered[currentPiazzaIndex];
+            const card = document.createElement("div");
+            card.className = "bg-white border-2 border-amber-500/30 rounded-2xl p-5 shadow-md hover:shadow-lg transition flex flex-col justify-between col-span-full max-w-2xl mx-auto w-full";
+
+            let confluencesHtml = item.confluences.map(c => {
+                const isSelected = (selectedStreetForTap && selectedStreetForTap.piazzaId === item.id && selectedStreetForTap.street === c);
+                const hasCustom = customDescriptions[item.name] && customDescriptions[item.name][c];
+                const badgeClass = isSelected ? "border-amber-500 bg-amber-50 text-amber-900 shadow" : "border-slate-200 bg-slate-50 text-slate-800 hover:bg-slate-100";
+                const dotClass = hasCustom ? "bg-amber-500" : "bg-slate-400";
+                return `<button onclick="handleStreetClick('${item.name.replace(/'/g, "\\'")}', '${c.replace(/'/g, "\\'")}', ${item.id})" class="text-left px-3.5 py-2 rounded-xl border text-sm font-semibold transition flex items-center justify-between group ${badgeClass}">
+                    <span class="truncate pr-2">${c}</span>
+                    <span class="w-2.5 h-2.5 rounded-full ${dotClass} flex-shrink-0"></span>
+                </button>`;
+            }).join('');
 
             card.innerHTML = `
                 <div>
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="text-xs font-bold uppercase tracking-wider text-amber-600 bg-amber-50 px-2 py-0.5 rounded">${item.type}</span>
-                        <span class="text-xs text-slate-400 font-mono">#${originalIndex >= 0 ? originalIndex + 1 : idx + 1}</span>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="px-3 py-1 bg-amber-100 text-amber-900 rounded-lg font-extrabold text-xs uppercase tracking-wider">${item.type}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md">Piazza ${currentPiazzaIndex + 1} di ${filtered.length}</span>
+                            <button id="btn-tts-piazza" onclick="toggleSpeechPiazza('${item.name.replace(/'/g, "\\'")}', ${JSON.stringify(item.confluences).replace(/"/g, '&quot;')})" class="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow" title="Ascolta confluenze">
+                                <i class="fa-solid fa-volume-high text-sm"></i> <span id="tts-btn-text">Ascolta</span>
+                            </button>
+                        </div>
                     </div>
-                    <h3 class="font-black text-lg sm:text-xl text-slate-900 mb-2.5">${item.name}</h3>
-                    <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
-                        ${htmlConfluences}
-                    </div>
-                </div>
-                <div class="pt-2 border-t border-slate-100 flex justify-between items-center text-xs text-slate-500 font-bold">
-                    <span>${(item.confluences || []).length} Confluenze (Antiorario)</span>
-                    <button onclick="openExerciseForPiazza('${item.name.replace(/'/g, "\\'")}')" class="text-amber-600 hover:text-amber-700 flex items-center gap-1 bg-amber-50 px-2.5 py-1 rounded-md transition">
-                        <i class="fa-solid fa-map-location-dot"></i> Esercitati
-                    </button>
+                    <h3 class="font-black text-2xl sm:text-3xl text-slate-900 mb-4">${item.name}</h3>
+                    <div class="space-y-2 max-h-64 overflow-y-auto p-1">${confluencesHtml}</div>
                 </div>
             `;
             container.appendChild(card);
-        });
-    }
-function showStreetDestinationInfo(piazzaName, streetName) {
-        const infoBox = document.getElementById("street-destination-info");
-        const destText = document.getElementById("street-dest-text");
-        const mapLink = document.getElementById("street-map-link");
+        }
 
-        const key = `${piazzaName}_${streetName}`;
-        const desc = customDescriptions[key] || "Nessuna informazione aggiuntiva salvata per questa confluenza.";
+        function navigatePiazza(direction) {
+            const query = document.getElementById("search-piazza").value.toLowerCase();
+            let processed = getProcessedPiazzeList();
+            let filtered = processed.filter(item => {
+                const matchName = item.name.toLowerCase().includes(query) || item.type.toLowerCase().includes(query);
+                const matchConfluence = item.confluences.some(c => c.toLowerCase().includes(query));
+                return matchName || matchConfluence;
+            });
 
-        destText.textContent = `${piazzaName} ➔ ${streetName}: ${desc}`;
-        mapLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(piazzaName + " " + streetName + " Milano")}`;
+            if (filtered.length === 0) return;
 
-        infoBox.classList.remove("hidden");
-        infoBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }
+            currentPiazzaIndex += direction;
+            if (currentPiazzaIndex < 0) currentPiazzaIndex = filtered.length - 1;
+            if (currentPiazzaIndex >= filtered.length) currentPiazzaIndex = 0;
 
-    function closeStreetInfo() {
-        document.getElementById("street-destination-info").classList.add("hidden");
-    }
+            stopAllAudioEngine();
+            renderEncyclopedia();
+        }
 
-    function openExerciseForPiazza(piazzaName) {
-        switchTab('esercizio');
-        const select = document.getElementById("exercise-select");
-        if (select) {
-            for (let i = 0; i < select.options.length; i++) {
-                if (select.options[i].text.includes(piazzaName)) {
-                    select.selectedIndex = i;
-                    loadExercise();
-                    break;
-                }
+        function onSearchPiazzaInput() {
+            currentPiazzaIndex = 0;
+            stopAllAudioEngine();
+            renderEncyclopedia();
+        }
+
+        function toggleSpeechPiazza(piazzaName, confluencesArr) {
+            if (!('speechSynthesis' in window)) {
+                alert("La sintesi vocale non è supportata dal tuo browser.");
+                return;
             }
-        }
-    }
 
-    /* ----------------------------------------------------
-       LOGICA ESERCIZIO & ORBITA (MAPPA INTERATTIVA)
-    ---------------------------------------------------- */
-    let currentExercisePiazza = null;
-    let currentExerciseSlots = [];
-    let currentPoolStreets = [];
+            if (isSpeakingPiazza) {
+                stopAllAudioEngine();
+                return;
+            }
 
-    function initExercise() {
-        const select = document.getElementById("exercise-select");
-        if (!select) return;
+            stopAllAudioEngine();
+            
+            let fullText = `${piazzaName}. Confluenze in senso antiorario: ` + confluencesArr.join(", ");
+            let utterance = new SpeechSynthesisUtterance(fullText);
+            utterance.lang = 'it-IT';
+            utterance.rate = 0.95;
 
-        select.innerHTML = "";
-        piazzeData.forEach((p, idx) => {
-            const opt = document.createElement("option");
-            opt.value = p.id;
-            opt.textContent = `${p.type} ${p.name}`;
-            select.appendChild(opt);
-        });
-
-        if (piazzeData.length > 0) {
-            loadExercise();
-        }
-
-        setupMapInteractions();
-    }
-
-    function filterExerciseDropdown() {
-        const input = document.getElementById("exercise-search-input");
-        const suggestionsBox = document.getElementById("exercise-suggestions");
-        if (!input || !suggestionsBox) return;
-
-        const val = input.value.toLowerCase().trim();
-        suggestionsBox.innerHTML = "";
-
-        if (!val) {
-            suggestionsBox.classList.add("hidden");
-            return;
-        }
-
-        const matches = piazzeData.filter(p => `${p.type} ${p.name}`.toLowerCase().includes(val));
-
-        if (matches.length === 0) {
-            suggestionsBox.classList.add("hidden");
-            return;
-        }
-
-        matches.forEach(m => {
-            const item = document.createElement("div");
-            item.className = "px-3 py-2 text-sm text-slate-800 hover:bg-amber-100 cursor-pointer font-bold border-b border-slate-100";
-            item.textContent = `${m.type} ${m.name}`;
-            item.onclick = () => {
-                const select = document.getElementById("exercise-select");
-                if (select) {
-                    select.value = m.id;
-                    loadExercise();
-                }
-                input.value = `${m.type} ${m.name}`;
-                suggestionsBox.classList.add("hidden");
+            utterance.onstart = function() {
+                isSpeakingPiazza = true;
+                const btnText = document.getElementById("tts-btn-text");
+                const btnMic = document.getElementById("btn-tts-piazza");
+                if (btnText) btnText.textContent = "Interrompi";
+                if (btnMic) btnMic.className = "px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow";
             };
-            suggestionsBox.appendChild(item);
-        });
 
-        suggestionsBox.classList.remove("hidden");
-    }
+            utterance.onend = utterance.onerror = function() {
+                isSpeakingPiazza = false;
+                const btnText = document.getElementById("tts-btn-text");
+                const btnMic = document.getElementById("btn-tts-piazza");
+                if (btnText) btnText.textContent = "Ascolta";
+                if (btnMic) btnMic.className = "px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow";
+            };
 
-    function loadExercise() {
-        stopAllAudioEngine();
-        resetMapTransform();
-
-        const select = document.getElementById("exercise-select");
-        if (!select) return;
-
-        const selectedId = parseInt(select.value);
-        currentExercisePiazza = piazzeData.find(p => p.id === selectedId) || piazzeData[0];
-
-        if (!currentExercisePiazza) return;
-
-        document.getElementById("ex-square-type").textContent = currentExercisePiazza.type;
-        document.getElementById("ex-square-title").textContent = currentExercisePiazza.name;
-
-        const originalConfluences = [...(currentExercisePiazza.confluences || [])];
-        currentExerciseSlots = new Array(originalConfluences.length).fill(null);
-
-        currentPoolStreets = [...originalConfluences];
-        // Shuffle mescolamento iniziale per il pool
-        currentPoolStreets.sort(() => Math.random() - 0.5);
-
-        selectedStreetForTap = null;
-        renderExerciseBoard();
-        
-        const feedback = document.getElementById("exercise-feedback");
-        if (feedback) feedback.textContent = "";
-    }
-
-    function renderExerciseBoard() {
-        renderOrbitSlots();
-        renderSourcePool();
-    }
-
-    function renderOrbitSlots() {
-        const container = document.getElementById("map-slots-container");
-        if (!container) return;
-        container.innerHTML = "";
-
-        const total = currentExercisePiazza.confluences.length;
-        const radius = window.innerWidth >= 640 ? 220 : 150;
-
-        for (let i = 0; i < total; i++) {
-            // Angolo in senso antiorario a partire dal primo slot in alto (-90 deg)
-            const angleDeg = -90 - (i * (360 / total));
-            const angleRad = (angleDeg * Math.PI) / 180;
-
-            const x = radius * Math.cos(angleRad);
-            const y = radius * Math.sin(angleRad);
-
-            const slotDiv = document.createElement("div");
-            slotDiv.className = "orbit-slot bg-slate-800/90 border-2 border-slate-600 hover:border-amber-400 rounded-xl p-2 text-center text-white shadow-lg flex flex-col justify-center items-center transition";
-            slotDiv.style.left = `calc(50% + ${x}px)`;
-            slotDiv.style.top = `calc(50% + ${y}px)`;
-
-            const filledValue = currentExerciseSlots[i];
-
-            if (filledValue) {
-                slotDiv.classList.add("border-amber-500", "bg-slate-900");
-                slotDiv.innerHTML = `
-                    <span class="text-[10px] text-amber-400 font-bold block leading-none mb-1">#${i + 1}</span>
-                    <span class="text-xs sm:text-sm font-black leading-tight text-white">${filledValue}</span>
-                `;
-            } else {
-                slotDiv.innerHTML = `
-                    <span class="text-[10px] text-slate-400 font-bold block leading-none">Pos. ${i + 1}</span>
-                    <span class="text-xs text-slate-500 font-semibold italic">Vuoto</span>
-                `;
-            }
-
-            slotDiv.onclick = () => onSlotClick(i);
-            container.appendChild(slotDiv);
-        }
-    }
-
-    function renderSourcePool() {
-        const poolContainer = document.getElementById("source-pool");
-        const poolCount = document.getElementById("pool-count");
-        if (!poolContainer) return;
-
-        poolContainer.innerHTML = "";
-        if (poolCount) poolCount.textContent = currentPoolStreets.length;
-
-        if (currentPoolStreets.length === 0) {
-            poolContainer.innerHTML = `<p class="text-center text-xs text-slate-400 font-semibold py-8">Tutte le vie sono state posizionate!</p>`;
-            return;
+            window.speechSynthesis.speak(utterance);
         }
 
-        currentPoolStreets.forEach((street) => {
-            const card = document.createElement("div");
-            card.className = "street-card p-3 bg-slate-100 border border-slate-300 hover:border-amber-500 rounded-lg font-bold text-xs sm:text-sm text-slate-800 shadow-sm transition flex justify-between items-center";
-            
-            if (selectedStreetForTap === street) {
-                card.classList.add("selected-for-tap");
-            }
-
-            card.innerHTML = `
-                <span>${street}</span>
-                <i class="fa-solid fa-hand-pointer text-amber-500 text-xs opacity-80"></i>
-            `;
-
-            card.onclick = () => onPoolStreetClick(street);
-            poolContainer.appendChild(card);
-        });
-    }
-
-    function onPoolStreetClick(street) {
-        if (selectedStreetForTap === street) {
-            selectedStreetForTap = null;
-        } else {
-            selectedStreetForTap = street;
-            
-            // Trova il primo slot vuoto e lo riempie automaticamente per velocizzare da smartphone
-            const emptyIdx = currentExerciseSlots.findIndex(s => s === null);
-            if (emptyIdx !== -1) {
-                currentExerciseSlots[emptyIdx] = street;
-                currentPoolStreets = currentPoolStreets.filter(s => s !== street);
-                selectedStreetForTap = null;
-            }
-        }
-        renderExerciseBoard();
-    }
-
-    function onSlotClick(slotIndex) {
-        if (currentExerciseSlots[slotIndex]) {
-            // Se lo slot ha già una via, la rimette nel pool
-            const removedStreet = currentExerciseSlots[slotIndex];
-            currentExerciseSlots[slotIndex] = null;
-            currentPoolStreets.push(removedStreet);
-            renderExerciseBoard();
-            return;
-        }
-
-        if (selectedStreetForTap) {
-            currentExerciseSlots[slotIndex] = selectedStreetForTap;
-            currentPoolStreets = currentPoolStreets.filter(s => s !== selectedStreetForTap);
-            selectedStreetForTap = null;
-            renderExerciseBoard();
-        }
-    }
-
-    function resetExercise() {
-        if (currentExercisePiazza) {
-            loadExercise();
-        }
-    }
-
-    function showExerciseSolution() {
-        if (!currentExercisePiazza) return;
-        currentExerciseSlots = [...currentExercisePiazza.confluences];
-        currentPoolStreets = [];
-        selectedStreetForTap = null;
-        renderExerciseBoard();
-
-        const feedback = document.getElementById("exercise-feedback");
-        if (feedback) {
-            feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-blue-600";
-            feedback.textContent = "Mostrata la soluzione corretta in senso antiorario.";
-        }
-    }
-
-    function verifyExercise() {
-        if (!currentExercisePiazza) return;
-
-        const feedback = document.getElementById("exercise-feedback");
-        const correctOrder = currentExercisePiazza.confluences;
-
-        let isComplete = true;
-        let isAllCorrect = true;
-
-        for (let i = 0; i < correctOrder.length; i++) {
-            if (!currentExerciseSlots[i]) {
-                isComplete = false;
-            } else if (currentExerciseSlots[i] !== correctOrder[i]) {
-                isAllCorrect = false;
-            }
-        }
-
-        if (!isComplete) {
-            feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-amber-600";
-            feedback.textContent = "Completa tutte le caselle prima di verificare!";
-            return;
-        }
-
-        if (isAllCorrect) {
-            feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-emerald-600";
-            feedback.textContent = "🎉 Bravissimo! Tutte le confluenze sono nel corretto senso antiorario!";
-        } else {
-            feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-red-600";
-            feedback.textContent = "❌ Ci sono degli errori nella sequenza. Riprova o controlla la soluzione!";
-        }
-    }
-
-    /* ----------------------------------------------------
-       CONTROLLI ZOOM E DRAG PER LA MAPPA ORBITALE
-    ---------------------------------------------------- */
-    function setupMapInteractions() {
-        const viewport = document.getElementById("map-viewport");
-        if (!viewport) return;
-
-        viewport.addEventListener("mousedown", (e) => {
-            if (e.target.closest('.orbit-slot') || e.target.closest('button')) return;
-            isDraggingMap = true;
-            startDragX = e.clientX - mapPanX;
-            startDragY = e.clientY - mapPanY;
-        });
-
-        window.addEventListener("mousemove", (e) => {
-            if (!isDraggingMap) return;
-            mapPanX = e.clientX - startDragX;
-            mapPanY = e.clientY - startDragY;
-            applyMapTransform();
-        });
-
-        window.addEventListener("mouseup", () => {
-            isDraggingMap = false;
-        });
-
-        // Touch events per mobile
-        viewport.addEventListener("touchstart", (e) => {
-            if (e.target.closest('.orbit-slot') || e.target.closest('button')) return;
-            if (e.touches.length === 1) {
-                isDraggingMap = true;
-                startDragX = e.touches[0].clientX - mapPanX;
-                startDragY = e.touches[0].clientY - startDragY;
-            } else if (e.touches.length === 2) {
-                initialPinchDistance = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
-            }
-        }, { passive: true });
-
-        viewport.addEventListener("touchmove", (e) => {
-            if (e.touches.length === 1 && isDraggingMap) {
-                mapPanX = e.touches[0].clientX - startDragX;
-                mapPanY = e.touches[0].clientY - startDragY;
-                applyMapTransform();
-            } else if (e.touches.length === 2 && initialPinchDistance) {
-                const dist = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
-                const factor = dist / initialPinchDistance;
-                mapScale = Math.min(Math.max(0.5, mapScale * factor), 2.5);
-                initialPinchDistance = dist;
-                applyMapTransform();
-            }
-        }, { passive: true });
-
-        viewport.addEventListener("touchend", () => {
-            isDraggingMap = false;
-            initialPinchDistance = null;
-        });
-    }
-
-    function zoomMap(delta) {
-        mapScale = Math.min(Math.max(0.5, mapScale + delta), 2.5);
-        applyMapTransform();
-    }
-
-    function resetMapTransform() {
-        mapScale = 1;
-        mapPanX = 0;
-        mapPanY = 0;
-        applyMapTransform();
-    }
-
-    function applyMapTransform() {
-        const wrapper = document.getElementById("orbit-pan-zoom-wrapper");
-        if (wrapper) {
-            wrapper.style.transform = `translate(${mapPanX}px, ${mapPanY}px) scale(${mapScale})`;
-        }
-    }
-
-    /* ----------------------------------------------------
-       VOCALIZZAZIONE & MICROFONO (SPEECH RECOGNITION)
-    ---------------------------------------------------- */
-    function toggleVoiceInputExercise() {
-        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-            alert("Il riconoscimento vocale non è supportato da questo browser. Usa Chrome o Safari aggiornati.");
-            return;
-        }
-
-        if (isListeningExercise) {
-            stopListeningExerciseUI();
-            if (recognitionInstance) recognitionInstance.stop();
-        } else {
-            startListeningExerciseUI();
+        function toggleVoiceInputExercise() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Il riconoscimento vocale non è supportato da questo browser. Usa Chrome o Safari.");
+                return;
+            }
+
+            const btnMic = document.getElementById("btn-mic-exercise");
+
+            if (isListeningExercise) {
+                stopAllAudioEngine();
+                return;
+            }
+
+            stopAllAudioEngine();
+
             recognitionInstance = new SpeechRecognition();
             recognitionInstance.lang = 'it-IT';
             recognitionInstance.continuous = true;
-            recognitionInstance.interimResults = false;
+            recognitionInstance.interimResults = true;
 
-            recognitionInstance.onresult = (event) => {
-                const lastResultIndex = event.results.length - 1;
-                const text = event.results[lastResultIndex][0].transcript.toLowerCase().trim();
-                matchSpokenStreetToExercise(text);
+            recognitionInstance.onstart = function() {
+                isListeningExercise = true;
+                btnMic.classList.add("mic-active");
+                const feedback = document.getElementById("exercise-feedback");
+                if (feedback) {
+                    feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-amber-600 animate-pulse";
+                    feedback.textContent = "🎙️ In ascolto... Pronuncia la via per inserirla!";
+                }
             };
 
-            recognitionInstance.onerror = (e) => {
-                console.error("Errore Speech Recognition:", e);
+            recognitionInstance.onresult = function(event) {
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    let transcript = event.results[i][0].transcript;
+                    processSpokenTextExercise(transcript);
+                }
+            };
+
+            recognitionInstance.onerror = function(event) {
+                console.error("Errore riconoscimento vocale:", event.error);
                 stopListeningExerciseUI();
             };
 
-            recognitionInstance.onend = () => {
-                if (isListeningExercise) {
-                    try { recognitionInstance.start(); } catch(err){}
-                }
+            recognitionInstance.onend = function() {
+                stopListeningExerciseUI();
             };
 
             recognitionInstance.start();
         }
-    }
 
-    function startListeningExerciseUI() {
-        isListeningExercise = true;
-        const btn = document.getElementById("btn-mic-exercise");
-        if (btn) {
-            btn.classList.add("mic-active");
-            btn.innerHTML = `<i class="fa-solid fa-microphone"></i> Ascolto...`;
+        function stopListeningExerciseUI() {
+            isListeningExercise = false;
+            const btnMic = document.getElementById("btn-mic-exercise");
+            if (btnMic) btnMic.classList.remove("mic-active");
         }
-    }
 
-    function stopListeningExerciseUI() {
-        isListeningExercise = false;
-        const btn = document.getElementById("btn-mic-exercise");
-        if (btn) {
-            btn.classList.remove("mic-active");
-            btn.innerHTML = `<i class="fa-solid fa-microphone"></i> <span class="hidden sm:inline">Vocalizza</span>`;
+        function normaliseStreetName(str) {
+            if (!str) return "";
+            return str
+                .toLowerCase()
+                .trim()
+                .replace(/^(via|viale|corso|piazza|piazzale|largo|vico|vicolo|galleria)\s+/i, "")
+                .replace(/[.,'']/g, "")
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         }
-    }
 
-    function matchSpokenStreetToExercise(spokenText) {
-        if (!currentExercisePiazza || currentPoolStreets.length === 0) return;
+        function processSpokenTextExercise(transcript) {
+            if (!currentExPiazza) return;
 
-        // Cerca la via nel pool che corrisponde al testo pronunciato
-        const found = currentPoolStreets.find(street => {
-            const cleanStreet = street.toLowerCase().replace(/via|viale|corso|piazza|piazze|largo/g, '').trim();
-            const cleanSpoken = spokenText.replace(/via|viale|corso|piazza|piazze|largo/g, '').trim();
-            return cleanSpoken.includes(cleanStreet) || cleanStreet.includes(cleanSpoken);
-        });
-
-        if (found) {
-            const emptyIdx = currentExerciseSlots.findIndex(s => s === null);
-            if (emptyIdx !== -1) {
-                currentExerciseSlots[emptyIdx] = found;
-                currentPoolStreets = currentPoolStreets.filter(s => s !== found);
-                renderExerciseBoard();
+            let confluences = [...currentExPiazza.confluences];
+            let topStreet = confluences[0];
+            if (customDescriptions[currentExPiazza.name]) {
+                const customKeys = Object.keys(customDescriptions[currentExPiazza.name]);
+                const foundCustom = customKeys.find(k => confluences.includes(k));
+                if (foundCustom) topStreet = foundCustom;
             }
-        }
-    }
-/* ----------------------------------------------------
-       SEZIONE PERCORSI TAXI
-    ---------------------------------------------------- */
-    function renderPercorsi() {
-        const container = document.getElementById("percorsi-list");
-        if (!container) return;
-        const queryVal = (document.getElementById("search-percorso").value || "").toLowerCase().trim();
-        container.innerHTML = "";
-
-        const filtered = percorsiData.filter(p => p.title.toLowerCase().includes(queryVal));
-
-        if (filtered.length === 0) {
-            container.innerHTML = `<p class="col-span-full text-center text-slate-500 py-8 font-semibold">Nessun percorso trovato per "${queryVal}".</p>`;
-            return;
-        }
-
-        filtered.forEach((p) => {
-            const card = document.createElement("div");
-            card.className = "bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-3";
-            card.innerHTML = `
-                <div>
-                    <div class="flex justify-between items-center mb-1.5">
-                        <span class="text-xs font-bold uppercase tracking-wider text-red-600 bg-red-50 px-2 py-0.5 rounded"><i class="fa-solid fa-route mr-1"></i> Percorso</span>
-                    </div>
-                    <h3 class="font-bold text-base sm:text-lg text-slate-900 leading-snug">${p.title}</h3>
-                </div>
-                <div class="pt-2 border-t border-slate-100 flex justify-end">
-                    <button onclick="openPercorsoDetail('${p.title.replace(/'/g, "\\'")}', 'percorso')" class="px-3.5 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm">
-                        <i class="fa-solid fa-book-open"></i> Leggi Percorso
-                    </button>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    /* ----------------------------------------------------
-       SEZIONE CINQUE CERCHIE
-    ---------------------------------------------------- */
-    function renderCerchie() {
-        const container = document.getElementById("cerchie-list");
-        if (!container) return;
-        const queryVal = (document.getElementById("search-cerchia").value || "").toLowerCase().trim();
-        container.innerHTML = "";
-
-        const filtered = cerchieData.filter(c => c.title.toLowerCase().includes(queryVal));
-
-        if (filtered.length === 0) {
-            container.innerHTML = `<p class="col-span-full text-center text-slate-500 py-8 font-semibold">Nessun percorso cerchia trovato per "${queryVal}".</p>`;
-            return;
-        }
-
-        filtered.forEach((c) => {
-            const card = document.createElement("div");
-            card.className = "bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-3";
-            card.innerHTML = `
-                <div>
-                    <div class="flex justify-between items-center mb-1.5">
-                        <span class="text-xs font-bold uppercase tracking-wider text-amber-600 bg-amber-50 px-2 py-0.5 rounded"><i class="fa-solid fa-circle-nodes mr-1"></i> Cerchia</span>
-                    </div>
-                    <h3 class="font-bold text-base sm:text-lg text-slate-900 leading-snug">${c.title}</h3>
-                </div>
-                <div class="pt-2 border-t border-slate-100 flex justify-end">
-                    <button onclick="openPercorsoDetail('${c.title.replace(/'/g, "\\'")}', 'cerchia')" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm">
-                        <i class="fa-solid fa-book-open"></i> Leggi Cerchia
-                    </button>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    /* ----------------------------------------------------
-       DETTAGLIO MODALE PERCORSI E CERCHIE (CON STEP E TTS)
-    ---------------------------------------------------- */
-    async function openPercorsoDetail(title, type) {
-        stopAllAudioEngine();
-        currentActiveDocTitle = title;
-        document.getElementById("percorso-detail-title").textContent = title;
-        
-        const listContainer = document.getElementById("percorso-list-view-container");
-        const singleContainer = document.getElementById("percorso-single-step-container");
-        
-        listContainer.innerHTML = `<div class="p-8 text-center text-slate-500 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Caricamento in corso...</div>`;
-        singleContainer.innerHTML = "";
-
-        let sourceItem = null;
-        if (type === 'percorso') sourceItem = percorsiData.find(p => p.title === title);
-        else if (type === 'cerchia') sourceItem = cerchieData.find(c => c.title === title);
-
-        let arrayBuffer = null;
-
-        // 1. Tenta prima la lettura da IndexedDB per file pesanti
-        try {
-            const db = await openDatabase();
-            const recordId = type === 'percorso' ? `milan_percorsi_data_${sourceItem.id || title}` : `milan_cerchie_data_${sourceItem.id \vert{}\vert{} title}`; const record = await new Promise((resolve) => { const tx = db.transaction("wordFiles", "readonly"); const store = tx.objectStore("wordFiles"); const req = store.get(recordId); req.onsuccess = () => resolve(req.result); req.onerror = () => resolve(null); });  if (record && record.file) { arrayBuffer = await record.file.arrayBuffer(); } } catch (e) {}  // 2. Se non in IndexedDB, prova con il Base46 / DataURL da localStorage if (!arrayBuffer && sourceItem && sourceItem.fileData) { const blob = dataURLToBlob(sourceItem.fileData); arrayBuffer = await blob.arrayBuffer(); }  // 3. Se non presente in locale, prova il download da GitHub if (!arrayBuffer) { const safeFileName = encodeURIComponent(sourceItem && sourceItem.fileName ? sourceItem.fileName : title + ".docx"); const githubUrl = `https://raw.githubusercontent.com/meroandrea-bot/Taxi-Milano/main/${safeFileName}`;
-            try {
-                const res = await fetch(githubUrl + '?' + new Date().getTime());
-                if (res.ok) arrayBuffer = await res.arrayBuffer();
-            } catch (err) {}
-        }
-
-        if (!arrayBuffer) {
-            listContainer.innerHTML = `<p class="p-6 text-center text-red-600 font-bold">Impossibile caricare il documento. Il file potrebbe non essere ancora presente su GitHub o nel DB locale.</p>`;
-            document.getElementById("percorso-detail-view").classList.remove("hidden");
-            return;
-        }
-
-        currentRawDocBuffer = arrayBuffer;
-
-        try {
-            const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
-            const text = result.value || "";
-            
-            // Estrazione delle righe / passi del percorso
-            currentDocumentSteps = text.split("\n")
-                .map(line => line.trim())
-                .filter(line => line.length > 0);
-
-            if (currentDocumentSteps.length === 0) {
-                currentDocumentSteps = ["Nessun testo estratto dal documento Word."];
+            const topIdx = confluences.indexOf(topStreet);
+            if (topIdx > 0) {
+                confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
             }
 
-            renderPercorsoListView();
-            currentStepIndex = 0;
-            renderPercorsoSingleStep();
-
-            isSingleStepMode = false;
-            updatePercorsoViewDisplay();
-
-            document.getElementById("percorso-detail-view").classList.remove("hidden");
-        } catch (err) {
-            console.error("Errore Mammoth:", err);
-            listContainer.innerHTML = `<p class="p-6 text-center text-red-600 font-bold">Errore di lettura del file Word .docx.</p>`;
-            document.getElementById("percorso-detail-view").classList.remove("hidden");
-        }
-    }
-
-    function renderPercorsoListView() {
-        const container = document.getElementById("percorso-list-view-container");
-        if (!container) return;
-        container.innerHTML = "";
-
-        currentDocumentSteps.forEach((step, idx) => {
-            const card = document.createElement("div");
-            card.className = "p-3.5 bg-white border border-slate-200 rounded-xl shadow-sm text-sm sm:text-base font-semibold text-slate-800 flex items-start gap-3";
-            card.innerHTML = `
-                <span class="w-7 h-7 rounded-full bg-amber-100 text-amber-900 flex items-center justify-center text-xs font-black flex-shrink-0 mt-0.5">${idx + 1}</span>
-                <span class="leading-relaxed flex-1">${step}</span>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    function renderPercorsoSingleStep() {
-        const container = document.getElementById("percorso-single-step-container");
-        const indicator = document.getElementById("percorso-step-indicator");
-        if (!container) return;
-
-        if (currentDocumentSteps.length === 0) return;
-
-        const currentText = currentDocumentSteps[currentStepIndex];
-        container.innerHTML = `
-            <div class="max-w-2xl bg-white p-6 sm:p-10 rounded-2xl border-2 border-amber-400 shadow-xl space-y-4">
-                <span class="text-xs font-black uppercase tracking-widest text-amber-600 bg-amber-50 px-3 py-1 rounded-full">Passo ${currentStepIndex + 1} di${currentDocumentSteps.length}</span>
-                <p class="text-xl sm:text-3xl font-black text-slate-900 leading-snug">${currentText}</p>
-            </div>
-        `;
-
-        if (indicator) {
-            indicator.textContent = `${currentStepIndex + 1} / ${currentDocumentSteps.length}`; } }  function togglePercorsoViewMode() { isSingleStepMode = !isSingleStepMode; updatePercorsoViewDisplay(); }  function updatePercorsoViewDisplay() { const listContainer = document.getElementById("percorso-list-view-container"); const singleContainer = document.getElementById("percorso-single-step-container"); const stepControls = document.getElementById("percorso-step-controls"); const toggleBtnText = document.getElementById("toggle-view-text");  if (isSingleStepMode) { listContainer.classList.add("hidden"); singleContainer.classList.remove("hidden"); stepControls.classList.remove("hidden"); stepControls.classList.add("flex"); if (toggleBtnText) toggleBtnText.textContent = "Mostra Tutto L'Elenco"; } else { listContainer.classList.remove("hidden"); singleContainer.classList.add("hidden"); stepControls.classList.add("hidden"); stepControls.classList.remove("flex"); if (toggleBtnText) toggleBtnText.textContent = "Modalità Passo-Passo"; } }  function prevPercorsoStep() { if (currentStepIndex > 0) { currentStepIndex--; renderPercorsoSingleStep(); } }  function nextPercorsoStep() { if (currentStepIndex < currentDocumentSteps.length - 1) { currentStepIndex++; renderPercorsoSingleStep(); } }  function closePercorsoDetail() { stopAllAudioEngine(); document.getElementById("percorso-detail-view").classList.add("hidden"); }  function downloadOriginalWordFile() { if (!currentRawDocBuffer) { alert("File non disponibile per il download."); return; } const blob = new Blob([currentRawDocBuffer], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" }); const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = `${currentActiveDocTitle || 'documento'}.docx`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
-
-    function toggleSpeechPercorso() {
-        if (!('speechSynthesis' in window)) {
-            alert("Sintesi vocale non supportata su questo browser.");
-            return;
-        }
-
-        if (isSpeakingPercorso) {
-            stopAllAudioEngine();
-        } else {
-            stopAllAudioEngine();
-            isSpeakingPercorso = true;
-            
-            const btnText = document.getElementById("tts-percorso-btn-text");
-            const btnMic = document.getElementById("btn-tts-percorso");
-            if (btnText) btnText.textContent = "Ferma";
-            if (btnMic) btnMic.className = "px-3.5 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-xs sm:text-sm transition flex items-center gap-1.5 shadow-sm";
-
-            let textToRead = "";
-            if (isSingleStepMode) {
-                textToRead = currentDocumentSteps[currentStepIndex] || "";
-            } else {
-                textToRead = currentDocumentSteps.join(". ");
-            }
-
-            const utterance = new SpeechSynthesisUtterance(textToRead);
-            utterance.lang = 'it-IT';
-            utterance.rate = 0.9;
-
-            utterance.onend = () => stopAllAudioEngine();
-            utterance.onerror = () => stopAllAudioEngine();
-
-            window.speechSynthesis.speak(utterance);
-        }
-    }
-
-    /* ----------------------------------------------------
-       SEZIONE STRADE STATALI
-    ---------------------------------------------------- */
-    function renderStatali() {
-        const container = document.getElementById("statali-list");
-        if (!container) return;
-        const queryVal = (document.getElementById("search-statale").value || "").toLowerCase().trim();
-        container.innerHTML = "";
-
-        const filtered = stataliListDynamic.filter(s => s.toLowerCase().includes(queryVal));
-
-        if (filtered.length === 0) {
-            container.innerHTML = `<p class="col-span-full text-center text-slate-
-/* ----------------------------------------------------
-       GESTIONE PERCORSI E CERCHIE (.DOCX & TEXT)
-    ---------------------------------------------------- */
-    function renderPercorsi() {
-        const container = document.getElementById("percorsi-list");
-        const queryVal = (document.getElementById("search-percorso")?.value || "").toLowerCase().trim();
-        if (!container) return;
-        container.innerHTML = "";
-
-        const filtered = percorsiData.filter(item => item.title.toLowerCase().includes(queryVal));
-
-        if (filtered.length === 0) {
-            container.innerHTML = `<p class="col-span-full text-center text-slate-500 py-8 font-semibold">Nessun percorso trovato.</p>`;
-            return;
-        }
-
-        filtered.forEach(item => {
-            const card = document.createElement("div");
-            card.className = "bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-3 cursor-pointer";
-            card.onclick = () => openPercorsoModal(item.title, item.text || "Contenuto del percorso non disponibile.", item.fileData);
-            
-            card.innerHTML = `
-                <div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-red-600 bg-red-50 px-2 py-0.5 rounded">Percorso Taxi</span>
-                    <h3 class="font-black text-base sm:text-lg text-slate-900 mt-2 mb-1">${item.title}</h3>
-                    <p class="text-xs sm:text-sm text-slate-600 line-clamp-3">${item.text || 'Clicca per leggere il percorso...'}</p>
-                </div>
-                <div class="pt-2 border-t border-slate-100 flex justify-between items-center text-xs text-amber-600 font-bold">
-                    <span><i class="fa-solid fa-route mr-1"></i> Apri Dettaglio</span>
-                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    function renderCerchie() {
-        const container = document.getElementById("cerchie-list");
-        const queryVal = (document.getElementById("search-cerchia")?.value || "").toLowerCase().trim();
-        if (!container) return;
-        container.innerHTML = "";
-
-        const filtered = cerchieData.filter(item => item.title.toLowerCase().includes(queryVal));
-
-        if (filtered.length === 0) {
-            container.innerHTML = `<p class="col-span-full text-center text-slate-500 py-8 font-semibold">Nessuna cerchia trovata.</p>`;
-            return;
-        }
-
-        filtered.forEach(item => {
-            const card = document.createElement("div");
-            card.className = "bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-3 cursor-pointer";
-            card.onclick = () => openPercorsoModal(item.title, item.text || "Contenuto della cerchia non disponibile.", item.fileData);
-            
-            card.innerHTML = `
-                <div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-amber-600 bg-amber-50 px-2 py-0.5 rounded">Cinque Cerchie</span>
-                    <h3 class="font-black text-base sm:text-lg text-slate-900 mt-2 mb-1">${item.title}</h3>
-                    <p class="text-xs sm:text-sm text-slate-600 line-clamp-3">${item.text || 'Clicca per leggere il percorso della cerchia...'}</p>
-                </div>
-                <div class="pt-2 border-t border-slate-100 flex justify-between items-center text-xs text-amber-600 font-bold">
-                    <span><i class="fa-solid fa-circle-nodes mr-1"></i> Apri Dettaglio</span>
-                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    function openPercorsoModal(title, text, fileData) {
-        stopAllAudioEngine();
-        currentActiveDocTitle = title;
-        currentRawDocBuffer = fileData;
-        
-        document.getElementById("percorso-detail-title").textContent = title;
-        
-        // Suddivide il testo in passaggi/righe pulite per la modalità passo-passo
-        currentDocumentSteps = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
-        if (currentDocumentSteps.length === 0) currentDocumentSteps = [text];
-        
-        currentStepIndex = 0;
-        isSingleStepMode = false;
-        
-        updatePercorsoViewUI();
-        document.getElementById("percorso-detail-view").classList.remove("hidden");
-    }
-
-    function closePercorsoDetail() {
-        stopAllAudioEngine();
-        document.getElementById("percorso-detail-view").classList.add("hidden");
-    }
-
-    function togglePercorsoViewMode() {
-        isSingleStepMode = !isSingleStepMode;
-        updatePercorsoViewUI();
-    }
-
-    function updatePercorsoViewUI() {
-        const listContainer = document.getElementById("percorso-list-view-container");
-        const stepContainer = document.getElementById("percorso-single-step-container");
-        const stepControls = document.getElementById("percorso-step-controls");
-        const toggleIcon = document.getElementById("toggle-view-icon");
-        const toggleText = document.getElementById("toggle-view-text");
-
-        if (isSingleStepMode) {
-            listContainer.classList.add("hidden");
-            stepContainer.classList.remove("hidden");
-            stepControls.classList.remove("hidden");
-            stepControls.classList.add("flex");
-            toggleIcon.className = "fa-solid fa-list";
-            toggleText.textContent = "Modalità Elenco Completo";
-
-            renderSinglePercorsoStep();
-        } else {
-            listContainer.classList.remove("hidden");
-            stepContainer.classList.add("hidden");
-            stepControls.classList.add("hidden");
-            stepControls.classList.remove("flex");
-            toggleIcon.className = "fa-solid fa-list-check";
-            toggleText.textContent = "Modalità Passo-Passo";
-
-            listContainer.innerHTML = currentDocumentSteps.map((step, idx) => `
-                <div class="p-3.5 bg-white border border-slate-200 rounded-xl shadow-sm flex items-start gap-3">
-                    <span class="w-7 h-7 flex-shrink-0 bg-amber-100 text-amber-800 font-black rounded-lg flex items-center justify-center text-xs">${idx + 1}</span>
-                    <p class="text-sm sm:text-base font-semibold text-slate-800 pt-0.5">${step}</p>
-                </div>
-            `).join('');
-        }
-    }
-
-    function renderSinglePercorsoStep() {
-        const stepContainer = document.getElementById("percorso-single-step-container");
-        const indicator = document.getElementById("percorso-step-indicator");
-        if (!stepContainer) return;
-
-        indicator.textContent = `${currentStepIndex + 1} / ${currentDocumentSteps.length}`;
-        const currentText = currentDocumentSteps[currentStepIndex] || "";
-
-        stepContainer.innerHTML = `
-            <div class="max-w-xl w-full bg-white border-2 border-amber-400 rounded-2xl p-6 sm:p-10 shadow-lg space-y-4 my-auto">
-                <span class="px-3 py-1 bg-amber-100 text-amber-900 font-extrabold text-xs rounded-full">Passo ${currentStepIndex + 1} di ${currentDocumentSteps.length}</span>
-                <h4 class="text-xl sm:text-3xl font-black text-slate-900 leading-snug">${currentText}</h4>
-            </div>
-        `;
-    }
-
-    function nextPercorsoStep() {
-        if (currentStepIndex < currentDocumentSteps.length - 1) {
-            currentStepIndex++;
-            renderSinglePercorsoStep();
-        }
-    }
-
-    function prevPercorsoStep() {
-        if (currentStepIndex > 0) {
-            currentStepIndex--;
-            renderSinglePercorsoStep();
-        }
-    }
-
-    function toggleSpeechPercorso() {
-        if (!('speechSynthesis' in window)) {
-            alert("Sintesi vocale non supportata dal browser.");
-            return;
-        }
-
-        if (isSpeakingPercorso) {
-            window.speechSynthesis.cancel();
-            isSpeakingPercorso = false;
-            document.getElementById("tts-percorso-btn-text").textContent = "Ascolta";
-            return;
-        }
-
-        const textToSpeak = currentDocumentSteps.join(". ");
-        const utterance = new SpeechSynthesisUtterance(textToSpeak);
-        utterance.lang = 'it-IT';
-        utterance.rate = 0.95;
-
-        utterance.onstart = () => {
-            isSpeakingPercorso = true;
-            document.getElementById("tts-percorso-btn-text").textContent = "Ferma";
-        };
-
-        utterance.onend = () => {
-            isSpeakingPercorso = false;
-            document.getElementById("tts-percorso-btn-text").textContent = "Ascolta";
-        };
-
-        utterance.onerror = () => {
-            isSpeakingPercorso = false;
-            document.getElementById("tts-percorso-btn-text").textContent = "Ascolta";
-        };
-
-        window.speechSynthesis.speak(utterance);
-    }
-
-    function downloadOriginalWordFile() {
-        if (!currentRawDocBuffer) {
-            alert("File originale non disponibile per il download.");
-            return;
-        }
-        const blob = dataURLToBlob(currentRawDocBuffer);
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${currentActiveDocTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.docx`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
-
-    /* ----------------------------------------------------
-       STRADE STATALI
-    ---------------------------------------------------- */
-    function renderStatali() {
-        const container = document.getElementById("statali-list");
-        const queryVal = (document.getElementById("search-statale")?.value || "").toLowerCase().trim();
-        if (!container) return;
-        container.innerHTML = "";
-
-        const filtered = stataliListDynamic.filter(item => item.toLowerCase().includes(queryVal));
-
-        if (filtered.length === 0) {
-            container.innerHTML = `<p class="col-span-full text-center text-slate-500 py-8 font-semibold">Nessuna strada statale trovata.</p>`;
-            return;
-        }
-
-        filtered.forEach(item => {
-            const card = document.createElement("div");
-            card.className = "bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-2";
-            
-            const desc = stataliDescriptions[item] || "Nessuna descrizione inserita.";
-
-            card.innerHTML = `
-                <div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-red-600 bg-red-50 px-2 py-0.5 rounded">Strada Statale</span>
-                    <h3 class="font-black text-base sm:text-lg text-slate-900 mt-2 mb-1">${item}</h3>
-                    <p class="text-xs sm:text-sm text-slate-600">${desc}</p>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    /* ----------------------------------------------------
-       REGOLAMENTI WORD
-    ---------------------------------------------------- */
-    function renderRegolamenti() {
-        const container = document.getElementById("regolamenti-list");
-        const queryVal = (document.getElementById("search-regolamento")?.value || "").toLowerCase().trim();
-        if (!container) return;
-        container.innerHTML = "";
-
-        const filtered = regolamentiData.filter(item => item.title.toLowerCase().includes(queryVal));
-
-        if (filtered.length === 0) {
-            container.innerHTML = `<p class="col-span-full text-center text-slate-500 py-8 font-semibold">Nessun regolamento trovato.</p>`;
-            return;
-        }
-
-        filtered.forEach(item => {
-            const card = document.createElement("div");
-            card.className = "bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-3 cursor-pointer";
-            card.onclick = () => openRegolamentoDetail(item.title, item.text || "Contenuto del regolamento in fase di caricamento...", item.fileData);
-
-            card.innerHTML = `
-                <div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded">Regolamento Ufficiale</span>
-                    <h3 class="font-black text-base sm:text-lg text-slate-900 mt-2 mb-1">${item.title}</h3>
-                    <p class="text-xs sm:text-sm text-slate-600 line-clamp-3">${item.text || 'Clicca per leggere il documento completo...'}</p>
-                </div>
-                <div class="pt-2 border-t border-slate-100 flex justify-between items-center text-xs text-blue-600 font-bold">
-                    <span><i class="fa-solid fa-book-open mr-1"></i> Apri Documento</span>
-                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    function openRegolamentoDetail(title, text, fileData) {
-        stopAllAudioEngine();
-        document.getElementById("regolamento-detail-title").textContent = title;
-        document.getElementById("regolamento-content-box").innerHTML = text.replace(/\r?\n/g, '<br>');
-        
-        const downloadBtn = document.getElementById("regolamento-download-btn");
-        downloadBtn.onclick = () => {
-            if (!fileData) {
-                alert("File originale non disponibile.");
-                return;
-            }
-            const blob = dataURLToBlob(fileData);
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.docx`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        };
-
-        document.getElementById("regolamento-detail-view").classList.remove("hidden");
-    }
-
-    function closeRegolamentoDetail() {
-        stopAllAudioEngine();
-        document.getElementById("regolamento-detail-view").classList.add("hidden");
-    }
-
-    /* ----------------------------------------------------
-       PUNTI D'INTERESSE (6 TASTI)
-    ---------------------------------------------------- */
-    async function openPoiCategoryDirect(categoryName) {
-        stopAllAudioEngine();
-        const fileNameMap = {
-            "Stazioni": "stazioni.docx",
-            "Monumenti": "monumenti.docx",
-            "Ospedali": "ospedali.docx",
-            "Teatri": "teatri.docx",
-            "Strutture pubbliche": "strutture pubbliche.docx",
-            "Uffici pubblici": "uffici pubblici.docx"
-        };
-
-        const fileName = fileNameMap[categoryName];
-        if (!fileName) return;
-
-        document.getElementById("poi-detail-title").textContent = `Punti d'Interesse: ${categoryName}`;
-        document.getElementById("poi-content-box").innerHTML = `<p class="text-center text-slate-500 py-12"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><br>Lettura del documento in corso...</p>`;
-        document.getElementById("poi-detail-view").classList.remove("hidden");
-
-        let fileBuffer = null;
-        let fileText = "";
-
-        try {
-            // Tentativo di recupero da GitHub
-            const rawUrl = `https://raw.githubusercontent.com/meroandrea-bot/Taxi-Milano/main/${encodeURIComponent(fileName)}`;
-            const response = await fetch(rawUrl + '?' + new Date().getTime());
-            if (response.ok) {
-                fileBuffer = await response.arrayBuffer();
-                const result = await mammoth.extractRawText({ arrayBuffer: fileBuffer });
-                fileText = result.value || "Nessun testo estratto.";
-            } else {
-                throw new Error("File non trovato su GitHub");
-            }
-        } catch (e) {
-            fileText = `Impossibile caricare il file ${fileName} da GitHub. Verifica la connessione o ricarica la pagina.`;
-        }
-
-        document.getElementById("poi-content-box").innerHTML = fileText.replace(/\r?\n/g, '<br>');
-
-        const downloadBtn = document.getElementById("poi-download-btn");
-        downloadBtn.onclick = () => {
-            if (!fileBuffer) {
-                alert("File non disponibile per il download.");
-                return;
-            }
-            const blob = new Blob([fileBuffer], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = fileName;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        };
-    }
-
-    function closePoiDetail() {
-        stopAllAudioEngine();
-        document.getElementById("poi-detail-view").classList.add("hidden");
-    }
-
-    /* ----------------------------------------------------
-       GESTIONE ADMIN & SELECTS
-    ---------------------------------------------------- */
-    function populateAdminSelects() {
-        populateAdminSelect("admin-delete-regolamento-select", regolamentiData, item => item.title);
-        populateAdminSelect("admin-delete-percorso-select", percorsiData, item => item.title);
-        populateAdminSelect("admin-delete-cerchia-select", cerchieData, item => item.title);
-        populateAdminSelect("admin-statali-delete-select", stataliListDynamic, item => item);
-        populateAdminSelect("admin-statale-select", stataliListDynamic, item => item);
-        populateAdminSelect("admin-piazza-select", piazzeData, item => `${item.type} ${item.name}`);
-        populateAdminSelect("admin-custom-piazza", piazzeData, item => `${item.type} ${item.name}`);
-        
-        loadAdminStataleData();
-        loadAdminPiazzaData();
-        populateAdminStreets();
-    }
-
-    function populateAdminSelect(selectId, list, labelFn) {
-        const select = document.getElementById(selectId);
-        if (!select) return;
-        select.innerHTML = "";
-        list.forEach((item, index) => {
-            const opt = document.createElement("option");
-            opt.value = index;
-            opt.textContent = labelFn(item);
-            select.appendChild(opt);
-        });
-    }
-
-    function filterAdminSelect(selectId, filterText) {
-        const select = document.getElementById(selectId);
-        if (!select) return;
-        const query = filterText.toLowerCase();
-        for (let i = 0; i < select.options.length; i++) {
-            const opt = select.options[i];
-            if (opt.textContent.toLowerCase().includes(query)) {
-                opt.style.display = "";
-            } else {
-                opt.style.display = "none";
-            }
-        }
-    }
-function loadAdminStataleData() {
-        const select = document.getElementById("admin-statale-select");
-        const descInput = document.getElementById("admin-statale-desc");
-        if (!select || !descInput) return;
-
-        const stataleName = select.options[select.selectedIndex]?.text;
-        if (stataleName) {
-            descInput.value = stataliDescriptions[stataleName] || "";
-        }
-    }
-
-    function saveStataleDescription() {
-        const select = document.getElementById("admin-statale-select");
-        const descInput = document.getElementById("admin-statale-desc");
-        if (!select || !descInput) return;
-
-        const stataleName = select.options[select.selectedIndex]?.text;
-        if (stataleName) {
-            stataliDescriptions[stataleName] = descInput.value.trim();
-            saveData();
-            alert("Descrizione strada statale salvata con successo!");
-        }
-    }
-
-    function addNewStatale() {
-        const input = document.getElementById("admin-new-statale-name");
-        if (!input) return;
-        const val = input.value.trim();
-        if (!val) {
-            alert("Inserisci il nome della strada statale.");
-            return;
-        }
-
-        if (!stataliListDynamic.includes(val)) {
-            stataliListDynamic.push(val);
-            stataliListDynamic.sort(naturalSort);
-            saveData();
-            populateAdminSelects();
-            input.value = "";
-            alert("Strada statale aggiunta con successo!");
-        } else {
-            alert("Questa strada statale è già presente nell'elenco.");
-        }
-    }
-
-    function deleteStataleMulti() {
-        const select = document.getElementById("admin-statali-delete-select");
-        if (!select) return;
-
-        const selectedOptions = Array.from(select.selectedOptions);
-        if (selectedOptions.length === 0) {
-            alert("Seleziona almeno una strada statale da eliminare.");
-            return;
-        }
-
-        if (confirm(`Vuoi eliminare ${selectedOptions.length} strade statali selezionate?`)) {
-            const valuesToDelete = selectedOptions.map(opt => opt.text);
-            stataliListDynamic = stataliListDynamic.filter(item => !valuesToDelete.includes(item));
-            
-            valuesToDelete.forEach(item => {
-                delete stataliDescriptions[item];
-            });
-
-            saveData();
-            populateAdminSelects();
-            renderStatali();
-            alert("Strade statali eliminate con successo!");
-        }
-    }
-
-    function loadAdminPiazzaData() {
-        const select = document.getElementById("admin-piazza-select");
-        if (!select) return;
-        const index = parseInt(select.value);
-        const piazza = piazzeData[index];
-        if (!piazza) return;
-
-        document.getElementById("edit-piazza-type").value = piazza.type;
-        document.getElementById("edit-piazza-name").value = piazza.name;
-        document.getElementById("edit-piazza-confluences").value = (piazza.confluences || []).join(", ");
-    }
-
-    function updatePiazza() {
-        const select = document.getElementById("admin-piazza-select");
-        if (!select) return;
-        const index = parseInt(select.value);
-        if (!piazzeData[index]) return;
-
-        const type = document.getElementById("edit-piazza-type").value;
-        const name = document.getElementById("edit-piazza-name").value.trim();
-        const confluencesRaw = document.getElementById("edit-piazza-confluences").value;
-
-        if (!name) {
-            alert("Inserisci il nome della piazza.");
-            return;
-        }
-
-        const confluences = confluencesRaw.split(",").map(c => c.trim()).filter(c => c.length > 0);
-
-        piazzeData[index].type = type;
-        piazzeData[index].name = name;
-        piazzeData[index].confluences = confluences;
-
-        saveData();
-        populateAdminSelects();
-        document.getElementById("total-count").textContent = piazzeData.length;
-        alert("Piazza aggiornata con successo!");
-    }
-
-    function deletePiazzaMulti() {
-        const select = document.getElementById("admin-piazze-delete-select");
-        if (!select) return;
-
-        const selectedOptions = Array.from(select.selectedOptions);
-        if (selectedOptions.length === 0) {
-            alert("Seleziona almeno una piazza da eliminare.");
-            return;
-        }
-
-        if (confirm(`Vuoi eliminare ${selectedOptions.length} piazze selezionate?`)) {
-            const indicesToDelete = selectedOptions.map(opt => parseInt(opt.value)).sort((a, b) => b - a);
-            
-            indicesToDelete.forEach(idx => {
-                piazzeData.splice(idx, 1);
-            });
-
-            saveData();
-            populateAdminSelects();
-            document.getElementById("total-count").textContent = piazzeData.length;
-            alert("Piazze eliminate con successo!");
-        }
-    }
-
-    function addNewPiazza() {
-        const type = document.getElementById("new-piazza-type").value;
-        const name = document.getElementById("new-piazza-name").value.trim();
-        const confluencesRaw = document.getElementById("new-piazza-confluences").value;
-
-        if (!name) {
-            alert("Inserisci il nome della piazza.");
-            return;
-        }
-
-        const confluences = confluencesRaw.split(",").map(c => c.trim()).filter(c => c.length > 0);
-        const newId = piazzeData.length > 0 ? Math.max(...piazzeData.map(p => p.id || 0)) + 1 : 1;
-
-        piazzeData.push({
-            id: newId,
-            type: type,
-            name: name,
-            confluences: confluences
-        });
-
-        saveData();
-        populateAdminSelects();
-        document.getElementById("total-count").textContent = piazzeData.length;
-        document.getElementById("new-piazza-name").value = "";
-        document.getElementById("new-piazza-confluences").value = "";
-        alert("Nuova piazza aggiunta con successo!");
-    }
-
-    function populateAdminStreets() {
-        const piazzaSelect = document.getElementById("admin-custom-piazza");
-        const streetSelect = document.getElementById("admin-custom-street");
-        if (!piazzaSelect || !streetSelect) return;
-
-        const pIndex = parseInt(piazzaSelect.value);
-        const piazza = piazzeData[pIndex];
-        streetSelect.innerHTML = "";
-
-        if (!piazza || !piazza.confluences) return;
-
-        piazza.confluences.forEach((cName) => {
-            const opt = document.createElement("option");
-            opt.value = cName;
-            opt.textContent = cName;
-            streetSelect.appendChild(opt);
-        });
-
-        loadCustomStreetText();
-    }
-
-    function loadCustomStreetText() {
-        const piazzaSelect = document.getElementById("admin-custom-piazza");
-        const streetSelect = document.getElementById("admin-custom-street");
-        const textArea = document.getElementById("admin-custom-text");
-        if (!piazzaSelect || !streetSelect || !textArea) return;
-
-        const pIndex = parseInt(piazzaSelect.value);
-        const piazza = piazzeData[pIndex];
-        const streetName = streetSelect.value;
-
-        if (!piazza) return;
-
-        const key = `${piazza.name}_${streetName}`;
-        textArea.value = customDescriptions[key] || "";
-    }
-
-    function saveCustomStreetDescription() {
-        const piazzaSelect = document.getElementById("admin-custom-piazza");
-        const streetSelect = document.getElementById("admin-custom-street");
-        const textArea = document.getElementById("admin-custom-text");
-        if (!piazzaSelect || !streetSelect || !textArea) return;
-
-        const pIndex = parseInt(piazzaSelect.value);
-        const piazza = piazzeData[pIndex];
-        const streetName = streetSelect.value;
-
-        if (!piazza) return;
-
-        const key = `${piazza.name}_${streetName}`;
-        customDescriptions[key] = textArea.value.trim();
-
-        saveData();
-        alert("Descrizione collegamento salvata con successo!");
-    }
-
-    /* ----------------------------------------------------
-       CARICAMENTO FILE WORD (.DOCX) IN ADMIN
-    ---------------------------------------------------- */
-    async function uploadRegolamentoWord() {
-        const titleInput = document.getElementById("admin-regolamento-title");
-        const fileInput = document.getElementById("admin-regolamento-file");
-        const feedback = document.getElementById("upload-feedback-regolamento");
-
-        const title = titleInput.value.trim();
-        if (!title || fileInput.files.length === 0) {
-            alert("Inserisci un titolo e seleziona un file Word (.docx).");
-            return;
-        }
-
-        const file = fileInput.files[0];
-        try {
-            const arrayBuffer = await file.arrayBuffer();
-            const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
-            const extractedText = result.value || "";
-
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                const base64Data = e.target.result;
-                const newId = Date.now();
-                
-                regolamentiData.push({
-                    id: newId,
-                    title: title,
-                    text: extractedText,
-                    fileData: base64Data
+            let spokenParts = transcript.split(/,| e | poi /i).map(s => s.trim()).filter(s => s.length > 0);
+
+            spokenParts.forEach(spokenPhrase => {
+                let cleanSpoken = normaliseStreetName(spokenPhrase);
+                if (!cleanSpoken || cleanSpoken.length < 3) return;
+
+                let bestMatchIndex = -1;
+                let bestMatchScore = 0;
+
+                confluences.forEach((confStreet, slotIdx) => {
+                    if (slotIdx === 0) return;
+
+                    let cleanConf = normaliseStreetName(confStreet);
+                    
+                    if (cleanConf === cleanSpoken) {
+                        bestMatchIndex = slotIdx;
+                        bestMatchScore = 100;
+                    } else if (cleanConf.includes(cleanSpoken) || cleanSpoken.includes(cleanConf)) {
+                        let score = Math.min(cleanSpoken.length, cleanConf.length);
+                        if (score > bestMatchScore && score >= 3) {
+                            bestMatchScore = score;
+                            bestMatchIndex = slotIdx;
+                        }
+                    }
                 });
 
-                saveData();
-                populateAdminSelects();
-                renderRegolamenti();
-
-                feedback.textContent = "Regolamento caricato con successo!";
-                feedback.classList.remove("hidden");
-                setTimeout(() => feedback.classList.add("hidden"), 4000);
-
-                titleInput.value = "";
-                fileInput.value = "";
-            };
-            reader.readAsDataURL(file);
-        } catch (err) {
-            alert("Errore durante la lettura del file Word.");
-        }
-    }
-
-    function deleteRegolamentoMulti() {
-        const select = document.getElementById("admin-delete-regolamento-select");
-        if (!select) return;
-        const selectedOptions = Array.from(select.selectedOptions);
-        if (selectedOptions.length === 0) {
-            alert("Seleziona almeno un regolamento da eliminare.");
-            return;
-        }
-
-        if (confirm(`Vuoi eliminare ${selectedOptions.length} regolamenti selezionati?`)) {
-            const indices = selectedOptions.map(opt => parseInt(opt.value)).sort((a, b) => b - a);
-            indices.forEach(idx => regolamentiData.splice(idx, 1));
-            saveData();
-            populateAdminSelects();
-            renderRegolamenti();
-            alert("Regolamenti eliminati con successo!");
-        }
-    }
-
-    async function uploadPercorsiWordMulti() {
-        const fileInput = document.getElementById("admin-percorso-file");
-        const feedback = document.getElementById("upload-feedback-percorsi");
-        if (fileInput.files.length === 0) {
-            alert("Seleziona almeno un file Word (.docx).");
-            return;
-        }
-
-        let count = 0;
-        for (let i = 0; i < fileInput.files.length; i++) {
-            const file = fileInput.files[i];
-            try {
-                const arrayBuffer = await file.arrayBuffer();
-                const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
-                const extractedText = result.value || "";
-
-                const base64Data = await new Promise(resolve => {
-                    const r = new FileReader();
-                    r.onload = e => resolve(e.target.result);
-                    r.readAsDataURL(file);
-                });
-
-                const title = file.name.replace(/\.[^/.]+$/, "").replace(/_/g, " ");
-                percorsiData.push({
-                    id: Date.now() + i,
-                    title: title,
-                    text: extractedText,
-                    fileData: base64Data
-                });
-                count++;
-            } catch (err) {
-                console.error("Errore file:", file.name);
-            }
-        }
-
-        saveData();
-        populateAdminSelects();
-        renderPercorsi();
-
-        feedback.textContent = `Caricati con successo ${count} percorsi!`;
-        feedback.classList.remove("hidden");
-        setTimeout(() => feedback.classList.add("hidden"), 4000);
-        fileInput.value = "";
-    }
-
-    function deletePercorsoMulti() {
-        const select = document.getElementById("admin-delete-percorso-select");
-        if (!select) return;
-        const selectedOptions = Array.from(select.selectedOptions);
-        if (selectedOptions.length === 0) {
-            alert("Seleziona almeno un percorso da eliminare.");
-            return;
-        }
-
-        if (confirm(`Vuoi eliminare ${selectedOptions.length} percorsi selezionati?`)) {
-            const indices = selectedOptions.map(opt => parseInt(opt.value)).sort((a, b) => b - a);
-            indices.forEach(idx => percorsiData.splice(idx, 1));
-            saveData();
-            populateAdminSelects();
-            renderPercorsi();
-            alert("Percorsi eliminati con successo!");
-        }
-    }
-
-    async function uploadCerchieWordMulti() {
-        const fileInput = document.getElementById("admin-cerchia-file");
-        const feedback = document.getElementById("upload-feedback-cerchie");
-        if (fileInput.files.length === 0) {
-            alert("Seleziona almeno un file Word (.docx).");
-            return;
-        }
-
-        let count = 0;
-        for (let i = 0; i < fileInput.files.length; i++) {
-            const file = fileInput.files[i];
-            try {
-                const arrayBuffer = await file.arrayBuffer();
-                const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
-                const extractedText = result.value || "";
-
-                const base64Data = await new Promise(resolve => {
-                    const r = new FileReader();
-                    r.onload = e => resolve(e.target.result);
-                    r.readAsDataURL(file);
-                });
-
-                const title = file.name.replace(/\.[^/.]+$/, "").replace(/_/g, " ");
-                cerchieData.push({
-                    id: Date.now() + i,
-                    title: title,
-                    text: extractedText,
-                    fileData: base64Data
-                });
-                count++;
-            } catch (err) {
-                console.error("Errore file cerchia:", file.name);
-            }
-        }
-
-        saveData();
-        populateAdminSelects();
-        renderCerchie();
-
-        feedback.textContent = `Caricate con successo ${count} cerchie!`;
-        feedback.classList.remove("hidden");
-        setTimeout(() => feedback.classList.add("hidden"), 4000);
-        fileInput.value = "";
-    }
-
-    function deleteCerchiaMulti() {
-        const select = document.getElementById("admin-delete-cerchia-select");
-        if (!select) return;
-        const selectedOptions = Array.from(select.selectedOptions);
-        if (selectedOptions.length === 0) {
-            alert("Seleziona almeno una cerchia da eliminare.");
-            return;
-        }
-
-        if (confirm(`Vuoi eliminare ${selectedOptions.length} cerchie selezionate?`)) {
-            const indices = selectedOptions.map(opt => parseInt(opt.value)).sort((a, b) => b - a);
-            indices.forEach(idx => cerchieData.splice(idx, 1));
-            saveData();
-            populateAdminSelects();
-            renderCerchie();
-            alert("Cerchie eliminate con successo!");
-        }
-    }
-
-    function updateAdminPassword() {
-        const input = document.getElementById("admin-new-admin-pwd");
-        if (!input) return;
-        const newPwd = input.value.trim();
-        if (!newPwd) {
-            alert("Inserisci una password valida.");
-            return;
-        }
-
-        adminPwd = newPwd;
-        saveData();
-        document.getElementById("admin-current-display-pwd").value = adminPwd;
-        input.value = "";
-        alert("Password admin aggiornata con successo!");
-    }
-
-    /* ----------------------------------------------------
-       LOGICA QUIZ ESAME & ALLENAMENTO
-    ---------------------------------------------------- */
-    function showQuizMenuScreen() {
-        stopAllAudioEngine();
-        stopQuizTimer();
-        document.getElementById("quiz-menu-screen").classList.remove("hidden");
-        document.getElementById("quiz-topic-screen").classList.add("hidden");
-        document.getElementById("quiz-lang-screen").classList.add("hidden");
-        document.getElementById("quiz-active-screen").classList.add("hidden");
-        document.getElementById("quiz-summary-screen").classList.add("hidden");
-    }
-
-    function showQuizTopicSelection() {
-        document.getElementById("quiz-menu-screen").classList.add("hidden");
-        document.getElementById("quiz-topic-screen").classList.remove("hidden");
-
-        const container = document.getElementById("quiz-topics-container");
-        container.innerHTML = "";
-
-        const topics = [...new Set(allQuizQuestions.map(q => q.argomento))];
-        if (topics.length === 0) {
-            topics.push("Regolamento", "Normativa", "Geografia", "Lingua");
-        }
-
-        topics.forEach((top, idx) => {
-            const count = allQuizQuestions.filter(q => q.argomento === top).length;
-            const div = document.createElement("label");
-            div.className = "flex items-center justify-between p-3.5 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl cursor-pointer transition font-bold text-sm sm:text-base text-slate-800";
-            div.innerHTML = `
-                <div class="flex items-center gap-3">
-                    <input type="checkbox" name="quiz-topic-chk" value="${top}" checked class="w-5 h-5 text-amber-600 rounded focus:ring-amber-500">
-                    <span>${top}</span>
-                </div>
-                <span class="text-xs bg-slate-200 px-2.5 py-1 rounded-full text-slate-700">${count} quesiti</span>
-            `;
-            container.appendChild(div);
-        });
-    }
-
-    function showExamLanguageSelection() {
-        document.getElementById("quiz-menu-screen").classList.add("hidden");
-        document.getElementById("quiz-lang-screen").classList.remove("hidden");
-    }
-
-    function startTrainingSession() {
-        const checkedBoxes = document.querySelectorAll('input[name="quiz-topic-chk"]:checked');
-        const selectedTopics = Array.from(checkedBoxes).map(cb => cb.value);
-
-        if (selectedTopics.length === 0) {
-            alert("Seleziona almeno un argomento per iniziare l'allenamento.");
-            return;
-        }
-
-        activeQuizQuestions = allQuizQuestions.filter(q => selectedTopics.includes(q.argomento));
-        if (activeQuizQuestions.length === 0) {
-            alert("Nessun quesito trovato per gli argomenti selezionati.");
-            return;
-        }
-
-        // Shuffle casuale
-        activeQuizQuestions.sort(() => Math.random() - 0.5);
-        currentQuizIndex = 0;
-        currentQuizMode = "allenamento";
-        quizUserAnswers = new Array(activeQuizQuestions.length).fill(null);
-
-        document.getElementById("quiz-topic-screen").classList.add("hidden");
-        document.getElementById("quiz-active-screen").classList.remove("hidden");
-        document.getElementById("quiz-timer-box").classList.add("hidden");
-        document.getElementById("quiz-mode-badge").textContent = "Allenamento";
-
-        renderQuizQuestion();
-    }
-
-    function startExamSession(languageName) {
-        // Estrae 4 quesiti per ciascuno dei 4 macro argomenti (Regolamento, Normativa, Geografia, Lingua)
-        let topics = [...new Set(allQuizQuestions.map(q => q.argomento))];
-        let selectedQuestions = [];
-
-        topics.forEach(top => {
-            let pool = allQuizQuestions.filter(q => q.argomento === top);
-            pool.sort(() => Math.random() - 0.5);
-            selectedQuestions.push(...pool.slice(0, 4));
-        });
-
-        if (selectedQuestions.length < 16) {
-            let remaining = allQuizQuestions.filter(q => !selectedQuestions.includes(q));
-            remaining.sort(() => Math.random() - 0.5);
-            selectedQuestions.push(...remaining.slice(0, 16 - selectedQuestions.length));
-        }
-
-        activeQuizQuestions = selectedQuestions.slice(0, 16);
-        activeQuizQuestions.sort(() => Math.random() - 0.5);
-
-        currentQuizIndex = 0;
-        currentQuizMode = "esame";
-        quizUserAnswers = new Array(activeQuizQuestions.length).fill(null);
-
-        document.getElementById("quiz-lang-screen").classList.add("hidden");
-        document.getElementById("quiz-active-screen").classList.remove("hidden");
-        document.getElementById("quiz-timer-box").classList.remove("hidden");
-        document.getElementById("quiz-timer-box").classList.add("flex");
-        document.getElementById("quiz-mode-badge").textContent = `Esame (${languageName})`;
-
-        quizTimeSecondsLeft = 1800; // 30 minuti
-        quizStartTime = Date.now();
-        startQuizTimer();
-
-        renderQuizQuestion();
-    }
-
-    function startQuizTimer() {
-        stopQuizTimer();
-        quizTimerInterval = setInterval(() => {
-            quizTimeSecondsLeft--;
-            const mins = Math.floor(quizTimeSecondsLeft / 60);
-            const secs = quizTimeSecondsLeft % 60;
-            const timerText = document.getElementById("quiz-timer-text");
-            if (timerText) {
-                timerText.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-            }
-
-            if (quizTimeSecondsLeft <= 0) {
-                stopQuizTimer();
-                alert("Tempo scaduto! L'esame verrà concluso automaticamente.");
-                finishQuizSession();
-            }
-        }, 1000);
-    }
-
-    function stopQuizTimer() {
-        if (quizTimerInterval) {
-            clearInterval(quizTimerInterval);
-            quizTimerInterval = null;
-        }
-    }
-
-    function renderQuizQuestion() {
-        const q = activeQuizQuestions[currentQuizIndex];
-        if (!q) return;
-
-        isQuestionAnswered = false;
-        document.getElementById("quiz-topic-text").textContent = q.argomento;
-        document.getElementById("quiz-progress-text").textContent = `Domanda ${currentQuizIndex + 1} di ${activeQuizQuestions.length}`;
-        document.getElementById("quiz-question-title").textContent = q.domanda;
-
-        const optionsBox = document.getElementById("quiz-options-box");
-        const feedbackBox = document.getElementById("quiz-feedback-box");
-        optionsBox.innerHTML = "";
-        feedbackBox.classList.add("hidden");
-
-        q.opzioni.forEach((opt, idx) => {
-            const btn = document.createElement("button");
-            btn.className = "w-full p-4 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-500 rounded-xl font-bold text-left text-sm sm:text-base text-slate-800 transition shadow-sm flex items-center justify-between";
-            btn.innerHTML = `
-                <div class="flex items-center gap-3">
-                    <span class="w-7 h-7 bg-slate-200 text-slate-700 rounded-lg flex items-center justify-center text-xs font-mono">${String.fromCharCode(65 + idx)}</span>
-                    <span>${opt}</span>
-                </div>
-            `;
-            btn.onclick = () => handleQuizAnswer(idx);
-            optionsBox.appendChild(btn);
-        });
-    }
-
-    function handleQuizAnswer(selectedIndex) {
-        if (isQuestionAnswered) return;
-        isQuestionAnswered = true;
-
-        const q = activeQuizQuestions[currentQuizIndex];
-        quizUserAnswers[currentQuizIndex] = selectedIndex;
-
-        const optionsBox = document.getElementById("quiz-options-box");
-        const buttons = optionsBox.querySelectorAll("button");
-        const feedbackBox = document.getElementById("quiz-feedback-box");
-
-        buttons.forEach((btn, idx) => {
-            btn.disabled = true;
-            if (idx === q.corretta) {
-                btn.className = "w-full p-4 bg-emerald-100 border-2 border-emerald-500 rounded-xl font-bold text-left text-sm sm:text-base text-emerald-900 shadow-sm flex items-center justify-between";
-            } else if (idx === selectedIndex) {
-                btn.className = "w-full p-4 bg-red-100 border-2 border-red-500 rounded-xl font-bold text-left text-sm sm:text-base text-red-900 shadow-sm flex items-center justify-between";
-            } else {
-                btn.className = "w-full p-4 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold text-left text-sm sm:text-base text-slate-400 opacity-60 shadow-sm flex items-center justify-between";
-            }
-        });
-
-        if (currentQuizMode === "allenamento") {
-            feedbackBox.classList.remove("hidden");
-            if (selectedIndex === q.corretta) {
-                feedbackBox.className = "p-4 rounded-xl font-bold text-center text-sm sm:text-base bg-emerald-50 border border-emerald-300 text-emerald-800 flex items-center justify-center gap-2";
-                feedbackBox.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i> Risposta Esatta!`;
-            } else {
-                feedbackBox.className = "p-4 rounded-xl font-bold text-center text-sm sm:text-base bg-red-50 border border-red-300 text-red-800 flex items-center justify-center gap-2";
-                feedbackBox.innerHTML = `<i class="fa-solid fa-circle-xmark text-red-600"></i> Risposta errata. La risposta corretta era: ${q.opzioni[q.corretta]}`;
-            }
-        }
-
-        setTimeout(() => {
-            if (currentQuizIndex < activeQuizQuestions.length - 1) {
-                currentQuizIndex++;
-                renderQuizQuestion();
-            } else {
-                finishQuizSession();
-            }
-        }, currentQuizMode === "allenamento" ? 1800 : 900);
-    }
-
-    function finishQuizSession() {
-        stopQuizTimer();
-        document.getElementById("quiz-active-screen").classList.add("hidden");
-        document.getElementById("quiz-summary-screen").classList.remove("hidden");
-
-        let correctCount = 0;
-        let incorrectCount = 0;
-        let unansweredCount = 0;
-
-        activeQuizQuestions.forEach((q, idx) => {
-            const userAns = quizUserAnswers[idx];
-            if (userAns === null) unansweredCount++;
-            else if (userAns === q.corretta) correctCount++;
-            else incorrectCount++;
-        });
-
-        const total = activeQuizQuestions.length;
-        const scorePercentage = Math.round((correctCount / total) * 100);
-        const isPassed = scorePercentage >= 75; // 75% soglia d'esame
-
-        const headerBox = document.getElementById("quiz-summary-header");
-        const statsBox = document.getElementById("quiz-summary-stats");
-
-        if (currentQuizMode === "esame") {
-            headerBox.innerHTML = `
-                <div class="w-16 h-16 ${isPassed ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'} rounded-2xl flex items-center justify-center mx-auto text-3xl shadow-sm mb-2">
-                    <i class="fa-solid ${isPassed ? 'fa-award' : 'fa-triangle-exclamation'}"></i>
-                </div>
-                <h2 class="text-2xl sm:text-3xl font-black text-slate-900">${isPassed ? 'Esame Superato!' : 'Esame Non Superato'}</h2>
-                <p class="text-sm sm:text-base text-slate-600">Soglia minima richiesta: 75%</p>
-            `;
-        } else {
-            headerBox.innerHTML = `
-                <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-3xl shadow-sm mb-2">
-                    <i class="fa-solid fa-flag-checkered"></i>
-                </div>
-                <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Allenamento Concluso</h2>
-                <p class="text-sm sm:text-base text-slate-600">Riepilogo delle risposte fornite</p>
-            `;
-        }
-
-        statsBox.innerHTML = `
-            <div class="flex justify-between items-center py-2 border-b border-slate-200 font-bold text-sm sm:text-base">
-                <span class="text-slate-700">Punteggio Finale:</span>
-                <span class="${scorePercentage >= 75 ? 'text-emerald-600' : 'text-red-600'} font-black text-lg">${scorePercentage}% (${correctCount}/${total})</span>
-            </div>
-            <div class="flex justify-between items-center py-2 border-b border-slate-200 font-semibold text-sm sm:text-base">
-                <span class="text-emerald-700"><i class="fa-solid fa-circle-check mr-1"></i> Risposte Esatte:</span>
-                <span class="font-bold">${correctCount}</span>
-            </div>
-            <div class="flex justify-between items-center py-2 border-b border-slate-200 font-semibold text-sm sm:text-base">
-                <span class="text-red-700"><i class="fa-solid fa-circle-xmark mr-1"></i> Risposte Errate:</span>
-                <span class="font-bold">${incorrectCount}</span>
-            </div>
-            <div class="flex justify-between items-center py-2 font-semibold text-sm sm:text-base">
-                <span class="text-slate-500"><i class="fa-solid fa-circle-minus mr-1"></i> Non Risposte:</span>
-                <span class="font-bold">${unansweredCount}</span>
-            </div>
-        `;
-    }
-
-    function exportJSON() {
-        const exportData = {
-            piazze: piazzeData,
-            customDescriptions: customDescriptions,
-            percorsi: percorsiData,
-            cerchie: cerchieData,
-            regolamenti: regolamentiData,
-            stataliDescriptions: stataliDescriptions,
-            stataliList: stataliListDynamic
-        };
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
-        const downloadAnchor = document.createElement('a');
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", "milan_taxi_database_backup.json");
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        downloadAnchor.remove();
-    }
-
-    window.onload = function() {
-        setupDynamicManifest();
-        loadCloudDatabase().then(() => {
-            populateAdminSelect();
-            
-            // CONTROLLO PERSISTENZA SESSIONE
-            const isLogged = localStorage.getItem("milan_taxi_logged");
-            if (isLogged === "true") {
-                isAdmin = localStorage.getItem("milan_taxi_is_admin") === "true";
-                if (isAdmin) {
-                    document.getElementById("btn-admin").classList.remove("hidden");
+                if (bestMatchIndex !== -1) {
+                    let matchedStreet = confluences[bestMatchIndex];
+                    let alreadyAssignedSlot = Object.keys(assignedSlots).find(key => assignedSlots[key] === matchedStreet);
+
+                    if (!alreadyAssignedSlot) {
+                        let emptySlotIndex = -1;
+                        for (let s = 1; s < confluences.length; s++) {
+                            if (assignedSlots[s] === undefined) {
+                                emptySlotIndex = s;
+                                break;
+                            }
+                        }
+
+                        if (emptySlotIndex !== -1) {
+                            assignedSlots[emptySlotIndex] = matchedStreet;
+                            lastVerificationResults = {};
+                            renderSlotsAndPool();
+
+                            const feedback = document.getElementById("exercise-feedback");
+                            if (feedback) {
+                                feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-emerald-600";
+                                feedback.textContent = `🎙️ Inserita via: "${matchedStreet}"`;
+                            }
+                        }
+                    }
                 }
-                initApp(); // Salta il login se eri già entrato!
+            });
+        }
+
+        function handleStreetClick(piazzaName, streetName, piazzaId) {
+            selectedStreetForTap = { piazzaId: piazzaId, street: streetName };
+            renderEncyclopedia();
+
+            const infoBox = document.getElementById("street-destination-info");
+            const destText = document.getElementById("street-dest-text");
+            const mapLink = document.getElementById("street-map-link");
+
+            const customText = (customDescriptions[piazzaName] && customDescriptions[piazzaName][streetName]) || "Nessuna nota specifica inserita. Collegamento standard tra la via e la piazza.";
+            destText.textContent = `${streetName} (${piazzaName}): ${customText}`;
+            mapLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(streetName + ", Milano")}`;
+            infoBox.classList.remove("hidden");
+        }
+
+        function closeStreetInfo() {
+            selectedStreetForTap = null;
+            document.getElementById("street-destination-info").classList.add("hidden");
+            renderEncyclopedia();
+        }
+
+        function addNewPiazza() {
+            const type = document.getElementById("new-piazza-type").value;
+            const name = document.getElementById("new-piazza-name").value.trim();
+            const confluencesRaw = document.getElementById("new-piazza-confluences").value.trim();
+
+            if(!name || !confluencesRaw) { alert("Compila tutti i campi!"); return; }
+
+            const confluences = confluencesRaw.split(',').map(s => s.trim()).filter(s => s.length > 0);
+            const newId = piazzeData.length > 0 ? Math.max(...piazzeData.map(p => p.id)) + 1 : 1;
+
+            piazzeData.push({ id: newId, type: type, name: name, confluences: confluences });
+            piazzeData.sort((a, b) => naturalSort(a.name, b.name));
+            saveData();
+
+            document.getElementById("new-piazza-name").value = "";
+            document.getElementById("new-piazza-confluences").value = "";
+            populateAdminSelect();
+            renderEncyclopedia();
+            alert("Elemento aggiunto con successo!");
+        }
+
+        function loadAdminPiazzaData() {
+            const select = document.getElementById("admin-piazza-select");
+            const id = Number(select.value);
+            const piazza = piazzeData.find(p => p.id === id);
+            if(!piazza) return;
+
+            document.getElementById("edit-piazza-type").value = piazza.type;
+            document.getElementById("edit-piazza-name").value = piazza.name;
+            document.getElementById("edit-piazza-confluences").value = piazza.confluences.join(', ');
+        }
+
+        function updatePiazza() {
+            const select = document.getElementById("admin-piazza-select");
+            const id = Number(select.value);
+            const piazza = piazzeData.find(p => p.id === id);
+            if(!piazza) { alert("Seleziona una piazza valida."); return; }
+
+            const type = document.getElementById("edit-piazza-type").value;
+            const name = document.getElementById("edit-piazza-name").value.trim();
+            const confluencesRaw = document.getElementById("edit-piazza-confluences").value.trim();
+
+            if(!name || !confluencesRaw) { alert("Compila tutti i campi!"); return; }
+
+            piazza.type = type;
+            piazza.name = name;
+            piazza.confluences = confluencesRaw.split(',').map(s => s.trim()).filter(s => s.length > 0);
+
+            saveData();
+            populateAdminSelect();
+            renderEncyclopedia();
+            alert("Modifiche salvate con successo!");
+        }
+
+        function deletePiazzaMulti() {
+            const select = document.getElementById("admin-piazze-delete-select");
+            const selectedOptions = Array.from(select.selectedOptions);
+            if(selectedOptions.length === 0) { alert("Seleziona almeno una piazza da eliminare."); return; }
+            if(confirm(`Vuoi eliminare ${selectedOptions.length} piazze selezionate?`)) {
+                const idsToDelete = selectedOptions.map(opt => Number(opt.value));
+                piazzeData = piazzeData.filter(p => !idsToDelete.includes(p.id));
+                saveData();
+                populateAdminSelect();
+                renderEncyclopedia();
+                alert("Piazze eliminate con successo!");
             }
-        });
-    };
-</script>
+        }
+
+        function populateAdminSelect() {
+            const piazzeSelects = ['admin-piazza-select', 'admin-custom-piazza'];
+            piazzeSelects.forEach(id => {
+                const sel = document.getElementById(id);
+                if(sel) {
+                    sel.innerHTML = "";
+                    piazzeData.forEach(p => {
+                        const opt = document.createElement("option");
+                        opt.value = p.id;
+                        opt.textContent = `${p.type} ${p.name}`;
+                        sel.appendChild(opt);
+                    });
+                }
+            });
+
+            const stataleSelect = document.getElementById("admin-statale-select");
+            if(stataleSelect) {
+                stataleSelect.innerHTML = "";
+                stataliListDynamic.forEach(s => {
+                    const opt = document.createElement("option");
+                    opt.value = s;
+                    opt.textContent = s;
+                    stataleSelect.appendChild(opt);
+                });
+                loadAdminStataleData();
+            }
+
+            const multiSelects = [
+                { id: 'admin-delete-regolamento-select', data: regolamentiData, getVal: x => x.id, getTxt: x => x.title },
+                { id: 'admin-delete-percorso-select', data: percorsiData, getVal: x => x.title, getTxt: x => x.title },
+                { id: 'admin-delete-cerchia-select', data: cerchieData, getVal: x => x.title, getTxt: x => x.title },
+                { id: 'admin-statali-delete-select', data: stataliListDynamic, getVal: x => x, getTxt: x => x },
+                { id: 'admin-piazze-delete-select', data: piazzeData, getVal: x => x.id, getTxt: x => `${x.type} ${x.name}` }
+            ];
+
+            multiSelects.forEach(item => {
+                const el = document.getElementById(item.id);
+                if(el) {
+                    el.innerHTML = "";
+                    item.data.forEach(d => {
+                        const opt = document.createElement("option");
+                        opt.value = item.getVal(d);
+                        opt.textContent = item.getTxt(d);
+                        el.appendChild(opt);
+                    });
+                }
+            });
+
+            populateAdminStreets();
+            const dispPwd = document.getElementById("admin-current-display-pwd");
+            if (dispPwd) dispPwd.value = adminPwd;
+        }
+
+        function filterAdminSelect(selectId, filterText) {
+            const selectEl = document.getElementById(selectId);
+            if (!selectEl) return;
+            const query = filterText.toLowerCase();
+            Array.from(selectEl.options).forEach(opt => {
+                const txt = opt.textContent.toLowerCase();
+                if (txt.includes(query)) { opt.style.display = ""; }
+                else { opt.style.display = "none"; }
+            });
+        }
+
+        function populateAdminStreets() {
+            const piazzaSel = document.getElementById("admin-custom-piazza");
+            const streetSel = document.getElementById("admin-custom-street");
+            if(!piazzaSel || !streetSel) return;
+
+            const piazzaId = Number(piazzaSel.value);
+            const piazza = piazzeData.find(p => p.id === piazzaId);
+            streetSel.innerHTML = "";
+            if(piazza) {
+                piazza.confluences.forEach(c => {
+                    const opt = document.createElement("option");
+                    opt.value = c;
+                    opt.textContent = c;
+                    streetSel.appendChild(opt);
+                });
+                loadCustomStreetText();
+            }
+        }
+
+        function loadCustomStreetText() {
+            const piazzaSel = document.getElementById("admin-custom-piazza");
+            const streetSel = document.getElementById("admin-custom-street");
+            const textArea = document.getElementById("admin-custom-text");
+            if(!piazzaSel || !streetSel || !textArea) return;
+
+            const piazzaId = Number(piazzaSel.value);
+            const piazza = piazzeData.find(p => p.id === piazzaId);
+            const street = streetSel.value;
+
+            if(piazza && customDescriptions[piazza.name] && customDescriptions[piazza.name][street]) {
+                textArea.value = customDescriptions[piazza.name][street];
+            } else {
+                textArea.value = "";
+            }
+        }
+
+        function saveCustomStreetDescription() {
+            const piazzaSel = document.getElementById("admin-custom-piazza");
+            const streetSel = document.getElementById("admin-custom-street");
+            const textArea = document.getElementById("admin-custom-text");
+            if(!piazzaSel || !streetSel || !textArea) return;
+
+            const piazzaId = Number(piazzaSel.value);
+            const piazza = piazzeData.find(p => p.id === piazzaId);
+            const street = streetSel.value;
+            const text = textArea.value.trim();
+
+            if(!piazza || !street) return;
+
+            if(!customDescriptions[piazza.name]) { customDescriptions[piazza.name] = {}; }
+            if(text) {
+                customDescriptions[piazza.name][street] = text;
+            } else {
+                delete customDescriptions[piazza.name][street];
+            }
+
+            saveData();
+            alert("Testo collegamento salvato con successo!");
+        }
+
+        function updateAdminPassword() {
+            const input = document.getElementById("admin-new-admin-pwd");
+            const val = input.value.trim();
+            if(!val) { alert("Inserisci una password valida!"); return; }
+            adminPwd = val;
+            saveData();
+            const dispPwd = document.getElementById("admin-current-display-pwd");
+            if (dispPwd) dispPwd.value = adminPwd;
+            alert("Password admin aggiornata con successo!");
+        }
+
+        function exportJSON() {
+            const exportObj = {
+                piazze: piazzeData,
+                customDescriptions: customDescriptions,
+                percorsi: percorsiData,
+                cerchie: cerchieData,
+                regolamenti: regolamentiData,
+                stataliDescriptions: stataliDescriptions,
+                stataliList: stataliListDynamic
+            };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", "milano_taxi_db_backup.json");
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+        }
+
+        let currentExIndex = 0;
+        let currentExPiazza = null;
+        let assignedSlots = {};
+
+        function populateExerciseSelect() {
+            const select = document.getElementById("exercise-select");
+            select.innerHTML = "";
+            piazzeData.forEach((p, idx) => {
+                const opt = document.createElement("option");
+                opt.value = idx;
+                opt.textContent = `${p.type} ${p.name}`;
+                select.appendChild(opt);
+            });
+        }
+
+        function filterExerciseDropdown() {
+            const query = document.getElementById("exercise-search-input").value.toLowerCase();
+            const suggestions = document.getElementById("exercise-suggestions");
+            suggestions.innerHTML = "";
+
+            if (!query) {
+                suggestions.classList.add("hidden");
+                return;
+            }
+
+            const matches = piazzeData.map((p, idx) => ({ ...p, originalIndex: idx })).filter(p => p.name.toLowerCase().includes(query) || p.type.toLowerCase().includes(query));
+
+            if (matches.length === 0) {
+                suggestions.classList.add("hidden");
+                return;
+            }
+
+            matches.forEach(m => {
+                const div = document.createElement("div");
+                div.className = "px-3.5 py-2 hover:bg-amber-50 cursor-pointer text-xs sm:text-sm font-semibold border-b border-slate-100 last:border-0";
+                div.textContent = `${m.type} ${m.name}`;
+                div.onclick = () => {
+                    document.getElementById("exercise-select").value = m.originalIndex;
+                    suggestions.classList.add("hidden");
+                    document.getElementById("exercise-search-input").value = "";
+                    loadExercise();
+                };
+                suggestions.appendChild(div);
+            });
+            suggestions.classList.remove("hidden");
+        }
+
+        function loadExercise() {
+            const selectIndex = document.getElementById("exercise-select").value;
+            currentExPiazza = piazzeData[selectIndex];
+            document.getElementById("ex-square-type").textContent = currentExPiazza.type;
+            document.getElementById("ex-square-title").textContent = currentExPiazza.name;
+            document.getElementById("exercise-feedback").textContent = "";
+
+            assignedSlots = {};
+            lastVerificationResults = {};
+            resetMapTransform();
+            renderSlotsAndPool();
+        }
+
+        function updateMapTransform() {
+            const wrapper = document.getElementById("orbit-container-box");
+            if (wrapper) {
+                wrapper.style.transform = `translate(${mapPanX}px, ${mapPanY}px) scale(${mapScale})`;
+            }
+        }
+
+        function zoomMap(delta) {
+            mapScale = Math.min(Math.max(0.5, mapScale + delta), 3.0);
+            updateMapTransform();
+        }
+
+        function resetMapTransform() {
+            mapScale = 1;
+            mapPanX = 0;
+            mapPanY = 0;
+            selectedStreetForTap = null;
+            updateMapTransform();
+        }
+
+        function resetExercise() {
+            assignedSlots = {};
+            lastVerificationResults = {};
+            selectedStreetForTap = null;
+            renderSlotsAndPool();
+            const feedback = document.getElementById("exercise-feedback");
+            if (feedback) feedback.textContent = "";
+        }
+
+        function setupMapPanAndZoom() {
+            const viewport = document.getElementById("map-viewport");
+            if (!viewport) return;
+
+            viewport.onmousedown = (e) => {
+                if (e.target.closest('.orbit-slot') || e.target.closest('.orbit-center')) return;
+                isDraggingMap = true;
+                startDragX = e.clientX - mapPanX;
+                startDragY = e.clientY - mapPanY;
+            };
+
+            window.onmousemove = (e) => {
+                if (!isDraggingMap) return;
+                mapPanX = e.clientX - startDragX;
+                mapPanY = e.clientY - startDragY;
+                updateMapTransform();
+            };
+
+            window.onmouseup = () => { isDraggingMap = false; };
+
+            viewport.ontouchstart = (e) => {
+                if (e.touches.length === 1) {
+                    if (e.target.closest('.orbit-slot') || e.target.closest('.orbit-center')) return;
+                    isDraggingMap = true;
+                    startDragX = e.touches[0].clientX - mapPanX;
+                    startDragY = e.touches[0].clientY - mapPanY;
+                    initialPinchDistance = null;
+                } else if (e.touches.length === 2) {
+                    isDraggingMap = false;
+                    initialPinchDistance = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                }
+            };
+
+            viewport.ontouchmove = (e) => {
+                if (e.touches.length === 1 && isDraggingMap) {
+                    mapPanX = e.touches[0].clientX - startDragX;
+                    mapPanY = e.touches[0].clientY - startDragY;
+                    updateMapTransform();
+                } else if (e.touches.length === 2 && initialPinchDistance) {
+                    const currentDistance = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    const factor = currentDistance / initialPinchDistance;
+                    mapScale = Math.min(Math.max(0.5, mapScale * (factor > 1 ? 1.03 : 0.97)), 3.0);
+                    updateMapTransform();
+                }
+            };
+
+            viewport.ontouchend = (e) => {
+                if (e.touches.length < 2) initialPinchDistance = null;
+                if (e.touches.length === 0) isDraggingMap = false;
+            };
+        }
+
+        let lastVerificationResults = {};
+
+        function renderSlotsAndPool() {
+            const slotsContainer = document.getElementById("map-slots-container");
+            slotsContainer.innerHTML = "";
+
+            let confluences = [...currentExPiazza.confluences];
+            
+            let topStreet = confluences[0];
+            if (customDescriptions[currentExPiazza.name]) {
+                const customKeys = Object.keys(customDescriptions[currentExPiazza.name]);
+                const foundCustom = customKeys.find(k => confluences.includes(k));
+                if (foundCustom) { topStreet = foundCustom; }
+            }
+
+            const topIdx = confluences.indexOf(topStreet);
+            if (topIdx > 0) {
+                confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
+            }
+
+            const total = confluences.length;
+            const baseRadius = window.innerWidth >= 640 ? 175 : 120;
+            const dynamicRadius = Math.max(baseRadius, total * 18);
+
+            confluences.forEach((confStreet, index) => {
+                const angle = -Math.PI / 2 - (index / total) * 2 * Math.PI;
+                const x = Math.cos(angle) * dynamicRadius;
+                const y = Math.sin(angle) * dynamicRadius;
+
+                const slot = document.createElement("div");
+                
+                let slotClasses = "orbit-slot border-2 rounded-xl p-2 text-center flex items-center justify-center text-white text-[11px] sm:text-xs font-bold shadow-lg transition ";
+                if (index === 0) {
+                    slotClasses += "bg-amber-600 border-amber-300 font-black ring-2 ring-amber-400 shadow-xl";
+                } else if (lastVerificationResults[index] !== undefined) {
+                    if (lastVerificationResults[index]) {
+                        slotClasses += "bg-emerald-600 border-emerald-300 font-black ring-2 ring-emerald-400";
+                    } else {
+                        slotClasses += "bg-red-600 border-red-300 font-black ring-2 ring-red-400";
+                    }
+                } else if (assignedSlots[index]) {
+                    slotClasses += "bg-amber-500 border-amber-400 font-black";
+                } else {
+                    slotClasses += "bg-slate-800/90 border-dashed border-amber-500/70";
+                }
+
+                slot.className = slotClasses;
+                slot.style.left = `calc(50% + ${x}px)`;
+                slot.style.top = `calc(50% + ${y}px)`;
+                slot.dataset.slotIndex = index;
+
+                if (index === 0) {
+                    slot.innerHTML = `<span class="truncate px-1"><i class="fa-solid fa-thumbtack text-amber-200 mr-1 text-[10px]"></i>${topStreet}</span>`;
+                    slot.title = "Via di riferimento in alto (Fissa)";
+                } else if(assignedSlots[index] !== undefined) {
+                    slot.innerHTML = `<span>${assignedSlots[index]}</span>`;
+                } else {
+                    slot.innerHTML = `<span class="text-amber-300 opacity-80">Riquadro ${index + 1}</span>`;
+                }
+
+                slot.onclick = (e) => {
+                    e.stopPropagation();
+                    if (index === 0) return;
+                    lastVerificationResults = {};
+                    
+                    let currentStreetInSlot = assignedSlots[index];
+                    if (currentStreetInSlot) { delete assignedSlots[index]; }
+                    
+                    if (selectedStreetForTap && selectedStreetForTap.uniqueKey !== undefined) {
+                        assignedSlots[index] = selectedStreetForTap.street;
+                        selectedStreetForTap = null;
+                    }
+                    renderSlotsAndPool();
+                };
+
+                slotsContainer.appendChild(slot);
+            });
+
+            let availableItems = [];
+            confluences.forEach((street, origIdx) => {
+                if (origIdx === 0) return;
+                availableItems.push({ street: street, uniqueKey: origIdx });
+            });
+
+            const poolContainer = document.getElementById("source-pool");
+            poolContainer.innerHTML = "";
+            
+            let assignedValues = Object.values(assignedSlots);
+            let remainingItems = availableItems.filter(item => !assignedValues.includes(item.street));
+            remainingItems.sort(() => Math.random() - 0.5);
+            
+            document.getElementById("pool-count").textContent = remainingItems.length;
+
+            remainingItems.forEach(item => {
+                const isSelected = (selectedStreetForTap && selectedStreetForTap.uniqueKey === item.uniqueKey);
+                const card = document.createElement("div");
+                card.className = `street-card p-3 rounded-xl border text-xs sm:text-sm font-bold shadow-sm transition flex items-center justify-between ${isSelected ? 'selected-for-tap border-amber-500 bg-amber-50' : 'bg-white border-slate-200 hover:border-amber-400 text-slate-800'}`;
+                card.innerHTML = `<span>${item.street}</span> <i class="fa-solid fa-hand-pointer text-amber-500 opacity-60"></i>`;
+                
+                card.onclick = () => {
+                    lastVerificationResults = {};
+                    if (selectedStreetForTap && selectedStreetForTap.uniqueKey === item.uniqueKey) {
+                        selectedStreetForTap = null;
+                    } else {
+                        selectedStreetForTap = { street: item.street, uniqueKey: item.uniqueKey };
+                    }
+                    renderSlotsAndPool();
+                };
+
+                poolContainer.appendChild(card);
+            });
+        }
+
+        function verifyExercise() {
+            let confluences = [...currentExPiazza.confluences];
+            let topStreet = confluences[0];
+            if (customDescriptions[currentExPiazza.name]) {
+                const customKeys = Object.keys(customDescriptions[currentExPiazza.name]);
+                const foundCustom = customKeys.find(k => confluences.includes(k));
+                if (foundCustom) topStreet = foundCustom;
+            }
+            const topIdx = confluences.indexOf(topStreet);
+            if (topIdx > 0) {
+                confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
+            }
+
+            lastVerificationResults = {};
+            let allCorrect = true;
+
+            // Verifica rigorosa in base alla posizione sequenziale antioraria (indice per indice)
+            confluences.forEach((confStreet, idx) => {
+                if (idx === 0) return; // La via in alto (indice 0) è il perno fisso
+
+                let userVal = assignedSlots[idx];
+                if (userVal !== undefined && userVal === confStreet) {
+                    lastVerificationResults[idx] = true;
+                } else {
+                    lastVerificationResults[idx] = false;
+                    allCorrect = false;
+                }
+            });
+
+            renderSlotsAndPool();
+
+            const feedback = document.getElementById("exercise-feedback");
+            if (allCorrect) {
+                feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-emerald-600";
+                feedback.textContent = "🎉 Ottimo! Tutte le confluenze sono posizionate correttamente in senso antiorario!";
+            } else {
+                feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-red-600";
+                feedback.textContent = "❌ Alcune posizioni non rispettano la sequenza antioraria. I riquadri errati o vuoti sono evidenziati in rosso.";
+            }
+        }
+
+        function showExerciseSolution() {
+            assignedSlots = {};
+            lastVerificationResults = {};
+            let confluences = [...currentExPiazza.confluences];
+            let topStreet = confluences[0];
+            if (customDescriptions[currentExPiazza.name]) {
+                const customKeys = Object.keys(customDescriptions[currentExPiazza.name]);
+                const foundCustom = customKeys.find(k => confluences.includes(k));
+                if (foundCustom) topStreet = foundCustom;
+            }
+            const topIdx = confluences.indexOf(topStreet);
+            if (topIdx > 0) {
+                confluences = confluences.slice(topIdx).concat(confluences.slice(0, topIdx));
+            }
+
+            confluences.forEach((conf, idx) => {
+                if (idx !== 0) { assignedSlots[idx] = conf; }
+            });
+            renderSlotsAndPool();
+            const feedback = document.getElementById("exercise-feedback");
+            feedback.className = "mt-3 text-center font-bold text-sm sm:text-base text-amber-600";
+            feedback.textContent = "💡 Soluzione caricata sul tabellone.";
+        }
+
+        window.onload = function() {
+            setupDynamicManifest();
+            loadCloudDatabase().then(() => {
+                populateAdminSelect();
+            });
+        };
+    </script>
 </body>
 </html>
