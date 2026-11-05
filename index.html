@@ -1512,7 +1512,7 @@ const loginPwdInput = document.getElementById("login-pwd");
         }
 
         try {
-            const q = window.query(window.collection(window.db, "Codes"), window.where("code", "==", enteredPwd));
+            const q = window.query(window.collection(window.db, "codes"), window.where("codice", "==", enteredPwd));
             const querySnapshot = await window.getDocs(q);
             
             if (!querySnapshot.empty) {
