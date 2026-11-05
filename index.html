@@ -1491,6 +1491,9 @@
                 if (inputVal === adminPwd) {
                     isAdmin = true;
                     currentUserId = "admin_user";
+                    localStorage.setItem("milan_taxi_logged", "true");
+                    localStorage.setItem("milan_taxi_is_admin", "true");
+                    localStorage.setItem("milan_taxi_user_id", currentUserId);
                     document.getElementById("btn-admin").classList.remove("hidden");
                     initApp();
                 } else {
@@ -1506,7 +1509,6 @@
                 return;
             }
 
-            // Verifica che Firebase sia pronto prima di interrogare il database
             if (!window.db || !window.collection || !window.getDocs) {
                 err.textContent = "Connessione a Firebase in corso... Riprova tra un secondo.";
                 err.classList.remove("hidden");
@@ -1543,25 +1545,23 @@
 
                 if (!codeData.dispositivoAutorizzato) {
                     await window.updateDoc(codeDocRef, { dispositivoAutorizzato: deviceId });
-                    isAdmin = isCodeAdmin;
-                    if (isAdmin) {
-                        document.getElementById("btn-admin").classList.remove("hidden");
-                    } else {
-                        document.getElementById("btn-admin").classList.add("hidden");
-                    }
-                    initApp();
-                } else if (codeData.dispositivoAutorizzato === deviceId) {
-                    isAdmin = isCodeAdmin;
-                    if (isAdmin) {
-                        document.getElementById("btn-admin").classList.remove("hidden");
-                    } else {
-                        document.getElementById("btn-admin").classList.add("hidden");
-                    }
-                    initApp();
-                } else {
+                } else if (codeData.dispositivoAutorizzato !== deviceId) {
                     err.textContent = "Questo codice è già stato associato a un altro dispositivo.";
                     err.classList.remove("hidden");
+                    return;
                 }
+
+                isAdmin = isCodeAdmin;
+                localStorage.setItem("milan_taxi_logged", "true");
+                localStorage.setItem("milan_taxi_is_admin", isAdmin ? "true" : "false");
+                localStorage.setItem("milan_taxi_user_id", currentUserId);
+
+                if (isAdmin) {
+                    document.getElementById("btn-admin").classList.remove("hidden");
+                } else {
+                    document.getElementById("btn-admin").classList.add("hidden");
+                }
+                initApp();
 
             } catch (e) {
                 console.error("Errore di accesso Cloud:", e);
@@ -1573,6 +1573,9 @@
         function logoutApp() {
             isAdmin = false;
             currentUserId = null;
+            localStorage.removeItem("milan_taxi_logged");
+            localStorage.removeItem("milan_taxi_is_admin");
+            localStorage.removeItem("milan_taxi_user_id");
             document.getElementById("app-container").classList.add("hidden");
             document.getElementById("login-screen").classList.remove("hidden");
             document.getElementById("login-pwd").value = "";
@@ -3487,9 +3490,8 @@
             lastVerificationResults = {};
             let allCorrect = true;
 
-            // Verifica rigorosa in base alla posizione sequenziale antioraria (indice per indice)
             confluences.forEach((confStreet, idx) => {
-                if (idx === 0) return; // La via in alto (indice 0) è il perno fisso
+                if (idx === 0) return;
 
                 let userVal = assignedSlots[idx];
                 if (userVal !== undefined && userVal === confStreet) {
@@ -3540,6 +3542,18 @@
             setupDynamicManifest();
             loadCloudDatabase().then(() => {
                 populateAdminSelect();
+                
+                const isLogged = localStorage.getItem("milan_taxi_logged");
+                if (isLogged === "true") {
+                    isAdmin = localStorage.getItem("milan_taxi_is_admin") === "true";
+                    currentUserId = localStorage.getItem("milan_taxi_user_id");
+                    if (isAdmin) {
+                        document.getElementById("btn-admin").classList.remove("hidden");
+                    } else {
+                        document.getElementById("btn-admin").classList.add("hidden");
+                    }
+                    initApp();
+                }
             });
         };
     </script>
