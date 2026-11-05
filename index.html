@@ -1483,74 +1483,91 @@
         }
 
         async function handleLogin(forceAdmin) {
-const loginPwdInput = document.getElementById("login-pwd");
-        const loginError = document.getElementById("login-error");
-        const enteredPwd = loginPwdInput ? loginPwdInput.value.trim() : "";
+        const inputVal = document.getElementById("login-pwd").value.trim();
+        const err = document.getElementById("login-error");
+        err.classList.add("hidden");
 
         if (forceAdmin) {
-            const pwd = prompt("Inserisci la password di amministrazione:");
-            if (pwd === adminPwd) {
+            if (inputVal === adminPwd) {
                 isAdmin = true;
-                currentUserId = "admin";
+                currentUserId = "admin_user";
                 localStorage.setItem("milan_taxi_logged", "true");
                 localStorage.setItem("milan_taxi_is_admin", "true");
-                enterApp();
-                return;
+                document.getElementById("btn-admin").classList.remove("hidden");
+                initApp();
             } else {
-                alert("Password errata.");
-                return;
+                err.textContent = "Password Admin errata.";
+                err.classList.remove("hidden");
             }
+            return;
         }
 
-        if (enteredPwd === adminPwd) {
-            isAdmin = true;
-            currentUserId = "admin";
-            localStorage.setItem("milan_taxi_logged", "true");
-            localStorage.setItem("milan_taxi_is_admin", "true");
-            enterApp();
+        if (!inputVal) {
+            err.textContent = "Inserisci un codice valido.";
+            err.classList.remove("hidden");
+            return;
+        }
+
+        // Verifica che Firebase sia pronto prima di interrogare il database
+        if (!window.db || !window.collection || !window.getDocs) {
+            err.textContent = "Connessione a Firebase in corso... Riprova tra un secondo.";
+            err.classList.remove("hidden");
             return;
         }
 
         try {
-            const q = window.query(window.collection(window.db, "codes"), window.where("codice", "==", enteredPwd));
+            let deviceId = localStorage.getItem("milan_taxi_device_id");
+            if (!deviceId) {
+                deviceId = 'dev_' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+                localStorage.setItem("milan_taxi_device_id", deviceId);
+            }
+
+            const codesRef = window.collection(window.db, "codes");
+            const q = window.query(codesRef, window.where("codice", "==", inputVal));
             const querySnapshot = await window.getDocs(q);
-            
-            if (!querySnapshot.empty) {
-                let codeDoc = null;
-                querySnapshot.forEach((docSnap) => {
-                    codeDoc = { id: docSnap.id, ...docSnap.data() };
-                });
 
-                if (codeDoc && codeDoc.active === false) {
-                    if (loginError) {
-                        loginError.textContent = "Questo codice di accesso è stato disattivato.";
-                        loginError.classList.remove("hidden");
-                    }
-                    return;
-                }
+            let codeDocRef = null;
+            let codeData = null;
 
-                isAdmin = codeDoc.isAdmin || false;
-                currentUserId = codeDoc.id;
-                localStorage.setItem("milan_taxi_logged", "true");
-                localStorage.setItem("milan_taxi_is_admin", isAdmin ? "true" : "false");
-                enterApp();
+            querySnapshot.forEach((docSnap) => {
+                codeDocRef = docSnap.ref;
+                codeData = docSnap.data();
+            });
+
+            if (!codeData || codeData.attivo !== true) {
+                err.textContent = "Codice inesistente o non attivo.";
+                err.classList.remove("hidden");
                 return;
             }
-        } catch (e) {
-            console.log("Verifica Firebase offline/fallita, controllo password locale...");
-        }
 
-        if (enteredPwd === "taxi2026" || enteredPwd === "milano2026") {
-            isAdmin = false;
-            currentUserId = "standard_user";
+            const isCodeAdmin = codeData.isAdmin === true;
+            currentUserId = codeDocRef.id;
+
+            if (!codeData.dispositivoAutorizzato) {
+                await window.updateDoc(codeDocRef, { dispositivoAutorizzato: deviceId });
+            } else if (codeData.dispositivoAutorizzato !== deviceId) {
+                err.textContent = "Questo codice è già stato associato a un altro dispositivo.";
+                err.classList.remove("hidden");
+                return;
+            }
+
+            // SALVIAMO LA SESSIONE IN LOCALSTORAGE PER EVITARE LETTURE MULTIPLE SU FIREBASE
+            isAdmin = isCodeAdmin;
             localStorage.setItem("milan_taxi_logged", "true");
-            localStorage.setItem("milan_taxi_is_admin", "false");
-            enterApp();
-            return;
-        }
+            localStorage.setItem("milan_taxi_is_admin", isAdmin ? "true" : "false");
+            localStorage.setItem("milan_taxi_user_id", currentUserId);
 
-        if (loginError) {
-            loginError.classList.remove("hidden");
+            if (isAdmin) {
+                document.getElementById("btn-admin").classList.remove("hidden");
+            } else {
+                document.getElementById("btn-admin").classList.add("hidden");
+            }
+            initApp();
+
+        } catch (e) {
+            console.error("Errore di accesso Cloud:", e);
+            err.textContent = "Impossibile verificare il codice online. Controlla la connessione.";
+            err.classList.remove("hidden");
         }
     }
 
@@ -3544,14 +3561,20 @@ function loadAdminStataleData() {
     }
 
     window.onload = function() {
-        if (localStorage.getItem("milan_taxi_logged") === "true") {
-            isAdmin = localStorage.getItem("milan_taxi_is_admin") === "true";
-            currentUserId = isAdmin ? "admin" : "standard_user";
-            enterApp();
-        } else {
-            document.getElementById("login-screen").classList.remove("hidden");
-            document.getElementById("app-container").classList.add("hidden");
-        }
+        setupDynamicManifest();
+        loadCloudDatabase().then(() => {
+            populateAdminSelect();
+            
+            // CONTROLLO PERSISTENZA SESSIONE
+            const isLogged = localStorage.getItem("milan_taxi_logged");
+            if (isLogged === "true") {
+                isAdmin = localStorage.getItem("milan_taxi_is_admin") === "true";
+                if (isAdmin) {
+                    document.getElementById("btn-admin").classList.remove("hidden");
+                }
+                initApp(); // Salta il login se eri già entrato!
+            }
+        });
     };
 </script>
 </body>
