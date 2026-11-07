@@ -26,7 +26,7 @@
     <!-- FIREBASE SDK (MODULO FIRESTORE) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, where, updateDoc, doc, addDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, where, updateDoc, doc, addDoc, deleteDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB9NDTSWiODSZhL0XyQeLL2uzbEYm5yYzA",
@@ -50,6 +50,7 @@
         window.addDoc = addDoc;
         window.deleteDoc = deleteDoc;
         window.setDoc = setDoc;
+        window.onSnapshot = onSnapshot;
     </script>
 
     <style>
@@ -172,7 +173,26 @@
         </div>
     </div>
 
-    <!-- APP PRINCIPALE -->
+    <!-- MODALE ADMIN: UTENTI ONLINE IN TEMPO REALE -->
+    <div id="admin-online-modal" class="hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 space-y-4 border border-slate-300">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-200">
+                <h3 class="font-bold text-lg text-slate-900 flex items-center">
+                    <i class="fa-solid fa-users text-emerald-500 mr-2"></i> Utenti Connessi 
+                    <span id="admin-online-count" class="ml-2 px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-xs font-black rounded-full">0</span>
+                </h3>
+                <button onclick="closeAdminOnlineModal()" class="text-slate-500 hover:text-slate-800 font-bold text-xl px-2">&times;</button>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-600">Elenco degli utenti attualmente attivi sull'applicazione (aggiornato in tempo reale):</p>
+            <div id="admin-online-users-list" class="space-y-2 max-h-60 overflow-y-auto p-1 bg-slate-50 rounded-xl border border-slate-200">
+                <p class="text-slate-500 text-xs italic text-center py-4">In ascolto delle connessioni...</p>
+            </div>
+            <div class="flex justify-end pt-2">
+                <button onclick="closeAdminOnlineModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold transition">Chiudi</button>
+            </div>
+        </div>
+    </div>
+<!-- APP PRINCIPALE -->
     <div id="app-container" class="hidden flex flex-col min-h-screen">
         <header class="bg-slate-900 text-white shadow-md sticky top-0 z-40">
             <div class="max-w-7xl mx-auto px-3 py-3 flex flex-wrap justify-between items-center">
@@ -685,12 +705,17 @@
                     <div id="exercise-feedback" class="mt-3 text-center font-bold text-sm sm:text-base"></div>
                 </div>
             </section>
-<!-- SCHEDA ADMIN -->
+
+            <!-- SCHEDA ADMIN -->
             <section id="tab-admin" class="hidden space-y-4">
                 <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200">
                     <div class="flex justify-between items-center mb-4 flex-wrap gap-3 pb-4 border-b border-slate-200">
                         <h2 class="text-lg sm:text-2xl font-bold text-red-600 flex items-center"><i class="fa-solid fa-user-shield mr-2.5"></i> Gestione Database</h2>
                         <div class="flex items-center gap-2.5">
+                            <!-- TASTO AGGIUNTO PER VEDERE GLI UTENTI ONLINE DALL'ADMIN -->
+                            <button onclick="openAdminOnlineModal()" class="px-3.5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs sm:text-sm font-bold transition flex items-center shadow">
+                                <i class="fa-solid fa-users mr-1.5"></i> Utenti Online
+                            </button>
                             <button onclick="copyAdminAppLink()" class="px-3.5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs sm:text-sm font-bold transition flex items-center shadow">
                                 <i class="fa-solid fa-share-nodes mr-1.5"></i> Condividi Link App
                             </button>
@@ -699,8 +724,7 @@
                             </button>
                         </div>
                     </div>
-                    
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                         <div class="lg:col-span-4 bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1.5">
                             <span class="block text-xs font-bold uppercase tracking-wider text-slate-500 px-3 py-1.5">Funzioni Admin</span>
                             
@@ -921,8 +945,7 @@
                                     <button onclick="saveCustomStreetDescription()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded-lg text-xs sm:text-sm transition">Salva Testo Collegamento</button>
                                 </div>
                             </div>
-
-                            <!-- 7. LEGGI SEGNALAZIONI -->
+<!-- 7. LEGGI SEGNALAZIONI -->
                             <div id="admin-panel-segnalazioni" class="admin-panel space-y-4 hidden">
                                 <h3 class="font-bold text-base sm:text-lg mb-3 flex items-center text-slate-900"><i class="fa-solid fa-comments mr-2 text-amber-600"></i> Segnalazioni e Suggerimenti Ricevuti</h3>
                                 <p class="text-xs sm:text-sm text-slate-600 mb-3">Ecco l'elenco dei messaggi inviati dagli utenti:</p>
@@ -970,7 +993,139 @@
 
         </main>
     </div>
-<script>
+
+    <script>
+        // TRACCIAMENTO PRESENZA UTENTI IN TEMPO REALE (HEARTBEAT)
+        let presenceInterval = null;
+        let onlineUsersUnsubscribe = null;
+
+        function startPresenceHeartbeat(userName) {
+    if (presenceInterval) {
+        clearInterval(presenceInterval);
+        presenceInterval = null;
+    }
+    if (!window.db) return;
+
+            // Leggiamo se è admin SOLO in base al localStorage pulito
+            const storedIsAdmin = localStorage.getItem("milan_taxi_is_admin") === "true";
+            const driverId = localStorage.getItem("milan_taxi_user_id");
+
+            let safeDocId = "";
+            let userDisplayName = "";
+
+            if (storedIsAdmin) {
+                safeDocId = "admin_user";
+                userDisplayName = "Amministratore";
+            } else {
+                if (!driverId || driverId === "admin_user") {
+                    console.warn("⚠️ ID driver mancante.");
+                    return; 
+                }
+                // FORZATURA DRIVER: Usa sempre il prefisso driver_
+                safeDocId = "driver_" + driverId.toString().trim().replace(/[^a-zA-Z0-9_]/g, "_");
+                userDisplayName = userName || currentUserName || localStorage.getItem("milan_taxi_user_name") || "Driver";
+            }
+
+            const updatePresence = async () => {
+                try {
+                    const presenceRef = window.doc(window.db, "presence", safeDocId);
+                    await window.setDoc(presenceRef, {
+                        userId: safeDocId,
+                        userName: userDisplayName,
+                        lastActive: Date.now(),
+                        isAdmin: storedIsAdmin
+                    }, { merge: true });
+                    console.log("✅ PRESENZA INVIATA SU FIREBASE PER:", userDisplayName, "[Slot:", safeDocId, "]");
+                } catch (e) {
+                    console.error("❌ ERRORE SCRITTURA PRESENZA:", e);
+                }
+            };
+
+            updatePresence();
+            presenceInterval = setInterval(updatePresence, 30000);
+        }
+
+        async function stopPresenceHeartbeat() {
+            if (presenceInterval) {
+                clearInterval(presenceInterval);
+                presenceInterval = null;
+            }
+            if (currentUserId && window.db) {
+                try {
+                    const presenceRef = window.doc(window.db, "presence", currentUserId);
+                    await window.deleteDoc(presenceRef);
+                } catch (e) {
+                    console.warn("Errore rimozione presenza:", e);
+                }
+            }
+        }
+
+        function openAdminOnlineModal() {
+            const modal = document.getElementById("admin-online-modal");
+            const container = document.getElementById("admin-online-users-list");
+            const countBadge = document.getElementById("admin-online-count");
+            
+            modal.classList.remove("hidden");
+            container.innerHTML = `<p class="text-slate-500 text-xs italic text-center py-4"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Connessione a Firebase...</p>`;
+
+            if (onlineUsersUnsubscribe) onlineUsersUnsubscribe();
+
+            if (!window.db || !window.collection || !window.onSnapshot) {
+                container.innerHTML = `<p class="text-red-500 text-xs font-bold text-center py-4">Firebase non pronto. Riprova tra un secondo.</p>`;
+                return;
+            }
+
+            const presenceRef = window.collection(window.db, "presence");
+            onlineUsersUnsubscribe = window.onSnapshot(presenceRef, (snapshot) => {
+                const now = Date.now();
+                let activeUsers = [];
+
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    // Consideriamo attivo un utente con ultimo battito entro gli ultimi 90 secondi
+                    if (data.lastActive && (now - data.lastActive < 90000)) {
+                        activeUsers.push(data);
+                    }
+                });
+
+                countBadge.textContent = activeUsers.length;
+                container.innerHTML = "";
+
+                if (activeUsers.length === 0) {
+                    container.innerHTML = `<p class="text-slate-500 text-xs italic text-center py-4">Nessun utente attualmente connesso.</p>`;
+                    return;
+                }
+
+                activeUsers.forEach(u => {
+                    const item = document.createElement("div");
+                    item.className = "flex justify-between items-center bg-white p-3 rounded-lg border border-slate-200 shadow-sm";
+                    const roleBadge = u.isAdmin 
+                        ? `<span class="px-2 py-0.5 bg-red-100 text-red-700 text-[10px] font-bold rounded">Admin</span>` 
+                        : `<span class="px-2 py-0.5 bg-amber-100 text-amber-800 text-[10px] font-bold rounded">Driver</span>`;
+
+                    item.innerHTML = `
+                        <div class="flex items-center space-x-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span class="font-bold text-slate-800 text-xs sm:text-sm">${u.userName || 'Utente'}</span>
+                        </div>
+                        <div>${roleBadge}</div>
+                    `;
+                    container.appendChild(item);
+                });
+            }, (error) => {
+                console.error("Errore snapshot presenza:", error);
+                container.innerHTML = `<p class="text-red-500 text-xs font-bold text-center py-4">Errore durante la lettura degli utenti in tempo reale.</p>`;
+            });
+        }
+
+        function closeAdminOnlineModal() {
+            if (onlineUsersUnsubscribe) {
+                onlineUsersUnsubscribe();
+                onlineUsersUnsubscribe = null;
+            }
+            document.getElementById("admin-online-modal").classList.add("hidden");
+        }
+
         // Funzioni IndexedDB per la gestione dei file senza limiti di 5MB
         function openDatabase() {
             return new Promise((resolve, reject) => {
@@ -1014,7 +1169,6 @@
                         const db = await openDatabase();
                         let migratedCount = 0;
 
-                        // Chiavi strutturate dei file nel localStorage
                         const storageKeys = [
                             { key: "milan_regolamenti_data", type: "regolamento" },
                             { key: "milan_percorsi_data", type: "percorso" },
@@ -1050,7 +1204,6 @@
                                         request.onerror = () => reject(request.error);
                                     });
 
-                                    // Rimuoviamo il file pesante dal JSON in localStorage per liberare spazio
                                     entry.fileData = ""; 
                                     modified = true;
                                     migratedCount++;
@@ -1083,6 +1236,7 @@
         let stataliDescriptions = JSON.parse(localStorage.getItem("milan_statali_descriptions")) || {};
         let isAdmin = false;
         let currentUserId = null;
+        let currentUserName = null;
         
         let sortMode = 'default';
         let selectedStreetForTap = null;
@@ -1491,11 +1645,14 @@
                 if (inputVal === adminPwd) {
                     isAdmin = true;
                     currentUserId = "admin_user";
+                    currentUserName = "Amministratore";
                     localStorage.setItem("milan_taxi_logged", "true");
                     localStorage.setItem("milan_taxi_is_admin", "true");
                     localStorage.setItem("milan_taxi_user_id", currentUserId);
+                    localStorage.setItem("milan_taxi_user_name", currentUserName);
                     document.getElementById("btn-admin").classList.remove("hidden");
                     initApp();
+                    startPresenceHeartbeat(currentUserName);
                 } else {
                     err.textContent = "Password Admin errata.";
                     err.classList.remove("hidden");
@@ -1542,6 +1699,7 @@
 
                 const isCodeAdmin = codeData.isAdmin === true;
                 currentUserId = codeDocRef.id;
+                currentUserName = codeData.nomeUtente || codeData.nome || `Utente (${inputVal})`;
 
                 if (!codeData.dispositivoAutorizzato) {
                     await window.updateDoc(codeDocRef, { dispositivoAutorizzato: deviceId });
@@ -1555,6 +1713,12 @@
                 localStorage.setItem("milan_taxi_logged", "true");
                 localStorage.setItem("milan_taxi_is_admin", isAdmin ? "true" : "false");
                 localStorage.setItem("milan_taxi_user_id", currentUserId);
+                localStorage.setItem("milan_taxi_user_name", currentUserName);
+
+                // AGGIUNTA DI SICUREZZA: se non è admin, puliamo eventuali residui di admin_user sul dispositivo
+                if (!isAdmin) {
+                    localStorage.removeItem("admin_user");
+                }
 
                 if (isAdmin) {
                     document.getElementById("btn-admin").classList.remove("hidden");
@@ -1562,6 +1726,7 @@
                     document.getElementById("btn-admin").classList.add("hidden");
                 }
                 initApp();
+                startPresenceHeartbeat(currentUserName);
 
             } catch (e) {
                 console.error("Errore di accesso Cloud:", e);
@@ -1570,12 +1735,15 @@
             }
         }
 
-        function logoutApp() {
+        async function logoutApp() {
+            await stopPresenceHeartbeat();
             isAdmin = false;
             currentUserId = null;
+            currentUserName = null;
             localStorage.removeItem("milan_taxi_logged");
             localStorage.removeItem("milan_taxi_is_admin");
             localStorage.removeItem("milan_taxi_user_id");
+            localStorage.removeItem("milan_taxi_user_name");
             document.getElementById("app-container").classList.add("hidden");
             document.getElementById("login-screen").classList.remove("hidden");
             document.getElementById("login-pwd").value = "";
@@ -3547,15 +3715,21 @@
                 if (isLogged === "true") {
                     isAdmin = localStorage.getItem("milan_taxi_is_admin") === "true";
                     currentUserId = localStorage.getItem("milan_taxi_user_id");
+                    currentUserName = localStorage.getItem("milan_taxi_user_name") || (isAdmin ? "Amministratore" : `Driver (${currentUserId})`);
                     if (isAdmin) {
                         document.getElementById("btn-admin").classList.remove("hidden");
                     } else {
                         document.getElementById("btn-admin").classList.add("hidden");
                     }
                     initApp();
+                    startPresenceHeartbeat(currentUserName);
                 }
             });
         };
+
+        window.addEventListener("beforeunload", () => {
+            stopPresenceHeartbeat();
+        });
     </script>
 </body>
 </html>
